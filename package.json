@@ -1,0 +1,39 @@
+{
+  "name": "poly-lit-element",
+  "version": "0.1.0",
+  "description": "Polymer + Lit",
+  "license": "BSD-3-Clause",
+  "repository": "PolymerLabs/poly-lit-element",
+  "main": "poly-lit-element.js",
+  "module": "poly-lit-element.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "build": "tsc",
+    "gen-docs": "typedoc --readme none --mode modules --excludeNotExported --excludePrivate --exclude **/*_test.ts --out ./docs/api .",
+    "pretest": "npm run posttest; ln -s node_modules bower_components",
+    "test": "npm run build && wct -l chrome && npm run lint",
+    "posttest": "rm -f bower_components",
+    "checksize": "uglifyjs poly-lit-element.js -mc --toplevel | gzip -9 | wc -c",
+    "format": "find src test | grep '\\.js$\\|\\.ts$' | xargs clang-format --style=file -i",
+    "lint": "tslint --project ./"
+  },
+  "author": "The Polymer Authors",
+  "devDependencies": {
+    "@types/chai": "^4.0.1",
+    "@types/mocha": "^2.2.41",
+    "chai": "^4.0.2",
+    "mocha": "^3.4.2",
+    "tslint": "^5.7.0",
+    "typedoc": "^0.8.0",
+    "typescript": "^2.5.2",
+    "uglify-es": "^3.0.27",
+    "web-component-tester": "^6.0.1"
+  },
+  "typings": "poly-lit-element.d.ts",
+  "dependencies": {
+    "@polymer/polymer": "^3.0.0-pre.1",
+    "lit-html": "^0.6.0"
+  }
+}

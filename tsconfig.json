@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "target": "es2017",
+    "module": "es2015",
+    "lib": ["es2017", "dom"],
+    "declaration": true,
+    "sourceMap": true,
+    "outDir": "./",
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "allowJs": true,
+    "rootDirs": [
+      ".",
+      "./node_modules",
+      "./node_modules/@types"
+    ]
+  },
+  "include": [
+    "./src/**/*.ts"
+  ],
+  "exclude": []
+}
