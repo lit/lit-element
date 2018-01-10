@@ -4,16 +4,17 @@
     "module": "es2015",
     "lib": ["es2017", "dom"],
     "declaration": true,
+    "allowJs": true,
     "sourceMap": true,
-    "outDir": "./",
+    "inlineSources": true,
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
-    "allowJs": true,
+    "outDir": "./",
+    "rootDir": "./src/",
     "rootDirs": [
-      ".",
       "./node_modules",
       "./node_modules/@types"
     ]
@@ -21,5 +22,7 @@
   "include": [
     "./src/**/*.ts"
   ],
-  "exclude": []
+  "exclude": [
+    "./src/test/**"
+  ]
 }

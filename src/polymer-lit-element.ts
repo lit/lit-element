@@ -13,14 +13,13 @@
  */
 
 import { dedupingMixin } from '../@polymer/polymer/lib/utils/mixin.js';
-import { TemplateResult } from '../lit-html/lit-html.js';
+import { PropertiesMixin } from '../@polymer/polymer/lib/mixins/properties-mixin.js';
+import { TemplateResult, html } from '../lit-html/lit-html.js';
 import { render } from '../lit-html/lib/lit-extended.js';
-
-export { html } from '../lit-html/lit-html.js';
 
 export type Constructor<T> = { new(...args: any[]): T };
 
-declare interface PropertyAccessors {
+declare interface PropertiesMixin {
   ready(): void;
   __dataPending: object;
   __dataOld: object;
@@ -28,38 +27,54 @@ declare interface PropertyAccessors {
   _propertiesChanged(props: any, changed: any, old: any): void;
 }
 
-export const PolymerLit = dedupingMixin(<S extends Constructor<HTMLElement & PropertyAccessors>>(base: S) => {
+const htmlFnCache = new Map();
 
-  return class PolymerLit extends base {
+function getHtmlFn(name: string|null) {
+  let fn = htmlFnCache.get(name);
+  if (!fn) {
+    fn = function(strings: TemplateStringsArray, ...values: any[]) {
+      return html(strings, ...values);
+    }
+    htmlFnCache.set(name, fn);
+  }
+  return fn;
+}
 
-    _templateResult: TemplateResult;
+export const PolymerLitMixin = dedupingMixin(<S extends Constructor<HTMLElement & PropertiesMixin>>(base: S) => {
+
+  return class PolymerLitElement extends PropertiesMixin(base) {
+
+    __didRender = false;
 
     ready() {
       this.attachShadow({mode: 'open'});
       super.ready();
-      // TODO(sorvell): we need to trigger rendering even if no changes occurred!
-      // can set a dummy property, but that's maybe not good so we "invalidate"
-      // but need to ready private state to do so.
-      //this._setProperty('_readied', true);
-      this.__dataPending = this.__dataPending || {};
-      this.__dataOld = this.__dataOld || {};
-      this._invalidateProperties();
+      if (!this.__didRender) {
+        this._doRender({});
+      }
     }
 
-    _propertiesChanged(props: any, changed: any, old: any) {
+    _propertiesChanged(props: object, changed: object, old: object) {
       super._propertiesChanged(props, changed, old);
-      this._templateResult = this.render();
-      if (this._templateResult) {
-        render(this._templateResult, this.shadowRoot!);
+      this._doRender(props);
+    }
+
+    _doRender(props: object) {
+      this.__didRender = true;
+      const result = this.render(props, getHtmlFn(this.localName));
+      if (result) {
+        render(result, this.shadowRoot as DocumentFragment);
       }
     }
 
     /**
      * Return a template result to render using lit-html.
      */
-    render(): TemplateResult {
+    render(_props: object, _html: Function): TemplateResult {
       throw new Error('render() not implemented');
     }
   }
 
 });
+
+export const PolymerLitElement = PolymerLitMixin(HTMLElement);
