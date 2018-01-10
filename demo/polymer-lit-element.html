@@ -19,14 +19,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       static get properties() {
         return {
-          foo: {
-            type: String,
-            accessor: true
-          },
-          bar: {
-            type: String,
-            accessor: true
-          }
+          foo: String,
+          bar: Number
         }
       }
 
@@ -35,18 +29,43 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.foo = 'foo';
       }
 
+      ready() {
+        this.addEventListener('click', (e) => {
+          let count = this._getProperty('clickCount') || 0;
+          this._setProperty('clickCount', ++count);
+        });
+        super.ready();
+      }
+
       render(props, html) {
         return html`
-          <h1 on-click=${(e) => this._headerClick(e)} foo$=${props.foo}>${this.localName}: ${props.foo}, ${props.bar}</h1>
+          <style>
+            :host {
+              display: block;
+            }
+
+            .count {
+              color: green;
+            }
+
+            .content {
+              border: 1px solid black;
+              padding: 8px;
+            }
+          </style>
+          <h4>Foo: ${props.foo}, Bar: ${props.bar}</h4>
+          <div class="content">
+            <slot></slot>
+          </div>
+          <div class="count">
+            clicked ${props.clickCount || 0} time${props.clickCount == 1 ? '' : 's'}
+          </div>
         `;
       }
 
-      _headerClick(e) {
-        console.log(e.target);
-      }
-    };
+    }
 
     customElements.define('my-element', MyElement);
   </script>
-  <my-element bar="bar"></my-element>
+  <my-element bar="5">Hi</my-element>
 </body></html>
