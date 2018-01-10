@@ -12,20 +12,12 @@
  * http://polymer.github.io/PATENTS.txt
  */
 
-import { dedupingMixin } from '../polymer/lib/utils/mixin.js';
-import { PropertiesMixin } from '../polymer/lib/mixins/properties-mixin.js';
+import { dedupingMixin } from '../../@polymer/polymer/lib/utils/mixin.js';
+import { PropertiesMixin } from '../../@polymer/polymer/lib/mixins/properties-mixin.js';
 import { TemplateResult, html } from '../../lit-html/lit-html.js';
 import { render } from '../../lit-html/lib/lit-extended.js';
 
 export type Constructor<T> = { new(...args: any[]): T };
-
-declare interface PropertiesMixin {
-  ready(): void;
-  __dataPending: object;
-  __dataOld: object;
-  _invalidateProperties(): void;
-  _propertiesChanged(props: any, changed: any, old: any): void;
-}
 
 const htmlFnCache = new Map();
 

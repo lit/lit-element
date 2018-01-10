@@ -27,13 +27,14 @@
     "mocha": "^3.4.2",
     "tslint": "^5.7.0",
     "typedoc": "^0.8.0",
-    "typescript": "^2.5.2",
+    "typescript": "^2.6.2",
     "uglify-es": "^3.0.27",
+    "wct-browser-legacy": "0.0.1-pre.10",
     "web-component-tester": "^6.0.1"
   },
   "typings": "polymer-lit-element.d.ts",
   "dependencies": {
     "@polymer/polymer": "^3.0.0-pre.1",
-    "lit-html": "^0.6.0"
+    "lit-html": "^0.8.0-pre.1"
   }
 }

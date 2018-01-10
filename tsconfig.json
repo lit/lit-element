@@ -4,7 +4,6 @@
     "module": "es2015",
     "lib": ["es2017", "dom"],
     "declaration": true,
-    "allowJs": true,
     "sourceMap": true,
     "inlineSources": true,
     "strict": true,
@@ -13,8 +12,9 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "outDir": "./",
-    "rootDir": "./src/",
+    "rootDir": "./src/@polymer",
     "rootDirs": [
+      "./",
       "./node_modules",
       "./node_modules/@types"
     ]
