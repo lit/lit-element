@@ -12,10 +12,10 @@
  * http://polymer.github.io/PATENTS.txt
  */
 
-import { dedupingMixin } from '../@polymer/polymer/lib/utils/mixin.js';
-import { PropertiesMixin } from '../@polymer/polymer/lib/mixins/properties-mixin.js';
-import { TemplateResult, html } from '../lit-html/lit-html.js';
-import { render } from '../lit-html/lib/lit-extended.js';
+import { dedupingMixin } from '../polymer/lib/utils/mixin.js';
+import { PropertiesMixin } from '../polymer/lib/mixins/properties-mixin.js';
+import { TemplateResult, html } from '../../lit-html/lit-html.js';
+import { render } from '../../lit-html/lib/lit-extended.js';
 
 export type Constructor<T> = { new(...args: any[]): T };
 

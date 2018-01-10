@@ -126,9 +126,6 @@ suite('PolymerLitElement', () => {
     assert.ok(el.shadowRoot);
     assert.equal((el.shadowRoot as ShadowRoot).innerHTML, 'changed');
     document.body.removeChild(el);
-    });
   });
-
-
 
 });
