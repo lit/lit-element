@@ -11,7 +11,7 @@ class MyElement extends PolymerLitElement {
   static get properties() {
     return {
       foo: String,
-      bar: Number
+      whales: Number
     }
   }
 
@@ -21,12 +21,7 @@ class MyElement extends PolymerLitElement {
   }
 
   ready() {
-    this.addEventListener('click', (e) => {
-      // Private element state not exposed via property accessors or attributes that also 
-      // triggers re-render can be set/get using the `_setProperty`/`_getProperty` API
-      let count = this._getProperty('clickCount') || 0;
-      this._setProperty('clickCount', ++count);
-    });
+    this.addEventListener('click', (e) => this.whales++);
     super.ready();
   }
 
@@ -38,8 +33,8 @@ class MyElement extends PolymerLitElement {
           display: block;
         }
       </style>
-      <h4>Foo: ${props.foo}, Bar: ${props.bar}</h4>
-      <div>clicked count: ${props.clickCount || 0}</div>
+      <h4>Foo: ${props.foo}</h4>
+      <div>whales: ${'🐳'.repeat(props.whales)}</div>
       <slot></slot>
     `;
   }
@@ -49,8 +44,8 @@ customElements.define('my-element', MyElement);
 ```
 
 ```html
-  <my-element bar="5">hi</my-element>
+  <my-element whales="5">hi</my-element>
 ```
 
 ## Known Issues
-* This element does not yet work with the ShadyCSS polyfill.
+* This element does not yet work with the ShadyCSS polyfill. Support is coming soon!

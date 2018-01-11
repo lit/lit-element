@@ -12,7 +12,7 @@
  * http://polymer.github.io/PATENTS.txt
  */
 
-import { PolymerLitElement } from '../polymer-lit-element.js';
+import { PolymerLitElement, html } from '../polymer-lit-element.js';
 
 /// <reference path="../../node_modules/@types/mocha/index.d.ts" />
 /// <reference path="../../node_modules/@types/chai/index.d.ts" />
@@ -24,7 +24,7 @@ suite('PolymerLitElement', () => {
   test('renders initial content', () => {
     const rendered = `hello world`;
     customElements.define('x-1', class extends PolymerLitElement {
-      render(_props: any, html: Function) {
+      render() {
         return html`${rendered}`
       }
     });
@@ -38,7 +38,7 @@ suite('PolymerLitElement', () => {
   test('renders when created via constructor', () => {
     const rendered = `hello world`;
     const C = class extends PolymerLitElement {
-      render(_props: any, html: Function) {
+      render() {
         return html`${rendered}`
       }
     };
@@ -60,7 +60,7 @@ suite('PolymerLitElement', () => {
 
       foo = 'one';
 
-      render(props: any, html: Function) {
+      render(props: any) {
         return html`${props.foo}`
       }
     });
@@ -86,7 +86,7 @@ suite('PolymerLitElement', () => {
 
       foo = 'one';
 
-      render(props: any, html: Function) {
+      render(props: any) {
         return html`${props.foo}`
       }
     });
@@ -117,7 +117,7 @@ suite('PolymerLitElement', () => {
         super.ready();
       }
 
-      render(props: any, html: Function) {
+      render(props: any) {
         return html`${props.foo}`
       }
     });

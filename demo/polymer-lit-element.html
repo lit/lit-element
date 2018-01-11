@@ -13,31 +13,30 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 </head>
 <body>
   <script type="module">
-    import { PolymerLitElement } from '../polymer-lit-element.js';
+    import { PolymerLitElement, html } from '../polymer-lit-element.js';
 
     class MyElement extends PolymerLitElement {
 
       static get properties() {
         return {
           foo: String,
-          bar: Number
+          bar: Number,
+          whales: Number
         }
       }
 
       constructor() {
         super();
         this.foo = 'foo';
+        this.whales = 0;
       }
 
       ready() {
-        this.addEventListener('click', (e) => {
-          let count = this._getProperty('clickCount') || 0;
-          this._setProperty('clickCount', ++count);
-        });
+        this.addEventListener('click', (e) => this.whales++);
         super.ready();
       }
 
-      render(props, html) {
+      render(props) {
         return html`
           <style>
             :host {
@@ -58,8 +57,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <slot></slot>
           </div>
           <div class="count">
-            clicked ${props.clickCount || 0} time${props.clickCount == 1 ? '' : 's'}
+            whales: ${'🐳'.repeat(props.whales)}
           </div>
+          ${this.className}
         `;
       }
 
@@ -67,5 +67,5 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     customElements.define('my-element', MyElement);
   </script>
-  <my-element bar="5">Hi</my-element>
+  <my-element bar="5" whales="5">Hi</my-element>
 </body></html>

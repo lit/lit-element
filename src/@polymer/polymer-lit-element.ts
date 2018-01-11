@@ -11,62 +11,32 @@
  * subject to an additional IP rights grant found at
  * http://polymer.github.io/PATENTS.txt
  */
-
-import { dedupingMixin } from '../../@polymer/polymer/lib/utils/mixin.js';
 import { PropertiesMixin } from '../../@polymer/polymer/lib/mixins/properties-mixin.js';
-import { TemplateResult, html } from '../../lit-html/lit-html.js';
+import { TemplateResult } from '../../lit-html/lit-html.js';
 import { render } from '../../lit-html/lib/lit-extended.js';
 
-export type Constructor<T> = { new(...args: any[]): T };
+export { html } from '../../lit-html/lit-html.js';
+export class PolymerLitElement extends PropertiesMixin(HTMLElement) {
 
-const htmlFnCache = new Map();
-
-function getHtmlFn(name: string|null) {
-  let fn = htmlFnCache.get(name);
-  if (!fn) {
-    fn = function(strings: TemplateStringsArray, ...values: any[]) {
-      return html(strings, ...values);
-    }
-    htmlFnCache.set(name, fn);
+  ready() {
+    this.attachShadow({mode: 'open'});
+    super.ready();
   }
-  return fn;
+
+  _flushProperties() {
+    super._flushProperties();
+    // TODO(sorvell): propertiesChanged should have `_getData`
+    const result = this.render(this.__data);
+    if (result) {
+      render(result, this.shadowRoot as DocumentFragment);
+    }
+  }
+
+  /**
+   * Return a template result to render using lit-html.
+   */
+  render(_props: object): TemplateResult {
+    throw new Error('render() not implemented');
+  }
+
 }
-
-export const PolymerLitMixin = dedupingMixin(<S extends Constructor<HTMLElement & PropertiesMixin>>(base: S) => {
-
-  return class PolymerLitElement extends PropertiesMixin(base) {
-
-    __didRender = false;
-
-    ready() {
-      this.attachShadow({mode: 'open'});
-      super.ready();
-      if (!this.__didRender) {
-        this._doRender({});
-      }
-    }
-
-    _propertiesChanged(props: object, changed: object, old: object) {
-      super._propertiesChanged(props, changed, old);
-      this._doRender(props);
-    }
-
-    _doRender(props: object) {
-      this.__didRender = true;
-      const result = this.render(props, getHtmlFn(this.localName));
-      if (result) {
-        render(result, this.shadowRoot as DocumentFragment);
-      }
-    }
-
-    /**
-     * Return a template result to render using lit-html.
-     */
-    render(_props: object, _html: Function): TemplateResult {
-      throw new Error('render() not implemented');
-    }
-  }
-
-});
-
-export const PolymerLitElement = PolymerLitMixin(HTMLElement);
