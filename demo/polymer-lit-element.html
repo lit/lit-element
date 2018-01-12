@@ -32,7 +32,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
 
       ready() {
-        this.addEventListener('click', (e) => this.whales++);
+        this.addEventListener('click', async (e) => {
+          this.whales++;
+          await this.nextRendered;
+          this.dispatchEvent(new CustomEvent('whales', {detail: {whales: this.whales}}))
+          console.log(this.shadowRoot.querySelector('.count').textContent);
+        });
         super.ready();
       }
 
@@ -59,7 +64,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <div class="count">
             whales: ${'🐳'.repeat(props.whales)}
           </div>
-          ${this.className}
         `;
       }
 

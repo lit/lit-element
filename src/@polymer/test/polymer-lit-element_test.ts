@@ -128,4 +128,35 @@ suite('PolymerLitElement', () => {
     document.body.removeChild(el);
   });
 
+  test('nextRendered waits until next rendering', (done) => {
+    customElements.define('x-6', class extends PolymerLitElement {
+      static get properties() {
+        return {
+          foo: Number
+        }
+      }
+
+      foo = 0;
+
+      render(props: any) {
+        return html`${props.foo}`
+      }
+    });
+    const el = document.createElement('x-6');
+    document.body.appendChild(el);
+    el.foo++;
+    el.nextRendered.then(() => {
+      assert.equal((el.shadowRoot as ShadowRoot).innerHTML, '1');
+      el.foo++;
+      el.nextRendered.then(() => {
+        assert.equal((el.shadowRoot as ShadowRoot).innerHTML, '2');
+        el.foo++;
+        el.nextRendered.then(() => {
+          assert.equal((el.shadowRoot as ShadowRoot).innerHTML, '3');
+          done();
+        });
+      });
+    });
+  });
+
 });

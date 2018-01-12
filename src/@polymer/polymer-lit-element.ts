@@ -18,6 +18,9 @@ import { render } from '../../lit-html/lib/lit-extended.js';
 export { html } from '../../lit-html/lit-html.js';
 export class PolymerLitElement extends PropertiesMixin(HTMLElement) {
 
+  _nextRendered: Promise<any>|null = null;
+  _nextRenderedResolver: Function|null = null;
+
   ready() {
     this.attachShadow({mode: 'open'});
     super.ready();
@@ -30,6 +33,11 @@ export class PolymerLitElement extends PropertiesMixin(HTMLElement) {
     if (result) {
       render(result, this.shadowRoot as DocumentFragment);
     }
+    if (this._nextRenderedResolver) {
+      this._nextRenderedResolver();
+      this._nextRenderedResolver = null;
+      this._nextRendered = null;
+    }
   }
 
   /**
@@ -37,6 +45,20 @@ export class PolymerLitElement extends PropertiesMixin(HTMLElement) {
    */
   render(_props: object): TemplateResult {
     throw new Error('render() not implemented');
+  }
+
+  invalidate() {
+    this._invalidateProperties();
+    return this.nextRendered;
+  }
+
+  get nextRendered() {
+    if (!this._nextRendered) {
+      this._nextRendered = new Promise((resolve) => {
+        this._nextRenderedResolver = resolve;
+      });
+    }
+    return this._nextRendered;
   }
 
 }

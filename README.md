@@ -21,7 +21,11 @@ class MyElement extends PolymerLitElement {
   }
 
   ready() {
-    this.addEventListener('click', (e) => this.whales++);
+    this.addEventListener('click', async (e) => {
+      this.whales++;
+      await this.nextRendered;
+      this.dispatchEvent(new CustomEvent('whales', {detail: {whales: this.whales}}))
+    });
     super.ready();
   }
 
