@@ -153,6 +153,7 @@ suite('PolymerLitElement', () => {
         el.foo++;
         el.nextRendered.then(() => {
           assert.equal((el.shadowRoot as ShadowRoot).innerHTML, '3');
+          document.body.removeChild(el);
           done();
         });
       });
