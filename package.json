@@ -1,11 +1,11 @@
 {
-  "name": "@polymer/polymer-lit-element",
+  "name": "@polymer/polymer-lit",
   "version": "0.1.0",
-  "description": "Polymer Lit Element",
+  "description": "Polymer Lit",
   "license": "BSD-3-Clause",
-  "repository": "PolymerLabs/polymer-lit-element",
+  "repository": "PolymerLabs/polymer-lit",
   "main": "polymer-lit-element.js",
-  "module": "poly-lit-element.js",
+  "module": "polymer-lit-element.js",
   "directories": {
     "test": "test"
   },
@@ -34,7 +34,7 @@
   },
   "typings": "polymer-lit-element.d.ts",
   "dependencies": {
-    "@polymer/polymer": "^3.0.0-pre.3",
+    "@polymer/polymer": "^3.0.0-pre.4",
     "lit-html": "^0.8.0"
   }
 }
