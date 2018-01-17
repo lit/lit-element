@@ -1,11 +1,11 @@
 {
-  "name": "@polymer/polymer-lit",
+  "name": "@polymer/lit-element",
   "version": "0.1.0",
-  "description": "Polymer Lit",
+  "description": "Polymer based lit-html custom element",
   "license": "BSD-3-Clause",
-  "repository": "PolymerLabs/polymer-lit",
-  "main": "polymer-lit-element.js",
-  "module": "polymer-lit-element.js",
+  "repository": "PolymerLabs/lit-element",
+  "main": "lit-element.js",
+  "module": "lit-element.js",
   "directories": {
     "test": "test"
   },
@@ -15,7 +15,7 @@
     "pretest": "npm run posttest; ln -s node_modules bower_components",
     "test": "npm run build && wct -l chrome && npm run lint",
     "posttest": "rm -f bower_components",
-    "checksize": "uglifyjs polymer-lit-element.js -mc --toplevel | gzip -9 | wc -c",
+    "checksize": "uglifyjs lit-element.js -mc --toplevel | gzip -9 | wc -c",
     "format": "find src test | grep '\\.js$\\|\\.ts$' | xargs clang-format --style=file -i",
     "lint": "tslint --project ./"
   },
@@ -32,7 +32,7 @@
     "wct-browser-legacy": "0.0.1-pre.10",
     "web-component-tester": "^6.0.1"
   },
-  "typings": "polymer-lit-element.d.ts",
+  "typings": "lit-element.d.ts",
   "dependencies": {
     "@polymer/polymer": "^3.0.0-pre.4",
     "lit-html": "^0.8.0"
