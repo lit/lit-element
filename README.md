@@ -1,11 +1,11 @@
-# polymer-lit-element
+# lit-element
 
 ## Base class for creating custom elements using Polymer and lit-html.
 
 ```javascript
-import {PolymerLitElement} from 'node_modules/@polymer/polymer-lit/polymer-lit-element.js'
+import {LitElement, html} from 'node_modules/@polymer/lit-element/lit-element.js'
 
-class MyElement extends PolymerLitElement {
+class MyElement extends LitElement {
 
   // Public property API that triggers re-render (synched with attributes)
   static get properties() {
@@ -30,7 +30,7 @@ class MyElement extends PolymerLitElement {
   }
 
   // Render method should return a `TemplateResult` using the provided lit-html `html` tag function
-  render(props, html) {
+  render(props) {
     return html`
       <style>
         :host {

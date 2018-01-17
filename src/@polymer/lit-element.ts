@@ -16,7 +16,7 @@ import { TemplateResult } from '../../lit-html/lit-html.js';
 import { render } from '../../lit-html/lib/lit-extended.js';
 
 export { html } from '../../lit-html/lit-html.js';
-export class PolymerLitElement extends PropertiesMixin(HTMLElement) {
+export class LitElement extends PropertiesMixin(HTMLElement) {
 
   _nextRendered: Promise<any>|null = null;
   _nextRenderedResolver: Function|null = null;

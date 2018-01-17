@@ -12,18 +12,18 @@
  * http://polymer.github.io/PATENTS.txt
  */
 
-import { PolymerLitElement, html } from '../polymer-lit-element.js';
+import { LitElement, html } from '../lit-element.js';
 
 /// <reference path="../../node_modules/@types/mocha/index.d.ts" />
 /// <reference path="../../node_modules/@types/chai/index.d.ts" />
 
 const assert = chai.assert;
 
-suite('PolymerLitElement', () => {
+suite('LitElement', () => {
 
   test('renders initial content', () => {
     const rendered = `hello world`;
-    customElements.define('x-1', class extends PolymerLitElement {
+    customElements.define('x-1', class extends LitElement {
       render() {
         return html`${rendered}`
       }
@@ -37,7 +37,7 @@ suite('PolymerLitElement', () => {
 
   test('renders when created via constructor', () => {
     const rendered = `hello world`;
-    const C = class extends PolymerLitElement {
+    const C = class extends LitElement {
       render() {
         return html`${rendered}`
       }
@@ -51,7 +51,7 @@ suite('PolymerLitElement', () => {
   });
 
   test('renders changes when properties change', (done) => {
-    customElements.define('x-3', class extends PolymerLitElement {
+    customElements.define('x-3', class extends LitElement {
       static get properties() {
         return {
           foo: String
@@ -77,7 +77,7 @@ suite('PolymerLitElement', () => {
   });
 
   test('renders changes when attributes change', (done) => {
-    customElements.define('x-4', class extends PolymerLitElement {
+    customElements.define('x-4', class extends LitElement {
       static get properties() {
         return {
           foo: String
@@ -103,7 +103,7 @@ suite('PolymerLitElement', () => {
   });
 
   test('renders changes made at `ready` time', () => {
-    customElements.define('x-5', class extends PolymerLitElement {
+    customElements.define('x-5', class extends LitElement {
       static get properties() {
         return {
           foo: String
@@ -129,7 +129,7 @@ suite('PolymerLitElement', () => {
   });
 
   test('nextRendered waits until next rendering', (done) => {
-    customElements.define('x-6', class extends PolymerLitElement {
+    customElements.define('x-6', class extends LitElement {
       static get properties() {
         return {
           foo: Number
