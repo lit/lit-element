@@ -53,3 +53,5 @@ customElements.define('my-element', MyElement);
 
 ## Known Issues
 * This element does not yet work with the ShadyCSS polyfill. Support is coming soon!
+* API is subject to minor changes.
+* See [lit-html](https://github.com/Polymer/lit-html) for more info.
