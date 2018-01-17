@@ -1,6 +1,6 @@
 /node_modules
 /bower_components
-/test
-/poly-lit-element.js
-/poly-lit-element.d.ts
-/poly-lit-element.js.map
+/test/lit*
+/lit-element.js
+/lit-element.d.ts
+/lit-element.js.map
