@@ -30,15 +30,15 @@ class MyElement extends LitElement {
   }
 
   // Render method should return a `TemplateResult` using the provided lit-html `html` tag function
-  render(props) {
+  render({foo, whales}) {
     return html`
       <style>
         :host {
           display: block;
         }
       </style>
-      <h4>Foo: ${props.foo}</h4>
-      <div>whales: ${'🐳'.repeat(props.whales)}</div>
+      <h4>Foo: ${foo}</h4>
+      <div>whales: ${'🐳'.repeat(whales)}</div>
       <slot></slot>
     `;
   }

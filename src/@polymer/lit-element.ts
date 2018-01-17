@@ -31,7 +31,7 @@ export class LitElement extends PropertiesMixin(HTMLElement) {
     // TODO(sorvell): propertiesChanged should have `_getData`
     const result = this.render(this.__data);
     if (result) {
-      render(result, this.shadowRoot as DocumentFragment);
+      render(result, this.shadowRoot!);
     }
     if (this._nextRenderedResolver) {
       this._nextRenderedResolver();
@@ -49,11 +49,11 @@ export class LitElement extends PropertiesMixin(HTMLElement) {
 
   invalidate() {
     this._invalidateProperties();
-    return this.nextRendered;
   }
 
   get nextRendered() {
     if (!this._nextRendered) {
+      // TODO(sorvell): handle rejected render.
       this._nextRendered = new Promise((resolve) => {
         this._nextRenderedResolver = resolve;
       });

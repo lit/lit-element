@@ -41,7 +41,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         super.ready();
       }
 
-      render(props) {
+      render({foo, bar, whales}) {
         return html`
           <style>
             :host {
@@ -57,12 +57,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               padding: 8px;
             }
           </style>
-          <h4>Foo: ${props.foo}, Bar: ${props.bar}</h4>
+          <h4>Foo: ${foo}, Bar: ${bar}</h4>
           <div class="content">
             <slot></slot>
           </div>
           <div class="count">
-            whales: ${'🐳'.repeat(props.whales)}
+            whales: ${'🐳'.repeat(whales)}
           </div>
         `;
       }
