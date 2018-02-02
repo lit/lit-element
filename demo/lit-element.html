@@ -35,7 +35,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         super.ready();
         this.addEventListener('click', async (e) => {
           this.whales++;
-          await this.nextRendered;
+          await this.renderComplete;
           this.dispatchEvent(new CustomEvent('whales', {detail: {whales: this.whales}}))
           console.log(this.shadowRoot.querySelector('.count').textContent);
         });

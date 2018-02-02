@@ -131,7 +131,7 @@ suite('LitElement', () => {
     document.body.removeChild(el);
   });
 
-  test('nextRendered waits until next rendering', async () => {
+  test('renderComplete waits until next rendering', async () => {
     class E extends LitElement {
       static get properties() {
         return {
@@ -149,13 +149,13 @@ suite('LitElement', () => {
     const el = new E();
     document.body.appendChild(el);
     el.foo++;
-    await el.nextRendered;
+    await el.renderComplete;
     assert.equal((el.shadowRoot as ShadowRoot).innerHTML, '1');
     el.foo++;
-    await el.nextRendered;
+    await el.renderComplete;
     assert.equal((el.shadowRoot as ShadowRoot).innerHTML, '2');
     el.foo++;
-    await el.nextRendered;
+    await el.renderComplete;
     assert.equal((el.shadowRoot as ShadowRoot).innerHTML, '3');
     document.body.removeChild(el);
   });
@@ -187,7 +187,7 @@ suite('LitElement', () => {
     assert.equal(el.info.length, 1);
     assert.equal(el.info[0].text, '0');
     el.foo = 5;
-    await el.nextRendered;
+    await el.renderComplete;
     assert.equal(el.info.length, 2);
     assert.equal(el.info[1].text, '5');
     document.body.removeChild(el);
@@ -219,13 +219,13 @@ suite('LitElement', () => {
     assert.equal(el.info.length, 1);
     assert.equal(el.info[0].text, '0');
     el.foo = 5;
-    await el.nextRendered;
+    await el.renderComplete;
     assert.equal(el.info.length, 2);
     assert.equal(el.info[1].text, '5');
     document.body.removeChild(el);
   });
 
-  test('Rendering order is render, propertiesChanged, didRender, nextRendered', async () => {
+  test('Rendering order is render, propertiesChanged, didRender, renderComplete', async () => {
     class E extends LitElement {
       static get properties() {
         return {
@@ -256,7 +256,7 @@ suite('LitElement', () => {
     assert.deepEqual(el.info, ['render', 'didRender', 'propertiesChanged']);
     el.info = [];
     el.foo++;
-    await el.nextRendered;
+    await el.renderComplete;
     assert.deepEqual(el.info, ['render', 'didRender', 'propertiesChanged']);
     document.body.removeChild(el);
   });
@@ -292,7 +292,7 @@ suite('LitElement', () => {
     const el = new E();
     document.body.appendChild(el);
     el.setAttribute('bar', '20');
-    await el.nextRendered;
+    await el.renderComplete;
     assert.equal(el.bar, 20);
     assert.equal(el.__bar, 20);
     assert.equal(el.shadowRoot.innerHTML, '020');
@@ -323,7 +323,7 @@ suite('LitElement', () => {
     assert.equal(el.getAttribute('bar'), '');
     el.foo = 5;
     el.bar = false;
-    await el.nextRendered;
+    await el.renderComplete;
     assert.equal(el.getAttribute('foo'), 5);
     assert.equal(el.hasAttribute('bar'), false);
     document.body.removeChild(el);
@@ -354,14 +354,14 @@ suite('LitElement', () => {
     assert.equal(d.className, 'bar');
     el.foo = 1;
     el.baz = true;
-    await el.nextRendered;
+    await el.renderComplete;
     assert.equal(d.className, 'foo bar zonk');
     el.bar = false;
-    await el.nextRendered;
+    await el.renderComplete;
     assert.equal(d.className, 'foo zonk');
     el.foo = 0;
     el.baz = false;
-    await el.nextRendered;
+    await el.renderComplete;
     assert.equal(d.className, '');
     document.body.removeChild(el);
   });
@@ -391,12 +391,12 @@ suite('LitElement', () => {
     assert.equal(d.style.cssText, 'transition-duration: 0ms; height: 0px;');
     el.transitionDuration = `100ms`;
     el.borderTop = `5px`;
-    await el.nextRendered;
+    await el.renderComplete;
     assert.equal(d.style.cssText, 'transition-duration: 100ms; border-top: 5px; height: 0px;');
     el.transitionDuration = ``;
     el.borderTop = ``;
     el.zug = ``;
-    await el.nextRendered;
+    await el.renderComplete;
     assert.equal(d.style.cssText, '');
     document.body.removeChild(el);
   });

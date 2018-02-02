@@ -73,8 +73,8 @@ export function styleString(styleInfo: any) {
 
 export class LitElement extends PropertiesMixin(HTMLElement) {
 
-  private __nextRendered: Promise<any>|null = null;
-  private __nextRenderedResolver: Function|null = null;
+  private __renderComplete: Promise<any>|null = null;
+  private __resolveRenderComplete: Function|null = null;
 
   protected ready() {
     this.attachShadow({mode: 'open'});
@@ -99,10 +99,8 @@ export class LitElement extends PropertiesMixin(HTMLElement) {
       render(result, this.shadowRoot!);
     }
     this.didRender();
-    if (this.__nextRenderedResolver) {
-      this.__nextRenderedResolver();
-      this.__nextRenderedResolver = null;
-      this.__nextRendered = null;
+    if (this.__resolveRenderComplete) {
+      this.__resolveRenderComplete();
     }
   }
 
@@ -128,14 +126,20 @@ export class LitElement extends PropertiesMixin(HTMLElement) {
   /**
    * Returns a promise which resolves after the element next renders.
    */
-  get nextRendered() {
-    if (!this.__nextRendered) {
+  get renderComplete() {
+    if (!this.__renderComplete) {
       // TODO(sorvell): handle rejected render.
-      this.__nextRendered = new Promise((resolve) => {
-        this.__nextRenderedResolver = resolve;
+      this.__renderComplete = new Promise((resolve) => {
+        this.__resolveRenderComplete = resolve;
       });
+      this.__renderComplete.then(() => {
+        this.__resolveRenderComplete = this.__renderComplete = null;
+      });
+      if (!this.__dataInvalid) {
+        this.__resolveRenderComplete();
+      }
     }
-    return this.__nextRendered;
+    return this.__renderComplete;
   }
 
 }
