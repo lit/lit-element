@@ -174,4 +174,5 @@ export class LitElement extends Polymer.PropertiesMixin(HTMLElement) {
     }
     return this.__renderComplete;
   }
+
 }
