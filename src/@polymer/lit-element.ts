@@ -11,7 +11,7 @@
  * subject to an additional IP rights grant found at
  * http://polymer.github.io/PATENTS.txt
  */
-import { PropertiesMixin } from '../../@polymer/polymer/lib/mixins/properties-mixin.js';
+import * as Polymer from '../../@polymer/polymer/lib/mixins/properties-mixin.js';
 import { camelToDashCase } from '../../@polymer/polymer/lib/utils/case-map.js';
 import { TemplateResult } from '../../lit-html/lit-html.js';
 import { render } from '../../lit-html/lib/lit-extended.js';
@@ -71,13 +71,13 @@ export function styleString(styleInfo: any) {
   return o.join('; ');
 }
 
-export class LitElement extends PropertiesMixin(HTMLElement) {
+export class LitElement extends Polymer.PropertiesMixin(HTMLElement) {
 
   private __renderComplete: Promise<any>|null = null;
   private __resolveRenderComplete: Function|null = null;
   private __isInvalid: Boolean = false;
 
-  protected ready() {
+  ready() {
     this.attachShadow({mode: 'open'});
     super.ready();
   }
@@ -91,7 +91,7 @@ export class LitElement extends PropertiesMixin(HTMLElement) {
    * @param {*} _prevProps Previous element properties
    * @returns {boolean} Default implementation always returns true.
    */
-  protected _shouldPropertiesChange(_props: any, _changedProps: any, _prevProps: any) {
+  _shouldPropertiesChange(_props: any, _changedProps: any, _prevProps: any) {
     return true;
   }
 
@@ -102,7 +102,7 @@ export class LitElement extends PropertiesMixin(HTMLElement) {
    * @param {*} changedProps Changing element properties
    * @param {*} prevProps Previous element properties
    */
-  protected _propertiesChanged(props: any, changedProps: any, prevProps: any) {
+  _propertiesChanged(props: any, changedProps: any, prevProps: any) {
     this.__isInvalid = false;
     super._propertiesChanged(props, changedProps, prevProps);
     const result = this.render(props);
@@ -115,7 +115,7 @@ export class LitElement extends PropertiesMixin(HTMLElement) {
     }
   }
 
-  protected _flushProperties() {
+  _flushProperties() {
     super._flushProperties();
     if (this.__dataPending) {
       console.warn(`Setting properties in response to properties changing considered harmful. Offending properties: ${Object.keys(this.__dataPending)}.`);
@@ -128,7 +128,7 @@ export class LitElement extends PropertiesMixin(HTMLElement) {
    * @param {*} _props Current element properties
    * @returns {TemplateResult} Must return a lit-html TemplateResult.
    */
-  protected render(_props: any): TemplateResult {
+  render(_props: any): TemplateResult {
     throw new Error('render() not implemented');
   }
 
@@ -139,7 +139,7 @@ export class LitElement extends PropertiesMixin(HTMLElement) {
    * @param {*} _changedProps Changing element properties
    * @param {*} _prevProps Previous element properties
    */
-  protected didRender(_props: any, _changedProps: any, _prevProps: any) {}
+  didRender(_props: any, _changedProps: any, _prevProps: any) {}
 
   /**
    * Provokes the element to asynchronously re-render.
