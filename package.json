@@ -35,7 +35,7 @@
   "typings": "lit-element.d.ts",
   "dependencies": {
     "@polymer/polymer": "^3.0.0-pre.4",
-    "lit-html": "^0.8.0"
+    "lit-html": "latest"
   },
   "publishConfig": {
     "access": "public"
