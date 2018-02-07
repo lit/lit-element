@@ -75,52 +75,76 @@ export class LitElement extends PropertiesMixin(HTMLElement) {
 
   private __renderComplete: Promise<any>|null = null;
   private __resolveRenderComplete: Function|null = null;
+  private __isInvalid: Boolean = false;
 
   protected ready() {
     this.attachShadow({mode: 'open'});
     super.ready();
   }
 
-  protected _shouldPropertiesChange() { return true; }
-
-  // TODO(sorvell): push to PropertiesChanged
-  protected _flushProperties() {
-    if (this._shouldPropertiesChange()) {
-      let changedProps = this.__dataPending;
-      this.__dataPending = null;
-      this._propertiesChanged(this.__data, changedProps, this.__dataOld);
-    }
+  /**
+   * Override which always returns true so that `_propertiesChanged`
+   * is called whenver properties are invalidated. This ensures `render`
+   * is always called in response to `invalidate`.
+   * @param {*} _props Current element properties
+   * @param {*} _changedProps Changing element properties
+   * @param {*} _prevProps Previous element properties
+   * @returns {boolean} Default implementation always returns true.
+   */
+  protected _shouldPropertiesChange(_props: any, _changedProps: any, _prevProps: any) {
+    return true;
   }
 
-  protected _propertiesChanged(props: any, ...args) {
-    super._propertiesChanged(props, ...args);
+  /**
+   * Override which always calls `render` and `didRender` to perform
+   * element rendering.
+   * @param {*} props Current element properties
+   * @param {*} changedProps Changing element properties
+   * @param {*} prevProps Previous element properties
+   */
+  protected _propertiesChanged(props: any, changedProps: any, prevProps: any) {
+    this.__isInvalid = false;
+    super._propertiesChanged(props, changedProps, prevProps);
     const result = this.render(props);
     if (result) {
       render(result, this.shadowRoot!);
     }
-    this.didRender();
+    this.didRender(props);
     if (this.__resolveRenderComplete) {
       this.__resolveRenderComplete();
     }
   }
 
   /**
-   * Return a template result to render using lit-html.
+   * Returns a lit-html TemplateResult which is rendered into the element's
+   * shadowRoot. This method must be implemented.
+   * @param {*} _props Current element properties
+   * @returns {TemplateResult} Must return a lit-html TemplateResult.
    */
-  protected render(_props: object): TemplateResult {
+  protected render(_props: any): TemplateResult {
     throw new Error('render() not implemented');
   }
 
   /**
-   * Method called after rendering; can be used to directly access element DOM.
+   * Called after element dom has been rendered. Implement to
+   * directly access element DOM.
+   * @param {*} _props Current element properties
    */
-  protected didRender() {}
+  protected didRender(_props: any) {}
 
   /**
    * Provokes the element to asynchronously re-render.
    */
   invalidate() {
     this._invalidateProperties();
+  }
+
+  /**
+   * Override which provides tracking of invalidated state.
+  */
+  _invalidateProperties() {
+    this.__isInvalid = true;
+    super._invalidateProperties();
   }
 
   /**
@@ -135,7 +159,7 @@ export class LitElement extends PropertiesMixin(HTMLElement) {
       this.__renderComplete.then(() => {
         this.__resolveRenderComplete = this.__renderComplete = null;
       });
-      if (!this.__dataInvalid) {
+      if (!this.__isInvalid && this.__resolveRenderComplete) {
         this.__resolveRenderComplete();
       }
     }
