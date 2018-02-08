@@ -118,7 +118,7 @@ export class LitElement extends PropertiesMixin(HTMLElement) {
   protected _flushProperties() {
     super._flushProperties();
     if (this.__dataPending) {
-      console.warn(`Please avoid setting properties in response to properties changing.`);
+      console.warn(`Setting properties in response to properties changing considered harmful. Offending properties: ${Object.keys(this.__dataPending)}.`);
     }
   }
 
