@@ -16,7 +16,7 @@ import { camelToDashCase } from '../../@polymer/polymer/lib/utils/case-map.js';
 import { TemplateResult } from '../../lit-html/lit-html.js';
 import { render } from '../../lit-html/lib/lit-extended.js';
 
-export { html } from '../../lit-html/lit-html.js';
+export { html } from '../../lit-html/lib/lit-extended.js';
 
 /**
  * Renders attributes to the given element based on the `attrInfo` object where
@@ -109,9 +109,16 @@ export class LitElement extends PropertiesMixin(HTMLElement) {
     if (result) {
       render(result, this.shadowRoot!);
     }
-    this.didRender(props);
+    this.didRender(props, changedProps, prevProps);
     if (this.__resolveRenderComplete) {
       this.__resolveRenderComplete();
+    }
+  }
+
+  protected _flushProperties() {
+    super._flushProperties();
+    if (this.__dataPending) {
+      console.warn(`Please avoid setting properties in response to properties changing.`);
     }
   }
 
@@ -129,8 +136,10 @@ export class LitElement extends PropertiesMixin(HTMLElement) {
    * Called after element dom has been rendered. Implement to
    * directly access element DOM.
    * @param {*} _props Current element properties
+   * @param {*} _changedProps Changing element properties
+   * @param {*} _prevProps Previous element properties
    */
-  protected didRender(_props: any) {}
+  protected didRender(_props: any, _changedProps: any, _prevProps: any) {}
 
   /**
    * Provokes the element to asynchronously re-render.

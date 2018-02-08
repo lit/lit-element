@@ -401,4 +401,28 @@ suite('LitElement', () => {
     document.body.removeChild(el);
   });
 
+  test('render attributes, properties, and event listeners via lit-html', function() {
+    class E extends LitElement {
+
+      render() {
+        const attr = 'attr';
+        const prop = 'prop';
+        const event = (e: Event) => {
+          this._event = e;
+        }
+        return html`<div attr$="${attr}" prop="${prop}" on-zug="${event}"></div>`;
+      }
+    }
+    customElements.define('x-14', E);
+    const el = new E();
+    document.body.appendChild(el);
+    const d = el.shadowRoot.querySelector('div');
+    assert.equal(d.getAttribute('attr'), 'attr');
+    assert.equal(d.prop, 'prop');
+    const e = new Event('zug');
+    d.dispatchEvent(e);
+    assert.equal(el._event, e);
+    document.body.removeChild(el);
+  });
+
 });
