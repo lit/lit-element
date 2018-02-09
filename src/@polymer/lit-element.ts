@@ -163,10 +163,10 @@ export class LitElement extends PropertiesMixin(HTMLElement) {
     if (!this.__renderComplete) {
       // TODO(sorvell): handle rejected render.
       this.__renderComplete = new Promise((resolve) => {
-        this.__resolveRenderComplete = resolve;
-      });
-      this.__renderComplete.then(() => {
-        this.__resolveRenderComplete = this.__renderComplete = null;
+        this.__resolveRenderComplete = () => {
+          this.__resolveRenderComplete = this.__renderComplete = null;
+          resolve();
+        }
       });
       if (!this.__isInvalid && this.__resolveRenderComplete) {
         this.__resolveRenderComplete();
