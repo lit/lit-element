@@ -32,13 +32,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
 
       ready() {
+        super.ready();
         this.addEventListener('click', async (e) => {
           this.whales++;
-          await this.nextRendered;
+          await this.renderComplete;
           this.dispatchEvent(new CustomEvent('whales', {detail: {whales: this.whales}}))
           console.log(this.shadowRoot.querySelector('.count').textContent);
         });
-        super.ready();
       }
 
       render({foo, bar, whales}) {
@@ -65,6 +65,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             whales: ${'🐳'.repeat(whales)}
           </div>
         `;
+      }
+
+
+      didRender() {
+        console.log('didRender!');
       }
 
     }
