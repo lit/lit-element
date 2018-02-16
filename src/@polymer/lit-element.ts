@@ -17,7 +17,6 @@ import { TemplateResult } from '../../lit-html/lit-html.js';
 import { render } from '../../lit-html/lib/lit-extended.js';
 
 export { html } from '../../lit-html/lib/lit-extended.js';
-
 /**
  * Renders attributes to the given element based on the `attrInfo` object where
  * boolean values are added/removed as attributes.
@@ -76,10 +75,21 @@ export class LitElement extends PropertiesMixin(HTMLElement) {
   private __renderComplete: Promise<any>|null = null;
   private __resolveRenderComplete: Function|null = null;
   private __isInvalid: Boolean = false;
+  private __isChanging: Boolean = false;
 
   protected ready() {
-    this.attachShadow({mode: 'open'});
+    this._root = this._createRoot();
     super.ready();
+  }
+
+
+
+  /**
+   * Returns an
+   * @returns {Node|ShadowRoot} Returns a node into which to render.
+  */
+  protected _createRoot() {
+    return this.attachShadow({mode: 'open'});
   }
 
   /**
@@ -103,23 +113,26 @@ export class LitElement extends PropertiesMixin(HTMLElement) {
    * @param {*} prevProps Previous element properties
    */
   protected _propertiesChanged(props: any, changedProps: any, prevProps: any) {
+    this.__isChanging = true;
     this.__isInvalid = false;
     super._propertiesChanged(props, changedProps, prevProps);
     const result = this.render(props);
-    if (result) {
-      render(result, this.shadowRoot!);
+    if (result && this._root) {
+      render(result, this._root);
     }
     this.didRender(props, changedProps, prevProps);
     if (this.__resolveRenderComplete) {
       this.__resolveRenderComplete();
     }
+    this.__isChanging = false;
   }
 
-  protected _flushProperties() {
-    super._flushProperties();
-    if (this.__dataPending) {
-      console.warn(`Setting properties in response to properties changing considered harmful. Offending properties: ${Object.keys(this.__dataPending)}.`);
+  _shouldPropertyChange(property: String, value: any, old: any) {
+    const change = super._shouldPropertyChange(property, value, old);
+    if (change && this.__isChanging) {
+      console.warn(`Setting propertyes in response to other properties changing considered harmful. Setting '${name}' from '${this._getProperty(name)}' to '${value}'. See stack trace for more info.`);
     }
+    return change;
   }
 
   /**
