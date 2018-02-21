@@ -132,7 +132,7 @@ suite('LitElement', () => {
     document.body.removeChild(el);
   });
 
-  test('nextRendered waits until next rendering', async (done) => {
+  test('nextRendered waits until next rendering', async () => {
     class X6 extends LitElement {
       static get properties() {
         return {
