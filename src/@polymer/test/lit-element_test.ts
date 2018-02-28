@@ -454,8 +454,8 @@ suite('LitElement', () => {
       }
     }
     const calls = [];
-    const orig = console.warn;
-    console.warn = function() {
+    const orig = console.trace;
+    console.trace = function() {
       calls.push(arguments);
     }
     customElements.define('x-15', E);
@@ -466,7 +466,7 @@ suite('LitElement', () => {
     el.invalidate();
     await el.renderComplete;
     assert.equal(calls.length, 4);
-    console.warn = orig;
+    console.trace = orig;
   });
 
 });
