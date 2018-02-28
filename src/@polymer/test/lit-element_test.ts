@@ -21,18 +21,42 @@ const assert = chai.assert;
 
 suite('LitElement', () => {
 
-  test('renders initial content', () => {
+  let el;
+
+  teardown(() => {
+    if (el && el.parentNode) {
+      el.parentNode.removeChild(el);
+    }
+  })
+
+  test('renders initial content into shadowRoot', () => {
     const rendered = `hello world`;
     customElements.define('x-1', class extends LitElement {
       render() {
         return html`${rendered}`
       }
     });
-    const el = document.createElement('x-1');
+    el = document.createElement('x-1');
     document.body.appendChild(el);
     assert.ok(el.shadowRoot);
     assert.equal((el.shadowRoot as ShadowRoot).innerHTML, rendered);
-    document.body.removeChild(el);
+  });
+
+  test('can set render target to light dom', () => {
+    const rendered = `hello world`;
+    customElements.define('x-1a', class extends LitElement {
+      render() {
+        return html`${rendered}`
+      }
+
+      _createRoot() {
+        return this;
+      }
+    });
+    el = document.createElement('x-1a');
+    document.body.appendChild(el);
+    assert.notOk(el.shadowRoot);
+    assert.equal(el.innerHTML, rendered);
   });
 
   test('renders when created via constructor', () => {
@@ -43,11 +67,10 @@ suite('LitElement', () => {
       }
     };
     customElements.define('x-2', E);
-    const el = new E();
+    el = new E();
     document.body.appendChild(el);
     assert.ok(el.shadowRoot);
     assert.equal((el.shadowRoot as ShadowRoot).innerHTML, rendered);
-    document.body.removeChild(el);
   });
 
   test('renders changes when properties change', (done) => {
@@ -65,14 +88,13 @@ suite('LitElement', () => {
       }
     }
     customElements.define('x-3', E);
-    const el = new E();
+    el = new E();
     document.body.appendChild(el);
     assert.ok(el.shadowRoot);
     assert.equal((el.shadowRoot as ShadowRoot).innerHTML, 'one');
     el.foo = 'changed';
     requestAnimationFrame(() => {
       assert.equal((el.shadowRoot as ShadowRoot).innerHTML, 'changed');
-      document.body.removeChild(el);
       done();
     });
   });
@@ -92,14 +114,13 @@ suite('LitElement', () => {
       }
     }
     customElements.define('x-4', E);
-    const el = new E();
+    el = new E();
     document.body.appendChild(el);
     assert.ok(el.shadowRoot);
     assert.equal((el.shadowRoot as ShadowRoot).innerHTML, 'one');
     el.setAttribute('foo', 'changed');
     requestAnimationFrame(() => {
       assert.equal((el.shadowRoot as ShadowRoot).innerHTML, 'changed');
-      document.body.removeChild(el);
       done();
     });
   });
@@ -124,11 +145,10 @@ suite('LitElement', () => {
       }
     }
     customElements.define('x-5', E);
-    const el = new E();
+    el = new E();
     document.body.appendChild(el);
     assert.ok(el.shadowRoot);
     assert.equal((el.shadowRoot as ShadowRoot).innerHTML, 'changed');
-    document.body.removeChild(el);
   });
 
   test('renderComplete waits until next rendering', async () => {
@@ -146,7 +166,7 @@ suite('LitElement', () => {
       }
     }
     customElements.define('x-6', E);
-    const el = new E();
+    el = new E();
     document.body.appendChild(el);
     el.foo++;
     await el.renderComplete;
@@ -157,7 +177,6 @@ suite('LitElement', () => {
     el.foo++;
     await el.renderComplete;
     assert.equal((el.shadowRoot as ShadowRoot).innerHTML, '3');
-    document.body.removeChild(el);
   });
 
   test('propertiesChanged called after render', async () => {
@@ -182,7 +201,7 @@ suite('LitElement', () => {
       }
     }
     customElements.define('x-7', E);
-    const el = new E();
+    el = new E();
     document.body.appendChild(el);
     assert.equal(el.info.length, 1);
     assert.equal(el.info[0].text, '0');
@@ -190,7 +209,6 @@ suite('LitElement', () => {
     await el.renderComplete;
     assert.equal(el.info.length, 2);
     assert.equal(el.info[1].text, '5');
-    document.body.removeChild(el);
   });
 
   test('didRender called after render', async () => {
@@ -214,7 +232,7 @@ suite('LitElement', () => {
       }
     }
     customElements.define('x-8', E);
-    const el = new E();
+    el = new E();
     document.body.appendChild(el);
     assert.equal(el.info.length, 1);
     assert.equal(el.info[0].text, '0');
@@ -222,7 +240,6 @@ suite('LitElement', () => {
     await el.renderComplete;
     assert.equal(el.info.length, 2);
     assert.equal(el.info[1].text, '5');
-    document.body.removeChild(el);
   });
 
   test('Rendering order is render, propertiesChanged, didRender, renderComplete', async () => {
@@ -251,14 +268,13 @@ suite('LitElement', () => {
       }
     }
     customElements.define('x-9', E);
-    const el = new E();
+    el = new E();
     document.body.appendChild(el);
     assert.deepEqual(el.info, ['render', 'didRender', 'propertiesChanged']);
     el.info = [];
     el.foo++;
     await el.renderComplete;
     assert.deepEqual(el.info, ['render', 'didRender', 'propertiesChanged']);
-    document.body.removeChild(el);
   });
 
   test('User defined accessor can trigger rendering', async () => {
@@ -289,14 +305,13 @@ suite('LitElement', () => {
 
     }
     customElements.define('x-10', E);
-    const el = new E();
+    el = new E();
     document.body.appendChild(el);
     el.setAttribute('bar', '20');
     await el.renderComplete;
     assert.equal(el.bar, 20);
     assert.equal(el.__bar, 20);
     assert.equal(el.shadowRoot.innerHTML, '020');
-    document.body.removeChild(el);
   });
 
   test('renderAttributes renders attributes on element', async () => {
@@ -317,7 +332,7 @@ suite('LitElement', () => {
       }
     }
     customElements.define('x-11', E);
-    const el = new E();
+    el = new E();
     document.body.appendChild(el);
     assert.equal(el.getAttribute('foo'), 0);
     assert.equal(el.getAttribute('bar'), '');
@@ -326,7 +341,6 @@ suite('LitElement', () => {
     await el.renderComplete;
     assert.equal(el.getAttribute('foo'), 5);
     assert.equal(el.hasAttribute('bar'), false);
-    document.body.removeChild(el);
   });
 
   test('classString updates classes', async () => {
@@ -348,7 +362,7 @@ suite('LitElement', () => {
       }
     }
     customElements.define('x-12', E);
-    const el = new E();
+    el = new E();
     document.body.appendChild(el);
     const d = el.shadowRoot.querySelector('div');
     assert.equal(d.className, 'bar');
@@ -363,7 +377,6 @@ suite('LitElement', () => {
     el.baz = false;
     await el.renderComplete;
     assert.equal(d.className, '');
-    document.body.removeChild(el);
   });
 
   test('styleString updates style', async () => {
@@ -385,7 +398,7 @@ suite('LitElement', () => {
       }
     }
     customElements.define('x-13', E);
-    const el = new E();
+    el = new E();
     document.body.appendChild(el);
     const d = el.shadowRoot.querySelector('div');
     assert.equal(d.style.cssText, 'transition-duration: 0ms; height: 0px;');
@@ -398,7 +411,6 @@ suite('LitElement', () => {
     el.zug = ``;
     await el.renderComplete;
     assert.equal(d.style.cssText, '');
-    document.body.removeChild(el);
   });
 
   test('render attributes, properties, and event listeners via lit-html', function() {
@@ -414,7 +426,7 @@ suite('LitElement', () => {
       }
     }
     customElements.define('x-14', E);
-    const el = new E();
+    el = new E();
     document.body.appendChild(el);
     const d = el.shadowRoot.querySelector('div');
     assert.equal(d.getAttribute('attr'), 'attr');
@@ -422,7 +434,39 @@ suite('LitElement', () => {
     const e = new Event('zug');
     d.dispatchEvent(e);
     assert.equal(el._event, e);
-    document.body.removeChild(el);
+  });
+
+  test('warns when setting properties re-entrantly', async () => {
+    class E extends LitElement {
+
+      constructor() {
+        super();
+        this._toggle = false;
+      }
+
+      render() {
+        this._setProperty('foo', this._toggle ? 'fooToggle' : 'foo');
+        return html`hi`;
+      }
+
+      didRender() {
+        this._setProperty('zonk', this._toggle ? 'zonkToggle' : 'zonk');
+      }
+    }
+    const calls = [];
+    const orig = console.trace;
+    console.trace = function() {
+      calls.push(arguments);
+    }
+    customElements.define('x-15', E);
+    el = new E();
+    document.body.appendChild(el);
+    assert.equal(calls.length, 2);
+    el._toggle = true;
+    el.invalidate();
+    await el.renderComplete;
+    assert.equal(calls.length, 4);
+    console.trace = orig;
   });
 
 });
