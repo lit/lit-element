@@ -130,7 +130,7 @@ export class LitElement extends PropertiesMixin(HTMLElement) {
   _shouldPropertyChange(property: String, value: any, old: any) {
     const change = super._shouldPropertyChange(property, value, old);
     if (change && this.__isChanging) {
-      console.trace(`Setting propertyes in response to other properties changing considered harmful. Setting '${property}' from '${this._getProperty(property)}' to '${value}'.`);
+      console.trace(`Setting properties in response to other properties changing considered harmful. Setting '${property}' from '${this._getProperty(property)}' to '${value}'.`);
     }
     return change;
   }
