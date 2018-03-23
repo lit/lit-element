@@ -12,17 +12,12 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "outDir": "./",
-    "rootDir": "./src/@polymer",
-    "rootDirs": [
-      "./",
-      "./node_modules",
-      "./node_modules/@types"
-    ]
+    // Only necessary because @types/uglify-js can't find types for source-map
+    "skipLibCheck": true
   },
   "include": [
-    "./src/**/*.ts"
+    "custom_typings/**/*.ts",
+    "src/**/*.ts"
   ],
-  "exclude": [
-    ""
-  ]
+  "exclude": []
 }
