@@ -37,10 +37,10 @@ export type __unused = PropertiesChangedConstructor&PropertiesMixinConstructor;
 /**
  * Renders attributes to the given element based on the `attrInfo` object where
  * boolean values are added/removed as attributes.
- * @param {*} element Element on which to set attributes.
- * @param {*} attrInfo Object describing attributes.
+ * @param element Element on which to set attributes.
+ * @param attrInfo Object describing attributes.
  */
-export function renderAttributes(element: HTMLElement, attrInfo: any) {
+export function renderAttributes(element: HTMLElement, attrInfo: {[name: string]: any}) {
   for (const a in attrInfo) {
     const v = attrInfo[a] === true ? '' : attrInfo[a];
     if (v || v === '' || v === 0) {
@@ -57,9 +57,9 @@ export function renderAttributes(element: HTMLElement, attrInfo: any) {
  * Returns a string of css class names formed by taking the properties
  * in the `classInfo` object and appending the property name to the string of
  * class names if the property value is truthy.
- * @param {*} classInfo
+ * @param classInfo
  */
-export function classString(classInfo: any) {
+export function classString(classInfo: {[name: string]: any}) {
   const o = [];
   for (const name in classInfo) {
     const v = classInfo[name];
@@ -74,9 +74,9 @@ export function classString(classInfo: any) {
  * Returns a css style string formed by taking the properties in the `styleInfo`
  * object and appending the property name (dash-cased) colon the
  * property value. Properties are separated by a semi-colon.
- * @param {*} styleInfo
+ * @param styleInfo
  */
-export function styleString(styleInfo: any) {
+export function styleString(styleInfo: {[name: string]: any}) {
   const o = [];
   for (const name in styleInfo) {
     const v = styleInfo[name];
@@ -113,23 +113,23 @@ export class LitElement extends PropertiesMixin
    * Override which always returns true so that `_propertiesChanged`
    * is called whenver properties are invalidated. This ensures `render`
    * is always called in response to `invalidate`.
-   * @param {*} _props Current element properties
-   * @param {*} _changedProps Changing element properties
-   * @param {*} _prevProps Previous element properties
+   * @param _props Current element properties
+   * @param _changedProps Changing element properties
+   * @param _prevProps Previous element properties
    * @returns {boolean} Default implementation always returns true.
    */
-  _shouldPropertiesChange(_props: any, _changedProps: any, _prevProps: any) {
+  _shouldPropertiesChange(_props: object, _changedProps: object, _prevProps: object) {
     return true;
   }
 
   /**
    * Override which always calls `render` and `didRender` to perform
    * element rendering.
-   * @param {*} props Current element properties
-   * @param {*} changedProps Changing element properties
-   * @param {*} prevProps Previous element properties
+   * @param props Current element properties
+   * @param changedProps Changing element properties
+   * @param prevProps Previous element properties
    */
-  _propertiesChanged(props: any, changedProps: any, prevProps: any) {
+  _propertiesChanged(props: object, changedProps: object, prevProps: object) {
     this.__isChanging = true;
     this.__isInvalid = false;
     super._propertiesChanged(props, changedProps, prevProps);
@@ -161,18 +161,18 @@ export class LitElement extends PropertiesMixin
    * @param {*} _props Current element properties
    * @returns {TemplateResult} Must return a lit-html TemplateResult.
    */
-  protected render(_props: any): TemplateResult {
+  protected render(_props: object): TemplateResult {
     throw new Error('render() not implemented');
   }
 
   /**
    * Called after element dom has been rendered. Implement to
    * directly access element DOM.
-   * @param {*} _props Current element properties
-   * @param {*} _changedProps Changing element properties
-   * @param {*} _prevProps Previous element properties
+   * @param _props Current element properties
+   * @param _changedProps Changing element properties
+   * @param _prevProps Previous element properties
    */
-  protected didRender(_props: any, _changedProps: any, _prevProps: any) {}
+  protected didRender(_props: object, _changedProps: object, _prevProps: object) {}
 
   /**
    * Provokes the element to asynchronously re-render.
