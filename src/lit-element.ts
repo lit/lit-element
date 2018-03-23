@@ -11,12 +11,29 @@
  * subject to an additional IP rights grant found at
  * http://polymer.github.io/PATENTS.txt
  */
-import { PropertiesMixin } from '../../@polymer/polymer/lib/mixins/properties-mixin.js';
-import { camelToDashCase } from '../../@polymer/polymer/lib/utils/case-map.js';
-import { TemplateResult } from '../../lit-html/lit-html.js';
-import { render } from '../../lit-html/lib/lit-extended.js';
+import {
+  PropertiesChangedConstructor
+} from '@polymer/polymer/lib/mixins/properties-changed.js';
+import {PropertiesMixin} from '@polymer/polymer/lib/mixins/properties-mixin.js';
+import {
+  PropertiesMixinConstructor
+} from '@polymer/polymer/lib/mixins/properties-mixin.js';
+import {camelToDashCase} from '@polymer/polymer/lib/utils/case-map.js';
+import {render} from 'lit-html/lib/lit-extended.js';
+import {TemplateResult} from 'lit-html/lit-html.js';
 
-export { html } from '../../lit-html/lib/lit-extended.js';
+export {
+  PropertiesChangedConstructor
+} from '@polymer/polymer/lib/mixins/properties-changed.js';
+export {
+  PropertiesMixinConstructor
+} from '@polymer/polymer/lib/mixins/properties-mixin.js';
+export {html} from 'lit-html/lib/lit-extended.js';
+
+// This is a hack to get tsc to not complain about unused interfaces and
+// still generate the type declarations properly
+export type __unused = PropertiesChangedConstructor&PropertiesMixinConstructor;
+
 /**
  * Renders attributes to the given element based on the `attrInfo` object where
  * boolean values are added/removed as attributes.
@@ -26,7 +43,7 @@ export { html } from '../../lit-html/lib/lit-extended.js';
 export function renderAttributes(element: HTMLElement, attrInfo: any) {
   for (const a in attrInfo) {
     const v = attrInfo[a] === true ? '' : attrInfo[a];
-    if (v || v === '' || v === 0)  {
+    if (v || v === '' || v === 0) {
       if (element.getAttribute(a) !== v) {
         element.setAttribute(a, v);
       }
@@ -70,26 +87,26 @@ export function styleString(styleInfo: any) {
   return o.join('; ');
 }
 
-export class LitElement extends PropertiesMixin(HTMLElement) {
+export class LitElement extends PropertiesMixin
+(HTMLElement) {
 
   private __renderComplete: Promise<any>|null = null;
   private __resolveRenderComplete: Function|null = null;
   private __isInvalid: Boolean = false;
   private __isChanging: Boolean = false;
+  private _root?: Element|DocumentFragment;
 
-  protected ready() {
+  ready() {
     this._root = this._createRoot();
     super.ready();
   }
 
-
-
   /**
    * Returns an
-   * @returns {Node|ShadowRoot} Returns a node into which to render.
-  */
-  protected _createRoot() {
-    return this.attachShadow({mode: 'open'});
+   * @returns {Element|DocumentFragment} Returns a node into which to render.
+   */
+  protected _createRoot(): Element|DocumentFragment {
+    return this.attachShadow({mode : 'open'});
   }
 
   /**
@@ -101,7 +118,7 @@ export class LitElement extends PropertiesMixin(HTMLElement) {
    * @param {*} _prevProps Previous element properties
    * @returns {boolean} Default implementation always returns true.
    */
-  protected _shouldPropertiesChange(_props: any, _changedProps: any, _prevProps: any) {
+  _shouldPropertiesChange(_props: any, _changedProps: any, _prevProps: any) {
     return true;
   }
 
@@ -112,13 +129,13 @@ export class LitElement extends PropertiesMixin(HTMLElement) {
    * @param {*} changedProps Changing element properties
    * @param {*} prevProps Previous element properties
    */
-  protected _propertiesChanged(props: any, changedProps: any, prevProps: any) {
+  _propertiesChanged(props: any, changedProps: any, prevProps: any) {
     this.__isChanging = true;
     this.__isInvalid = false;
     super._propertiesChanged(props, changedProps, prevProps);
     const result = this.render(props);
-    if (result && this._root) {
-      render(result, this._root);
+    if (result && this._root !== undefined) {
+      render(result, this._root!);
     }
     this.didRender(props, changedProps, prevProps);
     if (this.__resolveRenderComplete) {
@@ -127,10 +144,13 @@ export class LitElement extends PropertiesMixin(HTMLElement) {
     this.__isChanging = false;
   }
 
-  _shouldPropertyChange(property: String, value: any, old: any) {
+  _shouldPropertyChange(property: string, value: any, old: any) {
     const change = super._shouldPropertyChange(property, value, old);
     if (change && this.__isChanging) {
-      console.trace(`Setting propertyes in response to other properties changing considered harmful. Setting '${property}' from '${this._getProperty(property)}' to '${value}'.`);
+      console.trace(
+          `Setting properties in response to other properties changing ` +
+          `considered harmful. Setting '${property}' from ` +
+          `'${this._getProperty(property)}' to '${value}'.`);
     }
     return change;
   }
@@ -157,13 +177,11 @@ export class LitElement extends PropertiesMixin(HTMLElement) {
   /**
    * Provokes the element to asynchronously re-render.
    */
-  invalidate() {
-    this._invalidateProperties();
-  }
+  invalidate() { this._invalidateProperties(); }
 
   /**
    * Override which provides tracking of invalidated state.
-  */
+   */
   _invalidateProperties() {
     this.__isInvalid = true;
     super._invalidateProperties();
@@ -176,10 +194,11 @@ export class LitElement extends PropertiesMixin(HTMLElement) {
     if (!this.__renderComplete) {
       // TODO(sorvell): handle rejected render.
       this.__renderComplete = new Promise((resolve) => {
-        this.__resolveRenderComplete = () => {
-          this.__resolveRenderComplete = this.__renderComplete = null;
-          resolve();
-        }
+        this.__resolveRenderComplete =
+            () => {
+              this.__resolveRenderComplete = this.__renderComplete = null;
+              resolve();
+            }
       });
       if (!this.__isInvalid && this.__resolveRenderComplete) {
         this.__resolveRenderComplete();
@@ -187,5 +206,4 @@ export class LitElement extends PropertiesMixin(HTMLElement) {
     }
     return this.__renderComplete;
   }
-
 }
