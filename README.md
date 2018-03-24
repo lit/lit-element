@@ -92,9 +92,9 @@ import {PropertiesMixin} from '@polymer/polymer/lib/mixins/properties-mixin.js';
 
 Browsers do not yet natively support such imports - they only import modules
 by full URL or absolute or relative path. Yet many tools - like bundlers,
-compilers, and IDEs - don't fully support the types of paths and package layouts
-needed to reference modules from other packages. And most other native modules
-published to npm import using package names as well.
+compilers, and IDEs - don't fully support the types of relative paths across
+packages needed to reference modules from other packages. And most other native
+modules published to npm import using package names as well.
 
 This might leave us at a bit of an impasse, so our solution is to import modules
 using package names, and use tooling that automatically rewrites imports into
@@ -113,7 +113,7 @@ Then serve your project with module specifier rewriting turned on:
 $ polymer serve --npm --module-resolution=node
 ```
 
-You can add `"npm": true` and `"moduleResultion": "node"` to your polymer.json
+You can add `"npm": true` and `"moduleResolution": "node"` to your polymer.json
 file so you can leave off the flags.
 
 Other tools are starting to support this transformation too, like unpkg.com with
