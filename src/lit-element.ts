@@ -19,7 +19,7 @@ import {
   PropertiesMixinConstructor
 } from '@polymer/polymer/lib/mixins/properties-mixin.js';
 import {camelToDashCase} from '@polymer/polymer/lib/utils/case-map.js';
-import {render} from 'lit-html/lib/lit-extended.js';
+import {render} from 'lit-html/lib/shady-render.js';
 import {TemplateResult} from 'lit-html/lit-html.js';
 
 export {
@@ -135,7 +135,7 @@ export class LitElement extends PropertiesMixin
     super._propertiesChanged(props, changedProps, prevProps);
     const result = this.render(props);
     if (result && this._root !== undefined) {
-      render(result, this._root!);
+      render(result, this._root!, this.localName!);
     }
     this.didRender(props, changedProps, prevProps);
     if (this.__resolveRenderComplete) {
