@@ -82,7 +82,7 @@ export class LitElement extends PropertiesMixin(HTMLElement) {
      * @returns {boolean} Default implementation always returns true.
      */
     _shouldPropertiesChange(_props, _changedProps, _prevProps) {
-        return true;
+        return this._shouldRender(_props, _changedProps, _prevProps);
     }
     /**
      * Override which always calls `render` and `didRender` to perform
@@ -95,11 +95,12 @@ export class LitElement extends PropertiesMixin(HTMLElement) {
         this.__isChanging = true;
         this.__isInvalid = false;
         super._propertiesChanged(props, changedProps, prevProps);
-        const result = this.render(props);
+        this._willRender(props, changedProps, prevProps);
+        const result = this._render(props);
         if (result && this._root !== undefined) {
-            render(result, this._root, this.localName);
+            this._applyRender(result, this._root);
         }
-        this.didRender(props, changedProps, prevProps);
+        this._didRender(props, changedProps, prevProps);
         if (this.__resolveRenderComplete) {
             this.__resolveRenderComplete();
         }
@@ -120,8 +121,15 @@ export class LitElement extends PropertiesMixin(HTMLElement) {
      * @param {*} _props Current element properties
      * @returns {TemplateResult} Must return a lit-html TemplateResult.
      */
-    render(_props) {
+    _render(_props) {
         throw new Error('render() not implemented');
+    }
+    _shouldRender(_props, _changedProps, _prevProps) {
+        return true;
+    }
+    _willRender(_props, _changedProps, _prevProps) { }
+    _applyRender(result, _root) {
+        render(result, this._root, this.localName);
     }
     /**
      * Called after element dom has been rendered. Implement to
@@ -130,7 +138,7 @@ export class LitElement extends PropertiesMixin(HTMLElement) {
      * @param _changedProps Changing element properties
      * @param _prevProps Previous element properties
      */
-    didRender(_props, _changedProps, _prevProps) { }
+    _didRender(_props, _changedProps, _prevProps) { }
     /**
      * Provokes the element to asynchronously re-render.
      */
@@ -162,4 +170,24 @@ export class LitElement extends PropertiesMixin(HTMLElement) {
         return this.__renderComplete;
     }
 }
+/*
+// MINIMAL
+export class LitElement extends PropertiesMixin
+(HTMLElement) {
+
+  ready() {
+    super.ready();
+    this.attachShadow({mode: 'open'})
+  }
+
+  _shouldPropertiesChange() { return true; }
+
+  _propertiesChanged(props: any) {
+    const result = this._createTemplateResult(props);
+    render(result, this.shadowRoot);
+  }
+
+  _createTemplateResult(props: any) {}
+}
+*/ 
 //# sourceMappingURL=lit-element.js.map

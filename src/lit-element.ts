@@ -119,7 +119,7 @@ export class LitElement extends PropertiesMixin
    * @returns {boolean} Default implementation always returns true.
    */
   _shouldPropertiesChange(_props: object, _changedProps: object, _prevProps: object) {
-    return true;
+    return this._shouldRender(_props, _changedProps, _prevProps);
   }
 
   /**
@@ -133,11 +133,12 @@ export class LitElement extends PropertiesMixin
     this.__isChanging = true;
     this.__isInvalid = false;
     super._propertiesChanged(props, changedProps, prevProps);
-    const result = this.render(props);
+    this._willRender(props, changedProps, prevProps);
+    const result = this._render(props);
     if (result && this._root !== undefined) {
-      render(result, this._root!, this.localName!);
+      this._applyRender(result, this._root!);
     }
-    this.didRender(props, changedProps, prevProps);
+    this._didRender(props, changedProps, prevProps);
     if (this.__resolveRenderComplete) {
       this.__resolveRenderComplete();
     }
@@ -161,8 +162,18 @@ export class LitElement extends PropertiesMixin
    * @param {*} _props Current element properties
    * @returns {TemplateResult} Must return a lit-html TemplateResult.
    */
-  protected render(_props: object): TemplateResult {
+  protected _render(_props: object): TemplateResult {
     throw new Error('render() not implemented');
+  }
+
+  protected _shouldRender(_props: object, _changedProps: object, _prevProps: object) {
+    return true
+  }
+
+  protected _willRender(_props: object, _changedProps: object, _prevProps: object) {}
+
+  protected _applyRender(result: TemplateResult, _root: Node) {
+    render(result, this._root!, this.localName!);
   }
 
   /**
@@ -172,7 +183,7 @@ export class LitElement extends PropertiesMixin
    * @param _changedProps Changing element properties
    * @param _prevProps Previous element properties
    */
-  protected didRender(_props: object, _changedProps: object, _prevProps: object) {}
+  protected _didRender(_props: object, _changedProps: object, _prevProps: object) {}
 
   /**
    * Provokes the element to asynchronously re-render.
@@ -207,3 +218,25 @@ export class LitElement extends PropertiesMixin
     return this.__renderComplete;
   }
 }
+
+
+/*
+// MINIMAL
+export class LitElement extends PropertiesMixin
+(HTMLElement) {
+
+  ready() {
+    super.ready();
+    this.attachShadow({mode: 'open'})
+  }
+
+  _shouldPropertiesChange() { return true; }
+
+  _propertiesChanged(props: any) {
+    const result = this._createTemplateResult(props);
+    render(result, this.shadowRoot);
+  }
+
+  _createTemplateResult(props: any) {}
+}
+*/

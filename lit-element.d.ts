@@ -86,7 +86,10 @@ export declare class LitElement extends LitElement_base {
      * @param {*} _props Current element properties
      * @returns {TemplateResult} Must return a lit-html TemplateResult.
      */
-    protected render(_props: object): TemplateResult;
+    protected _render(_props: object): TemplateResult;
+    protected _shouldRender(_props: object, _changedProps: object, _prevProps: object): boolean;
+    protected _willRender(_props: object, _changedProps: object, _prevProps: object): void;
+    protected _applyRender(result: TemplateResult, _root: Node): void;
     /**
      * Called after element dom has been rendered. Implement to
      * directly access element DOM.
@@ -94,7 +97,7 @@ export declare class LitElement extends LitElement_base {
      * @param _changedProps Changing element properties
      * @param _prevProps Previous element properties
      */
-    protected didRender(_props: object, _changedProps: object, _prevProps: object): void;
+    protected _didRender(_props: object, _changedProps: object, _prevProps: object): void;
     /**
      * Provokes the element to asynchronously re-render.
      */

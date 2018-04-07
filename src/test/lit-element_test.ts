@@ -17,8 +17,9 @@ import {
   html,
   LitElement,
   renderAttributes,
-  styleString
+  styleString,
 } from '../lit-element.js';
+import {TemplateResult} from 'lit-html/lit-html.js';
 
 /// <reference path="../../node_modules/@types/mocha/index.d.ts" />
 /// <reference path="../../node_modules/@types/chai/index.d.ts" />
@@ -43,7 +44,7 @@ suite('LitElement', () => {
   test('renders initial content into shadowRoot', () => {
     const rendered = `hello world`;
     customElements.define('x-1', class extends LitElement {
-      render() { return html`${rendered}` }
+      _render() { return html`${rendered}` }
     });
     const el = document.createElement('x-1');
     container.appendChild(el);
@@ -54,7 +55,7 @@ suite('LitElement', () => {
   test('can set render target to light dom', () => {
     const rendered = `hello world`;
     customElements.define('x-1a', class extends LitElement {
-      render() { return html`${rendered}` }
+      _render() { return html`${rendered}` }
 
       _createRoot() { return this; }
     });
@@ -67,7 +68,7 @@ suite('LitElement', () => {
   test('renders when created via constructor', () => {
     const rendered = `hello world`;
     class E extends LitElement {
-      render() { return html`${rendered}` }
+      _render() { return html`${rendered}` }
     };
     customElements.define('x-2', E);
     const el = new E();
@@ -84,7 +85,7 @@ suite('LitElement', () => {
 
       foo = 'one';
 
-      render(props: any) { return html`${props.foo}` }
+      _render(props: any) { return html`${props.foo}` }
     }
     customElements.define('x-3', E);
     const el = new E();
@@ -106,7 +107,7 @@ suite('LitElement', () => {
 
       foo = 'one';
 
-      render(props: any) { return html`${props.foo}` }
+      _render(props: any) { return html`${props.foo}` }
     }
     customElements.define('x-4', E);
     const el = new E();
@@ -133,7 +134,7 @@ suite('LitElement', () => {
         super.ready();
       }
 
-      render(props: any) { return html`${props.foo}` }
+      _render(props: any) { return html`${props.foo}` }
     }
     customElements.define('x-5', E);
     const el = new E();
@@ -141,118 +142,6 @@ suite('LitElement', () => {
     assert.ok(el.shadowRoot);
     assert.equal((el.shadowRoot as ShadowRoot).innerHTML, 'changed');
   });
-
-  test('renderComplete waits until next rendering', async () => {
-    class E extends LitElement {
-      static get properties() {
-        return { foo: Number }
-      }
-
-      foo = 0;
-
-      render(props: any) { return html`${props.foo}` }
-    }
-    customElements.define('x-6', E);
-    const el = new E();
-    container.appendChild(el);
-    el.foo++;
-    await el.renderComplete;
-    assert.equal((el.shadowRoot as ShadowRoot).innerHTML, '1');
-    el.foo++;
-    await el.renderComplete;
-    assert.equal((el.shadowRoot as ShadowRoot).innerHTML, '2');
-    el.foo++;
-    await el.renderComplete;
-    assert.equal((el.shadowRoot as ShadowRoot).innerHTML, '3');
-  });
-
-  test('propertiesChanged called after render', async () => {
-    class E extends LitElement {
-      static get properties() {
-        return { foo: Number }
-      }
-
-      info: Array<{text : string}> = [];
-
-      foo = 0;
-
-      render(props: any) { return html`${props.foo}` }
-
-      _propertiesChanged(props: any, changedProps: any, prevProps: any) {
-        super._propertiesChanged(props, changedProps, prevProps);
-        this.info.push({text : this.shadowRoot!.innerHTML});
-      }
-    }
-    customElements.define('x-7', E);
-    const el = new E();
-    container.appendChild(el);
-    assert.equal(el.info.length, 1);
-    assert.equal(el.info[0].text, '0');
-    el.foo = 5;
-    await el.renderComplete;
-    assert.equal(el.info.length, 2);
-    assert.equal(el.info[1].text, '5');
-  });
-
-  test('didRender called after render', async () => {
-    class E extends LitElement {
-      static get properties() {
-        return { foo: Number }
-      }
-
-      info: Array<{text : string}> = [];
-
-      foo = 0;
-
-      render(props: any) { return html`${props.foo}` }
-
-      didRender() { this.info.push({text : this.shadowRoot!.innerHTML}); }
-    }
-    customElements.define('x-8', E);
-    const el = new E();
-    container.appendChild(el);
-    assert.equal(el.info.length, 1);
-    assert.equal(el.info[0].text, '0');
-    el.foo = 5;
-    await el.renderComplete;
-    assert.equal(el.info.length, 2);
-    assert.equal(el.info[1].text, '5');
-  });
-
-  test(
-      'Rendering order is render, propertiesChanged, didRender, renderComplete',
-      async () => {
-        class E extends LitElement {
-          static get properties() {
-            return { foo: Number }
-          }
-
-          info: string[] = [];
-          foo = 0;
-
-          render(props: any) {
-            this.info.push('render');
-            return html`${props.foo}`
-          }
-
-          didRender() { this.info.push('didRender'); }
-
-          _propertiesChanged(props: any, changedProps: any, prevProps: any) {
-            super._propertiesChanged(props, changedProps, prevProps);
-            this.info.push('propertiesChanged');
-          }
-        }
-        customElements.define('x-9', E);
-        const el = new E();
-        container.appendChild(el);
-        assert.deepEqual(el.info,
-                         [ 'render', 'didRender', 'propertiesChanged' ]);
-        el.info = [];
-        el.foo++;
-        await el.renderComplete;
-        assert.deepEqual(el.info,
-                         [ 'render', 'didRender', 'propertiesChanged' ]);
-      });
 
   test('User defined accessor can trigger rendering', async () => {
     class E extends LitElement {
@@ -272,12 +161,12 @@ suite('LitElement', () => {
         this._setProperty('bar', value);
       }
 
-      render(props: any) {
+      _render(props: any) {
         this.info.push('render');
         return html`${props.foo}${props.bar}`
       }
     }
-    customElements.define('x-10', E);
+    customElements.define('x-6', E);
     const el = new E();
     container.appendChild(el);
     el.setAttribute('bar', '20');
@@ -285,6 +174,127 @@ suite('LitElement', () => {
     assert.equal(el.bar, 20);
     assert.equal(el.__bar, 20);
     assert.equal(el.shadowRoot!.innerHTML, '020');
+  });
+
+  test('render attributes, properties, and event listeners via lit-html',
+      function() {
+    class E extends LitElement {
+      _event?: Event;
+
+      _render() {
+        const attr = 'attr';
+        const prop = 'prop';
+        const event = (e: Event) => { this._event = e; };
+        return html
+        `<div attr$="${attr}" prop="${prop}" on-zug="${event}"></div>`;
+      }
+    }
+    customElements.define('x-7', E);
+    const el = new E();
+    container.appendChild(el);
+    const d = el.shadowRoot!.querySelector('div')!;
+    assert.equal(d.getAttribute('attr'), 'attr');
+    assert.equal((d as any).prop, 'prop');
+    const e = new Event('zug');
+    d.dispatchEvent(e);
+    assert.equal(el._event, e);
+  });
+
+  test('renderComplete waits until next rendering', async () => {
+    class E extends LitElement {
+      static get properties() {
+        return { foo: Number }
+      }
+
+      foo = 0;
+
+      _render(props: any) { return html`${props.foo}` }
+    }
+    customElements.define('x-8', E);
+    const el = new E();
+    container.appendChild(el);
+    el.foo++;
+    await el.renderComplete;
+    assert.equal((el.shadowRoot as ShadowRoot).innerHTML, '1');
+    el.foo++;
+    await el.renderComplete;
+    assert.equal((el.shadowRoot as ShadowRoot).innerHTML, '2');
+    el.foo++;
+    await el.renderComplete;
+    assert.equal((el.shadowRoot as ShadowRoot).innerHTML, '3');
+  });
+
+  test('_shouldRender controls rendering', () => {
+    class E extends LitElement {
+      static get properties() {
+        return { foo: Number }
+      }
+
+      renderCount = 0;
+      allowRender = true;
+
+      _render() {
+        this.renderCount++;
+        return html`hi`;
+      }
+
+      _shouldRender() {
+        return this.allowRender;
+      }
+    }
+    customElements.define('x-9', E);
+    const el = new E();
+    container.appendChild(el);
+    assert.equal(el.renderCount, 1);
+    el.invalidate();
+    el._flushProperties();
+    assert.equal(el.renderCount, 2);
+    el.allowRender = false;
+    el.invalidate();
+    el._flushProperties();
+    assert.equal(el.renderCount, 2);
+    el.allowRender = true;
+    el.invalidate();
+    el._flushProperties();
+    assert.equal(el.renderCount, 3);
+  });
+
+  test('render lifecycle order: _shouldRender, _willRender, _render, _applyRender, _didRender', async () => {
+    class E extends LitElement {
+      static get properties() {
+        return { foo: Number }
+      }
+
+      info: Array<string> = [];
+
+      _shouldRender() {
+        this.info.push('_shouldRender');
+        return true;
+      }
+
+      _willRender() {
+        this.info.push('_willRender');
+      }
+
+      _render() {
+        this.info.push('_render');
+        return html`hi`;
+      }
+
+      _applyRender(result: TemplateResult, root: Node) {
+        this.info.push('_applyRender');
+        super._applyRender(result, root);
+      }
+
+      _didRender() {
+        this.info.push('_didRender'); }
+    }
+    customElements.define('x-10', E);
+    const el = new E();
+    container.appendChild(el);
+    await el.renderComplete;
+    assert.deepEqual(el.info, ['_shouldRender', '_willRender', '_render',
+      '_applyRender', '_didRender']);
   });
 
   test('renderAttributes renders attributes on element', async () => {
@@ -296,7 +306,7 @@ suite('LitElement', () => {
       foo = 0;
       bar = true;
 
-      render({foo, bar}: any) {
+      _render({foo, bar}: any) {
         renderAttributes(this, {foo, bar});
         return html`${foo}${bar}`
       }
@@ -323,7 +333,7 @@ suite('LitElement', () => {
       bar = true;
       baz = false;
 
-      render({foo, bar, baz}: any) {
+      _render({foo, bar, baz}: any) {
         return html
         `<div class$="${classString({foo, bar, zonk : baz})}"></div>`;
       }
@@ -356,7 +366,7 @@ suite('LitElement', () => {
       borderTop = ``;
       zug = `0px`;
 
-      render({transitionDuration, borderTop, zug}: any) {
+      _render({transitionDuration, borderTop, zug}: any) {
         return html`<div style$="${styleString({
                                      transitionDuration,
                                      borderTop,
@@ -381,47 +391,23 @@ suite('LitElement', () => {
     assert.equal(d.style.cssText, '');
   });
 
-  test('render attributes, properties, and event listeners via lit-html',
-       function() {
-         class E extends LitElement {
-           _event?: Event;
-
-           render() {
-             const attr = 'attr';
-             const prop = 'prop';
-             const event = (e: Event) => { this._event = e; };
-             return html
-             `<div attr$="${attr}" prop="${prop}" on-zug="${event}"></div>`;
-           }
-         }
-         customElements.define('x-14', E);
-         const el = new E();
-         container.appendChild(el);
-         const d = el.shadowRoot!.querySelector('div')!;
-         assert.equal(d.getAttribute('attr'), 'attr');
-         assert.equal((d as any).prop, 'prop');
-         const e = new Event('zug');
-         d.dispatchEvent(e);
-         assert.equal(el._event, e);
-       });
-
   test('warns when setting properties re-entrantly', async () => {
     class E extends LitElement {
       _toggle: boolean = false;
 
-      render() {
+      _render() {
         this._setProperty('foo', this._toggle ? 'fooToggle' : 'foo');
         return html`hi`;
       }
 
-      didRender() {
+      _didRender() {
         this._setProperty('zonk', this._toggle ? 'zonkToggle' : 'zonk');
       }
     }
     const calls: any[] = [];
     const orig = console.trace;
     console.trace = function() { calls.push(arguments); };
-    customElements.define('x-15', E);
+    customElements.define('x-14', E);
     const el = new E();
     container.appendChild(el);
     assert.equal(calls.length, 2);
