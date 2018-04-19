@@ -15,7 +15,8 @@
     "test": "npm run build && wct -l chrome --npm --module-resolution=node && npm run lint",
     "checksize": "uglifyjs lit-element.js -mc --toplevel | gzip -9 | wc -c",
     "format": "find src test | grep '\\.js$\\|\\.ts$' | xargs clang-format --style=file -i",
-    "lint": "tslint --project ./"
+    "lint": "tslint --project ./",
+    "prepublishOnly": "npm run build"
   },
   "author": "The Polymer Authors",
   "devDependencies": {
