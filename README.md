@@ -42,7 +42,7 @@ See the [source](https://github.com/PolymerLabs/lit-element/blob/master/src/lit-
   on rendered elements or to specifically react to the rendered
   state of the DOM.
 
-  * `_createRoot(templateResult, node)`: Implement to customize where the
+  * `_createRoot()`: Implement to customize where the
   element's template is rendered by returning an element into which to
   render. By default this creates a shadowRoot for the element.
   To render into the element's childNodes, return `this`.
