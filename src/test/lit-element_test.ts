@@ -121,17 +121,19 @@ suite('LitElement', () => {
     });
   });
 
-  test('renders changes made at `ready` time', () => {
+  test('_firstRendered call after first render and not subsequent renders', async () => {
     class E extends LitElement {
       static get properties() {
         return { foo: String }
       }
 
       foo = 'one';
+      firstRenderedCount = 0;
+      domAtFirstRendered = '';
 
-      ready() {
-        this.foo = 'changed';
-        super.ready();
+      _firstRendered() {
+        this.firstRenderedCount++;
+        this.domAtFirstRendered = this.shadowRoot!.innerHTML;
       }
 
       _render(props: any) { return html`${props.foo}` }
@@ -139,8 +141,15 @@ suite('LitElement', () => {
     customElements.define('x-5', E);
     const el = new E();
     container.appendChild(el);
+    assert.equal(el.firstRenderedCount, 1);
     assert.ok(el.shadowRoot);
-    assert.equal((el.shadowRoot as ShadowRoot).innerHTML, 'changed');
+    assert.equal((el.shadowRoot as ShadowRoot).innerHTML, el.domAtFirstRendered);
+    assert.equal(el.foo, el.domAtFirstRendered);
+    el.foo = 'two';
+    await el.renderComplete;
+    assert.equal(el.firstRenderedCount, 1);
+    assert.equal((el.shadowRoot as ShadowRoot).innerHTML, el.foo);
+    assert.notEqual(el.foo, el.domAtFirstRendered);
   });
 
   test('User defined accessor can trigger rendering', async () => {
@@ -259,7 +268,7 @@ suite('LitElement', () => {
     assert.equal(el.renderCount, 3);
   });
 
-  test('render lifecycle order: _shouldRender, _willRender, _render, _applyRender, _didRender', async () => {
+  test('render lifecycle order: _shouldRender, _render, _applyRender, _didRender', async () => {
     class E extends LitElement {
       static get properties() {
         return { foo: Number }
@@ -272,16 +281,12 @@ suite('LitElement', () => {
         return true;
       }
 
-      _willRender() {
-        this.info.push('_willRender');
-      }
-
       _render() {
         this.info.push('_render');
         return html`hi`;
       }
 
-      _applyRender(result: TemplateResult, root: Node) {
+      _applyRender(result: TemplateResult, root: Element|DocumentFragment) {
         this.info.push('_applyRender');
         super._applyRender(result, root);
       }
@@ -293,7 +298,7 @@ suite('LitElement', () => {
     const el = new E();
     container.appendChild(el);
     await el.renderComplete;
-    assert.deepEqual(el.info, ['_shouldRender', '_willRender', '_render',
+    assert.deepEqual(el.info, ['_shouldRender', '_render',
       '_applyRender', '_didRender']);
   });
 

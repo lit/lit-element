@@ -10,7 +10,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
   <title>lit-element demo</title>
-  <script src="../../../@webcomponents/webcomponentsjs/webcomponents-lite.js"></script>
+  <script src="../../node_modules/@webcomponents/webcomponentsjs/webcomponents-lite.js"></script>
 </head>
 <body>
   <script type="module">
@@ -30,10 +30,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         super();
         this.foo = 'foo';
         this.whales = 0;
-      }
-
-      ready() {
-        super.ready();
         this.addEventListener('click', async (e) => {
           this.whales++;
           await this.renderComplete;
@@ -42,9 +38,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         });
       }
 
+      _firstRendered() {
+        console.log('first rendered!');
+      }
+
       _render({foo, bar, whales}) {
         return html`
-
           <style>
             :host {
               display: block;
