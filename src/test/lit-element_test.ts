@@ -233,7 +233,7 @@ suite('LitElement', () => {
     assert.equal((el.shadowRoot as ShadowRoot).innerHTML, '3');
   });
 
-  test('_shouldRender controls rendering', () => {
+  test('_shouldRender controls rendering', async () => {
     class E extends LitElement {
       static get properties() {
         return { foo: Number }
@@ -255,17 +255,59 @@ suite('LitElement', () => {
     const el = new E();
     container.appendChild(el);
     assert.equal(el.renderCount, 1);
-    el.invalidate();
-    el._flushProperties();
+    el.requestRender();
+    await el.renderComplete;
     assert.equal(el.renderCount, 2);
     el.allowRender = false;
-    el.invalidate();
-    el._flushProperties();
+    el.requestRender();
+    await el.renderComplete;
     assert.equal(el.renderCount, 2);
     el.allowRender = true;
-    el.invalidate();
-    el._flushProperties();
+    el.requestRender();
+    await el.renderComplete;
     assert.equal(el.renderCount, 3);
+  });
+
+  test('renderComplete returns true if rendering happened and false otherwise', async () => {
+    class E extends LitElement {
+
+      needsRender = true;
+
+      static get properties() {
+        return { foo: Number }
+      }
+
+      _shouldRender() {
+        return this.needsRender;
+      }
+
+      foo = 0;
+
+      _render(props: any) { return html`${props.foo}` }
+    }
+    customElements.define('x-9.1', E);
+    const el = new E();
+    container.appendChild(el);
+    el.foo++;
+    let rendered;
+    rendered = await el.renderComplete;
+    assert.equal(rendered, true);
+    assert.equal((el.shadowRoot as ShadowRoot).innerHTML, '1');
+    el.needsRender = false;
+    el.foo++;
+    rendered = await el.renderComplete;
+    assert.equal(rendered, false);
+    assert.equal((el.shadowRoot as ShadowRoot).innerHTML, '1');
+    el.needsRender = true;
+    el.foo++;
+    rendered = await el.renderComplete;
+    assert.equal(rendered, true);
+    assert.equal((el.shadowRoot as ShadowRoot).innerHTML, '3');
+    el.requestRender();
+    rendered = await el.renderComplete;
+    assert.equal(rendered, true);
+    rendered = await el.renderComplete;
+    assert.equal(rendered, false);
   });
 
   test('render lifecycle order: _shouldRender, _render, _applyRender, _didRender', async () => {
@@ -417,7 +459,7 @@ suite('LitElement', () => {
     container.appendChild(el);
     assert.equal(calls.length, 2);
     el._toggle = true;
-    el.invalidate();
+    el.requestRender();
     await el.renderComplete;
     assert.equal(calls.length, 4);
     console.trace = orig;

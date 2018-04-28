@@ -137,7 +137,11 @@ export class LitElement extends PropertiesMixin
    * @returns {boolean} Default implementation always returns true.
    */
   _shouldPropertiesChange(_props: object, _changedProps: object, _prevProps: object) {
-    return this._shouldRender(_props, _changedProps, _prevProps);
+    const shouldRender = this._shouldRender(_props, _changedProps, _prevProps);
+    if (!shouldRender && this.__resolveRenderComplete) {
+      this.__resolveRenderComplete(false);
+    }
+    return shouldRender;
   }
 
   /**
@@ -169,7 +173,7 @@ export class LitElement extends PropertiesMixin
     }
     this._didRender(props, changedProps, prevProps);
     if (this.__resolveRenderComplete) {
-      this.__resolveRenderComplete();
+      this.__resolveRenderComplete(true);
     }
   }
 
@@ -227,9 +231,8 @@ export class LitElement extends PropertiesMixin
    * Called after element DOM has been rendered. Implement to
    * directly control rendered DOM. Typically this is not needed as `lit-html`
    * can be used in the `_render` method to set properties, attributes, and
-   * event listeners. This method can, however, be useful to call methods
-   * on rendered elements or to specifically react to the rendered
-   * state of the DOM.
+   * event listeners. However, it is sometimes useful for calling methods on
+   * rendered elements, like calling `focus()` on an element to focus it.
    * @param _props Current element properties
    * @param _changedProps Changing element properties
    * @param _prevProps Previous element properties
@@ -237,10 +240,10 @@ export class LitElement extends PropertiesMixin
   protected _didRender(_props: object, _changedProps: object, _prevProps: object) {}
 
   /**
-   * Call to force the element to asynchronously re-render regardless
+   * Call to request the element to asynchronously re-render regardless
    * of whether or not any property changes are pending.
    */
-  invalidate() { this._invalidateProperties(); }
+  requestRender() { this._invalidateProperties(); }
 
   /**
    * Override which provides tracking of invalidated state.
@@ -252,6 +255,8 @@ export class LitElement extends PropertiesMixin
 
   /**
    * Returns a promise which resolves after the element next renders.
+   * The promise resolves to `true` if the element rendered and `false` if the
+   * element did not render.
    * This is useful when users (e.g. tests) need to react to the rendered state
    * of the element after a change is made.
    * This can also be useful in event handlers if it is desireable to wait
@@ -263,13 +268,13 @@ export class LitElement extends PropertiesMixin
     if (!this.__renderComplete) {
       this.__renderComplete = new Promise((resolve) => {
         this.__resolveRenderComplete =
-            () => {
+            (value: boolean) => {
               this.__resolveRenderComplete = this.__renderComplete = null;
-              resolve();
+              resolve(value);
             }
       });
       if (!this.__isInvalid && this.__resolveRenderComplete) {
-        this.__resolveRenderComplete();
+        Promise.resolve().then(() => this.__resolveRenderComplete!(false));
       }
     }
     return this.__renderComplete;
