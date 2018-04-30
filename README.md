@@ -87,7 +87,7 @@ See the [source](https://github.com/PolymerLabs/lit-element/blob/master/src/lit-
 
   * `renderComplete`: Returns a promise which resolves after the element next renders.
 
-  * `requestRender`: Call to request the element to asynchronously re-render regardless
+  * `_requestRender`: Call to request the element to asynchronously re-render regardless
   of whether or not any property changes are pending.
 
 ## Bigger Example
