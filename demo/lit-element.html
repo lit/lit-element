@@ -10,7 +10,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
   <title>lit-element demo</title>
-  <script src="../node_modules/@webcomponents/webcomponentsjs/webcomponents-lite.js"></script>
+  <script src="../../node_modules/@webcomponents/webcomponentsjs/webcomponents-lite.js"></script>
 </head>
 <body>
   <script type="module">
@@ -30,10 +30,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         super();
         this.foo = 'foo';
         this.whales = 0;
-      }
-
-      ready() {
-        super.ready();
         this.addEventListener('click', async (e) => {
           this.whales++;
           await this.renderComplete;
@@ -42,7 +38,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         });
       }
 
-      render({foo, bar, whales}) {
+      _firstRendered() {
+        console.log('first rendered!');
+      }
+
+      _render({foo, bar, whales}) {
         return html`
           <style>
             :host {
@@ -58,7 +58,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               padding: 8px;
             }
           </style>
-          <h4>Foo: ${foo}, Bar: ${bar}</h4>
+          <h4 on-click="${(e) => console.log(this, e.target)}">Foo: ${foo}, Bar: ${bar}</h4>
           <div class="content">
             <slot></slot>
           </div>
@@ -68,8 +68,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         `;
       }
 
-
-      didRender() {
+      _didRender() {
         console.log('didRender!');
       }
 
