@@ -239,6 +239,7 @@ suite('LitElement', () => {
         return { foo: Number }
       }
 
+      foo = 0;
       renderCount = 0;
       allowRender = true;
 
@@ -255,15 +256,15 @@ suite('LitElement', () => {
     const el = new E();
     container.appendChild(el);
     assert.equal(el.renderCount, 1);
-    el.requestRender();
+    el.foo++;
     await el.renderComplete;
     assert.equal(el.renderCount, 2);
     el.allowRender = false;
-    el.requestRender();
+    el.foo++;
     await el.renderComplete;
     assert.equal(el.renderCount, 2);
     el.allowRender = true;
-    el.requestRender();
+    el.foo++;
     await el.renderComplete;
     assert.equal(el.renderCount, 3);
   });
@@ -279,6 +280,10 @@ suite('LitElement', () => {
 
       _shouldRender() {
         return this.needsRender;
+      }
+
+      requestRender() {
+        this._requestRender();
       }
 
       foo = 0;
@@ -451,6 +456,10 @@ suite('LitElement', () => {
 
       _didRender() {
         this._setProperty('zonk', this._toggle ? 'zonkToggle' : 'zonk');
+      }
+
+      requestRender() {
+        this._requestRender();
       }
     }
     const calls: any[] = [];
