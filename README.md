@@ -62,6 +62,11 @@ See the [source](https://github.com/PolymerLabs/lit-element/blob/master/src/lit-
  These methods generally are called as part of the rendering lifecycle and should
  not be called in user code unless otherwise indicated.
 
+  * `_createRoot()`: Implement to customize where the
+  element's template is rendered by returning an element into which to
+  render. By default this creates a shadowRoot for the element.
+  To render into the element's childNodes, return `this`.
+
   * `_firstRendered()`: Called after the element DOM is rendered for the first time.
 
   * `_shouldRender(props, changedProps, prevProps)`: Implement to control if rendering
@@ -80,16 +85,10 @@ See the [source](https://github.com/PolymerLabs/lit-element/blob/master/src/lit-
   rendered elements, for example focusing an input:
   `this.shadowRoot.querySelector('input').focus()`.
 
-  * `_createRoot()`: Implement to customize where the
-  element's template is rendered by returning an element into which to
-  render. By default this creates a shadowRoot for the element.
-  To render into the element's childNodes, return `this`.
+  * `renderComplete`: Returns a promise which resolves after the element next renders.
 
   * `requestRender`: Call to request the element to asynchronously re-render regardless
   of whether or not any property changes are pending.
-
-  * `renderComplete`: Returns a promise which resolves after the element next renders.
-
 
 ## Bigger Example
 
@@ -98,7 +97,7 @@ import {LitElement, html} from '@polymer/lit-element';
 
 class MyElement extends LitElement {
 
-  // Public property API that triggers re-render (synched with attributes)
+  // Public property API that triggers re-render (synced with attributes)
   static get properties() {
     return {
       foo: String,
