@@ -389,18 +389,18 @@ suite('LitElement', () => {
     const el = new E();
     container.appendChild(el);
     const d = el.shadowRoot!.querySelector('div')!;
-    assert.equal(d.className, 'bar');
+    assert.include(d.className, 'bar');
     el.foo = 1;
     el.baz = true;
     await el.renderComplete;
-    assert.equal(d.className, 'foo bar zonk');
+    assert.include(d.className, 'foo bar zonk');
     el.bar = false;
     await el.renderComplete;
-    assert.equal(d.className, 'foo zonk');
+    assert.include(d.className, 'foo zonk');
     el.foo = 0;
     el.baz = false;
     await el.renderComplete;
-    assert.equal(d.className, '');
+    assert.notInclude(d.className, 'foo bar zonk');
   });
 
   test('styleString updates style', async () => {
@@ -425,12 +425,14 @@ suite('LitElement', () => {
     const el = new E();
     container.appendChild(el);
     const d = el.shadowRoot!.querySelector('div')!;
-    assert.equal(d.style.cssText, 'transition-duration: 0ms; height: 0px;');
+    assert.include(d.style.cssText, 'transition-duration: 0ms;');
+    assert.include(d.style.cssText, 'height: 0px;');
     el.transitionDuration = `100ms`;
     el.borderTop = `5px`;
     await el.renderComplete;
-    assert.equal(d.style.cssText,
-                 'transition-duration: 100ms; border-top: 5px; height: 0px;');
+    assert.include(d.style.cssText, 'transition-duration: 100ms;');
+    assert.include(d.style.cssText, 'height: 0px;');
+    assert.include(d.style.cssText, 'border-top: 5px');
     el.transitionDuration = ``;
     el.borderTop = ``;
     el.zug = ``;
