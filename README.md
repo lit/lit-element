@@ -22,7 +22,7 @@ and renders declaratively using `lit-html`.
     * static elements: ``` html`<div>Hi</div>` ```
     * expression: ``` html`<div>${disabled ? 'Off' : 'On'}</div>` ```
     * attribute: ``` html`<div class$="${color} special"></div>` ```
-    * event handler: ``` html`<div on-click="${(e) => this._clickHandler(e)}"></div>` ```
+    * event handler: ``` html`<button on-click="${(e) => this._clickHandler(e)}"></button>` ```
 
 ## Minimal Example
 
