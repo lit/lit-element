@@ -213,7 +213,7 @@ export class LitElement extends PropertiesMixin
    * @returns {TemplateResult} Must return a lit-html TemplateResult.
    */
   protected _render(_props: object): TemplateResult {
-    throw new Error('render() not implemented');
+    throw new Error('_render() not implemented');
   }
 
   /**
