@@ -24,6 +24,37 @@ and renders declaratively using `lit-html`.
     * attribute: ``` html`<div class$="${color} special"></div>` ```
     * event handler: ``` html`<button on-click="${(e) => this._clickHandler(e)}"></button>` ```
 
+## Getting started
+
+ 1. The easiest way to get started using LitElement is to use one of these online tools:
+
+    * all [supported](#Supported-Browsers) browsers: [stackblitz](https://stackblitz.com/edit/hello-lit-element?file=index.js)
+
+    * browsers with [Javascript Modules](https://caniuse.com/#search=modules): [JSBin](http://jsbin.com/zezilad/edit?html,output),
+ [Glitch](https://glitch.com/edit/#!/hello-lit-element?path=index.html), or
+ [CodePen](https://codepen.io/sorvell/pen/BxZgPN).
+
+ 1. You can also copy [this HTML](https://gist.githubusercontent.com/sorvell/48f4b7be35c8748e8f6db5c66d36ee29/raw/352a3f6e2de37b60071faa3e75c3be96e49b0e92/index.html) into a local file and run it in any browser that supports [Javascript Modules]((https://caniuse.com/#search=modules)).
+
+ 1. For a local development, a development server is required. We recommend installing
+ the polymer-cli to and using its development server as follows.
+
+    * install the cli:
+
+      ```npm i -g polymer-cli@next```
+
+    * run the development server:
+
+      ```polymer serve```
+
+    > LitElement is published on [npm](https://www.npmjs.com/package/@polymer/lit-element) using Javascript Modules.
+    This means it can take advantage of the standard native Javascript module loader available in all current major browsers.
+    >
+    > However, since LitElement uses npm convention to reference dependencies by name, a light transform to rewrite specifiers to URLs is required to get it to run in the browser. The polymer-cli's development server `polymer serve` automatically handles this transform.
+    >
+    > Tools like [WebPack](https://webpack.js.org/) and [Rollup](https://rollupjs.org/) can also be used to serve and/or bundle LitElement.
+
+
 ## Minimal Example
 
   1. Create a class that extends `LitElement`.
@@ -33,22 +64,23 @@ and renders declaratively using `lit-html`.
 current properties (props) to return a `lit-html` template result to render
 into the element. This is the only method that must be implemented by subclasses.
 
-```javascript
-import {LitElement, html} from '@polymer/lit-element';
-
-class MyElement extends LitElement {
-
-  static get properties() { return { mood: String }}
-
-  _render({mood}) {
-    return html`You are ${mood} today!`;
-  }
-}
-
-customElements.define('my-element', MyElement);
-```
-
 ```html
+  <script src="node_modules/@webcomponents/webcomponents-bundle.js"></script>
+  <script type="module">
+    import {LitElement, html} from '@polymer/lit-element';
+
+    class MyElement extends LitElement {
+
+      static get properties() { return { mood: String }}
+
+      _render({mood}) {
+        return html`You are ${mood} today!`;
+      }
+    }
+
+    customElements.define('my-element', MyElement);
+  </script>
+
   <my-element mood="happy"></my-element>
 ```
 
@@ -136,6 +168,11 @@ customElements.define('my-element', MyElement);
 ```html
   <my-element whales="5">hi</my-element>
 ```
+
+## Supported Browsers
+
+The last 2 versions of all modern browsers are supported, including
+Chrome, Safari, Opera, Firefox, Edge. In addition, Internet Explorer 11 is also supported.
 
 ## Known Issues
 * When the Shady DOM polyfill and ShadyCSS shim are used, styles may be [out of order](https://github.com/PolymerLabs/lit-element/issues/34).
