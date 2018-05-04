@@ -16,13 +16,48 @@ and renders declaratively using `lit-html`.
   * **Declarative rendering** LitElement uses `lit-html` to declaratively describe
   how an element should render. Then `lit-html` ensures that updates
   are fast by creating the static DOM once and smartly updating only the parts of
-  the DOM that change. Pass a javascript string to the `html` tag function,
-  describing dynamic parts with standard javascript template expressions:
+  the DOM that change. Pass a JavaScript string to the `html` tag function,
+  describing dynamic parts with standard JavaScript template expressions:
 
     * static elements: ``` html`<div>Hi</div>` ```
     * expression: ``` html`<div>${disabled ? 'Off' : 'On'}</div>` ```
     * attribute: ``` html`<div class$="${color} special"></div>` ```
     * event handler: ``` html`<button on-click="${(e) => this._clickHandler(e)}"></button>` ```
+
+## Getting started
+
+ * The easiest way to try out LitElement is to use one of these online tools:
+
+    * Runs in all [supported](#supported-browsers) browsers: [StackBlitz](https://stackblitz.com/edit/lit-element-example?file=index.js), [Glitch](https://glitch.com/edit/#!/hello-lit-element?path=index.html)
+
+    * Runs in browsers with [JavaScript Modules](https://caniuse.com/#search=modules): [JSBin](http://jsbin.com/zezilad/edit?html,output),
+ [CodePen](https://codepen.io/sorvell/pen/BxZgPN).
+
+ * You can also copy [this HTML file](https://gist.githubusercontent.com/sorvell/48f4b7be35c8748e8f6db5c66d36ee29/raw/2427328cf1ebae5077902a6bff5ddd8db45e83e4/index.html) into a local file and run it in any browser that supports [JavaScript Modules]((https://caniuse.com/#search=modules)).
+
+ * When you're ready to use LitElement in a project, install it via [npm](https://www.npmjs.com/). To run the project in the browser, a module-compatible toolctain is required. We recommend installing the [Polymer CLI](https://github.com/Polymer/polymer-cli) to and using its development server as follows.
+
+    1. Add LitElement to your project:
+
+        ```npm i @polymer/lit-element```
+
+    1. Create an element by extending LitElement and calling `customElements.define` with your class (see the examples below).
+
+    1. Install the Polymer CLI:
+
+        ```npm i -g polymer-cli@next```
+
+    1. Run the development server and open a browser pointing to its URL:
+
+        ```polymer serve```
+
+    > LitElement is published on [npm](https://www.npmjs.com/package/@polymer/lit-element) using JavaScript Modules.
+    This means it can take advantage of the standard native JavaScript module loader available in all current major browsers.
+    >
+    > However, since LitElement uses npm convention to reference dependencies by name, a light transform to rewrite specifiers to URLs is required to get it to run in the browser. The polymer-cli's development server `polymer serve` automatically handles this transform.
+
+    Tools like [WebPack](https://webpack.js.org/) and [Rollup](https://rollupjs.org/) can also be used to serve and/or bundle LitElement.
+
 
 ## Minimal Example
 
@@ -33,22 +68,25 @@ and renders declaratively using `lit-html`.
 current properties (props) to return a `lit-html` template result to render
 into the element. This is the only method that must be implemented by subclasses.
 
-```javascript
-import {LitElement, html} from '@polymer/lit-element';
-
-class MyElement extends LitElement {
-
-  static get properties() { return { mood: String }}
-
-  _render({mood}) {
-    return html`You are ${mood} today!`;
-  }
-}
-
-customElements.define('my-element', MyElement);
-```
-
 ```html
+  <script src="node_modules/@webcomponents/webcomponents-bundle.js"></script>
+  <script type="module">
+    import {LitElement, html} from '@polymer/lit-element';
+
+    class MyElement extends LitElement {
+
+      static get properties() { return { mood: String }}
+
+      _render({mood}) {
+        return html`<style> .mood { color: green; } </style>
+          Web Components are <span class="mood">${mood}</span>!`;
+      }
+
+    }
+
+    customElements.define('my-element', MyElement);
+  </script>
+
   <my-element mood="happy"></my-element>
 ```
 
@@ -92,7 +130,7 @@ See the [source](https://github.com/PolymerLabs/lit-element/blob/master/src/lit-
 
 ## Bigger Example
 
-```javascript
+```JavaScript
 import {LitElement, html} from '@polymer/lit-element';
 
 class MyElement extends LitElement {
@@ -136,6 +174,11 @@ customElements.define('my-element', MyElement);
 ```html
   <my-element whales="5">hi</my-element>
 ```
+
+## Supported Browsers
+
+The last 2 versions of all modern browsers are supported, including
+Chrome, Safari, Opera, Firefox, Edge. In addition, Internet Explorer 11 is also supported.
 
 ## Known Issues
 * When the Shady DOM polyfill and ShadyCSS shim are used, styles may be [out of order](https://github.com/PolymerLabs/lit-element/issues/34).
