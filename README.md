@@ -26,33 +26,38 @@ and renders declaratively using `lit-html`.
 
 ## Getting started
 
- 1. The easiest way to get started using LitElement is to use one of these online tools:
+ * The easiest way to try out LitElement is to use one of these online tools:
 
-    * all [supported](#Supported-Browsers) browsers: [stackblitz](https://stackblitz.com/edit/hello-lit-element?file=index.js)
+    * Runs in all [supported](#supported-browsers) browsers: [StackBlitz](https://stackblitz.com/edit/lit-element-example?file=index.js), [Glitch](https://glitch.com/edit/#!/hello-lit-element?path=index.html)
 
-    * browsers with [Javascript Modules](https://caniuse.com/#search=modules): [JSBin](http://jsbin.com/zezilad/edit?html,output),
- [Glitch](https://glitch.com/edit/#!/hello-lit-element?path=index.html), or
+    * Runs in browsers with [Javascript Modules](https://caniuse.com/#search=modules): [JSBin](http://jsbin.com/zezilad/edit?html,output),
  [CodePen](https://codepen.io/sorvell/pen/BxZgPN).
 
- 1. You can also copy [this HTML](https://gist.githubusercontent.com/sorvell/48f4b7be35c8748e8f6db5c66d36ee29/raw/352a3f6e2de37b60071faa3e75c3be96e49b0e92/index.html) into a local file and run it in any browser that supports [Javascript Modules]((https://caniuse.com/#search=modules)).
+ * You can also copy [this HTML](https://gist.githubusercontent.com/sorvell/48f4b7be35c8748e8f6db5c66d36ee29/raw/352a3f6e2de37b60071faa3e75c3be96e49b0e92/index.html) into a local file and run it in any browser that supports [Javascript Modules]((https://caniuse.com/#search=modules)).
 
- 1. For a local development, a development server is required. We recommend installing
- the polymer-cli to and using its development server as follows.
+ * When you're ready to use LitElement in a project, install it via npm. To run the project in the browser,
+ a development server is required. We recommend installing the Polymer CLI to and using its development server as follows.
 
-    * install the cli:
+    1. Add LitElement to your project:
 
-      ```npm i -g polymer-cli@next```
+        ```npm i @polymer/lit-element```
 
-    * run the development server:
+    1. Create an element by extending LitElement and calling `customElements.define` with your class (see the examples below).
 
-      ```polymer serve```
+    1. Install the Polymer CLI:
+
+        ```npm i -g polymer-cli@next```
+
+    1. Run the development server and open a browser pointing to its URL:
+
+        ```polymer serve```
 
     > LitElement is published on [npm](https://www.npmjs.com/package/@polymer/lit-element) using Javascript Modules.
     This means it can take advantage of the standard native Javascript module loader available in all current major browsers.
     >
     > However, since LitElement uses npm convention to reference dependencies by name, a light transform to rewrite specifiers to URLs is required to get it to run in the browser. The polymer-cli's development server `polymer serve` automatically handles this transform.
-    >
-    > Tools like [WebPack](https://webpack.js.org/) and [Rollup](https://rollupjs.org/) can also be used to serve and/or bundle LitElement.
+
+    Tools like [WebPack](https://webpack.js.org/) and [Rollup](https://rollupjs.org/) can also be used to serve and/or bundle LitElement.
 
 
 ## Minimal Example
