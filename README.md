@@ -16,8 +16,8 @@ and renders declaratively using `lit-html`.
   * **Declarative rendering** LitElement uses `lit-html` to declaratively describe
   how an element should render. Then `lit-html` ensures that updates
   are fast by creating the static DOM once and smartly updating only the parts of
-  the DOM that change. Pass a javascript string to the `html` tag function,
-  describing dynamic parts with standard javascript template expressions:
+  the DOM that change. Pass a JavaScript string to the `html` tag function,
+  describing dynamic parts with standard JavaScript template expressions:
 
     * static elements: ``` html`<div>Hi</div>` ```
     * expression: ``` html`<div>${disabled ? 'Off' : 'On'}</div>` ```
@@ -30,13 +30,12 @@ and renders declaratively using `lit-html`.
 
     * Runs in all [supported](#supported-browsers) browsers: [StackBlitz](https://stackblitz.com/edit/lit-element-example?file=index.js), [Glitch](https://glitch.com/edit/#!/hello-lit-element?path=index.html)
 
-    * Runs in browsers with [Javascript Modules](https://caniuse.com/#search=modules): [JSBin](http://jsbin.com/zezilad/edit?html,output),
+    * Runs in browsers with [JavaScript Modules](https://caniuse.com/#search=modules): [JSBin](http://jsbin.com/zezilad/edit?html,output),
  [CodePen](https://codepen.io/sorvell/pen/BxZgPN).
 
- * You can also copy [this HTML](https://gist.githubusercontent.com/sorvell/48f4b7be35c8748e8f6db5c66d36ee29/raw/352a3f6e2de37b60071faa3e75c3be96e49b0e92/index.html) into a local file and run it in any browser that supports [Javascript Modules]((https://caniuse.com/#search=modules)).
+ * You can also copy [this HTML file](https://gist.githubusercontent.com/sorvell/48f4b7be35c8748e8f6db5c66d36ee29/raw/2427328cf1ebae5077902a6bff5ddd8db45e83e4/index.html) into a local file and run it in any browser that supports [JavaScript Modules]((https://caniuse.com/#search=modules)).
 
- * When you're ready to use LitElement in a project, install it via npm. To run the project in the browser,
- a development server is required. We recommend installing the Polymer CLI to and using its development server as follows.
+ * When you're ready to use LitElement in a project, install it via [npm](https://www.npmjs.com/). To run the project in the browser, a module-compatible toolctain is required. We recommend installing the [Polymer CLI](https://github.com/Polymer/polymer-cli) to and using its development server as follows.
 
     1. Add LitElement to your project:
 
@@ -52,8 +51,8 @@ and renders declaratively using `lit-html`.
 
         ```polymer serve```
 
-    > LitElement is published on [npm](https://www.npmjs.com/package/@polymer/lit-element) using Javascript Modules.
-    This means it can take advantage of the standard native Javascript module loader available in all current major browsers.
+    > LitElement is published on [npm](https://www.npmjs.com/package/@polymer/lit-element) using JavaScript Modules.
+    This means it can take advantage of the standard native JavaScript module loader available in all current major browsers.
     >
     > However, since LitElement uses npm convention to reference dependencies by name, a light transform to rewrite specifiers to URLs is required to get it to run in the browser. The polymer-cli's development server `polymer serve` automatically handles this transform.
 
@@ -79,8 +78,10 @@ into the element. This is the only method that must be implemented by subclasses
       static get properties() { return { mood: String }}
 
       _render({mood}) {
-        return html`You are ${mood} today!`;
+        return html`<style> .mood { color: green; } </style>
+          Web Components are <span class="mood">${mood}</span>!`;
       }
+
     }
 
     customElements.define('my-element', MyElement);
@@ -129,7 +130,7 @@ See the [source](https://github.com/PolymerLabs/lit-element/blob/master/src/lit-
 
 ## Bigger Example
 
-```javascript
+```JavaScript
 import {LitElement, html} from '@polymer/lit-element';
 
 class MyElement extends LitElement {
