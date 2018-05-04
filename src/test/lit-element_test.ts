@@ -12,6 +12,8 @@
  * http://polymer.github.io/PATENTS.txt
  */
 
+import {TemplateResult} from 'lit-html/lit-html.js';
+
 import {
   classString,
   html,
@@ -19,15 +21,12 @@ import {
   renderAttributes,
   styleString,
 } from '../lit-element.js';
-import {TemplateResult} from 'lit-html/lit-html.js';
 
-/// <reference path="../../node_modules/@types/mocha/index.d.ts" />
-/// <reference path="../../node_modules/@types/chai/index.d.ts" />
+import {stripExpressionDelimeters} from './test-helpers.js';
 
 const assert = chai.assert;
 
 suite('LitElement', () => {
-
   let container: HTMLElement;
 
   setup(() => {
@@ -49,7 +48,9 @@ suite('LitElement', () => {
     const el = document.createElement('x-1');
     container.appendChild(el);
     assert.ok(el.shadowRoot);
-    assert.equal((el.shadowRoot as ShadowRoot).innerHTML, rendered);
+    assert.equal(
+        stripExpressionDelimeters((el.shadowRoot as ShadowRoot).innerHTML),
+        rendered);
   });
 
   test('can set render target to light dom', () => {
@@ -62,7 +63,7 @@ suite('LitElement', () => {
     const el = document.createElement('x-1a');
     container.appendChild(el);
     assert.notOk(el.shadowRoot);
-    assert.equal(el.innerHTML, rendered);
+    assert.equal(stripExpressionDelimeters(el.innerHTML), rendered);
   });
 
   test('renders when created via constructor', () => {
@@ -74,7 +75,9 @@ suite('LitElement', () => {
     const el = new E();
     container.appendChild(el);
     assert.ok(el.shadowRoot);
-    assert.equal((el.shadowRoot as ShadowRoot).innerHTML, rendered);
+    assert.equal(
+        stripExpressionDelimeters((el.shadowRoot as ShadowRoot).innerHTML),
+        rendered);
   });
 
   test('renders changes when properties change', (done) => {
@@ -91,10 +94,14 @@ suite('LitElement', () => {
     const el = new E();
     container.appendChild(el);
     assert.ok(el.shadowRoot);
-    assert.equal((el.shadowRoot as ShadowRoot).innerHTML, 'one');
+    assert.equal(
+        stripExpressionDelimeters((el.shadowRoot as ShadowRoot).innerHTML),
+        'one');
     el.foo = 'changed';
     requestAnimationFrame(() => {
-      assert.equal((el.shadowRoot as ShadowRoot).innerHTML, 'changed');
+      assert.equal(
+          stripExpressionDelimeters((el.shadowRoot as ShadowRoot).innerHTML),
+          'changed');
       done();
     });
   });
@@ -113,10 +120,14 @@ suite('LitElement', () => {
     const el = new E();
     container.appendChild(el);
     assert.ok(el.shadowRoot);
-    assert.equal((el.shadowRoot as ShadowRoot).innerHTML, 'one');
+    assert.equal(
+        stripExpressionDelimeters((el.shadowRoot as ShadowRoot).innerHTML),
+        'one');
     el.setAttribute('foo', 'changed');
     requestAnimationFrame(() => {
-      assert.equal((el.shadowRoot as ShadowRoot).innerHTML, 'changed');
+      assert.equal(
+          stripExpressionDelimeters((el.shadowRoot as ShadowRoot).innerHTML),
+          'changed');
       done();
     });
   });
@@ -133,7 +144,7 @@ suite('LitElement', () => {
 
       _firstRendered() {
         this.firstRenderedCount++;
-        this.domAtFirstRendered = this.shadowRoot!.innerHTML;
+        this.domAtFirstRendered = stripExpressionDelimeters(this.shadowRoot!.innerHTML);
       }
 
       _render(props: any) { return html`${props.foo}` }
@@ -143,12 +154,12 @@ suite('LitElement', () => {
     container.appendChild(el);
     assert.equal(el.firstRenderedCount, 1);
     assert.ok(el.shadowRoot);
-    assert.equal((el.shadowRoot as ShadowRoot).innerHTML, el.domAtFirstRendered);
+    assert.equal(stripExpressionDelimeters((el.shadowRoot as ShadowRoot).innerHTML), el.domAtFirstRendered);
     assert.equal(el.foo, el.domAtFirstRendered);
     el.foo = 'two';
     await el.renderComplete;
     assert.equal(el.firstRenderedCount, 1);
-    assert.equal((el.shadowRoot as ShadowRoot).innerHTML, el.foo);
+    assert.equal(stripExpressionDelimeters((el.shadowRoot as ShadowRoot).innerHTML), el.foo);
     assert.notEqual(el.foo, el.domAtFirstRendered);
   });
 
@@ -182,7 +193,7 @@ suite('LitElement', () => {
     await el.renderComplete;
     assert.equal(el.bar, 20);
     assert.equal(el.__bar, 20);
-    assert.equal(el.shadowRoot!.innerHTML, '020');
+    assert.equal(stripExpressionDelimeters(el.shadowRoot!.innerHTML), '020');
   });
 
   test('render attributes, properties, and event listeners via lit-html',
@@ -224,13 +235,13 @@ suite('LitElement', () => {
     container.appendChild(el);
     el.foo++;
     await el.renderComplete;
-    assert.equal((el.shadowRoot as ShadowRoot).innerHTML, '1');
+    assert.equal(stripExpressionDelimeters((el.shadowRoot as ShadowRoot).innerHTML), '1');
     el.foo++;
     await el.renderComplete;
-    assert.equal((el.shadowRoot as ShadowRoot).innerHTML, '2');
+    assert.equal(stripExpressionDelimeters((el.shadowRoot as ShadowRoot).innerHTML), '2');
     el.foo++;
     await el.renderComplete;
-    assert.equal((el.shadowRoot as ShadowRoot).innerHTML, '3');
+    assert.equal(stripExpressionDelimeters((el.shadowRoot as ShadowRoot).innerHTML), '3');
   });
 
   test('_shouldRender controls rendering', async () => {
@@ -297,17 +308,17 @@ suite('LitElement', () => {
     let rendered;
     rendered = await el.renderComplete;
     assert.equal(rendered, true);
-    assert.equal((el.shadowRoot as ShadowRoot).innerHTML, '1');
+    assert.equal(stripExpressionDelimeters((el.shadowRoot as ShadowRoot).innerHTML), '1');
     el.needsRender = false;
     el.foo++;
     rendered = await el.renderComplete;
     assert.equal(rendered, false);
-    assert.equal((el.shadowRoot as ShadowRoot).innerHTML, '1');
+    assert.equal(stripExpressionDelimeters((el.shadowRoot as ShadowRoot).innerHTML), '1');
     el.needsRender = true;
     el.foo++;
     rendered = await el.renderComplete;
     assert.equal(rendered, true);
-    assert.equal((el.shadowRoot as ShadowRoot).innerHTML, '3');
+    assert.equal(stripExpressionDelimeters((el.shadowRoot as ShadowRoot).innerHTML), '3');
     el.requestRender();
     rendered = await el.renderComplete;
     assert.equal(rendered, true);
