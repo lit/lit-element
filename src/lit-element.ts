@@ -40,7 +40,8 @@ export type __unused = PropertiesChangedConstructor&PropertiesMixinConstructor;
  * @param element Element on which to set attributes.
  * @param attrInfo Object describing attributes.
  */
-export function renderAttributes(element: HTMLElement, attrInfo: {[name: string]: any}) {
+export function renderAttributes(element: HTMLElement,
+                                 attrInfo: {[name: string]: any}) {
   for (const a in attrInfo) {
     const v = attrInfo[a] === true ? '' : attrInfo[a];
     if (v || v === '' || v === 0) {
@@ -136,7 +137,8 @@ export class LitElement extends PropertiesMixin
    * @param _prevProps Previous element properties
    * @returns {boolean} Default implementation always returns true.
    */
-  _shouldPropertiesChange(_props: object, _changedProps: object, _prevProps: object) {
+  _shouldPropertiesChange(_props: object, _changedProps: object,
+                          _prevProps: object) {
     const shouldRender = this._shouldRender(_props, _changedProps, _prevProps);
     if (!shouldRender && this.__resolveRenderComplete) {
       this.__resolveRenderComplete(false);
@@ -146,15 +148,16 @@ export class LitElement extends PropertiesMixin
 
   /**
    * Implement to control if rendering should occur when property values
-   * change or `_requestRender` is called. By default, this method always returns
-   * true, but this can be customized as an optimization to avoid rendering work
-   * when changes occur which should not be rendered.
+   * change or `_requestRender` is called. By default, this method always
+   * returns true, but this can be customized as an optimization to avoid
+   * rendering work when changes occur which should not be rendered.
    * @param _props Current element properties
    * @param _changedProps Changing element properties
    * @param _prevProps Previous element properties
    * @returns {boolean} Default implementation always returns true.
    */
-  protected _shouldRender(_props: object, _changedProps: object, _prevProps: object) {
+  protected _shouldRender(_props: object, _changedProps: object,
+                          _prevProps: object) {
     return true;
   }
 
@@ -223,7 +226,8 @@ export class LitElement extends PropertiesMixin
    * @param result {TemplateResult} `lit-html` template result to render
    * @param node {Element|DocumentFragment} node into which to render
    */
-  protected _applyRender(result: TemplateResult, node: Element|DocumentFragment) {
+  protected _applyRender(result: TemplateResult,
+                         node: Element|DocumentFragment) {
     render(result, node, this.localName!);
   }
 
@@ -237,7 +241,8 @@ export class LitElement extends PropertiesMixin
    * @param _changedProps Changing element properties
    * @param _prevProps Previous element properties
    */
-  protected _didRender(_props: object, _changedProps: object, _prevProps: object) {}
+  protected _didRender(_props: object, _changedProps: object,
+                       _prevProps: object) {}
 
   /**
    * Call to request the element to asynchronously re-render regardless

@@ -132,36 +132,42 @@ suite('LitElement', () => {
     });
   });
 
-  test('_firstRendered call after first render and not subsequent renders', async () => {
-    class E extends LitElement {
-      static get properties() {
-        return { foo: String }
-      }
+  test('_firstRendered call after first render and not subsequent renders',
+       async () => {
+         class E extends LitElement {
+           static get properties() {
+             return { foo: String }
+           }
 
-      foo = 'one';
-      firstRenderedCount = 0;
-      domAtFirstRendered = '';
+           foo = 'one';
+           firstRenderedCount = 0;
+           domAtFirstRendered = '';
 
-      _firstRendered() {
-        this.firstRenderedCount++;
-        this.domAtFirstRendered = stripExpressionDelimeters(this.shadowRoot!.innerHTML);
-      }
+           _firstRendered() {
+             this.firstRenderedCount++;
+             this.domAtFirstRendered =
+                 stripExpressionDelimeters(this.shadowRoot!.innerHTML);
+           }
 
-      _render(props: any) { return html`${props.foo}` }
-    }
-    customElements.define('x-5', E);
-    const el = new E();
-    container.appendChild(el);
-    assert.equal(el.firstRenderedCount, 1);
-    assert.ok(el.shadowRoot);
-    assert.equal(stripExpressionDelimeters((el.shadowRoot as ShadowRoot).innerHTML), el.domAtFirstRendered);
-    assert.equal(el.foo, el.domAtFirstRendered);
-    el.foo = 'two';
-    await el.renderComplete;
-    assert.equal(el.firstRenderedCount, 1);
-    assert.equal(stripExpressionDelimeters((el.shadowRoot as ShadowRoot).innerHTML), el.foo);
-    assert.notEqual(el.foo, el.domAtFirstRendered);
-  });
+           _render(props: any) { return html`${props.foo}` }
+         }
+         customElements.define('x-5', E);
+         const el = new E();
+         container.appendChild(el);
+         assert.equal(el.firstRenderedCount, 1);
+         assert.ok(el.shadowRoot);
+         assert.equal(
+             stripExpressionDelimeters((el.shadowRoot as ShadowRoot).innerHTML),
+             el.domAtFirstRendered);
+         assert.equal(el.foo, el.domAtFirstRendered);
+         el.foo = 'two';
+         await el.renderComplete;
+         assert.equal(el.firstRenderedCount, 1);
+         assert.equal(
+             stripExpressionDelimeters((el.shadowRoot as ShadowRoot).innerHTML),
+             el.foo);
+         assert.notEqual(el.foo, el.domAtFirstRendered);
+       });
 
   test('User defined accessor can trigger rendering', async () => {
     class E extends LitElement {
@@ -197,28 +203,28 @@ suite('LitElement', () => {
   });
 
   test('render attributes, properties, and event listeners via lit-html',
-      function() {
-    class E extends LitElement {
-      _event?: Event;
+       function() {
+         class E extends LitElement {
+           _event?: Event;
 
-      _render() {
-        const attr = 'attr';
-        const prop = 'prop';
-        const event = (e: Event) => { this._event = e; };
-        return html
-        `<div attr$="${attr}" prop="${prop}" on-zug="${event}"></div>`;
-      }
-    }
-    customElements.define('x-7', E);
-    const el = new E();
-    container.appendChild(el);
-    const d = el.shadowRoot!.querySelector('div')!;
-    assert.equal(d.getAttribute('attr'), 'attr');
-    assert.equal((d as any).prop, 'prop');
-    const e = new Event('zug');
-    d.dispatchEvent(e);
-    assert.equal(el._event, e);
-  });
+           _render() {
+             const attr = 'attr';
+             const prop = 'prop';
+             const event = (e: Event) => { this._event = e; };
+             return html
+             `<div attr$="${attr}" prop="${prop}" on-zug="${event}"></div>`;
+           }
+         }
+         customElements.define('x-7', E);
+         const el = new E();
+         container.appendChild(el);
+         const d = el.shadowRoot!.querySelector('div')!;
+         assert.equal(d.getAttribute('attr'), 'attr');
+         assert.equal((d as any).prop, 'prop');
+         const e = new Event('zug');
+         d.dispatchEvent(e);
+         assert.equal(el._event, e);
+       });
 
   test('renderComplete waits until next rendering', async () => {
     class E extends LitElement {
@@ -235,13 +241,19 @@ suite('LitElement', () => {
     container.appendChild(el);
     el.foo++;
     await el.renderComplete;
-    assert.equal(stripExpressionDelimeters((el.shadowRoot as ShadowRoot).innerHTML), '1');
+    assert.equal(
+        stripExpressionDelimeters((el.shadowRoot as ShadowRoot).innerHTML),
+        '1');
     el.foo++;
     await el.renderComplete;
-    assert.equal(stripExpressionDelimeters((el.shadowRoot as ShadowRoot).innerHTML), '2');
+    assert.equal(
+        stripExpressionDelimeters((el.shadowRoot as ShadowRoot).innerHTML),
+        '2');
     el.foo++;
     await el.renderComplete;
-    assert.equal(stripExpressionDelimeters((el.shadowRoot as ShadowRoot).innerHTML), '3');
+    assert.equal(
+        stripExpressionDelimeters((el.shadowRoot as ShadowRoot).innerHTML),
+        '3');
   });
 
   test('_shouldRender controls rendering', async () => {
@@ -259,9 +271,7 @@ suite('LitElement', () => {
         return html`hi`;
       }
 
-      _shouldRender() {
-        return this.allowRender;
-      }
+      _shouldRender() { return this.allowRender; }
     }
     customElements.define('x-9', E);
     const el = new E();
@@ -280,85 +290,90 @@ suite('LitElement', () => {
     assert.equal(el.renderCount, 3);
   });
 
-  test('renderComplete returns true if rendering happened and false otherwise', async () => {
-    class E extends LitElement {
+  test('renderComplete returns true if rendering happened and false otherwise',
+       async () => {
+         class E extends LitElement {
 
-      needsRender = true;
+           needsRender = true;
 
-      static get properties() {
-        return { foo: Number }
-      }
+           static get properties() {
+             return { foo: Number }
+           }
 
-      _shouldRender() {
-        return this.needsRender;
-      }
+           _shouldRender() { return this.needsRender; }
 
-      requestRender() {
-        this._requestRender();
-      }
+           requestRender() { this._requestRender(); }
 
-      foo = 0;
+           foo = 0;
 
-      _render(props: any) { return html`${props.foo}` }
-    }
-    customElements.define('x-9.1', E);
-    const el = new E();
-    container.appendChild(el);
-    el.foo++;
-    let rendered;
-    rendered = await el.renderComplete;
-    assert.equal(rendered, true);
-    assert.equal(stripExpressionDelimeters((el.shadowRoot as ShadowRoot).innerHTML), '1');
-    el.needsRender = false;
-    el.foo++;
-    rendered = await el.renderComplete;
-    assert.equal(rendered, false);
-    assert.equal(stripExpressionDelimeters((el.shadowRoot as ShadowRoot).innerHTML), '1');
-    el.needsRender = true;
-    el.foo++;
-    rendered = await el.renderComplete;
-    assert.equal(rendered, true);
-    assert.equal(stripExpressionDelimeters((el.shadowRoot as ShadowRoot).innerHTML), '3');
-    el.requestRender();
-    rendered = await el.renderComplete;
-    assert.equal(rendered, true);
-    rendered = await el.renderComplete;
-    assert.equal(rendered, false);
-  });
+           _render(props: any) { return html`${props.foo}` }
+         }
+         customElements.define('x-9.1', E);
+         const el = new E();
+         container.appendChild(el);
+         el.foo++;
+         let rendered;
+         rendered = await el.renderComplete;
+         assert.equal(rendered, true);
+         assert.equal(
+             stripExpressionDelimeters((el.shadowRoot as ShadowRoot).innerHTML),
+             '1');
+         el.needsRender = false;
+         el.foo++;
+         rendered = await el.renderComplete;
+         assert.equal(rendered, false);
+         assert.equal(
+             stripExpressionDelimeters((el.shadowRoot as ShadowRoot).innerHTML),
+             '1');
+         el.needsRender = true;
+         el.foo++;
+         rendered = await el.renderComplete;
+         assert.equal(rendered, true);
+         assert.equal(
+             stripExpressionDelimeters((el.shadowRoot as ShadowRoot).innerHTML),
+             '3');
+         el.requestRender();
+         rendered = await el.renderComplete;
+         assert.equal(rendered, true);
+         rendered = await el.renderComplete;
+         assert.equal(rendered, false);
+       });
 
-  test('render lifecycle order: _shouldRender, _render, _applyRender, _didRender', async () => {
-    class E extends LitElement {
-      static get properties() {
-        return { foo: Number }
-      }
+  test(
+      'render lifecycle order: _shouldRender, _render, _applyRender, _didRender',
+      async () => {
+        class E extends LitElement {
+          static get properties() {
+            return { foo: Number }
+          }
 
-      info: Array<string> = [];
+          info: Array<string> = [];
 
-      _shouldRender() {
-        this.info.push('_shouldRender');
-        return true;
-      }
+          _shouldRender() {
+            this.info.push('_shouldRender');
+            return true;
+          }
 
-      _render() {
-        this.info.push('_render');
-        return html`hi`;
-      }
+          _render() {
+            this.info.push('_render');
+            return html`hi`;
+          }
 
-      _applyRender(result: TemplateResult, root: Element|DocumentFragment) {
-        this.info.push('_applyRender');
-        super._applyRender(result, root);
-      }
+          _applyRender(result: TemplateResult, root: Element|DocumentFragment) {
+            this.info.push('_applyRender');
+            super._applyRender(result, root);
+          }
 
-      _didRender() {
-        this.info.push('_didRender'); }
-    }
-    customElements.define('x-10', E);
-    const el = new E();
-    container.appendChild(el);
-    await el.renderComplete;
-    assert.deepEqual(el.info, ['_shouldRender', '_render',
-      '_applyRender', '_didRender']);
-  });
+          _didRender() { this.info.push('_didRender'); }
+        }
+        customElements.define('x-10', E);
+        const el = new E();
+        container.appendChild(el);
+        await el.renderComplete;
+        assert.deepEqual(
+            el.info,
+            [ '_shouldRender', '_render', '_applyRender', '_didRender' ]);
+      });
 
   test('renderAttributes renders attributes on element', async () => {
     class E extends LitElement {
@@ -430,11 +445,9 @@ suite('LitElement', () => {
       zug = `0px`;
 
       _render({transitionDuration, borderTop, zug}: any) {
-        return html`<div style$="${styleString({
-                                     transitionDuration,
-                                     borderTop,
-                                     height : zug
-                                   })}"></div>`;
+        return html`<div style$="${
+            styleString(
+                {transitionDuration, borderTop, height : zug})}"></div>`;
       }
     }
     customElements.define('x-13', E);
@@ -469,9 +482,7 @@ suite('LitElement', () => {
         this._setProperty('zonk', this._toggle ? 'zonkToggle' : 'zonk');
       }
 
-      requestRender() {
-        this._requestRender();
-      }
+      requestRender() { this._requestRender(); }
     }
     const calls: any[] = [];
     const orig = console.trace;
@@ -486,5 +497,4 @@ suite('LitElement', () => {
     assert.equal(calls.length, 4);
     console.trace = orig;
   });
-
 });
