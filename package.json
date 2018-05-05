@@ -3,7 +3,7 @@
   "version": "0.5.0",
   "description": "Polymer based lit-html custom element",
   "license": "BSD-3-Clause",
-  "repository": "PolymerLabs/lit-element",
+  "repository": "Polymer/lit-element",
   "main": "lit-element.js",
   "module": "lit-element.js",
   "directories": {
