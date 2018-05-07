@@ -1,7 +1,5 @@
 /node_modules
 /bower_components
-/test/lit*
-/lit-element.js
-/lit-element.d.ts
-/lit-element.js.map
-/test
+*.js
+*.js.map
+*.d.ts
