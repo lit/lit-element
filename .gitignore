@@ -3,3 +3,4 @@
 *.js
 *.js.map
 *.d.ts
+!custom_typings/
