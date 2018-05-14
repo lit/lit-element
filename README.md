@@ -8,7 +8,7 @@
 LitElement uses [lit-html](https://github.com/Polymer/lit-html) to render into the
 element's [Shadow DOM](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_shadow_DOM)
 and [Polymer's](https://github.com/Polymer/polymer)
-[PropertiesMixin](https://github.com/Polymer/polymer/blob/master/lib/mixins/properties-mixin.html)
+[PropertiesMixin](https://github.com/Polymer/polymer/blob/master/lib/mixins/properties-mixin.js)
 to help manage element properties and attributes. LitElement reacts to changes in properties
 and renders declaratively using `lit-html`.
 
