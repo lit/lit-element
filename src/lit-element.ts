@@ -88,8 +88,8 @@ export function styleString(styleInfo: {[name: string]: any}) {
   return o.join('; ');
 }
 
-export class LitElement extends PropertiesMixin
-(HTMLElement) {
+const HTMLElementWithProperties = PropertiesMixin(HTMLElement);
+export class LitElement extends HTMLElementWithProperties {
 
   private __renderComplete: Promise<any>|null = null;
   private __resolveRenderComplete: Function|null = null;
