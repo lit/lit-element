@@ -208,7 +208,7 @@ export class LitElement extends PropertiesMixin
   /**
    * Implement to describe the DOM which should be rendered in the element.
    * Ideally, the implementation is a pure function using only props to describe
-   * the element template. The implementation must a `lit-html` TemplateResult.
+   * the element template. The implementation must return a `lit-html` TemplateResult.
    * By default this template is rendered into the element's shadowRoot.
    * This can be customized by implementing `_createRoot`. This method must be
    * implemented.
