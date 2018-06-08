@@ -28,7 +28,7 @@ export {
 export {
   PropertiesMixinConstructor
 } from '@polymer/polymer/lib/mixins/properties-mixin.js';
-export {html} from 'lit-html/lib/lit-extended.js';
+export {html, svg} from 'lit-html/lib/lit-extended.js';
 
 // This is a hack to get tsc to not complain about unused interfaces and
 // still generate the type declarations properly
