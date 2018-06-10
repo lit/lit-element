@@ -1,6 +1,8 @@
 /node_modules
 /bower_components
 *.js
+!gulpfile.js
 *.js.map
 *.d.ts
 !custom_typings/
+dist/
