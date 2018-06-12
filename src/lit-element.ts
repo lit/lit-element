@@ -19,7 +19,8 @@ import {
   PropertiesMixinConstructor
 } from '@polymer/polymer/lib/mixins/properties-mixin.js';
 import {camelToDashCase} from '@polymer/polymer/lib/utils/case-map.js';
-import {render} from 'lit-html/lib/shady-render.js';
+import {render as shadyRender} from 'lit-html/lib/shady-render.js';
+import {render} from 'lit-html/lib/lit-extended.js';
 import {TemplateResult} from 'lit-html/lit-html.js';
 
 export {
@@ -90,7 +91,7 @@ export function styleString(
   return o.join('; ');
 }
 
-export class LitElement extends PropertiesMixin
+export abstract class LitElementBase extends PropertiesMixin
 (HTMLElement) {
 
   private __renderComplete: Promise<boolean>|null = null;
@@ -120,14 +121,10 @@ export class LitElement extends PropertiesMixin
 
   /**
    * Implement to customize where the element's template is rendered by
-   * returning an element into which to render. By default this creates
-   * a shadowRoot for the element. To render into the element's childNodes,
-   * return `this`.
+   * returning an element into which to render.
    * @returns {Element|DocumentFragment} Returns a node into which to render.
    */
-  protected _createRoot(): Element|DocumentFragment {
-    return this.attachShadow({mode : 'open'});
-  }
+  protected abstract _createRoot(): Element|DocumentFragment;
 
   /**
    * Override which returns the value of `_shouldRender` which users
@@ -229,10 +226,8 @@ export class LitElement extends PropertiesMixin
    * @param result {TemplateResult} `lit-html` template result to render
    * @param node {Element|DocumentFragment} node into which to render
    */
-  protected _applyRender(result: TemplateResult,
-                         node: Element|DocumentFragment) {
-    render(result, node, this.localName!);
-  }
+  protected abstract _applyRender(result: TemplateResult,
+                         node: Element|DocumentFragment): void;
 
   /**
    * Called after element DOM has been rendered. Implement to
@@ -285,5 +280,36 @@ export class LitElement extends PropertiesMixin
       }
     }
     return this.__renderComplete;
+  }
+}
+
+/**
+ * Standard base class for creating reusable web components
+ * with shadow dom dom/style encapsulation.
+ */
+export class LitElement extends LitElementBase {
+  protected _createRoot() {
+    return this.attachShadow({mode : 'open'});
+  }
+
+  protected _applyRender(result: TemplateResult,
+                         node: Element|DocumentFragment) {
+    shadyRender(result, node, this.localName!);
+  }
+}
+
+/**
+ * Base class for creating web components without shadow dom.
+ * Useful for lightweight and flexible code splitting. Be careful
+ * when rendering styles, and when used for shared components.
+ */
+export class LitElementLight extends LitElementBase {
+  protected _createRoot() {
+    return this;
+  }
+
+  protected _applyRender(result: TemplateResult,
+                         node: Element|DocumentFragment) {
+    render(result, node!);
   }
 }

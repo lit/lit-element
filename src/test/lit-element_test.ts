@@ -18,6 +18,7 @@ import {
   classString,
   html,
   LitElement,
+  LitElementLight,
   renderAttributes,
   styleString,
 } from '../lit-element.js';
@@ -51,19 +52,6 @@ suite('LitElement', () => {
     assert.equal(
         stripExpressionDelimeters((el.shadowRoot as ShadowRoot).innerHTML),
         rendered);
-  });
-
-  test('can set render target to light dom', () => {
-    const rendered = `hello world`;
-    customElements.define('x-1a', class extends LitElement {
-      _render() { return html`${rendered}`; }
-
-      _createRoot() { return this; }
-    });
-    const el = document.createElement('x-1a');
-    container.appendChild(el);
-    assert.notOk(el.shadowRoot);
-    assert.equal(stripExpressionDelimeters(el.innerHTML), rendered);
   });
 
   test('renders when created via constructor', () => {
@@ -211,7 +199,7 @@ suite('LitElement', () => {
          const el = new E();
          container.appendChild(el);
          const d = el.shadowRoot!.querySelector('div')! as (HTMLDivElement &
-                                                            {prop : string});
+                                                            {prop: string});
          assert.equal(d.getAttribute('attr'), 'attr');
          assert.equal(d.prop, 'prop');
          const e = new Event('zug');
@@ -485,5 +473,18 @@ suite('LitElement', () => {
     await el.renderComplete;
     assert.equal(calls.length, 4);
     console.trace = orig;
+  });
+
+  suite('LitElementLight', () => {
+    test('renders into to light dom', () => {
+      const rendered = `hello world`;
+      customElements.define('x-1a', class extends LitElementLight {
+        _render() { return html`${rendered}`; }
+      });
+      const el = document.createElement('x-1a');
+      container.appendChild(el);
+      assert.notOk(el.shadowRoot);
+      assert.equal(stripExpressionDelimeters(el.innerHTML), rendered);
+    });
   });
 });
