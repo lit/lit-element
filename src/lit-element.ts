@@ -40,13 +40,13 @@ export type __unused = PropertiesChangedConstructor&PropertiesMixinConstructor;
  * @param element Element on which to set attributes.
  * @param attrInfo Object describing attributes.
  */
-export function renderAttributes(element: HTMLElement,
-                                 attrInfo: {[name: string]: any}) {
+export function renderAttributes(
+    element: HTMLElement, attrInfo: {[name: string]: string|boolean|number}) {
   for (const a in attrInfo) {
     const v = attrInfo[a] === true ? '' : attrInfo[a];
     if (v || v === '' || v === 0) {
       if (element.getAttribute(a) !== v) {
-        element.setAttribute(a, v);
+        element.setAttribute(a, String(v));
       }
     } else if (element.hasAttribute(a)) {
       element.removeAttribute(a);
@@ -60,7 +60,8 @@ export function renderAttributes(element: HTMLElement,
  * class names if the property value is truthy.
  * @param classInfo
  */
-export function classString(classInfo: {[name: string]: any}) {
+export function classString(
+    classInfo: {[name: string]: string|boolean|number}) {
   const o = [];
   for (const name in classInfo) {
     const v = classInfo[name];
@@ -77,7 +78,8 @@ export function classString(classInfo: {[name: string]: any}) {
  * property value. Properties are separated by a semi-colon.
  * @param styleInfo
  */
-export function styleString(styleInfo: {[name: string]: any}) {
+export function styleString(
+    styleInfo: {[name: string]: string|boolean|number}) {
   const o = [];
   for (const name in styleInfo) {
     const v = styleInfo[name];
@@ -91,7 +93,7 @@ export function styleString(styleInfo: {[name: string]: any}) {
 export class LitElement extends PropertiesMixin
 (HTMLElement) {
 
-  private __renderComplete: Promise<any>|null = null;
+  private __renderComplete: Promise<boolean>|null = null;
   private __resolveRenderComplete: Function|null = null;
   private __isInvalid: Boolean = false;
   private __isChanging: Boolean = false;
@@ -138,7 +140,7 @@ export class LitElement extends PropertiesMixin
    * @returns {boolean} Default implementation always returns true.
    */
   _shouldPropertiesChange(_props: object, _changedProps: object,
-                          _prevProps: object) {
+                          _prevProps: object): boolean {
     const shouldRender = this._shouldRender(_props, _changedProps, _prevProps);
     if (!shouldRender && this.__resolveRenderComplete) {
       this.__resolveRenderComplete(false);
@@ -157,7 +159,7 @@ export class LitElement extends PropertiesMixin
    * @returns {boolean} Default implementation always returns true.
    */
   protected _shouldRender(_props: object, _changedProps: object,
-                          _prevProps: object) {
+                          _prevProps: object): boolean {
     return true;
   }
 
@@ -194,6 +196,7 @@ export class LitElement extends PropertiesMixin
    * @param value {any}
    * @param old {any}
    */
+  // tslint:disable-next-line no-any
   _shouldPropertyChange(property: string, value: any, old: any) {
     const change = super._shouldPropertyChange(property, value, old);
     if (change && this.__isChanging) {
@@ -208,10 +211,10 @@ export class LitElement extends PropertiesMixin
   /**
    * Implement to describe the DOM which should be rendered in the element.
    * Ideally, the implementation is a pure function using only props to describe
-   * the element template. The implementation must return a `lit-html` TemplateResult.
-   * By default this template is rendered into the element's shadowRoot.
-   * This can be customized by implementing `_createRoot`. This method must be
-   * implemented.
+   * the element template. The implementation must return a `lit-html`
+   * TemplateResult. By default this template is rendered into the element's
+   * shadowRoot. This can be customized by implementing `_createRoot`. This
+   * method must be implemented.
    * @param {*} _props Current element properties
    * @returns {TemplateResult} Must return a lit-html TemplateResult.
    */
@@ -272,11 +275,10 @@ export class LitElement extends PropertiesMixin
   get renderComplete() {
     if (!this.__renderComplete) {
       this.__renderComplete = new Promise((resolve) => {
-        this.__resolveRenderComplete =
-            (value: boolean) => {
-              this.__resolveRenderComplete = this.__renderComplete = null;
-              resolve(value);
-            }
+        this.__resolveRenderComplete = (value: boolean) => {
+          this.__resolveRenderComplete = this.__renderComplete = null;
+          resolve(value);
+        };
       });
       if (!this.__isInvalid && this.__resolveRenderComplete) {
         Promise.resolve().then(() => this.__resolveRenderComplete!(false));
