@@ -22,7 +22,7 @@
   "devDependencies": {
     "@types/chai": "^4.0.1",
     "@types/mocha": "^5.0.0",
-    "@webcomponents/webcomponentsjs": "^2.0.0",
+    "@webcomponents/webcomponentsjs": "^2.0.1",
     "chai": "^4.0.2",
     "mocha": "^5.0.5",
     "tslint": "^5.7.0",

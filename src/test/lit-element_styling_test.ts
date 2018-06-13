@@ -127,7 +127,7 @@ suite('Styling', () => {
     assert.equal(getComputedStyle(div!).getPropertyValue('border-top-width').trim(), '8px');
   });
 
-  test('elements with custom properties can move between elements', () => {
+  test('elements with custom properties can move between elements', (done) => {
     customElements.define('s-5-inner', class extends LitElement {
       _render() { return html`
         <style>
@@ -165,7 +165,10 @@ suite('Styling', () => {
     const div = inner!.shadowRoot!.querySelector('div');
     assert.equal(getComputedStyle(div!).getPropertyValue('border-top-width').trim(), '2px');
     el2!.shadowRoot!.appendChild(inner!);
-    assert.equal(getComputedStyle(div!).getPropertyValue('border-top-width').trim(), '8px');
+    requestAnimationFrame(() => {
+      assert.equal(getComputedStyle(div!).getPropertyValue('border-top-width').trim(), '8px');
+      done();
+    });
   });
 
   test('@apply renders in nested elements', () => {
