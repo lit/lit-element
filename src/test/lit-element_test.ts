@@ -289,8 +289,6 @@ suite('LitElement', () => {
 
            _shouldRender() { return this.needsRender; }
 
-           requestRender() { this._requestRender(); }
-
            foo = 0;
 
            _render(props: {foo: string}) { return html`${props.foo}`; }
@@ -471,7 +469,6 @@ suite('LitElement', () => {
         this._setProperty('zonk', this._toggle ? 'zonkToggle' : 'zonk');
       }
 
-      requestRender() { this._requestRender(); }
     }
     const calls: IArguments[] = [];
     const orig = console.trace;
