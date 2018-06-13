@@ -12,11 +12,12 @@
   "scripts": {
     "build": "tsc",
     "gen-docs": "typedoc --readme none --mode modules --excludeNotExported --excludePrivate --exclude **/*_test.ts --out ./docs/api .",
-    "test": "npm run build && wct -l chrome --npm --module-resolution=node && npm run lint",
+    "test": "npm run build && wct",
     "checksize": "uglifyjs lit-element.js -mc --toplevel | gzip -9 | wc -c",
     "format": "find src test | grep '\\.js$\\|\\.ts$' | xargs clang-format --style=file -i",
     "lint": "tslint --project ./",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "regen-package-lock": "rm -rf node_modules package-lock.json; npm install"
   },
   "author": "The Polymer Authors",
   "devDependencies": {
