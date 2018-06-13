@@ -163,6 +163,9 @@ class MyElement extends LitElement {
         :host {
           display: block;
         }
+        :host([hidden]) {
+          display: none;
+        }
       </style>
       <h4>Foo: ${foo}</h4>
       <div>whales: ${'🐳'.repeat(whales)}</div>
