@@ -289,8 +289,6 @@ suite('LitElement', () => {
 
            _shouldRender() { return this.needsRender; }
 
-           requestRender() { this._requestRender(); }
-
            foo = 0;
 
            _render(props: {foo: string}) { return html`${props.foo}`; }
@@ -421,38 +419,41 @@ suite('LitElement', () => {
     class E extends LitElement {
       static get properties() {
         return {
-          transitionDuration : Number,
-          borderTop : Boolean,
-          zug : Boolean
+          marginTop : String,
+          paddingTop : String,
+          zug : String
         };
       }
 
-      transitionDuration = `0ms`;
-      borderTop = ``;
+      marginTop = ``;
+      paddingTop = ``;
       zug = `0px`;
 
       _render(
-          {transitionDuration, borderTop, zug}:
-              {transitionDuration: number, borderTop: boolean, zug: boolean}) {
+          {marginTop, paddingTop, zug}:
+              {marginTop: string, paddingTop: string, zug: string}) {
         return html`<div style$="${
             styleString(
-                {transitionDuration, borderTop, height : zug})}"></div>`;
+                {marginTop, paddingTop, height : zug})}"></div>`;
       }
     }
     customElements.define('x-13', E);
     const el = new E();
     container.appendChild(el);
     const d = el.shadowRoot!.querySelector('div')!;
-    assert.include(d.style.cssText, 'transition-duration: 0ms;');
-    assert.include(d.style.cssText, 'height: 0px;');
-    el.transitionDuration = `100ms`;
-    el.borderTop = `5px`;
+    let computed = getComputedStyle(d);
+    assert.equal(computed.getPropertyValue('margin-top'), '0px');
+    assert.equal(computed.getPropertyValue('height'), '0px');
+    el.marginTop = `2px`;
+    el.paddingTop = `5px`;
     await el.renderComplete;
-    assert.include(d.style.cssText, 'transition-duration: 100ms;');
-    assert.include(d.style.cssText, 'height: 0px;');
-    assert.include(d.style.cssText, 'border-top: 5px');
-    el.transitionDuration = ``;
-    el.borderTop = ``;
+    el.offsetWidth;
+    computed = getComputedStyle(d);
+    assert.equal(computed.getPropertyValue('margin-top'), '2px');
+    assert.equal(computed.getPropertyValue('height'), '0px');
+    assert.equal(computed.getPropertyValue('padding-top'), '5px');
+    el.marginTop = ``;
+    el.paddingTop = ``;
     el.zug = ``;
     await el.renderComplete;
     assert.equal(d.style.cssText, '');
@@ -471,7 +472,6 @@ suite('LitElement', () => {
         this._setProperty('zonk', this._toggle ? 'zonkToggle' : 'zonk');
       }
 
-      requestRender() { this._requestRender(); }
     }
     const calls: IArguments[] = [];
     const orig = console.trace;

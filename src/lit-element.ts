@@ -109,6 +109,13 @@ export class LitElement extends PropertiesMixin
     this._firstRendered();
   }
 
+  connectedCallback() {
+    if (window.ShadyCSS && this._root) {
+      window.ShadyCSS.styleElement(this);
+    }
+    super.connectedCallback();
+  }
+
   /**
    * Called after the element DOM is rendered for the first time.
    * Implement to perform tasks after first rendering like capturing a
@@ -133,7 +140,7 @@ export class LitElement extends PropertiesMixin
    * Override which returns the value of `_shouldRender` which users
    * should implement to control rendering. If this method returns false,
    * _propertiesChanged will not be called and no rendering will occur even
-   * if property values change or `_requestRender` is called.
+   * if property values change or `requestRender` is called.
    * @param _props Current element properties
    * @param _changedProps Changing element properties
    * @param _prevProps Previous element properties
@@ -150,7 +157,7 @@ export class LitElement extends PropertiesMixin
 
   /**
    * Implement to control if rendering should occur when property values
-   * change or `_requestRender` is called. By default, this method always
+   * change or `requestRender` is called. By default, this method always
    * returns true, but this can be customized as an optimization to avoid
    * rendering work when changes occur which should not be rendered.
    * @param _props Current element properties
@@ -251,7 +258,7 @@ export class LitElement extends PropertiesMixin
    * Call to request the element to asynchronously re-render regardless
    * of whether or not any property changes are pending.
    */
-  protected _requestRender() { this._invalidateProperties(); }
+  requestRender() { this._invalidateProperties(); }
 
   /**
    * Override which provides tracking of invalidated state.
