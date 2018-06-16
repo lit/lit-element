@@ -15,7 +15,7 @@
     "test": "npm run build && wct",
     "checksize": "uglifyjs lit-element.js -mc --toplevel | gzip -9 | wc -c",
     "format": "find src test | grep '\\.js$\\|\\.ts$' | xargs clang-format --style=file -i",
-    "lint": "tslint --project ./ && gulp closure",
+    "lint": "npm run build && tslint --project ./ && gulp closure",
     "prepublishOnly": "npm run build",
     "regen-package-lock": "rm -rf node_modules package-lock.json; npm install"
   },
