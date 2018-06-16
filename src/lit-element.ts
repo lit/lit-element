@@ -40,13 +40,13 @@ export type __unused = PropertiesChangedConstructor&PropertiesMixinConstructor;
  * @param element Element on which to set attributes.
  * @param attrInfo Object describing attributes.
  */
-export function renderAttributes(element: HTMLElement,
-                                 attrInfo: {[name: string]: any}) {
+export function renderAttributes(
+    element: HTMLElement, attrInfo: {[name: string]: string|boolean|number}) {
   for (const a in attrInfo) {
     const v = attrInfo[a] === true ? '' : attrInfo[a];
     if (v || v === '' || v === 0) {
       if (element.getAttribute(a) !== v) {
-        element.setAttribute(a, v);
+        element.setAttribute(a, String(v));
       }
     } else if (element.hasAttribute(a)) {
       element.removeAttribute(a);
@@ -60,7 +60,8 @@ export function renderAttributes(element: HTMLElement,
  * class names if the property value is truthy.
  * @param classInfo
  */
-export function classString(classInfo: {[name: string]: any}) {
+export function classString(
+    classInfo: {[name: string]: string|boolean|number}) {
   const o = [];
   for (const name in classInfo) {
     const v = classInfo[name];
@@ -77,7 +78,8 @@ export function classString(classInfo: {[name: string]: any}) {
  * property value. Properties are separated by a semi-colon.
  * @param styleInfo
  */
-export function styleString(styleInfo: {[name: string]: any}) {
+export function styleString(
+    styleInfo: {[name: string]: string|boolean|number}) {
   const o = [];
   for (const name in styleInfo) {
     const v = styleInfo[name];
@@ -91,7 +93,7 @@ export function styleString(styleInfo: {[name: string]: any}) {
 export class LitElement extends PropertiesMixin
 (HTMLElement) {
 
-  private __renderComplete: Promise<any>|null = null;
+  private __renderComplete: Promise<boolean>|null = null;
   private __resolveRenderComplete: Function|null = null;
   private __isInvalid: Boolean = false;
   private __isChanging: Boolean = false;
@@ -105,6 +107,13 @@ export class LitElement extends PropertiesMixin
     this._root = this._createRoot();
     super.ready();
     this._firstRendered();
+  }
+
+  connectedCallback() {
+    if (window.ShadyCSS && this._root) {
+      window.ShadyCSS.styleElement(this);
+    }
+    super.connectedCallback();
   }
 
   /**
@@ -131,14 +140,14 @@ export class LitElement extends PropertiesMixin
    * Override which returns the value of `_shouldRender` which users
    * should implement to control rendering. If this method returns false,
    * _propertiesChanged will not be called and no rendering will occur even
-   * if property values change or `_requestRender` is called.
+   * if property values change or `requestRender` is called.
    * @param _props Current element properties
    * @param _changedProps Changing element properties
    * @param _prevProps Previous element properties
    * @returns {boolean} Default implementation always returns true.
    */
   _shouldPropertiesChange(_props: object, _changedProps: object,
-                          _prevProps: object) {
+                          _prevProps: object): boolean {
     const shouldRender = this._shouldRender(_props, _changedProps, _prevProps);
     if (!shouldRender && this.__resolveRenderComplete) {
       this.__resolveRenderComplete(false);
@@ -148,7 +157,7 @@ export class LitElement extends PropertiesMixin
 
   /**
    * Implement to control if rendering should occur when property values
-   * change or `_requestRender` is called. By default, this method always
+   * change or `requestRender` is called. By default, this method always
    * returns true, but this can be customized as an optimization to avoid
    * rendering work when changes occur which should not be rendered.
    * @param _props Current element properties
@@ -157,7 +166,7 @@ export class LitElement extends PropertiesMixin
    * @returns {boolean} Default implementation always returns true.
    */
   protected _shouldRender(_props: object, _changedProps: object,
-                          _prevProps: object) {
+                          _prevProps: object): boolean {
     return true;
   }
 
@@ -194,6 +203,7 @@ export class LitElement extends PropertiesMixin
    * @param value {any}
    * @param old {any}
    */
+  // tslint:disable-next-line no-any
   _shouldPropertyChange(property: string, value: any, old: any) {
     const change = super._shouldPropertyChange(property, value, old);
     if (change && this.__isChanging) {
@@ -208,10 +218,10 @@ export class LitElement extends PropertiesMixin
   /**
    * Implement to describe the DOM which should be rendered in the element.
    * Ideally, the implementation is a pure function using only props to describe
-   * the element template. The implementation must return a `lit-html` TemplateResult.
-   * By default this template is rendered into the element's shadowRoot.
-   * This can be customized by implementing `_createRoot`. This method must be
-   * implemented.
+   * the element template. The implementation must return a `lit-html`
+   * TemplateResult. By default this template is rendered into the element's
+   * shadowRoot. This can be customized by implementing `_createRoot`. This
+   * method must be implemented.
    * @param {*} _props Current element properties
    * @returns {TemplateResult} Must return a lit-html TemplateResult.
    */
@@ -248,7 +258,7 @@ export class LitElement extends PropertiesMixin
    * Call to request the element to asynchronously re-render regardless
    * of whether or not any property changes are pending.
    */
-  protected _requestRender() { this._invalidateProperties(); }
+  requestRender() { this._invalidateProperties(); }
 
   /**
    * Override which provides tracking of invalidated state.
@@ -272,11 +282,10 @@ export class LitElement extends PropertiesMixin
   get renderComplete() {
     if (!this.__renderComplete) {
       this.__renderComplete = new Promise((resolve) => {
-        this.__resolveRenderComplete =
-            (value: boolean) => {
-              this.__resolveRenderComplete = this.__renderComplete = null;
-              resolve(value);
-            }
+        this.__resolveRenderComplete = (value: boolean) => {
+          this.__resolveRenderComplete = this.__renderComplete = null;
+          resolve(value);
+        };
       });
       if (!this.__isInvalid && this.__resolveRenderComplete) {
         Promise.resolve().then(() => this.__resolveRenderComplete!(false));

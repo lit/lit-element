@@ -43,7 +43,7 @@ suite('LitElement', () => {
   test('renders initial content into shadowRoot', () => {
     const rendered = `hello world`;
     customElements.define('x-1', class extends LitElement {
-      _render() { return html`${rendered}` }
+      _render() { return html`${rendered}`; }
     });
     const el = document.createElement('x-1');
     container.appendChild(el);
@@ -56,7 +56,7 @@ suite('LitElement', () => {
   test('can set render target to light dom', () => {
     const rendered = `hello world`;
     customElements.define('x-1a', class extends LitElement {
-      _render() { return html`${rendered}` }
+      _render() { return html`${rendered}`; }
 
       _createRoot() { return this; }
     });
@@ -69,8 +69,8 @@ suite('LitElement', () => {
   test('renders when created via constructor', () => {
     const rendered = `hello world`;
     class E extends LitElement {
-      _render() { return html`${rendered}` }
-    };
+      _render() { return html`${rendered}`; }
+    }
     customElements.define('x-2', E);
     const el = new E();
     container.appendChild(el);
@@ -82,13 +82,11 @@ suite('LitElement', () => {
 
   test('renders changes when properties change', (done) => {
     class E extends LitElement {
-      static get properties() {
-        return { foo: String }
-      }
+      static get properties() { return {foo : String}; }
 
       foo = 'one';
 
-      _render(props: any) { return html`${props.foo}` }
+      _render(props: {foo: string}) { return html`${props.foo}`; }
     }
     customElements.define('x-3', E);
     const el = new E();
@@ -108,13 +106,11 @@ suite('LitElement', () => {
 
   test('renders changes when attributes change', (done) => {
     class E extends LitElement {
-      static get properties() {
-        return { foo: String }
-      }
+      static get properties() { return {foo : String}; }
 
       foo = 'one';
 
-      _render(props: any) { return html`${props.foo}` }
+      _render(props: {foo: string}) { return html`${props.foo}`; }
     }
     customElements.define('x-4', E);
     const el = new E();
@@ -135,9 +131,7 @@ suite('LitElement', () => {
   test('_firstRendered call after first render and not subsequent renders',
        async () => {
          class E extends LitElement {
-           static get properties() {
-             return { foo: String }
-           }
+           static get properties() { return {foo : String}; }
 
            foo = 'one';
            firstRenderedCount = 0;
@@ -149,7 +143,7 @@ suite('LitElement', () => {
                  stripExpressionDelimeters(this.shadowRoot!.innerHTML);
            }
 
-           _render(props: any) { return html`${props.foo}` }
+           _render(props: {foo: string}) { return html`${props.foo}`; }
          }
          customElements.define('x-5', E);
          const el = new E();
@@ -171,13 +165,11 @@ suite('LitElement', () => {
 
   test('User defined accessor can trigger rendering', async () => {
     class E extends LitElement {
-      __bar: any;
+      __bar?: number;
 
-      static get properties() {
-        return { foo: Number, bar: Number }
-      }
+      static get properties() { return {foo : Number, bar : Number}; }
 
-      info: any[] = [];
+      info: string[] = [];
       foo = 0;
 
       get bar() { return this._getProperty('bar'); }
@@ -187,9 +179,9 @@ suite('LitElement', () => {
         this._setProperty('bar', value);
       }
 
-      _render(props: any) {
+      _render(props: {foo: string, bar: number}) {
         this.info.push('render');
-        return html`${props.foo}${props.bar}`
+        return html`${props.foo}${props.bar}`;
       }
     }
     customElements.define('x-6', E);
@@ -218,9 +210,10 @@ suite('LitElement', () => {
          customElements.define('x-7', E);
          const el = new E();
          container.appendChild(el);
-         const d = el.shadowRoot!.querySelector('div')!;
+         const d = el.shadowRoot!.querySelector('div')! as (HTMLDivElement &
+                                                            {prop: string});
          assert.equal(d.getAttribute('attr'), 'attr');
-         assert.equal((d as any).prop, 'prop');
+         assert.equal(d.prop, 'prop');
          const e = new Event('zug');
          d.dispatchEvent(e);
          assert.equal(el._event, e);
@@ -228,13 +221,11 @@ suite('LitElement', () => {
 
   test('renderComplete waits until next rendering', async () => {
     class E extends LitElement {
-      static get properties() {
-        return { foo: Number }
-      }
+      static get properties() { return {foo : Number}; }
 
       foo = 0;
 
-      _render(props: any) { return html`${props.foo}` }
+      _render(props: {foo: string}) { return html`${props.foo}`; }
     }
     customElements.define('x-8', E);
     const el = new E();
@@ -258,9 +249,7 @@ suite('LitElement', () => {
 
   test('_shouldRender controls rendering', async () => {
     class E extends LitElement {
-      static get properties() {
-        return { foo: Number }
-      }
+      static get properties() { return {foo : Number}; }
 
       foo = 0;
       renderCount = 0;
@@ -296,17 +285,13 @@ suite('LitElement', () => {
 
            needsRender = true;
 
-           static get properties() {
-             return { foo: Number }
-           }
+           static get properties() { return {foo : Number}; }
 
            _shouldRender() { return this.needsRender; }
 
-           requestRender() { this._requestRender(); }
-
            foo = 0;
 
-           _render(props: any) { return html`${props.foo}` }
+           _render(props: {foo: string}) { return html`${props.foo}`; }
          }
          customElements.define('x-9.1', E);
          const el = new E();
@@ -343,9 +328,7 @@ suite('LitElement', () => {
       'render lifecycle order: _shouldRender, _render, _applyRender, _didRender',
       async () => {
         class E extends LitElement {
-          static get properties() {
-            return { foo: Number }
-          }
+          static get properties() { return {foo : Number}; }
 
           info: Array<string> = [];
 
@@ -377,16 +360,14 @@ suite('LitElement', () => {
 
   test('renderAttributes renders attributes on element', async () => {
     class E extends LitElement {
-      static get properties() {
-        return { foo: Number, bar: Boolean }
-      }
+      static get properties() { return {foo : Number, bar : Boolean}; }
 
       foo = 0;
       bar = true;
 
-      _render({foo, bar}: any) {
+      _render({foo, bar}: {foo: number, bar: boolean}) {
         renderAttributes(this, {foo, bar});
-        return html`${foo}${bar}`
+        return html`${foo}${bar}`;
       }
     }
     customElements.define('x-11', E);
@@ -404,14 +385,14 @@ suite('LitElement', () => {
   test('classString updates classes', async () => {
     class E extends LitElement {
       static get properties() {
-        return { foo: Number, bar: Boolean, baz: Boolean }
+        return {foo : Number, bar : Boolean, baz : Boolean};
       }
 
       foo = 0;
       bar = true;
       baz = false;
 
-      _render({foo, bar, baz}: any) {
+      _render({foo, bar, baz}: {foo: number, bar: boolean, baz: boolean}) {
         return html
         `<div class$="${classString({foo, bar, zonk : baz})}"></div>`;
       }
@@ -437,33 +418,42 @@ suite('LitElement', () => {
   test('styleString updates style', async () => {
     class E extends LitElement {
       static get properties() {
-        return { transitionDuration: Number, borderTop: Boolean, zug: Boolean }
+        return {
+          marginTop : String,
+          paddingTop : String,
+          zug : String
+        };
       }
 
-      transitionDuration = `0ms`;
-      borderTop = ``;
+      marginTop = ``;
+      paddingTop = ``;
       zug = `0px`;
 
-      _render({transitionDuration, borderTop, zug}: any) {
+      _render(
+          {marginTop, paddingTop, zug}:
+              {marginTop: string, paddingTop: string, zug: string}) {
         return html`<div style$="${
             styleString(
-                {transitionDuration, borderTop, height : zug})}"></div>`;
+                {marginTop, paddingTop, height : zug})}"></div>`;
       }
     }
     customElements.define('x-13', E);
     const el = new E();
     container.appendChild(el);
     const d = el.shadowRoot!.querySelector('div')!;
-    assert.include(d.style.cssText, 'transition-duration: 0ms;');
-    assert.include(d.style.cssText, 'height: 0px;');
-    el.transitionDuration = `100ms`;
-    el.borderTop = `5px`;
+    let computed = getComputedStyle(d);
+    assert.equal(computed.getPropertyValue('margin-top'), '0px');
+    assert.equal(computed.getPropertyValue('height'), '0px');
+    el.marginTop = `2px`;
+    el.paddingTop = `5px`;
     await el.renderComplete;
-    assert.include(d.style.cssText, 'transition-duration: 100ms;');
-    assert.include(d.style.cssText, 'height: 0px;');
-    assert.include(d.style.cssText, 'border-top: 5px');
-    el.transitionDuration = ``;
-    el.borderTop = ``;
+    el.offsetWidth;
+    computed = getComputedStyle(d);
+    assert.equal(computed.getPropertyValue('margin-top'), '2px');
+    assert.equal(computed.getPropertyValue('height'), '0px');
+    assert.equal(computed.getPropertyValue('padding-top'), '5px');
+    el.marginTop = ``;
+    el.paddingTop = ``;
     el.zug = ``;
     await el.renderComplete;
     assert.equal(d.style.cssText, '');
@@ -482,9 +472,8 @@ suite('LitElement', () => {
         this._setProperty('zonk', this._toggle ? 'zonkToggle' : 'zonk');
       }
 
-      requestRender() { this._requestRender(); }
     }
-    const calls: any[] = [];
+    const calls: IArguments[] = [];
     const orig = console.trace;
     console.trace = function() { calls.push(arguments); };
     customElements.define('x-14', E);

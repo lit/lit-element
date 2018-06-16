@@ -1,6 +1,6 @@
 {
   "name": "@polymer/lit-element",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "Polymer based lit-html custom element",
   "license": "BSD-3-Clause",
   "repository": "Polymer/lit-element",
@@ -12,17 +12,18 @@
   "scripts": {
     "build": "tsc",
     "gen-docs": "typedoc --readme none --mode modules --excludeNotExported --excludePrivate --exclude **/*_test.ts --out ./docs/api .",
-    "test": "npm run build && wct -l chrome --npm --module-resolution=node && npm run lint",
+    "test": "npm run build && wct",
     "checksize": "uglifyjs lit-element.js -mc --toplevel | gzip -9 | wc -c",
     "format": "find src test | grep '\\.js$\\|\\.ts$' | xargs clang-format --style=file -i",
     "lint": "tslint --project ./ && gulp closure",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "regen-package-lock": "rm -rf node_modules package-lock.json; npm install"
   },
   "author": "The Polymer Authors",
   "devDependencies": {
     "@types/chai": "^4.0.1",
     "@types/mocha": "^5.0.0",
-    "@webcomponents/webcomponentsjs": "^2.0.0",
+    "@webcomponents/webcomponentsjs": "^2.0.2",
     "chai": "^4.0.2",
     "google-closure-compiler": "^20180506.0.0",
     "gulp": "^4.0.0",
@@ -39,7 +40,7 @@
   "typings": "lit-element.d.ts",
   "dependencies": {
     "@polymer/polymer": "^3.0.2",
-    "lit-html": "^0.10.0"
+    "lit-html": "^0.10.2"
   },
   "publishConfig": {
     "access": "public"
