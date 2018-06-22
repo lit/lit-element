@@ -179,7 +179,7 @@ suite('LitElement', () => {
         this._setProperty('bar', value);
       }
 
-      _render(props: {foo: string, bar: number}) {
+      _render(props: {foo: number, bar: number}) {
         this.info.push('render');
         return html`${props.foo}${props.bar}`;
       }
@@ -225,7 +225,7 @@ suite('LitElement', () => {
 
       foo = 0;
 
-      _render(props: {foo: string}) { return html`${props.foo}`; }
+      _render(props: {foo: number}) { return html`${props.foo}`; }
     }
     customElements.define('x-8', E);
     const el = new E();
@@ -291,7 +291,7 @@ suite('LitElement', () => {
 
            foo = 0;
 
-           _render(props: {foo: string}) { return html`${props.foo}`; }
+           _render(props: {foo: number}) { return html`${props.foo}`; }
          }
          customElements.define('x-9.1', E);
          const el = new E();
