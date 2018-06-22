@@ -211,7 +211,7 @@ suite('LitElement', () => {
          const el = new E();
          container.appendChild(el);
          const d = el.shadowRoot!.querySelector('div')! as (HTMLDivElement &
-                                                            {prop: string});
+                                                            {prop : string});
          assert.equal(d.getAttribute('attr'), 'attr');
          assert.equal(d.prop, 'prop');
          const e = new Event('zug');
@@ -418,23 +418,17 @@ suite('LitElement', () => {
   test('styleString updates style', async () => {
     class E extends LitElement {
       static get properties() {
-        return {
-          marginTop : String,
-          paddingTop : String,
-          zug : String
-        };
+        return {marginTop : String, paddingTop : String, zug : String};
       }
 
       marginTop = ``;
       paddingTop = ``;
       zug = `0px`;
 
-      _render(
-          {marginTop, paddingTop, zug}:
-              {marginTop: string, paddingTop: string, zug: string}) {
+      _render({marginTop, paddingTop, zug}:
+                  {marginTop: string, paddingTop: string, zug: string}) {
         return html`<div style$="${
-            styleString(
-                {marginTop, paddingTop, height : zug})}"></div>`;
+            styleString({marginTop, paddingTop, height : zug})}"></div>`;
       }
     }
     customElements.define('x-13', E);
@@ -471,7 +465,6 @@ suite('LitElement', () => {
       _didRender() {
         this._setProperty('zonk', this._toggle ? 'zonkToggle' : 'zonk');
       }
-
     }
     const calls: IArguments[] = [];
     const orig = console.trace;

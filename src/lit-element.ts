@@ -146,8 +146,8 @@ export class LitElement extends PropertiesMixin
    * @param _prevProps Previous element properties
    * @returns {boolean} Default implementation always returns true.
    */
-  _shouldPropertiesChange(_props: object, _changedProps: object,
-                          _prevProps: object): boolean {
+  _shouldPropertiesChange(_props: this, _changedProps: Partial<this>,
+                          _prevProps: this): boolean {
     const shouldRender = this._shouldRender(_props, _changedProps, _prevProps);
     if (!shouldRender && this.__resolveRenderComplete) {
       this.__resolveRenderComplete(false);
@@ -165,8 +165,8 @@ export class LitElement extends PropertiesMixin
    * @param _prevProps Previous element properties
    * @returns {boolean} Default implementation always returns true.
    */
-  protected _shouldRender(_props: object, _changedProps: object,
-                          _prevProps: object): boolean {
+  protected _shouldRender(_props: this, _changedProps: Partial<this>,
+                          _prevProps: this): boolean {
     return true;
   }
 
@@ -177,7 +177,8 @@ export class LitElement extends PropertiesMixin
    * @param changedProps Changing element properties
    * @param prevProps Previous element properties
    */
-  _propertiesChanged(props: object, changedProps: object, prevProps: object) {
+  _propertiesChanged(props: this, changedProps: Partial<this>,
+                     prevProps: this) {
     super._propertiesChanged(props, changedProps, prevProps);
     const result = this._render(props);
     if (result && this._root !== undefined) {
@@ -225,7 +226,7 @@ export class LitElement extends PropertiesMixin
    * @param {*} _props Current element properties
    * @returns {TemplateResult} Must return a lit-html TemplateResult.
    */
-  protected _render(_props: object): TemplateResult {
+  protected _render(_props: this): TemplateResult {
     throw new Error('_render() not implemented');
   }
 
@@ -251,8 +252,8 @@ export class LitElement extends PropertiesMixin
    * @param _changedProps Changing element properties
    * @param _prevProps Previous element properties
    */
-  protected _didRender(_props: object, _changedProps: object,
-                       _prevProps: object) {}
+  protected _didRender(_props: this, _changedProps: Partial<this>,
+                       _prevProps: this) {}
 
   /**
    * Call to request the element to asynchronously re-render regardless
