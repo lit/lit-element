@@ -190,5 +190,4 @@ The last 2 versions of all modern browsers are supported, including
 Chrome, Safari, Opera, Firefox, Edge. In addition, Internet Explorer 11 is also supported.
 
 ## Known Issues
-* When the Shady DOM polyfill and ShadyCSS shim are used, styles may be [out of order](https://github.com/PolymerLabs/lit-element/issues/34).
-* Rendering is not supported in IE11 due to a lit-html [issue](https://github.com/Polymer/lit-html/issues/210).
+
