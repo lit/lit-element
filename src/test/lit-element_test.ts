@@ -179,7 +179,7 @@ suite('LitElement', () => {
         this._setProperty('bar', value);
       }
 
-      _render(props: {foo: string, bar: number}) {
+      _render(props: {foo: number, bar: number}) {
         this.info.push('render');
         return html`${props.foo}${props.bar}`;
       }
@@ -225,7 +225,7 @@ suite('LitElement', () => {
 
       foo = 0;
 
-      _render(props: {foo: string}) { return html`${props.foo}`; }
+      _render(props: {foo: number}) { return html`${props.foo}`; }
     }
     customElements.define('x-8', E);
     const el = new E();
@@ -291,7 +291,7 @@ suite('LitElement', () => {
 
            foo = 0;
 
-           _render(props: {foo: string}) { return html`${props.foo}`; }
+           _render(props: {foo: number}) { return html`${props.foo}`; }
          }
          customElements.define('x-9.1', E);
          const el = new E();
@@ -418,23 +418,17 @@ suite('LitElement', () => {
   test('styleString updates style', async () => {
     class E extends LitElement {
       static get properties() {
-        return {
-          marginTop : String,
-          paddingTop : String,
-          zug : String
-        };
+        return {marginTop : String, paddingTop : String, zug : String};
       }
 
       marginTop = ``;
       paddingTop = ``;
       zug = `0px`;
 
-      _render(
-          {marginTop, paddingTop, zug}:
-              {marginTop: string, paddingTop: string, zug: string}) {
+      _render({marginTop, paddingTop, zug}:
+                  {marginTop: string, paddingTop: string, zug: string}) {
         return html`<div style$="${
-            styleString(
-                {marginTop, paddingTop, height : zug})}"></div>`;
+            styleString({marginTop, paddingTop, height : zug})}"></div>`;
       }
     }
     customElements.define('x-13', E);
@@ -471,7 +465,6 @@ suite('LitElement', () => {
       _didRender() {
         this._setProperty('zonk', this._toggle ? 'zonkToggle' : 'zonk');
       }
-
     }
     const calls: IArguments[] = [];
     const orig = console.warn;
