@@ -474,8 +474,8 @@ suite('LitElement', () => {
 
     }
     const calls: IArguments[] = [];
-    const orig = console.trace;
-    console.trace = function() { calls.push(arguments); };
+    const orig = console.warn;
+    console.warn = function() { calls.push(arguments); };
     customElements.define('x-14', E);
     const el = new E();
     container.appendChild(el);
@@ -484,6 +484,6 @@ suite('LitElement', () => {
     el.requestRender();
     await el.renderComplete;
     assert.equal(calls.length, 4);
-    console.trace = orig;
+    console.warn = orig;
   });
 });
