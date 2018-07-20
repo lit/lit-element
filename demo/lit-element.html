@@ -11,8 +11,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
   <title>lit-element demo</title>
   <script src="../node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
+  <script type="module" src = "./ts-element.js"></script>
 </head>
 <body>
+    <my-element bar="5" whales="5" foobar="17">Hi</my-element>
+    <hr>
+    <ts-element message="Yo"></ts-element>
+
   <script type="module">
     import { LitElement, html } from '../lit-element.js';
 
@@ -20,15 +25,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       static get properties() {
         return {
-          foo: String,
-          bar: Number,
-          whales: Number
+          nug: {},
+          foo: {attribute: true},
+          bar: {attribute: true},
+          whales: {attribute: true, fromAttribute: Number},
+          fooBar: {attribute: true, fromAttribute: parseInt, toAttribute: (value) => value + 'hi'}
         }
       }
+
 
       constructor() {
         super();
         this.foo = 'foo';
+        this.nug = [1, 2, 3];
         this.whales = 0;
         this.addEventListener('click', async (e) => {
           this.whales++;
@@ -38,11 +47,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         });
       }
 
-      _firstRendered() {
-        console.log('first rendered!');
-      }
-
-      _render({foo, bar, whales}) {
+      render() {
+        const {foo, bar, whales, fooBar, nug} = this;
         return html`
           <style>
             :host {
@@ -69,16 +75,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <div class="count">
             whales: ${'🐳'.repeat(whales)}
           </div>
+          <ul>
+          ${nug.map(n => html`<li>${n}</li>`)}
+          </ul>
         `;
       }
 
-      _didRender() {
-        console.log('didRender!');
+      update() {
+        super.update();
+        console.log('updated!', this.props, this.changedProps, this.prevProps);
       }
-
     }
 
     customElements.define('my-element', MyElement);
   </script>
-  <my-element bar="5" whales="5">Hi</my-element>
 </body></html>
