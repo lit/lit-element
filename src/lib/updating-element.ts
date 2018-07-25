@@ -11,10 +11,6 @@
  * subject to an additional IP rights grant found at
  * http://polymer.github.io/PATENTS.txt
  */
-import {microTask} from './microtask.js';
-
-export {microTask};
-
 // TODO(sorvell): consider `noAttribute` instead of `attribute`
 interface PropertyOptions {
   // true to put property into observedAttributes
@@ -346,13 +342,14 @@ export class UpdatingElement extends HTMLElement {
    * of whether or not any property changes are pending. This method is
    * automatically called when any registered property changes.
    */
-  protected invalidate() {
+  protected async invalidate() {
     if (this._isEnabled) {
       if (this._isUpdating) {
         console.warn('Requested an update while updating. This is not supported.');
       } else if (!this._isValidating) {
         this._isValidating = true;
-        microTask.run(() => this._validate());
+        await Promise.resolve();
+        this._validate();
       }
     }
   }
