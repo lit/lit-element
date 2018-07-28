@@ -287,8 +287,12 @@ export class LitElement extends PropertiesMixin
           resolve(value);
         };
       });
-      if (!this.__isInvalid && this.__resolveRenderComplete) {
-        Promise.resolve().then(() => this.__resolveRenderComplete!(false));
+      if (!this.__isInvalid) {
+        Promise.resolve().then(() => {
+          if (this.__resolveRenderComplete) {
+            this.__resolveRenderComplete!(false);
+          }
+        });
       }
     }
     return this.__renderComplete;
