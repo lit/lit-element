@@ -289,8 +289,8 @@ export class LitElement extends PropertiesMixin
       });
       if (!this.__isInvalid) {
         Promise.resolve().then(() => {
-          if(this.__resolveRenderComplete) {
-            this.__resolveRenderComplete!(false)
+          if (this.__resolveRenderComplete) {
+            this.__resolveRenderComplete!(false);
           }
         });
       }
