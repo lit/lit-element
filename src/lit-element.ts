@@ -192,8 +192,11 @@ export class LitElement extends PropertiesMixin
   _flushProperties() {
     this.__isChanging = true;
     this.__isInvalid = false;
-    super._flushProperties();
-    this.__isChanging = false;
+    try {
+      super._flushProperties();
+    } finally {
+      this.__isChanging = false;
+    }
   }
 
   /**
