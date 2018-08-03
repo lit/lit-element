@@ -11,20 +11,58 @@
  * subject to an additional IP rights grant found at
  * http://polymer.github.io/PATENTS.txt
  */
-// TODO(sorvell): consider `noAttribute` instead of `attribute`
+
+/**
+ * Converts property values to and from attribute values.
+ */
+type AttributeProcessor = {
+  /**
+   * Deserializing function called to convert an attribute value to a property value.
+   */
+  fromAttribute?(value: string): unknown,
+  /**
+   * Serializing function called to convert a property value to an attribute value.
+   */
+  toAttribute?(value: unknown): string|null
+};
+
+/**
+ * Defines options for a property accessor.
+ */
 interface PropertyOptions {
-  // true to put property into observedAttributes
-  attribute?: boolean;
-  // defaults to lowercase
-  attributeName?: string;
-  // custom deserializer
-  fromAttribute?: Function;
-  // custom serializer
-  toAttribute?: Function;
-  // custom change function
-  shouldChange?: Function;
+  /**
+   * Describes how and if the property should becomes an observedAttribute.
+   * If explicitly false, the property will not be observed. Otherwise if true
+   * or absent, the lowercased property name is observed, and if a string
+   * observe that value.
+   */
+  attribute?: boolean|string;
+  /**
+   * Describes how to convert a property value to and from an attribute. If
+   * the value is a function, it's calle to deserialize an attribute value into
+   * a property value. If it's an AttributeProcessor, the `fromAttribute` value
+   * is used to deserialize. If the `reflect` option is also true, then
+   * `toAttribute` value is used to serialize the property value to an attribute.
+   */
+  type?: AttributeProcessor|Function;
+  /**
+   * Describes if setting the property should be reflect to the attribute value.
+   * If true, then if present the `type.toAttribute` function is used to serialize
+   * the value; otherwise, the property value is used.
+   */
+  reflect?: boolean;
+  /**
+   * Describes if setting a property should trigger invalidation and updating.
+   * This function takes the new and oldValue and returns true if invalidation
+   * should occur. If not present, a strict identity check is used.
+   */
+  shouldInvalidate?(value: unknown, oldValue: unknown): boolean;
 }
 
+/**
+ * Object that describes accessors to be created on the element prototype.
+ * An accessor is created for each key with the given options.
+ */
 interface Properties {
   [key: string]: PropertyOptions;
 }
@@ -58,18 +96,35 @@ function makeProperty(name: string, proto: Object) {
 }
 
 /**
+ * Creates and sets object used to memoize all class property values. Object
+ * is chained from superclass.
+ */
+function ensurePropertyStorage(ctor: typeof UpdatingElement) {
+  if (!ctor.hasOwnProperty('_classProperties')) {
+    ctor._classProperties = Object.create(Object.getPrototypeOf(ctor)._classProperties);
+  }
+}
+
+/**
  * Decorator which creates a property. Optionally a `PropertyOptions` object
- * can be supplied with keys:
- * * attribute: a boolean that should be true if the property should be an observedAttribute
- * * fromAttribute: function used to deserialize an attribute value
- * * toAttribute: function used to serialize a property to an attribute value
- * * attributeName: string that is a custom attribute name (defaults to lowercased property name)
+ * can be supplied to describe how the property should be configured.
  */
 export const property = (options?: PropertyOptions) => (proto: Object, name: string) => {
   const ctor = proto.constructor as typeof UpdatingElement;
-  ctor._ensurePropertyStorage();
+  ensurePropertyStorage(ctor);
   ctor._classProperties[name] = options || {};
   makeProperty(name, proto);
+};
+
+
+/**
+ * AttributeProcessor which configures properties which should reflect to and
+ * from boolean attributes. If the attribute exists, the property becomes true;
+ * and if the property value is truthy, the attribute is set to an empty string.
+ */
+export const BooleanAttribute: AttributeProcessor = {
+  fromAttribute: (value: string) => value !== null,
+  toAttribute: (value: string) => value ? '' : null
 };
 
 /**
@@ -82,21 +137,19 @@ export function identity(value: any, old: any) {
   return old !== value && (old === old || value === value);
 }
 
+enum ValidationState {
+  Disabled = 0,
+  Valid,
+  Invalid,
+  Updating
+}
+
 /**
  * Base element class which manages element properties and attributes. When
  * properties change, the `update` method is asynchronously called. This method
  * should be supplied by subclassers to render updates as desired.
  */
 export class UpdatingElement extends HTMLElement {
-
-  private _updatePromise: Promise<boolean>|null = null;
-  private _isEnabled = false;
-  private _isValidating = false;
-  private _hasUpdated = false;
-  private _isUpdating = false;
-  private _serializingProperty = false;
-  private _instanceProperties: AnyObject = {};
-  private _updateCompleteResolver: Function|null = null;
 
   /**
    * Node or ShadowRoot into which element DOM should be renderd. Defaults
@@ -105,40 +158,29 @@ export class UpdatingElement extends HTMLElement {
   root?: Element|DocumentFragment;
 
   /**
-   * Object with keys for all properties with their current values.
+   * Maps attribute names to properties; for example `foobar` attribute
+   * to `fooBar` property.
    */
-  props: AnyObject = {};
-  /**
-   * Object with keys for any properties that have changed since the last
-   * update cycle.
-   */
-  changedProps: AnyObject = {};
-  /**
-   * Object with keys for all properties with their value from the previous
-   * update cycle.
-   */
-  prevProps: AnyObject = {};
-
   private static _attributeToPropertyMap: AttributeMap = {};
-  private static _finalized = false;
+  /**
+   * Marks class as having finished creating properties.
+   */
+  private static _finalized = true;
+  /**
+   * Memoized result of computed observedAttributes.
+   */
   private static _observedAttributes: string[]|undefined;
+
   // TODO(sorvell): intended to be private but called by decorator.
+  /**
+   * Memoized list of all class properties, including any superclass properties.
+   */
   static _classProperties: Properties = {};
 
-  /**
-   * Implement to return an object with keys that become registered properties,
-   * changes to which will trigger `update`. A set of options may be supplied
-   * for a property:
-   * * attribute: a boolean that should be true if the property should be an observedAttribute
-   * * fromAttribute: function used to deserialize an attribute value
-   * * toAttribute: function used to serialize a property to an attribute value
-   * * attributeName: string that is a custom attribute name (defaults to lowercased property name)
-   */
   static properties: Properties = {};
 
   /**
-   * Returns a list of attributes corresponding to the registered properties
-   * that have listed themselves as attributes.
+   * Returns a list of attributes corresponding to the registered properties.
    */
   static get observedAttributes() {
     if (!this.hasOwnProperty('_observedAttributes')) {
@@ -146,9 +188,8 @@ export class UpdatingElement extends HTMLElement {
       this._finalize();
       this._observedAttributes = [];
       for (const p in this._classProperties) {
-        const info = this._classProperties[p];
-        if (info.attribute) {
-          const attr = this.propertyToAttributeName(p);
+        const attr = this.attributeNameForProperty(p);
+        if (attr !== undefined) {
           this._attributeToPropertyMap[attr] = p;
           this._observedAttributes.push(attr);
         }
@@ -157,77 +198,101 @@ export class UpdatingElement extends HTMLElement {
     return this._observedAttributes;
   }
 
-  // TODO(sorvell): intended to be private but called by decorator
-  static _ensurePropertyStorage() {
-    if (!this.hasOwnProperty('_classProperties')) {
-      this._classProperties = Object.create(Object.getPrototypeOf(this)._classProperties);
-    }
-  }
-
   /**
    * Creates property accessors for registered properties and ensures
    * any superclasses are also finalized.
    */
   private static _finalize() {
-    if (!(this.hasOwnProperty('_finalized') && this._finalized)) {
-      const superCtor = Object.getPrototypeOf(this);
-      if (superCtor.prototype instanceof UpdatingElement) {
-        superCtor._finalize();
-      }
-      this._finalized = true;
-      const props = this.properties;
-      for (const p in props) {
-        makeProperty(p, this.prototype);
-      }
-      this._attributeToPropertyMap = Object.create(superCtor._attributeToPropertyMap);
-      this._ensurePropertyStorage();
-      Object.assign(this._classProperties, props);
+    if (this.hasOwnProperty('_finalized') && this._finalized) {
+      return;
     }
+    // finalize any superclasses
+    const superCtor = Object.getPrototypeOf(this);
+    if (superCtor.prototype instanceof UpdatingElement) {
+      superCtor._finalize();
+    }
+    this._finalized = true;
+    // make any properties
+    const props = this.properties;
+    for (const p in props) {
+      makeProperty(p, this.prototype);
+    }
+    // initialize map populated in observedAttributes
+    this._attributeToPropertyMap = {};
+    // memoize list of all class properties.
+    ensurePropertyStorage(this);
+    Object.assign(this._classProperties, props);
   }
 
   /**
    * Returns the property name for the given attribute `name`.
    */
-  protected static propertyToAttributeName(name: string) {
+  private static attributeNameForProperty(name: string) {
     const info = this._classProperties[name];
-    return info && info.attributeName || name.toLowerCase();
+    const attribute = info && info.attribute;
+    return attribute === false ? undefined : (typeof attribute === 'string' ?
+        attribute : name.toLowerCase());
   }
 
   /**
-   * Called when a property value is set to determine if the value should change.
-   * This uses the `shouldChange` property option for the given property `name`.
+   * Returns true if a property should cause invalidation and update.
+   * Called when a property value is set and uses the `shouldInvalidate`
+   * option for the property if present or a strict identity check.
    */
   // tslint:disable-next-line no-any
-  protected static propertyShouldChange(name: string, value: any, old: any) {
+  private static propertyShouldInvalidate(name: string, value: any, old: any) {
     const info = this._classProperties[name];
-    const fn = info && info.shouldChange || identity;
+    const fn = info && info.shouldInvalidate || identity;
     return fn(value, old);
   }
 
   /**
-   * Called to deserialize an attribute value to a property value.
-   * This uses the `fromAttribute` property option for the given property `name`.
+   * Returns the property value for the given attribute value.
+   * Called via the `attributeChangedCallback` and uses the property's `type`
+   * or `type.fromAttribute` property option.
    */
-  // tslint:disable-next-line no-any
-  protected static propertyValueFromAttribute(name: string, value: string) {
+  private static propertyValueFromAttribute(name: string, value: string) {
     const info = this._classProperties[name];
-    const fromAttribute = info && info.fromAttribute;
+    const type = info && info.type;
+    if (!type) {
+      return value;
+    }
+    const fromAttribute = typeof type === 'function' ? type : type.fromAttribute;
     return fromAttribute ? fromAttribute(value) : value;
   }
 
   /**
-   * Called to serialize an property value to an attribute value. If this
+   * Returns the attribute value for the given property value. If this
    * returns undefined, the property will *not* be reflected to an attribute.
-   * This uses the `toAttribute` property option for the given property `name`.
+   * If this returns null, the attribute will be removed, otherwise the
+   * attribute will be set to the value.
+   * This uses the property's `reflect` and `type.toAttribute` property options.
    */
   // tslint:disable-next-line no-any
-  protected static propertyValueToAttribute(name: string, value: any) {
+  private static propertyValueToAttribute(name: string, value: any) {
     const info = this._classProperties[name];
-    const toAttribute = info && info.toAttribute;
-    if (toAttribute !== undefined) {
-      return toAttribute(value);
+    if (!info || !info.reflect) {
+      return;
     }
+    const toAttribute = info.type && (info.type as AttributeProcessor).toAttribute || String;
+    return (typeof toAttribute === 'function') ? toAttribute(value) : null;
   }
+
+  private _validationState: ValidationState = ValidationState.Disabled;
+  private _serializingInfo: [string, string|null]|null = null;
+  private _instanceProperties: AnyObject|null = null;
+  private _validatePromise: any = null;
+  private _validateResolvers: Function[] = [];
+
+  /**
+   * Object with keys for all properties with their current values.
+   */
+  private _props: AnyObject = {};
+  /**
+   * Object with keys for any properties that have changed since the last
+   * update cycle with previous values.
+   */
+  private _changedProps: AnyObject|null = null;
 
   constructor() {
     super();
@@ -240,54 +305,43 @@ export class UpdatingElement extends HTMLElement {
    * registered properties.
    */
   initialize() {
-    this.createRoot();
-    // save instance properties.
+    this.root = this.createRenderRoot();
+    // Apply any properties set on the instance before upgrade time.
     for (const p in (this.constructor as typeof UpdatingElement)._classProperties) {
       if (this.hasOwnProperty(p)) {
-        // tslint:disable-next-line no-any
-        const me = (this as any);
-        const value = me[p];
-        delete me[p];
-        this._instanceProperties[p] = value;
+        const value = this[p as keyof this];
+        delete this[p as keyof this];
+        this._instanceProperties = this._instanceProperties || {};
+        // NOTE: must capture these into a bag and reset at when validating
+        // to avoid stomping on a user value set in the constructor. Being
+        // async doesn't help here since the subclass' constructor value should
+        // be overwritten.
+        this._instanceProperties![p] = value;
       }
     }
+    // TODO(sorvell): if we do this here, then no good signal for styleElement.
+    //this.invalidate();
   }
 
   /**
-   * Implement to customize where the element's template is rendered by
-   * returning an element into which to render. By default this creates
-   * a shadowRoot for the element. To render into the element's childNodes,
-   * return `this`.
+   * Returns the node into which the element should render and by default
+   * creates and returns an open shadowRoot. Implement to customize where the
+   * element's DOM is rendered. For example, to render into the element's
+   * childNodes, return `this`.
    * @returns {Element|DocumentFragment} Returns a node into which to render.
    */
-  protected createRoot() {
-    this.root = this.attachShadow({mode : 'open'});
+  protected createRenderRoot(): Element|ShadowRoot {
+    return this.attachShadow({mode : 'open'});
   }
 
   /**
-   * Calls `enableUpdate` and uses ShadyCSS to keep element DOM updated.
+   * Uses ShadyCSS to keep element DOM updated.
    */
   connectedCallback() {
-    if (window.ShadyCSS && this._hasUpdated) {
+    if (this._validationState !== ValidationState.Disabled) {
       window.ShadyCSS.styleElement(this);
     }
-    this.enableUpdate();
-  }
-
-  /**
-   * Call to enable element updating. This is called in `connectedCallback`
-   * but can be called sooner if desired.
-   */
-  enableUpdate() {
-    if (!this._isEnabled) {
-      // replay instance properties
-      for (const p in this._instanceProperties) {
-        // tslint:disable-next-line no-any
-        (this as any)[p] = this._instanceProperties[p];
-      }
-      this._isEnabled = true;
-      this.invalidate();
-    }
+    this.invalidate();
   }
 
   /**
@@ -297,10 +351,11 @@ export class UpdatingElement extends HTMLElement {
     if (old !== value) {
       const ctor = (this.constructor as typeof UpdatingElement);
       const propName = ctor._attributeToPropertyMap[name];
-      // TODO(sorvell): currently not used.
-      if (!this._serializingProperty) {
-        // tslint:disable-next-line no-any
-        (this as any)[propName] = ctor.propertyValueFromAttribute(propName, value);
+      // Use tracking info to avoid deserializing attribute value if it was
+      // just set from a property setter.
+      if (!this._serializingInfo ||
+        (this._serializingInfo[0] !== name && this._serializingInfo[1] !== value)) {
+        this[propName as keyof this] = ctor.propertyValueFromAttribute(propName, value);
       }
     }
   }
@@ -310,109 +365,127 @@ export class UpdatingElement extends HTMLElement {
    * to get property values of registered properties.
    */
   protected getProperty(name: string) {
-    return this.props[name];
+    return this._props[name];
   }
 
   /**
    * Sets the property `name` to the given `value`. This method is used
    * to set property values of registered properties.
+   * Setting a property value calls `invalidate` which asynchronously updates
+   * the element. If a property value is set inside the `update` method,
+   * it does not trigger `invalidate`.
    */
   // tslint:disable-next-line no-any
   protected setProperty(name: string, value: any) {
-    const old = this.props[name];
+    const old = this._props[name];
     const ctor = (this.constructor as typeof UpdatingElement);
-    if (ctor.propertyShouldChange(name, value, old)) {
-      this.props[name] = value;
-      this.changedProps[name] = value;
+    if (ctor.propertyShouldInvalidate(name, value, old)) {
+      // track old value when changing.
+      if (!this._changedProps) {
+        this._changedProps = {};
+      }
+      if (!(name in this._changedProps)) {
+        this._changedProps[name] = this._props[name];
+      }
+      this._props[name] = value;
       const attrValue = ctor.propertyValueToAttribute(name, value);
       if (attrValue !== undefined) {
-        // TODO(sorvell): doing this here means we need to allow round tripping
-        // through property setting to not interfere with the reaction stack.
-        // However, we could move this to update (as in Polymer) to avoid this
-        // with a flag, but this is undesirable since we want to keep update
-        // unimplemented here.
-        this.setAttribute(name, attrValue);
+        // track the attr name/value being set to be able to avoid
+        // reflecting back to the property setter via attributeChangedCallback.
+        this._serializingInfo = [name, attrValue];
+        if (attrValue === null) {
+          this.removeAttribute(name);
+        } else {
+          this.setAttribute(name, attrValue);
+        }
+        this._serializingInfo = null;
       }
       this.invalidate();
     }
   }
 
   /**
-   * Call to request the element to asynchronously update regardless
+   * Invalidates the element causing it to asynchronously update regardless
    * of whether or not any property changes are pending. This method is
-   * automatically called when any registered property changes.
+   * automatically called when any registered property changes. Returns a Promise
+   * that resolves when the element has finished updating.
    */
-  protected async invalidate() {
-    if (this._isEnabled) {
-      if (this._isUpdating) {
-        console.warn('Requested an update while updating. This is not supported.');
-      } else if (!this._isValidating) {
-        this._isValidating = true;
-        await Promise.resolve();
-        this._validate();
+  async invalidate() {
+    // Do not re-queue validation if already invalid (pending) or currently updating.
+    if (this._validationState === ValidationState.Invalid ||
+        this._validationState === ValidationState.Updating) {
+      return this._validatePromise;
+    }
+    this._validationState = ValidationState.Invalid;
+    // Make a new validate promise and put the resolver on the stack.
+    this._validatePromise = new Promise((resolve) => this._validateResolvers.push(resolve));
+    // Wait a tick to actually process changes (allows batching).
+    await 0;
+    // Mixin instance properties once, if they exist.
+    if (this._instanceProperties) {
+      Object.assign(this, this._instanceProperties);
+      this._instanceProperties = null;
+    }
+    // Rip off changedProps.
+    const changedProps = this._changedProps || {};
+    this._changedProps = null;
+    if (this.shouldUpdate(changedProps)) {
+      // During update, setting properties does not trigger invalidation.
+      this._validationState = ValidationState.Updating;
+      this.update(changedProps);
+      this._validationState = ValidationState.Valid;
+      // During finishUpdate, setting properties does trigger invalidation,
+      // and users may choose to await other state, like children being updated.
+      await this.finishUpdate(changedProps);
+    } else {
+      this._validationState = ValidationState.Valid;
+    }
+    // Only resolve the promise if we finish in a valid state (finishUpdate
+    // did not trigger more work).
+    if (this._validationState === ValidationState.Valid) {
+      while (this._validateResolvers.length) {
+        const resolver = this._validateResolvers.pop();
+        if (resolver) {
+          resolver();
+        }
       }
     }
+    return this._validatePromise;
   }
 
   /**
-   * Validates the element. If `shouldUpdate` returns true then `update` is
-   * called. When the update is complete `changeProps` and `prevProps` are
-   * updated and any `updateComplete` promise is resolved.
+   * Returns a Promise that resolves when the element has finished updating.
    */
-  private _validate() {
-    this._isValidating = false;
-    if (!this.shouldUpdate()) {
-      return;
-    }
-    this._isUpdating = true;
-    this.update();
-    this._hasUpdated = true;
-    this.changedProps = {};
-    Object.assign(this.prevProps, this.props);
-    this._isUpdating = false;
-    if (this._updateCompleteResolver) {
-      this._updateCompleteResolver(true);
+  async updateComplete() {
+    if (this._changedProps) {
+      await this.invalidate();
     }
   }
 
   /**
-   * Implement to control if updating should occur when property values
-   * change or `invalidate` is called. By default, this method always
-   * returns true, but this can be customized as an optimization to avoid
-   * rendering work when changes occur which should not be rendered.
+   * Controls whether or not `update` should be called when the element invalidates.
+   * By default, this method always returns true, but this can be customized to
+   * control when to update.
+   * * @param _changedProperties changed properties with old values
    */
-  protected shouldUpdate(): boolean {
+  protected shouldUpdate(_changedProperties: AnyObject): boolean {
     return true;
   }
 
   /**
-   * Implement to update the element. Typically renders and keeps updated DOM
-   * in the element's root.
+   * Updates the element. This method does nothing by default and should be
+   * implemented to render and keep updated DOM in the element's root.
+   * * @param _changedProperties changed properties with old values
    */
-  protected update() {
-  }
+  protected update(_changedProperties: AnyObject) {}
 
- /**
-   * Returns a promise which resolves after the element next updates.
-   * The promise resolves to `true` if the element updated and `false` if the
-   * element did not.
-   * This is useful when users (e.g. tests) need to react to the updated state
-   * of the element after a change is made.
-   * This can also be useful in event handlers if it is desireable to wait
-   * to send an event until after updating.
+  /**
+   * Finishes updating the element. This method does nothing by default and
+   * should be implemented to perform post update tasks on element DOM. This
+   * async function can await other Promises to defer the resolution of the
+   * `invalidate` and `updateComplete` Proimses.
+   * * @param _changedProperties changed properties with old values
    */
-  get updateComplete() {
-    if (!this._updatePromise) {
-      this._updatePromise = new Promise((resolve) => {
-        this._updateCompleteResolver = (value: boolean) => {
-          this._updateCompleteResolver = this._updatePromise = null;
-          resolve(value);
-        };
-      });
-      if (!this._isUpdating) {
-        Promise.resolve().then(() => this._updateCompleteResolver!(false));
-      }
-    }
-    return this._updatePromise;
-  }
+  protected async finishUpdate(_changedProperties: AnyObject) {}
+
 }

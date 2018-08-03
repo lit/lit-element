@@ -15,7 +15,7 @@ import {render} from 'lit-html/lib/shady-render';
 import {TemplateResult} from 'lit-html';
 import {UpdatingElement} from './lib/updating-element.js';
 
-export {property} from './lib/updating-element.js';
+export {property, identity, BooleanAttribute} from './lib/updating-element.js';
 export {html, svg} from 'lit-html/lib/lit-extended';
 
 
@@ -25,7 +25,7 @@ export class LitElement extends UpdatingElement {
    * Override which performs element rendering by calling the `render` method.
    * Override to perform tasks before and/or after updating.
    */
-  protected update() {
+  protected async update() {
     render(this.render(), this.root!, this.localName!);
   }
 

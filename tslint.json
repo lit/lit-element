@@ -6,7 +6,6 @@
       true,
       "spaces"
     ],
-    "no-any": true,
     "prefer-const": true,
     "no-duplicate-variable": true,
     "no-eval": true,

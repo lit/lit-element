@@ -12,28 +12,6 @@
  * http://polymer.github.io/PATENTS.txt
  */
 
-import {camelToDashCase} from '@polymer/polymer/lib/utils/case-map.js';
-
-/**
- * Renders attributes to the given element based on the `attrInfo` object where
- * boolean values are added/removed as attributes.
- * @param element Element on which to set attributes.
- * @param attrInfo Object describing attributes.
- */
-export function renderAttributes(
-    element: HTMLElement, attrInfo: {[name: string]: string|boolean|number}) {
-  for (const a in attrInfo) {
-    const v = attrInfo[a] === true ? '' : attrInfo[a];
-    if (v || v === '' || v === 0) {
-      if (element.getAttribute(a) !== v) {
-        element.setAttribute(a, String(v));
-      }
-    } else if (element.hasAttribute(a)) {
-      element.removeAttribute(a);
-    }
-  }
-}
-
 /**
  * Returns a string of css class names formed by taking the properties
  * in the `classInfo` object and appending the property name to the string of
@@ -64,7 +42,7 @@ export function styleString(
   for (const name in styleInfo) {
     const v = styleInfo[name];
     if (v || v === 0) {
-      o.push(`${camelToDashCase(name)}: ${v}`);
+      o.push(`${name.replace(/([A-Z])/, '-$1').toLowerCase()}: ${v}`);
     }
   }
   return o.join('; ');
