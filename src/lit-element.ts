@@ -27,7 +27,7 @@ export abstract class LitElement extends UpdatingElement {
    */
   protected update() {
     if (this.render) {
-      render(this.render(), this.root!, this.localName!);
+      render(this.render(), this.renderRoot!, this.localName!);
     } else {
       throw new Error('render() not implemented');
     }

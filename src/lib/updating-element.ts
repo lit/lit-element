@@ -79,7 +79,7 @@ interface AnyObject {
  * Creates a property accessor on the given prototype if one does not exist.
  * Uses `getProperty` and `setProperty` to manage the property's value.
  */
-function makeProperty(name: string, proto: Object) {
+const makeProperty = (name: string, proto: Object) => {
   if (proto.hasOwnProperty(name) || (name in proto)) {
     return;
   }
@@ -99,7 +99,7 @@ function makeProperty(name: string, proto: Object) {
  * Creates and sets object used to memoize all class property values. Object
  * is chained from superclass.
  */
-function ensurePropertyStorage(ctor: typeof UpdatingElement) {
+const ensurePropertyStorage = (ctor: typeof UpdatingElement) => {
   if (!ctor.hasOwnProperty('_classProperties')) {
     ctor._classProperties = Object.create(Object.getPrototypeOf(ctor)._classProperties);
   }
@@ -132,10 +132,10 @@ export const BooleanAttribute: AttributeProcessor = {
  * This method is used as the default for a property's `shouldChange` function.
  */
 // tslint:disable-next-line no-any
-export function identity(value: any, old: any) {
+export const identity = (value: any, old: any) => {
   // This ensures (old==NaN, value==NaN) always returns false
   return old !== value && (old === old || value === value);
-}
+};
 
 enum ValidationState {
   Disabled = 0,
@@ -150,12 +150,6 @@ enum ValidationState {
  * should be supplied by subclassers to render updates as desired.
  */
 export abstract class UpdatingElement extends HTMLElement {
-
-  /**
-   * Node or ShadowRoot into which element DOM should be renderd. Defaults
-   * to an open shadowRoot.
-   */
-  root?: Element|DocumentFragment;
 
   /**
    * Maps attribute names to properties; for example `foobar` attribute
@@ -294,6 +288,12 @@ export abstract class UpdatingElement extends HTMLElement {
    */
   private _changedProps: AnyObject|null = null;
 
+  /**
+   * Node or ShadowRoot into which element DOM should be renderd. Defaults
+   * to an open shadowRoot.
+   */
+  protected renderRoot?: Element|DocumentFragment;
+
   constructor() {
     super();
     this.initialize();
@@ -305,7 +305,7 @@ export abstract class UpdatingElement extends HTMLElement {
    * registered properties.
    */
   initialize() {
-    this.root = this.createRenderRoot();
+    this.renderRoot = this.createRenderRoot();
     // Apply any properties set on the instance before upgrade time.
     for (const p in (this.constructor as typeof UpdatingElement)._classProperties) {
       if (this.hasOwnProperty(p)) {
