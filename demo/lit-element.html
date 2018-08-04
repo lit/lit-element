@@ -16,21 +16,36 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <body>
     <my-element bar="5" whales="5" foobar="17">Hi</my-element>
     <hr>
-    <ts-element message="Yo"></ts-element>
+    <ts-element message="Yo" more-info="person"></ts-element>
 
   <script type="module">
     import { LitElement, html } from '../lit-element.js';
+
+    class Inner extends LitElement {
+      render() {
+        return html`Hello world`;
+      }
+    }
+
+    customElements.define('x-inner', Inner);
 
     class MyElement extends LitElement {
 
       static get properties() {
         return {
           nug: {},
-          foo: {attribute: true},
-          bar: {attribute: true},
-          whales: {attribute: true, fromAttribute: Number},
-          fooBar: {attribute: true, fromAttribute: parseInt, toAttribute: (value) => value + 'hi'}
+          zot: {},
+          foo: {},
+          bar: {},
+          whales: {type: Number},
+          fooBar: {type: {fromAttribute: parseInt, toAttribute: (value) => value + '-attr'}, reflect: true}
         }
+      }
+
+      get zot() { return this.getProperty('zot'); }
+
+      set zot(value) {
+        this.setProperty('zot', Number(value));
       }
 
 
@@ -39,9 +54,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.foo = 'foo';
         this.nug = [1, 2, 3];
         this.whales = 0;
+        this.zot = '5';
         this.addEventListener('click', async (e) => {
           this.whales++;
-          await this.renderComplete;
+          await this.updateComplete;
           this.dispatchEvent(new CustomEvent('whales', {detail: {whales: this.whales}}))
           console.log(this.shadowRoot.querySelector('.count').textContent);
         });
@@ -78,15 +94,28 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <ul>
           ${nug.map(n => html`<li>${n}</li>`)}
           </ul>
+          <x-inner></x-inner>
         `;
       }
 
-      update() {
+      update(changedProps) {
         super.update();
-        console.log('updated!', this.props, this.changedProps, this.prevProps);
+        console.log('updated!', changedProps);
+      }
+
+      async finishUpdate(changedProps) {
+        if (!this._inner) {
+          this._inner = this.shadowRoot.querySelector('x-inner');
+        }
+        await this._inner.updateComplete;
       }
     }
 
     customElements.define('my-element', MyElement);
+    (async () => {
+      const x = document.querySelector('my-element');
+      await x.updateComplete;
+      console.log(x.shadowRoot.querySelector('x-inner').shadowRoot.textContent);
+    })();
   </script>
 </body></html>

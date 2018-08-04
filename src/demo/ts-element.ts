@@ -2,17 +2,20 @@ import { LitElement, html, property } from '../lit-element.js';
 
 class TSElement extends LitElement {
 
-  @property({attribute: true, fromAttribute: String})
+  @property()
   message = 'Hi';
 
+  @property({attribute: 'more-info', type: (value: string) => `[${value}]`})
+  extra = '';
+
   render() {
-    const {message} = this;
+    const {message, extra} = this;
     return html`
       <style>
         :host {
           display: block;
         }
-      </style>TSElement says: ${message}
+      </style>TSElement says: ${message} ${extra}
     `;
   }
 

@@ -29,7 +29,7 @@ type AttributeProcessor = {
 /**
  * Defines options for a property accessor.
  */
-interface PropertyOptions {
+export interface PropertyOptions {
   /**
    * Describes how and if the property should becomes an observedAttribute.
    * If explicitly false, the property will not be observed. Otherwise if true
@@ -63,7 +63,7 @@ interface PropertyOptions {
  * Object that describes accessors to be created on the element prototype.
  * An accessor is created for each key with the given options.
  */
-interface Properties {
+export interface Properties {
   [key: string]: PropertyOptions;
 }
 
@@ -279,10 +279,10 @@ export class UpdatingElement extends HTMLElement {
   }
 
   private _validationState: ValidationState = ValidationState.Disabled;
-  private _serializingInfo: [string, string|null]|null = null;
+  private _serializingInfo: [string|null, string|null]|null = null;
   private _instanceProperties: AnyObject|null = null;
   private _validatePromise: any = null;
-  private _validateResolvers: Function[] = [];
+  private _validateResolvers: (() => void)[] = [];
 
   /**
    * Object with keys for all properties with their current values.
@@ -319,8 +319,6 @@ export class UpdatingElement extends HTMLElement {
         this._instanceProperties![p] = value;
       }
     }
-    // TODO(sorvell): if we do this here, then no good signal for styleElement.
-    //this.invalidate();
   }
 
   /**
@@ -349,14 +347,7 @@ export class UpdatingElement extends HTMLElement {
    */
   attributeChangedCallback(name: string, old: string, value: string) {
     if (old !== value) {
-      const ctor = (this.constructor as typeof UpdatingElement);
-      const propName = ctor._attributeToPropertyMap[name];
-      // Use tracking info to avoid deserializing attribute value if it was
-      // just set from a property setter.
-      if (!this._serializingInfo ||
-        (this._serializingInfo[0] !== name && this._serializingInfo[1] !== value)) {
-        this[propName as keyof this] = ctor.propertyValueFromAttribute(propName, value);
-      }
+      this._attributeToProperty(name, value);
     }
   }
 
@@ -388,19 +379,38 @@ export class UpdatingElement extends HTMLElement {
         this._changedProps[name] = this._props[name];
       }
       this._props[name] = value;
-      const attrValue = ctor.propertyValueToAttribute(name, value);
-      if (attrValue !== undefined) {
+      this._propertyToAttribute(name, value);
+      this.invalidate();
+    }
+  }
+
+  private _propertyToAttribute(name: string, value: any) {
+    const ctor = (this.constructor as typeof UpdatingElement);
+    const attrValue = ctor.propertyValueToAttribute(name, value);
+    if (attrValue !== undefined) {
+      const attr = ctor.attributeNameForProperty(name);
+      if (attr !== undefined) {
         // track the attr name/value being set to be able to avoid
         // reflecting back to the property setter via attributeChangedCallback.
-        this._serializingInfo = [name, attrValue];
+        this._serializingInfo = [attr, attrValue];
         if (attrValue === null) {
-          this.removeAttribute(name);
+          this.removeAttribute(attr);
         } else {
-          this.setAttribute(name, attrValue);
+          this.setAttribute(attr, attrValue);
         }
         this._serializingInfo = null;
       }
-      this.invalidate();
+    }
+  }
+
+  private _attributeToProperty(name: string, value: string) {
+    // Use tracking info to avoid deserializing attribute value if it was
+    // just set from a property setter.
+    if (!this._serializingInfo ||
+        (this._serializingInfo[0] !== name && this._serializingInfo[1] !== value)) {
+      const ctor = (this.constructor as typeof UpdatingElement);
+      const propName = ctor._attributeToPropertyMap[name];
+      this[propName as keyof this] = ctor.propertyValueFromAttribute(propName, value);
     }
   }
 
@@ -412,8 +422,7 @@ export class UpdatingElement extends HTMLElement {
    */
   async invalidate() {
     // Do not re-queue validation if already invalid (pending) or currently updating.
-    if (this._validationState === ValidationState.Invalid ||
-        this._validationState === ValidationState.Updating) {
+    if (this._isPendingUpdate()) {
       return this._validatePromise;
     }
     this._validationState = ValidationState.Invalid;
@@ -445,21 +454,22 @@ export class UpdatingElement extends HTMLElement {
     if (this._validationState === ValidationState.Valid) {
       while (this._validateResolvers.length) {
         const resolver = this._validateResolvers.pop();
-        if (resolver) {
-          resolver();
-        }
+        resolver!();
       }
     }
     return this._validatePromise;
   }
 
+  private _isPendingUpdate() {
+    return this._validationState === ValidationState.Invalid ||
+      this._validationState === ValidationState.Updating;
+  }
+
   /**
    * Returns a Promise that resolves when the element has finished updating.
    */
-  async updateComplete() {
-    if (this._changedProps) {
-      await this.invalidate();
-    }
+  get updateComplete() {
+    return this._isPendingUpdate() ? this._validatePromise : Promise.resolve();
   }
 
   /**

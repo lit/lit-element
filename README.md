@@ -10,10 +10,21 @@
 
 LitElement uses [lit-html](https://github.com/Polymer/lit-html) to render into the
 element's [Shadow DOM](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_shadow_DOM)
-and [Polymer's](https://github.com/Polymer/polymer)
-[PropertiesMixin](https://github.com/Polymer/polymer/blob/master/lib/mixins/properties-mixin.js)
-to help manage element properties and attributes. LitElement reacts to changes in properties
+and adds API help manage element properties and attributes. LitElement reacts to changes in properties
 and renders declaratively using `lit-html`.
+
+  * **Setup properties:** LitElement supports a static `properties` getter in which element property
+  accessors are described. For each property, an object configures settings where the options are:
+
+    * attribute: if false, do not add to observedAttributes, if true or absent, observe the
+    lowercased property name, if a string observe that value.
+    * type: if a function, use to deserialize the attribute value to the property value;
+    also can be an object with `{fromAttribute, toAttribute}` where `fromAttribute` is
+    the deserialize function and `toAttribute` is a serialize function.
+    * reflect: if true, on setting the property reflects the property value to an
+    attribute value using `type.toAttribute` if it exists.
+    * shouldInvalidate: optional function which should return true if setting the property
+    should cause the element to invalidate causing it to asynchronously update.
 
   * **React to changes:** LitElement reacts to changes in properties and attributes by
   asynchronously rendering, ensuring changes are batched. This reduces overhead
@@ -70,8 +81,8 @@ and renders declaratively using `lit-html`.
   1. Create a class that extends `LitElement`.
   1. Implement a static `properties` getter that returns the element's properties
   (which automatically become observed attributes).
-  1. Then implement a `_render(props)` method and use the element's
-current properties (props) to return a `lit-html` template result to render
+  1. Then implement a `render()` method and use the element's
+current properties to return a `lit-html` template result to render
 into the element. This is the only method that must be implemented by subclasses.
 
 ```html
@@ -81,11 +92,11 @@ into the element. This is the only method that must be implemented by subclasses
 
     class MyElement extends LitElement {
 
-      static get properties() { return { mood: String }}
+      static get properties() { return { mood: {type: String} }}
 
-      _render({mood}) {
+      render() {
         return html`<style> .mood { color: green; } </style>
-          Web Components are <span class="mood">${mood}</span>!`;
+          Web Components are <span class="mood">${this.mood}</span>!`;
       }
 
     }
@@ -99,40 +110,65 @@ into the element. This is the only method that must be implemented by subclasses
 ## API Documentation
 
 See the [source](https://github.com/PolymerLabs/lit-element/blob/master/src/lit-element.ts#L90)
- for detailed API info, here are some highlights. Note, the leading underscore
- is used to indicate that these methods are
- [protected](https://en.wikipedia.org/wiki/Class_(computer_programming)#Member_accessibility);
- they are not private and can and should be implemented by subclasses.
- These methods generally are called as part of the rendering lifecycle and should
- not be called in user code unless otherwise indicated.
+ for detailed API info, here are some highlights.
 
-  * `_createRoot()`: Implement to customize where the
+  * `createRenderRoot()` (protected): Implement to customize where the
   element's template is rendered by returning an element into which to
   render. By default this creates a shadowRoot for the element.
   To render into the element's childNodes, return `this`.
 
-  * `_firstRendered()`: Called after the element DOM is rendered for the first time.
-
-  * `_shouldRender(props, changedProps, prevProps)`: Implement to control if rendering
-  should occur when property values change or `invalidate` is called.
+  * `shouldUpdate(changedProps)` (protected): Implement to control if updating and rendering
+  should occur when property values change or `invalidate` is called. The `changedProps`
+  argument is an object with keys for the changed properties pointing to their previous values.
   By default, this method always returns true, but this can be customized as
-  an optimization to avoid rendering work when changes occur which should not be rendered.
+  an optimization to avoid updating work when changes occur which should not be rendered.
 
-  * `_render(props)`: Implement to describe the element's DOM using `lit-html`. Ideally,
-  the `_render` implementation is a pure function using only `props` to describe
-  the element template. This is the only method that must be implemented by subclasses.
+  * `update()` (protected): This method calls `render()` and then uses `lit-html` to
+  render the template DOM. Override to customize how the element renders DOM. Note,
+  during `update()` setting properties does not trigger `invalidate()`, allowing
+  property values to be computed and validated.
 
-  * `_didRender(props, changedProps, prevProps)`: Called after element DOM has been rendered.
-  Implement to directly control rendered DOM. Typically this is not needed as `lit-html`
-  can be used in the `_render` method to set properties, attributes, and
-  event listeners. However, it is sometimes useful for calling methods on
-  rendered elements, for example focusing an input:
+  * `render()` (protected): Implement to describe the element's DOM using `lit-html`. Ideally,
+  the `render` implementation is a pure function using only the element's current properties
+  to describe the element template. This is the only method that must be implemented by subclasses.
+  Note, since `render()` is called by `update()` setting properties does not trigger
+  `invalidate()`, allowing property values to be computed and validated.
+
+  * `finishUpdate(changedProps)` (protected): Called after element DOM has been updated and
+  before the `updateComplete` promise is resolved. The `changedProps` argument is an object
+  with keys for the changed properties pointing to their previous values. This is an
+  async function which is *awaited* before resolving the `updateComplete` promise.
+  Setting properties in `finishUpdate()` does trigger `invalidate()` and blocks
+  the `updateComplete` promise. Implement to directly control rendered DOM.
+  Typically this is not needed as `lit-html` can be used in the `render` method
+  to set properties, attributes, and event listeners. However, it is sometimes useful
+  for calling methods on rendered elements, for example focusing an input:
   `this.shadowRoot.querySelector('input').focus()`.
 
-  * `renderComplete`: Returns a promise which resolves after the element next renders.
+  * `updateComplete`: Returns a promise which resolves after the element next renders.
 
-  * `_requestRender`: Call to request the element to asynchronously re-render regardless
+  * `invalidate`: Call to request the element to asynchronously update regardless
   of whether or not any property changes are pending.
+
+## Update Lifecycle
+
+* When the element is first connected or a property is set (e.g. `element.foo = 5`)
+  and the property's `shouldInvalidate(value, oldValue)` returns true. Then
+  * `invalidate()` tries to update the element after waiting a microtask. Then
+    * `shouldUpdate(changedProps)` is called and if this returns true which it
+      does by default:
+      * `update(changedProps)` is called to update the element.
+        Note, setting properties inside `update()` will set their values but
+        will *not* trigger `invalidate()`. This calls
+        * `render()` which should return a `lit-html` TemplateResult
+          (e.g. <code>html\`Hello ${world}\`</code>)
+      * `finishUpdate(changedProps)` is then called to do post update/render tasks.
+        Note, setting properties here will trigger `invalidate()` and block
+        the `updateComplete` promise.
+    * `updateComplete` promise is resolved only if the element is
+      not in an invalid state.
+* Any code awaiting the element's `updateComplete` promise runs and observes
+  the element in the updated state.
 
 ## Bigger Example
 
@@ -144,8 +180,8 @@ class MyElement extends LitElement {
   // Public property API that triggers re-render (synced with attributes)
   static get properties() {
     return {
-      foo: String,
-      whales: Number
+      foo: {type: String},
+      whales: {type: Number}
     }
   }
 
@@ -154,13 +190,13 @@ class MyElement extends LitElement {
     this.foo = 'foo';
     this.addEventListener('click', async (e) => {
       this.whales++;
-      await this.renderComplete;
+      await this.updateComplete;
       this.dispatchEvent(new CustomEvent('whales', {detail: {whales: this.whales}}))
     });
   }
 
   // Render method should return a `TemplateResult` using the provided lit-html `html` tag function
-  _render({foo, whales}) {
+  render() {
     return html`
       <style>
         :host {
@@ -170,8 +206,8 @@ class MyElement extends LitElement {
           display: none;
         }
       </style>
-      <h4>Foo: ${foo}</h4>
-      <div>whales: ${'🐳'.repeat(whales)}</div>
+      <h4>Foo: ${this.foo}</h4>
+      <div>whales: ${'🐳'.repeat(this.whales)}</div>
       <slot></slot>
     `;
   }
