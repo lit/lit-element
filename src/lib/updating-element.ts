@@ -93,7 +93,7 @@ const makeProperty = (name: string, proto: Object) => {
     configurable: true,
     enumerable: true
   });
-}
+};
 
 /**
  * Creates and sets object used to memoize all class property values. Object
@@ -103,7 +103,7 @@ const ensurePropertyStorage = (ctor: typeof UpdatingElement) => {
   if (!ctor.hasOwnProperty('_classProperties')) {
     ctor._classProperties = Object.create(Object.getPrototypeOf(ctor)._classProperties);
   }
-}
+};
 
 /**
  * Decorator which creates a property. Optionally a `PropertyOptions` object
