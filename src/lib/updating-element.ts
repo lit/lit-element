@@ -149,7 +149,7 @@ enum ValidationState {
  * properties change, the `update` method is asynchronously called. This method
  * should be supplied by subclassers to render updates as desired.
  */
-export class UpdatingElement extends HTMLElement {
+export abstract class UpdatingElement extends HTMLElement {
 
   /**
    * Node or ShadowRoot into which element DOM should be renderd. Defaults

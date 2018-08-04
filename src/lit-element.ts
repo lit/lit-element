@@ -19,24 +19,26 @@ export {property, identity, BooleanAttribute, Properties, PropertyOptions} from 
 export {html, svg} from 'lit-html/lib/lit-extended';
 
 
-export class LitElement extends UpdatingElement {
+export abstract class LitElement extends UpdatingElement {
 
   /**
    * Override which performs element rendering by calling the `render` method.
    * Override to perform tasks before and/or after updating.
    */
   protected update() {
-    render(this.render(), this.root!, this.localName!);
+    if (this.render) {
+      render(this.render(), this.root!, this.localName!);
+    } else {
+      throw new Error('render() not implemented');
+    }
   }
 
   /**
-   * Implement to describe the DOM which should be rendered in the element.
-   * The implementation must return a `lit-html` TemplateResult.
+   Invoked on each update to perform rendering tasks. This method must return a
+   lit-html TemplateResult.
    * @param {*} _props Current element properties
    * @returns {TemplateResult} Must return a lit-html TemplateResult.
    */
-  protected render(): TemplateResult {
-    throw new Error('render() not implemented');
-  }
+  protected abstract render(): TemplateResult;
 
 }
