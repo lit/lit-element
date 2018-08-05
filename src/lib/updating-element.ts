@@ -140,8 +140,7 @@ export const identity = (value: any, old: any) => {
 enum ValidationState {
   Disabled = 0,
   Valid,
-  Invalid,
-  Updating
+  Invalid
 }
 
 /**
@@ -276,7 +275,7 @@ export abstract class UpdatingElement extends HTMLElement {
   private _serializingInfo: [string|null, string|null]|null = null;
   private _instanceProperties: AnyObject|null = null;
   private _validatePromise: any = null;
-  private _validateResolvers: (() => void)[] = [];
+  private _validateResolver: (() => void)|null = null;
 
   /**
    * Object with keys for all properties with their current values.
@@ -426,8 +425,11 @@ export abstract class UpdatingElement extends HTMLElement {
       return this._validatePromise;
     }
     this._validationState = ValidationState.Invalid;
-    // Make a new validate promise and put the resolver on the stack.
-    this._validatePromise = new Promise((resolve) => this._validateResolvers.push(resolve));
+    // Make a new promise only if the current one is not pending resolution
+    // (resolver has not been set to null)
+    if (this._validateResolver === null) {
+      this._validatePromise = new Promise((resolve) => this._validateResolver = resolve);
+    }
     // Wait a tick to actually process changes (allows batching).
     await 0;
     // Mixin instance properties once, if they exist.
@@ -439,30 +441,30 @@ export abstract class UpdatingElement extends HTMLElement {
     const changedProps = this._changedProps || {};
     this._changedProps = null;
     if (this.shouldUpdate(changedProps)) {
-      // During update, setting properties does not trigger invalidation.
-      this._validationState = ValidationState.Updating;
-      this.update(changedProps);
+      // During update (which is abstract), setting properties does not trigger invalidation.
+      if (this.update !== undefined) {
+        this.update(changedProps);
+      }
       this._validationState = ValidationState.Valid;
-      // During finishUpdate, setting properties does trigger invalidation,
+      // During finishUpdate (which is abstract), setting properties does trigger invalidation,
       // and users may choose to await other state, like children being updated.
-      await this.finishUpdate(changedProps);
+      if (this.finishUpdate !== undefined) {
+        await this.finishUpdate(changedProps);
+      }
     } else {
       this._validationState = ValidationState.Valid;
     }
     // Only resolve the promise if we finish in a valid state (finishUpdate
     // did not trigger more work).
-    if (this._validationState === ValidationState.Valid) {
-      while (this._validateResolvers.length) {
-        const resolver = this._validateResolvers.pop();
-        resolver!();
-      }
+    if (this._validationState === ValidationState.Valid && this._validateResolver) {
+      this._validateResolver();
+      this._validateResolver = null;
     }
     return this._validatePromise;
   }
 
   private _isPendingUpdate() {
-    return this._validationState === ValidationState.Invalid ||
-      this._validationState === ValidationState.Updating;
+    return this._validationState === ValidationState.Invalid;
   }
 
   /**
@@ -487,7 +489,7 @@ export abstract class UpdatingElement extends HTMLElement {
    * implemented to render and keep updated DOM in the element's root.
    * * @param _changedProperties changed properties with old values
    */
-  protected update(_changedProperties: AnyObject) {}
+  protected abstract update(_changedProperties: AnyObject): void;
 
   /**
    * Finishes updating the element. This method does nothing by default and
@@ -496,6 +498,6 @@ export abstract class UpdatingElement extends HTMLElement {
    * `invalidate` and `updateComplete` Proimses.
    * * @param _changedProperties changed properties with old values
    */
-  protected async finishUpdate(_changedProperties: AnyObject) {}
+  protected abstract finishUpdate(_changedProperties: AnyObject): void;
 
 }
