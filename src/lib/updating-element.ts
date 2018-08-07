@@ -15,72 +15,87 @@
 /**
  * Converts property values to and from attribute values.
  */
-type AttributeProcessor = {
+interface AttributeSerializer<T = any> {
+
   /**
    * Deserializing function called to convert an attribute value to a property value.
    */
-  fromAttribute?(value: string): unknown,
+  fromAttribute?(value: string): T;
+
   /**
    * Serializing function called to convert a property value to an attribute value.
    */
-  toAttribute?(value: unknown): string|null
-};
+  toAttribute?(value: T): string|null;
+
+}
+
+type AttributeType<T = any> = AttributeSerializer<T>|((value: string) => T);
 
 /**
  * Defines options for a property accessor.
  */
-export interface PropertyOptions {
+export interface PropertyDeclaration<T = any> {
+
   /**
-   * Describes how and if the property should becomes an observedAttribute.
-   * If explicitly false, the property will not be observed. Otherwise if true
-   * or absent, the lowercased property name is observed, and if a string
-   * observe that value.
+   * Describes how and if the property becomes an observedAttribute.
+   * If the value is false, the property is not added to `observedAttributes`.
+   * If true or absent, the lowercased property name is observed (e.g. `fooBar` becomes `fobar`).
+   * If a string, the string value is observed (e.g `attribute: 'foo-bar'`).
    */
   attribute?: boolean|string;
+
   /**
-   * Describes how to convert a property value to and from an attribute. If
-   * the value is a function, it's calle to deserialize an attribute value into
-   * a property value. If it's an AttributeProcessor, the `fromAttribute` value
-   * is used to deserialize. If the `reflect` option is also true, then
-   * `toAttribute` value is used to serialize the property value to an attribute.
+   * Describes how to convert the attribute to/from a property.
+   * If this value is a function, it is used to deserialize the attribute value
+   * a the property value. If it's an AttributeSerializer, it can have keys for
+   * `fromAttribute` and `toAttribute` where `fromAttribute` is the deserialize
+   * function and `toAttribute` is a serialize function used to convert the property
+   * to an attribute.
    */
-  type?: AttributeProcessor|Function;
+  type?: AttributeType<T>;
+
   /**
-   * Describes if setting the property should be reflect to the attribute value.
-   * If true, then if present the `type.toAttribute` function is used to serialize
-   * the value; otherwise, the property value is used.
+   * Describes if the property should reflect to an attribute.
+   * If true, when the property is set, the attribute value is set using the
+   * attribute name taken from the property's `attribute` and the value
+   * of the property serialized using `type.toAttribute` if it exists.
    */
   reflect?: boolean;
+
   /**
    * Describes if setting a property should trigger invalidation and updating.
    * This function takes the new and oldValue and returns true if invalidation
-   * should occur. If not present, a strict identity check is used.
+   * should occur. If not present, a strict identity check is used. This is useful
+   * if a property should be considered dirty only if some condition is met;
+   * for example, the function could return true only when the key property of
+   * an object value changed.
    */
-  shouldInvalidate?(value: unknown, oldValue: unknown): boolean;
+  shouldInvalidate?(value: T, oldValue: T): boolean;
+
 }
 
 /**
  * Object that describes accessors to be created on the element prototype.
  * An accessor is created for each key with the given options.
  */
-export interface Properties {
-  [key: string]: PropertyOptions;
+export interface PropertyDeclarations {
+  [key: string]: PropertyDeclaration;
 }
 
 interface AttributeMap {
   [key: string]: string;
 }
 
-interface AnyObject {
-  [key: string]: {};
+interface PropertyValues {
+  [key: string]: unknown;
 }
 
 /**
  * Creates a property accessor on the given prototype if one does not exist.
  * Uses `getProperty` and `setProperty` to manage the property's value.
  */
-const makeProperty = (name: string, proto: Object) => {
-  if (proto.hasOwnProperty(name) || (name in proto)) {
+const makeProperty = (name: PropertyKey, proto: Object) => {
+  if (name in proto) {
     return;
   }
   Object.defineProperty(proto, name, {
@@ -106,23 +121,24 @@ const ensurePropertyStorage = (ctor: typeof UpdatingElement) => {
 };
 
 /**
- * Decorator which creates a property. Optionally a `PropertyOptions` object
+ * Decorator which creates a property. Optionally a `PropertyDeclaration` object
  * can be supplied to describe how the property should be configured.
  */
-export const property = (options?: PropertyOptions) => (proto: Object, name: string) => {
+export const property = (options: PropertyDeclaration = {}) => (proto: Object, name: string) => {
   const ctor = proto.constructor as typeof UpdatingElement;
   ensurePropertyStorage(ctor);
-  ctor._classProperties[name] = options || {};
+  ctor._classProperties[name] = options;
   makeProperty(name, proto);
 };
 
 
 /**
- * AttributeProcessor which configures properties which should reflect to and
- * from boolean attributes. If the attribute exists, the property becomes true;
- * and if the property value is truthy, the attribute is set to an empty string.
+ * AttributeSerializer which configures properties which should reflect to and
+ * from boolean attributes. If the attribute exists, the property is set to true.
+ * If the property value is truthy, the attribute is set to an empty string;
+ * otherwise, the attribute is removed.
  */
-export const BooleanAttribute: AttributeProcessor = {
+export const BooleanAttribute: AttributeSerializer = {
   fromAttribute: (value: string) => value !== null,
   toAttribute: (value: string) => value ? '' : null
 };
@@ -131,17 +147,15 @@ export const BooleanAttribute: AttributeProcessor = {
  * Change function that returns true if `value` is different from `oldValue`.
  * This method is used as the default for a property's `shouldChange` function.
  */
-// tslint:disable-next-line no-any
-export const identity = (value: any, old: any) => {
+export const identity = (value: unknown, old: unknown) => {
   // This ensures (old==NaN, value==NaN) always returns false
   return old !== value && (old === old || value === value);
 };
 
-enum ValidationState {
-  Disabled = 0,
-  Valid,
-  Invalid
-}
+const disabled = 0;
+const valid = 1;
+const invalid = 2;
+type ValidationState = typeof disabled | typeof valid | typeof invalid;
 
 /**
  * Base element class which manages element properties and attributes. When
@@ -155,10 +169,12 @@ export abstract class UpdatingElement extends HTMLElement {
    * to `fooBar` property.
    */
   private static _attributeToPropertyMap: AttributeMap = {};
+
   /**
    * Marks class as having finished creating properties.
    */
   private static _finalized = true;
+
   /**
    * Memoized result of computed observedAttributes.
    */
@@ -168,9 +184,9 @@ export abstract class UpdatingElement extends HTMLElement {
   /**
    * Memoized list of all class properties, including any superclass properties.
    */
-  static _classProperties: Properties = {};
+  static _classProperties: PropertyDeclarations = {};
 
-  static properties: Properties = {};
+  static properties: PropertyDeclarations = {};
 
   /**
    * Returns a list of attributes corresponding to the registered properties.
@@ -201,7 +217,7 @@ export abstract class UpdatingElement extends HTMLElement {
     }
     // finalize any superclasses
     const superCtor = Object.getPrototypeOf(this);
-    if (superCtor.prototype instanceof UpdatingElement) {
+    if (typeof superCtor._finalize === 'function') {
       superCtor._finalize();
     }
     this._finalized = true;
@@ -267,28 +283,29 @@ export abstract class UpdatingElement extends HTMLElement {
     if (!info || !info.reflect) {
       return;
     }
-    const toAttribute = info.type && (info.type as AttributeProcessor).toAttribute || String;
+    const toAttribute = info.type && (info.type as AttributeSerializer).toAttribute || String;
     return (typeof toAttribute === 'function') ? toAttribute(value) : null;
   }
 
-  private _validationState: ValidationState = ValidationState.Disabled;
-  private _serializingInfo: [string|null, string|null]|null = null;
-  private _instanceProperties: AnyObject|null = null;
-  private _validatePromise: any = null;
-  private _validateResolver: (() => void)|null = null;
+  private _validationState: ValidationState = disabled;
+  private _serializingInfo: [string|null, string|null]|undefined = undefined;
+  private _instanceProperties: PropertyValues|undefined = undefined;
+  private _validatePromise: any = undefined;
+  private _validateResolver: (() => void)|undefined = undefined;
 
   /**
    * Object with keys for all properties with their current values.
    */
-  private _props: AnyObject = {};
+  private _props: PropertyValues = {};
+
   /**
    * Object with keys for any properties that have changed since the last
    * update cycle with previous values.
    */
-  private _changedProps: AnyObject|null = null;
+  private _changedProps?: PropertyValues|undefined;
 
   /**
-   * Node or ShadowRoot into which element DOM should be renderd. Defaults
+   * Node or ShadowRoot into which element DOM should be rendered. Defaults
    * to an open shadowRoot.
    */
   protected renderRoot?: Element|DocumentFragment;
@@ -335,7 +352,7 @@ export abstract class UpdatingElement extends HTMLElement {
    * Uses ShadyCSS to keep element DOM updated.
    */
   connectedCallback() {
-    if (this._validationState !== ValidationState.Disabled) {
+    if (this._validationState !== disabled) {
       window.ShadyCSS.styleElement(this);
     }
     this.invalidate();
@@ -397,7 +414,7 @@ export abstract class UpdatingElement extends HTMLElement {
         } else {
           this.setAttribute(attr, attrValue);
         }
-        this._serializingInfo = null;
+        this._serializingInfo = undefined;
       }
     }
   }
@@ -405,7 +422,7 @@ export abstract class UpdatingElement extends HTMLElement {
   private _attributeToProperty(name: string, value: string) {
     // Use tracking info to avoid deserializing attribute value if it was
     // just set from a property setter.
-    if (!this._serializingInfo ||
+    if (this._serializingInfo === undefined ||
         (this._serializingInfo[0] !== name && this._serializingInfo[1] !== value)) {
       const ctor = (this.constructor as typeof UpdatingElement);
       const propName = ctor._attributeToPropertyMap[name];
@@ -424,10 +441,10 @@ export abstract class UpdatingElement extends HTMLElement {
     if (this._isPendingUpdate()) {
       return this._validatePromise;
     }
-    this._validationState = ValidationState.Invalid;
+    this._validationState = invalid;
     // Make a new promise only if the current one is not pending resolution
-    // (resolver has not been set to null)
-    if (this._validateResolver === null) {
+    // (resolver has not been set to undefined)
+    if (this._validateResolver === undefined) {
       this._validatePromise = new Promise((resolve) => this._validateResolver = resolve);
     }
     // Wait a tick to actually process changes (allows batching).
@@ -435,36 +452,36 @@ export abstract class UpdatingElement extends HTMLElement {
     // Mixin instance properties once, if they exist.
     if (this._instanceProperties) {
       Object.assign(this, this._instanceProperties);
-      this._instanceProperties = null;
+      this._instanceProperties = undefined;
     }
     // Rip off changedProps.
     const changedProps = this._changedProps || {};
-    this._changedProps = null;
+    this._changedProps = undefined;
     if (this.shouldUpdate(changedProps)) {
       // During update (which is abstract), setting properties does not trigger invalidation.
-      if (this.update !== undefined) {
+      if (typeof this.update === 'function') {
         this.update(changedProps);
       }
-      this._validationState = ValidationState.Valid;
+      this._validationState = valid;
       // During finishUpdate (which is abstract), setting properties does trigger invalidation,
       // and users may choose to await other state, like children being updated.
-      if (this.finishUpdate !== undefined) {
+      if (typeof this.finishUpdate === 'function') {
         await this.finishUpdate(changedProps);
       }
     } else {
-      this._validationState = ValidationState.Valid;
+      this._validationState = valid;
     }
     // Only resolve the promise if we finish in a valid state (finishUpdate
     // did not trigger more work).
-    if (this._validationState === ValidationState.Valid && this._validateResolver) {
+    if (this._validationState === valid && this._validateResolver !== undefined) {
       this._validateResolver();
-      this._validateResolver = null;
+      this._validateResolver = undefined;
     }
     return this._validatePromise;
   }
 
   private _isPendingUpdate() {
-    return this._validationState === ValidationState.Invalid;
+    return this._validationState === invalid;
   }
 
   /**
@@ -480,7 +497,7 @@ export abstract class UpdatingElement extends HTMLElement {
    * control when to update.
    * * @param _changedProperties changed properties with old values
    */
-  protected shouldUpdate(_changedProperties: AnyObject): boolean {
+  protected shouldUpdate(_changedProperties: PropertyValues): boolean {
     return true;
   }
 
@@ -489,7 +506,7 @@ export abstract class UpdatingElement extends HTMLElement {
    * implemented to render and keep updated DOM in the element's root.
    * * @param _changedProperties changed properties with old values
    */
-  protected abstract update(_changedProperties: AnyObject): void;
+  protected abstract update(_changedProperties: PropertyValues): void;
 
   /**
    * Finishes updating the element. This method does nothing by default and
@@ -498,6 +515,6 @@ export abstract class UpdatingElement extends HTMLElement {
    * `invalidate` and `updateComplete` Proimses.
    * * @param _changedProperties changed properties with old values
    */
-  protected abstract finishUpdate(_changedProperties: AnyObject): void;
+  protected finishUpdate?(_changedProperties: PropertyValues): void;
 
 }

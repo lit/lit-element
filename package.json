@@ -28,7 +28,7 @@
     "mocha": "^5.0.5",
     "tslint": "^5.7.0",
     "typedoc": "^0.8.0",
-    "typescript": "^2.7.2",
+    "typescript": "^3.0.1",
     "uglify-es": "^3.3.9",
     "wct-browser-legacy": "^1.0.1",
     "web-component-tester": "^6.7.1"

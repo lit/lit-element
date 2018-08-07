@@ -42,10 +42,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
       }
 
-      get zot() { return this.getProperty('zot'); }
+      // a custom getter/setter can be created to customize property processing
+      get zot() { return this.getAttribute('zot'); }
 
       set zot(value) {
-        this.setProperty('zot', Number(value));
+        this.setAttribute('zot', value);
+        this.invalidate();
       }
 
 
@@ -54,7 +56,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.foo = 'foo';
         this.nug = [1, 2, 3];
         this.whales = 0;
-        this.zot = '5';
         this.addEventListener('click', async (e) => {
           this.whales++;
           await this.updateComplete;

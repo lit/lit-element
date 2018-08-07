@@ -12,7 +12,7 @@
  * http://polymer.github.io/PATENTS.txt
  */
 
-import {html, LitElement, BooleanAttribute} from '../lit-element.js';
+import {html, LitElement, BooleanAttribute, PropertyDeclarations} from '../lit-element.js';
 
 import {stripExpressionDelimeters, generateElementName} from './test-helpers.js';
 
@@ -241,7 +241,7 @@ suite('LitElement', () => {
     const fromAttribute = (value: any) => parseInt(value);
     const toAttribute = (value: any) => `${value}-attr`;
     class E extends LitElement {
-      static get properties() {
+      static get properties(): PropertyDeclarations {
         return {
           noAttr: {attribute: false},
           atTr: {attribute: true},
@@ -264,7 +264,7 @@ suite('LitElement', () => {
     customElements.define(generateElementName(), E);
 
     class F extends E {
-      static get properties() {
+      static get properties(): PropertyDeclarations {
         return {
           customAttr: {attribute: 'custom', reflect: true},
           shouldInvalidate: {shouldInvalidate},
@@ -286,7 +286,7 @@ suite('LitElement', () => {
     }
 
     class G extends F {
-      static get properties() {
+      static get properties(): PropertyDeclarations {
         return {
           fromAttribute: {type: fromAttribute},
           toAttribute: {reflect: true, type: {toAttribute}},

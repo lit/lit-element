@@ -22,8 +22,8 @@ export function classString(
     classInfo: {[name: string]: string|boolean|number}) {
   const o = [];
   for (const name in classInfo) {
-    const v = classInfo[name];
-    if (v) {
+    // we explicitly want a loose truthy check here.
+    if (classInfo[name]) {
       o.push(name);
     }
   }
@@ -31,9 +31,11 @@ export function classString(
 }
 
 /**
- * Returns a css style string formed by taking the properties in the `styleInfo`
- * object and appending the property name (dash-cased) colon the
- * property value. Properties are separated by a semi-colon.
+ * Returns a css style string formed from the `styleInfo` object. Property names
+ * are automatically converted from *camelCase* to *dash-case*, so that you can use
+ * unquoted names like `backgroundColor`. The property values are formatted
+ * as css. For example `{backgroundColor: 'red', borderTop: '5px'}` becomes
+ * `background-color: red; border-top: 5px;`.
  * @param styleInfo
  */
 export function styleString(
@@ -41,7 +43,7 @@ export function styleString(
   const o = [];
   for (const name in styleInfo) {
     const v = styleInfo[name];
-    if (v || v === 0) {
+    if (v != null) {
       o.push(`${name.replace(/([A-Z])/, '-$1').toLowerCase()}: ${v}`);
     }
   }

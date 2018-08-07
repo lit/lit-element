@@ -13,18 +13,39 @@ element's [Shadow DOM](https://developer.mozilla.org/en-US/docs/Web/Web_Componen
 and adds API help manage element properties and attributes. LitElement reacts to changes in properties
 and renders declaratively using `lit-html`.
 
-  * **Setup properties:** LitElement supports a static `properties` getter in which element property
-  accessors are described. For each property, an object configures settings where the options are:
+  * **Setup properties:** LitElement supports observable properties which may trigger an
+  update when set. These properties can be written in a few ways:
 
-    * attribute: if false, do not add to observedAttributes, if true or absent, observe the
-    lowercased property name, if a string observe that value.
-    * type: if a function, use to deserialize the attribute value to the property value;
-    also can be an object with `{fromAttribute, toAttribute}` where `fromAttribute` is
-    the deserialize function and `toAttribute` is a serialize function.
-    * reflect: if true, on setting the property reflects the property value to an
-    attribute value using `type.toAttribute` if it exists.
-    * shouldInvalidate: optional function which should return true if setting the property
-    should cause the element to invalidate causing it to asynchronously update.
+    * As class fields with the `@property()` [decorator](https://github.com/tc39/proposal-decorators#decorators),
+    if you're using a compiler that supports them, like TypeScript or Babel.
+    * With a static `properties` getter.
+    * By manually writing getters and setters. You can call `setProperty` or `invalidate`
+    to trigger an update. If you use `setProperty`, you can use `getProperty` in the getter.
+
+    Properties may be given an options argument which is an object that desribes how to
+    process the property. This may can be either in the `@property({...})` decorator or in the
+    object returned the `properties` getter, e.g. `static get properties { return { foo: {...} }`.
+
+    Property options include:
+
+    * `attribute`: Describes how and if the property becomes an observedAttribute.
+    If the value is false, the property is not added to `observedAttributes`.
+    If true or absent, the lowercased property name is observed (e.g. `fooBar` becomes `fobar`).
+    If a string, the string value is observed (e.g `attribute: 'foo-bar'`).
+    * `type`: Describes how to convert the attribute to/from a property.
+    If this value is a function, it is used to deserialize the attribute value
+    a the property value. If it's an object, it can have keys for `fromAttribute` and
+    `toAttribute` where `fromAttribute` is the deserialize function and `toAttribute`
+    is a serialize function used to convert the property to an attribute.
+    * `reflect`: Describes if the property should reflect to an attribute.
+    If true, when the property is set, the attribute value is set using the
+    attribute name taken from the property's `attribute` and the value
+    of the property serialized using `type.toAttribute` if it exists.
+    * `shouldInvalidate`: Describes if setting a property should trigger
+    invalidation and updating. This function takes the `new` and `oldValue` and
+    returns true if invalidation should occur. If not present, a strict identity
+    check is used. This is useful if a property should be considered dirty only
+    if some condition is met, like if a key of an object value changes.
 
   * **React to changes:** LitElement reacts to changes in properties and attributes by
   asynchronously rendering, ensuring changes are batched. This reduces overhead
@@ -79,8 +100,8 @@ and renders declaratively using `lit-html`.
 ## Minimal Example
 
   1. Create a class that extends `LitElement`.
-  1. Implement a static `properties` getter that returns the element's properties
-  (which automatically become observed attributes).
+  1. Use a `@property` decorator to create a property (or implement a static `properties`
+  getter that returns the element's properties). (which automatically become observed attributes).
   1. Then implement a `render()` method and use the element's
 current properties to return a `lit-html` template result to render
 into the element. This is the only method that must be implemented by subclasses.
@@ -92,7 +113,8 @@ into the element. This is the only method that must be implemented by subclasses
 
     class MyElement extends LitElement {
 
-      static get properties() { return { mood: {type: String} }}
+      @property({type: String})
+      mood = 'happy';
 
       render() {
         return html`<style> .mood { color: green; } </style>
@@ -121,7 +143,7 @@ See the [source](https://github.com/PolymerLabs/lit-element/blob/master/src/lit-
   should occur when property values change or `invalidate` is called. The `changedProps`
   argument is an object with keys for the changed properties pointing to their previous values.
   By default, this method always returns true, but this can be customized as
-  an optimization to avoid updating work when changes occur which should not be rendered.
+  an optimization to avoid updating work when changes occur, which should not be rendered.
 
   * `update()` (protected): This method calls `render()` and then uses `lit-html` to
   render the template DOM. Override to customize how the element renders DOM. Note,
@@ -134,16 +156,16 @@ See the [source](https://github.com/PolymerLabs/lit-element/blob/master/src/lit-
   Note, since `render()` is called by `update()` setting properties does not trigger
   `invalidate()`, allowing property values to be computed and validated.
 
-  * `finishUpdate(changedProps)` (protected): Called after element DOM has been updated and
-  before the `updateComplete` promise is resolved. The `changedProps` argument is an object
-  with keys for the changed properties pointing to their previous values. This is an
-  async function which is *awaited* before resolving the `updateComplete` promise.
-  Setting properties in `finishUpdate()` does trigger `invalidate()` and blocks
-  the `updateComplete` promise. Implement to directly control rendered DOM.
+  * `finishUpdate(changedProps): Promise?` (protected): Called after element DOM has been updated and
+  before the `updateComplete` promise is resolved. Implement to directly control rendered DOM.
   Typically this is not needed as `lit-html` can be used in the `render` method
   to set properties, attributes, and event listeners. However, it is sometimes useful
   for calling methods on rendered elements, for example focusing an input:
-  `this.shadowRoot.querySelector('input').focus()`.
+  `this.shadowRoot.querySelector('input').focus()`. The `changedProps` argument is an object
+  with keys for the changed properties pointing to their previous values. If this function
+  returns a `Promise`, it will be *awaited* before resolving the `updateComplete` promise.
+  Setting properties in `finishUpdate()` does trigger `invalidate()` and blocks
+  the `updateComplete` promise.
 
   * `updateComplete`: Returns a promise which resolves after the element next renders.
 
@@ -154,7 +176,8 @@ See the [source](https://github.com/PolymerLabs/lit-element/blob/master/src/lit-
 
 * When the element is first connected or a property is set (e.g. `element.foo = 5`)
   and the property's `shouldInvalidate(value, oldValue)` returns true. Then
-  * `invalidate()` tries to update the element after waiting a microtask. Then
+  * `invalidate()` tries to update the element after waiting a [microtask](https://jakearchibald.com/2015/tasks-microtasks-queues-and-schedules/) (at the end
+  of the event loop, before the next paint). Then
     * `shouldUpdate(changedProps)` is called and if this returns true which it
       does by default:
       * `update(changedProps)` is called to update the element.
@@ -178,16 +201,14 @@ import {LitElement, html} from '@polymer/lit-element';
 class MyElement extends LitElement {
 
   // Public property API that triggers re-render (synced with attributes)
-  static get properties() {
-    return {
-      foo: {type: String},
-      whales: {type: Number}
-    }
-  }
+  @property()
+  foo = 'foo';
+
+  @property({type: Number})
+  wales = 5;
 
   constructor() {
     super();
-    this.foo = 'foo';
     this.addEventListener('click', async (e) => {
       this.whales++;
       await this.updateComplete;
