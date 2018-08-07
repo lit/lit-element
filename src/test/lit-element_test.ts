@@ -234,6 +234,51 @@ suite('LitElement', () => {
     assert.equal(el.all, 16);
   });
 
+  test('properties defined using symbols', async() => {
+
+    const zug = Symbol();
+
+    class E extends LitElement {
+
+      static get properties() {
+        return {
+          foo: {},
+          [zug]: {}
+        };
+      }
+      updated = 0;
+      foo = 5;
+      [zug] = 6;
+
+      render() {
+        return html``;
+      }
+
+      update() {
+        this.updated++;
+      }
+
+    }
+    customElements.define(generateElementName(), E);
+    const el = new E();
+    container.appendChild(el);
+    await el.updateComplete;
+    assert.equal(el.updated, 1);
+    assert.equal(el.foo, 5);
+    assert.equal(el[zug], 6);
+    el.foo = 55;
+    await el.updateComplete;
+    assert.equal(el.updated, 2);
+    assert.equal(el.foo, 55);
+    assert.equal(el[zug], 6);
+    el[zug] = 66;
+    await el.updateComplete;
+    assert.equal(el.updated, 3);
+    assert.equal(el.foo, 55);
+    assert.equal(el[zug], 66);
+
+  });
+
 
   test('property options compose when subclassing', async() => {
 
@@ -347,6 +392,63 @@ suite('LitElement', () => {
     assert.equal(el.getAttribute('all-attr'), '16-attr');
     assert.equal(el.all, 16);
 
+  });
+
+  test('superclass properties not affected by subclass', async() => {
+
+    class E extends LitElement {
+      static get properties(): PropertyDeclarations {
+        return {
+          foo: {attribute: 'zug', reflect: true},
+          bar: {reflect: true}
+        };
+      }
+
+      foo = 5;
+      bar = 'bar';
+
+      render() { return html``; }
+
+    }
+    customElements.define(generateElementName(), E);
+
+    class F extends E {
+      static get properties(): PropertyDeclarations {
+        return {
+          foo: {attribute: false},
+          nug: {}
+        };
+      }
+
+      foo = 6;
+      bar = 'subbar';
+      nug = 5;
+
+      render() { return html``; }
+
+    }
+    customElements.define(generateElementName(), F);
+
+    const el = new E();
+    const sub = new F();
+    container.appendChild(el);
+    await el.updateComplete;
+    container.appendChild(sub);
+    await sub.updateComplete;
+
+    assert.equal(el.foo, 5);
+    assert.equal(el.getAttribute('zug'), '5');
+    assert.isFalse(el.hasAttribute('foo'));
+    assert.equal(el.bar, 'bar');
+    assert.equal(el.getAttribute('bar'), 'bar');
+    assert.isUndefined((el as any).nug);
+
+    assert.equal(sub.foo, 6);
+    assert.isFalse(sub.hasAttribute('zug'));
+    assert.isFalse(sub.hasAttribute('foo'));
+    assert.equal(sub.bar, 'subbar');
+    assert.equal(sub.getAttribute('bar'), 'subbar');
+    assert.equal(sub.nug, 5);
   });
 
    test('Attributes reflect with type.toAttribute and BooleanAttribute', async () => {
