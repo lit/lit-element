@@ -67,9 +67,10 @@ export interface PropertyDeclaration<T = any> {
   /**
    * Describes if setting a property should trigger invalidation and updating.
    * This function takes the `newValue` and `oldValue` and returns true if
-   * invalidation should occur. If not present, a strict identity check is
-   * used. This is useful if a property should be considered dirty only
-   * if some condition is met, like if a key of an object value changes.
+   * invalidation should occur. If not present, a strict identity check
+   * (eg. === operator) is used. This is useful if a property should be
+   * considered dirty only if some condition is met, like if a key of an
+   * object value changes.
    */
   shouldInvalidate?(value: T, oldValue: T): boolean;
 
