@@ -290,50 +290,52 @@ suite('LitElement', () => {
     assert.equal(el.getAttribute('all-attr'), '11-attr');
   });
 
-  test('properties defined using symbols', async() => {
+  if (Object.getOwnPropertySymbols) {
+    test('properties defined using symbols', async() => {
 
-    const zug = Symbol();
+      const zug = Symbol();
 
-    class E extends LitElement {
+      class E extends LitElement {
 
-      static get properties() {
-        return {
-          foo: {},
-          [zug]: {}
-        };
+        static get properties() {
+          return {
+            foo: {},
+            [zug]: {}
+          };
+        }
+        updated = 0;
+        foo = 5;
+        [zug] = 6;
+
+        render() {
+          return html``;
+        }
+
+        update() {
+          this.updated++;
+        }
+
       }
-      updated = 0;
-      foo = 5;
-      [zug] = 6;
+      customElements.define(generateElementName(), E);
+      const el = new E();
+      container.appendChild(el);
+      await el.updateComplete;
+      assert.equal(el.updated, 1);
+      assert.equal(el.foo, 5);
+      assert.equal(el[zug], 6);
+      el.foo = 55;
+      await el.updateComplete;
+      assert.equal(el.updated, 2);
+      assert.equal(el.foo, 55);
+      assert.equal(el[zug], 6);
+      el[zug] = 66;
+      await el.updateComplete;
+      assert.equal(el.updated, 3);
+      assert.equal(el.foo, 55);
+      assert.equal(el[zug], 66);
 
-      render() {
-        return html``;
-      }
-
-      update() {
-        this.updated++;
-      }
-
-    }
-    customElements.define(generateElementName(), E);
-    const el = new E();
-    container.appendChild(el);
-    await el.updateComplete;
-    assert.equal(el.updated, 1);
-    assert.equal(el.foo, 5);
-    assert.equal(el[zug], 6);
-    el.foo = 55;
-    await el.updateComplete;
-    assert.equal(el.updated, 2);
-    assert.equal(el.foo, 55);
-    assert.equal(el[zug], 6);
-    el[zug] = 66;
-    await el.updateComplete;
-    assert.equal(el.updated, 3);
-    assert.equal(el.foo, 55);
-    assert.equal(el[zug], 66);
-
-  });
+    });
+  }
 
 
   test('property options compose when subclassing', async() => {

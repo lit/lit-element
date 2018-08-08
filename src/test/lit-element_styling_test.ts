@@ -18,7 +18,7 @@ import {
   LitElement,
 } from '../lit-element.js';
 
-import {generateElementName, nextFrame} from './test-helpers.js';
+import {generateElementName, nextFrame, getComputedStyleValue} from './test-helpers.js';
 
 declare global {
   interface Window {
@@ -58,7 +58,7 @@ suite('Styling', () => {
     container.appendChild(el);
     await (el as LitElement).updateComplete;
     const div = el.shadowRoot!.querySelector('div');
-    assert.equal(getComputedStyle(div!).getPropertyValue('border-top-width').trim(), '2px');
+    assert.equal(getComputedStyleValue(div!, 'border-top-width').trim(), '2px');
   });
 
   test('shared styling rendered into shadowRoot is styled', async () => {
@@ -83,7 +83,7 @@ suite('Styling', () => {
     container.appendChild(el);
     await (el as LitElement).updateComplete;
     const div = el.shadowRoot!.querySelector('div');
-    assert.equal(getComputedStyle(div!).getPropertyValue('border-top-width').trim(), '4px');
+    assert.equal(getComputedStyleValue(div!, 'border-top-width').trim(), '4px');
   });
 
   test('custom properties render', async () => {
@@ -105,7 +105,7 @@ suite('Styling', () => {
     container.appendChild(el);
     await (el as LitElement).updateComplete;
     const div = el.shadowRoot!.querySelector('div');
-    assert.equal(getComputedStyle(div!).getPropertyValue('border-top-width').trim(), '8px');
+    assert.equal(getComputedStyleValue(div!, 'border-top-width').trim(), '8px');
   });
 
   test('custom properties flow to nested elements', async () => {
@@ -134,7 +134,7 @@ suite('Styling', () => {
     container.appendChild(el);
     await nextFrame();
     const div = el.shadowRoot!.querySelector('x-inner')!.shadowRoot!.querySelector('div');
-    assert.equal(getComputedStyle(div!).getPropertyValue('border-top-width').trim(), '8px');
+    assert.equal(getComputedStyleValue(div!, 'border-top-width').trim(), '8px');
   });
 
   test('elements with custom properties can move between elements', async () => {
@@ -177,10 +177,10 @@ suite('Styling', () => {
     await nextFrame();
     const inner = el.shadowRoot!.querySelector('x-inner1');
     div = inner!.shadowRoot!.querySelector('div');
-    assert.equal(getComputedStyle(div!).getPropertyValue('border-top-width').trim(), '2px');
+    assert.equal(getComputedStyleValue(div!, 'border-top-width').trim(), '2px');
     el2!.shadowRoot!.appendChild(inner!);
     await nextFrame();
-    assert.equal(getComputedStyle(div!).getPropertyValue('border-top-width').trim(), '8px');
+    assert.equal(getComputedStyleValue(div!, 'border-top-width').trim(), '8px');
   });
 
   test('@apply renders in nested elements', async () => {
@@ -211,7 +211,7 @@ suite('Styling', () => {
     container.appendChild(el);
     await nextFrame();
     const div = el.shadowRoot!.querySelector('x-inner2')!.shadowRoot!.querySelector('div');
-    assert.equal(getComputedStyle(div!).getPropertyValue('border-top-width').trim(), '10px');
+    assert.equal(getComputedStyleValue(div!, 'border-top-width').trim(), '10px');
   });
 
 });
@@ -252,11 +252,11 @@ suite('ShadyDOM', () => {
     container.appendChild(el);
     await el.updateComplete;
     const div = el.shadowRoot!.querySelector('div');
-    assert.equal(getComputedStyle(div!).getPropertyValue('border-top-width').trim(), '6px');
+    assert.equal(getComputedStyleValue(div!, 'border-top-width').trim(), '6px');
     border = `4px solid orange`;
     el.invalidate();
     await el.updateComplete;
-    assert.equal(getComputedStyle(div!).getPropertyValue('border-top-width').trim(), '6px');
+    assert.equal(getComputedStyleValue(div!, 'border-top-width').trim(), '6px');
   });
 
 });

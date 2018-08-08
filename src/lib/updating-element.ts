@@ -227,8 +227,10 @@ export abstract class UpdatingElement extends HTMLElement {
     for (const p in props) {
       makeProperty(p, this.prototype);
     }
-    // support symbols in properties
-    Object.getOwnPropertySymbols(props).forEach((p) => makeProperty(p, this.prototype));
+    // support symbols in properties (IE11 does not support this)
+    if (typeof Object.getOwnPropertySymbols === 'function') {
+      Object.getOwnPropertySymbols(props).forEach((p) => makeProperty(p, this.prototype));
+    }
     // initialize map populated in observedAttributes
     this._attributeToPropertyMap = {};
     // memoize list of all class properties.
