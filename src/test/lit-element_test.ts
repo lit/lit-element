@@ -12,7 +12,7 @@
  * http://polymer.github.io/PATENTS.txt
  */
 
-import {html, LitElement, BooleanAttribute, PropertyDeclarations} from '../lit-element.js';
+import {html, LitElement, BooleanAttribute, PropertyDeclarations, PropertyValues} from '../lit-element.js';
 
 import {stripExpressionDelimeters, generateElementName} from './test-helpers.js';
 
@@ -574,8 +574,8 @@ suite('LitElement', () => {
 
       render() { return html``; }
 
-      update() {
-        super.update();
+      update(props: PropertyValues) {
+        super.update(props);
         this.updatedValue = this.value;
         this.updatedAttrValue = this.attrValue;
       }
@@ -707,9 +707,9 @@ suite('LitElement', () => {
             return html`hi`;
           }
 
-          update() {
+          update(props: PropertyValues) {
             this.info.push('before-update');
-            super.update();
+            super.update(props);
           }
 
           async finishUpdate() {
@@ -740,10 +740,10 @@ suite('LitElement', () => {
       foo = 0;
       updated = 0;
 
-      update() {
+      update(props: PropertyValues) {
         this.updated++;
         this.foo++;
-        super.update();
+        super.update(props);
       }
 
       render() {
