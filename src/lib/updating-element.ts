@@ -86,7 +86,7 @@ interface AttributeMap {
   [key: string]: string;
 }
 
-interface PropertyValues {
+export interface PropertyValues {
   [key: string]: unknown;
 }
 
@@ -290,10 +290,10 @@ export abstract class UpdatingElement extends HTMLElement {
   }
 
   private _validationState: ValidationState = disabled;
-  private _serializingInfo: [string|null, string|null]|undefined = undefined;
-  private _instanceProperties: PropertyValues|undefined = undefined;
+  private _isReflectingProperty: boolean = false;
+  private _instanceProperties: PropertyValues|undefined;
   private _validatePromise: any = undefined;
-  private _validateResolver: (() => void)|undefined = undefined;
+  private _validateResolver: (() => void)|undefined;
 
   /**
    * Object with keys for all properties with their current values.
@@ -397,7 +397,6 @@ export abstract class UpdatingElement extends HTMLElement {
         this._changedProps[name] = this._props[name];
       }
       this._props[name] = value;
-      this._propertyToAttribute(name, value);
       this.invalidate();
     }
   }
@@ -408,15 +407,20 @@ export abstract class UpdatingElement extends HTMLElement {
     if (attrValue !== undefined) {
       const attr = ctor.attributeNameForProperty(name);
       if (attr !== undefined) {
-        // track the attr name/value being set to be able to avoid
-        // reflecting back to the property setter via attributeChangedCallback.
-        this._serializingInfo = [attr, attrValue];
+        // Track if the property is being reflected to avoid
+        // setting the property again via `attributeChangedCallback`. Note:
+        // 1. this takes advantage of the fact that the callback is synchronous.
+        // 2. will behave incorrectly if multiple attributes are in the reaction
+        // stack at time of calling. However, since we process attributes
+        // in `update` this should not be possible (or an extreme corner case
+        // that we'd like to discover).
+        this._isReflectingProperty = true;
         if (attrValue === null) {
           this.removeAttribute(attr);
         } else {
           this.setAttribute(attr, attrValue);
         }
-        this._serializingInfo = undefined;
+        this._isReflectingProperty = false;
       }
     }
   }
@@ -424,8 +428,7 @@ export abstract class UpdatingElement extends HTMLElement {
   private _attributeToProperty(name: string, value: string) {
     // Use tracking info to avoid deserializing attribute value if it was
     // just set from a property setter.
-    if (this._serializingInfo === undefined ||
-        (this._serializingInfo[0] !== name && this._serializingInfo[1] !== value)) {
+    if (!this._isReflectingProperty) {
       const ctor = (this.constructor as typeof UpdatingElement);
       const propName = ctor._attributeToPropertyMap[name];
       this[propName as keyof this] = ctor.propertyValueFromAttribute(propName, value);
@@ -461,9 +464,7 @@ export abstract class UpdatingElement extends HTMLElement {
     this._changedProps = undefined;
     if (this.shouldUpdate(changedProps)) {
       // During update (which is abstract), setting properties does not trigger invalidation.
-      if (typeof this.update === 'function') {
-        this.update(changedProps);
-      }
+      this.update(changedProps);
       this._validationState = valid;
       // During finishUpdate (which is abstract), setting properties does trigger invalidation,
       // and users may choose to await other state, like children being updated.
@@ -504,11 +505,15 @@ export abstract class UpdatingElement extends HTMLElement {
   }
 
   /**
-   * Updates the element. This method does nothing by default and should be
-   * implemented to render and keep updated DOM in the element's root.
+   * Updates the element. By default this method reflects property values to attributes.
+   * It should be implemented to render and keep updated DOM in the element's root.
    * * @param _changedProperties changed properties with old values
    */
-  protected abstract update(_changedProperties: PropertyValues): void;
+  protected update(_changedProperties: PropertyValues): void {
+    for (const name in _changedProperties) {
+      this._propertyToAttribute(name, (this as any)[name]);
+    }
+  }
 
   /**
    * Finishes updating the element. This method does nothing by default and

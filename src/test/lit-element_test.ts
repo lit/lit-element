@@ -234,6 +234,62 @@ suite('LitElement', () => {
     assert.equal(el.all, 16);
   });
 
+  test('attributes deserialize from html', async() => {
+
+    const shouldInvalidate = (value: any, old: any) => old === undefined || value > old;
+    const fromAttribute = (value: any) => parseInt(value);
+    const toAttributeOnly = (value: any) => typeof value === 'string' && value.indexOf(`-attr`) > 0 ? value : `${value}-attr`;
+    const toAttribute = (value: any) => `${value}-attr`;
+    class E extends LitElement {
+      static get properties() {
+        return {
+          noAttr: {attribute: false},
+          atTr: {attribute: true},
+          customAttr: {attribute: 'custom', reflect: true},
+          shouldInvalidate: {shouldInvalidate},
+          fromAttribute: {type: fromAttribute},
+          toAttribute: {reflect: true, type: {toAttribute: toAttributeOnly}},
+          all: {attribute: 'all-attr', shouldInvalidate, type: {fromAttribute, toAttribute}, reflect: true},
+        };
+      }
+
+      noAttr = 'noAttr';
+      atTr = 'attr';
+      customAttr = 'customAttr';
+      shouldInvalidate = 10;
+      fromAttribute = 1;
+      toAttribute: string|number = 1;
+      all = 10;
+
+      render() { return html``; }
+
+    }
+    const name = generateElementName();
+    customElements.define(name, E);
+    container.innerHTML = `<${name}
+      noattr="1"
+      attr="2"
+      custom="3"
+      shouldInvalidate="5"
+      fromAttribute="6-attr"
+      toAttribute="7"
+      all-attr="11-attr"></${name}>`;
+    const el = container.firstChild as E;
+    await el.updateComplete;
+    assert.equal(el.noAttr, 'noAttr');
+    assert.equal(el.getAttribute('noattr'), '1');
+    assert.equal(el.atTr, '2');
+    assert.equal(el.customAttr, '3');
+    assert.equal(el.getAttribute('custom'), '3');
+    assert.equal(el.shouldInvalidate, 10);
+    assert.equal(el.getAttribute('shouldinvalidate'), '5');
+    assert.equal(el.fromAttribute, 6);
+    assert.equal(el.toAttribute, '7');
+    assert.equal(el.getAttribute('toattribute'), '7-attr');
+    assert.equal(el.all, 11);
+    assert.equal(el.getAttribute('all-attr'), '11-attr');
+  });
+
   test('properties defined using symbols', async() => {
 
     const zug = Symbol();

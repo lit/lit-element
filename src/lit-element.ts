@@ -15,7 +15,7 @@ import {render} from 'lit-html/lib/shady-render';
 import {TemplateResult} from 'lit-html';
 import {UpdatingElement} from './lib/updating-element.js';
 
-export {property, identity, BooleanAttribute, PropertyDeclarations, PropertyDeclaration} from './lib/updating-element.js';
+export {property, identity, BooleanAttribute, PropertyDeclarations, PropertyDeclaration, PropertyValues} from './lib/updating-element.js';
 export {html, svg} from 'lit-html/lib/lit-extended';
 
 
@@ -25,7 +25,8 @@ export abstract class LitElement extends UpdatingElement {
    * Override which performs element rendering by calling the `render` method.
    * Override to perform tasks before and/or after updating.
    */
-  protected update() {
+  protected update(_props: PropertyValues) {
+    super.update(_props);
     if (typeof this.render === 'function') {
       render(this.render(), this.renderRoot!, this.localName!);
     } else {
@@ -36,7 +37,6 @@ export abstract class LitElement extends UpdatingElement {
   /**
    Invoked on each update to perform rendering tasks. This method must return a
    lit-html TemplateResult.
-   * @param {*} _props Current element properties
    * @returns {TemplateResult} Must return a lit-html TemplateResult.
    */
   protected abstract render(): TemplateResult;
