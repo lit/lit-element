@@ -1,6 +1,6 @@
 {
   "name": "@polymer/lit-element",
-  "version": "0.5.2",
+  "version": "0.6.0-dev.1",
   "description": "Polymer based lit-html custom element",
   "license": "BSD-3-Clause",
   "repository": "Polymer/lit-element",
@@ -35,7 +35,7 @@
   },
   "typings": "lit-element.d.ts",
   "dependencies": {
-    "lit-html": "^0.10.2"
+    "lit-html": "dev"
   },
   "publishConfig": {
     "access": "public"

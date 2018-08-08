@@ -297,6 +297,7 @@ export abstract class UpdatingElement extends HTMLElement {
   private _instanceProperties: PropertyValues|undefined;
   private _validatePromise: any = undefined;
   private _validateResolver: (() => void)|undefined;
+  private _firstUpdated: boolean = false;
 
   /**
    * Object with keys for all properties with their current values.
@@ -357,7 +358,7 @@ export abstract class UpdatingElement extends HTMLElement {
    * Uses ShadyCSS to keep element DOM updated.
    */
   connectedCallback() {
-    if (this._validationState !== disabled) {
+    if (this._validationState !== disabled && typeof window.ShadyCSS !== 'undefined') {
       window.ShadyCSS.styleElement(this);
     }
     this.invalidate();
@@ -474,6 +475,12 @@ export abstract class UpdatingElement extends HTMLElement {
       if (typeof this.finishUpdate === 'function') {
         await this.finishUpdate(changedProps);
       }
+      if (!this._firstUpdated) {
+        this._firstUpdated = true;
+        if (typeof this.firstUpdated === 'function') {
+          this.firstUpdated();
+        }
+      }
     } else {
       this._validationState = valid;
     }
@@ -520,11 +527,18 @@ export abstract class UpdatingElement extends HTMLElement {
 
   /**
    * Finishes updating the element. This method does nothing by default and
-   * should be implemented to perform post update tasks on element DOM. This
-   * async function can await other Promises to defer the resolution of the
-   * `invalidate` and `updateComplete` Proimses.
+   * can be implemented to perform post update tasks on element DOM.
    * * @param _changedProperties changed properties with old values
+   * * @returns {Promise} Optionally can return a promise that blocks
+   * resolution of the `invalidate` and updateComplete` promise.
    */
-  protected finishUpdate?(_changedProperties: PropertyValues): void;
+  protected finishUpdate?(_changedProperties: PropertyValues): void|Promise<any>;
 
+  /**
+   * Called with the element is first updated. This method does nothing by
+   * default and can be implemented to perform post first update tasks on
+   * element DOM. Any tasks which should synchronous with dynamic updates
+   * should be implemented in `finishUpdate`.
+   */
+  protected firstUpdated?(): void;
 }

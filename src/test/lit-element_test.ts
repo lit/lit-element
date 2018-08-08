@@ -691,7 +691,39 @@ suite('LitElement', () => {
        });
 
   test(
-      'render lifecycle order: shouldUpdate, update, render, updateComplete', async () => {
+      'firstUpdated called when element first updates', async () => {
+        class E extends LitElement {
+
+          wasUpdated = 0;
+          wasFirstUpdated = 0;
+
+          update(_props: PropertyValues) {
+            this.wasUpdated++;
+          }
+
+          render() { return html``; }
+
+          firstUpdated() {
+            this.wasFirstUpdated++;
+          }
+
+        }
+        customElements.define(generateElementName(), E);
+        const el = new E();
+        container.appendChild(el);
+        await el.updateComplete;
+        assert.equal(el.wasUpdated, 1);
+        assert.equal(el.wasFirstUpdated, 1);
+        await el.invalidate();
+        assert.equal(el.wasUpdated, 2);
+        assert.equal(el.wasFirstUpdated, 1);
+        await el.invalidate();
+        assert.equal(el.wasUpdated, 3);
+        assert.equal(el.wasFirstUpdated, 1);
+      });
+
+  test(
+      'render lifecycle order: shouldUpdate, update, render, finishUpdate, firstUpdated, updateComplete', async () => {
         class E extends LitElement {
           static get properties() { return {
             foo: {type: Number}
@@ -714,10 +746,13 @@ suite('LitElement', () => {
             super.update(props);
           }
 
-          async finishUpdate() {
+          finishUpdate(_changedProps: PropertyValues) {
             this.info.push('finishUpdate');
           }
 
+          firstUpdated() {
+            this.info.push('firistUpdated');
+          }
 
         }
         customElements.define(generateElementName(), E);
@@ -727,7 +762,7 @@ suite('LitElement', () => {
         el.info.push('updateComplete');
         assert.deepEqual(
             el.info,
-            [ 'shouldUpdate', 'before-update', 'render', 'finishUpdate', 'updateComplete' ]);
+            [ 'shouldUpdate', 'before-update', 'render', 'finishUpdate', 'firistUpdated', 'updateComplete' ]);
       });
 
   test('setting properties in update does not trigger invalidation', async () => {
