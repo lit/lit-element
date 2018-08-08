@@ -13,7 +13,7 @@
  */
 
 /**
- * Returns a string of css class names formed by taking the properties
+ * Returns a string of CSS class names formed by taking the properties
  * in the `classInfo` object and appending the property name to the string of
  * class names if the property value is truthy.
  * @param classInfo
@@ -22,7 +22,8 @@ export function classString(
     classInfo: {[name: string]: string|boolean|number}) {
   const o = [];
   for (const name in classInfo) {
-    // we explicitly want a loose truthy check here.
+    // We explicitly want a loose truthy check here because
+    // it seems more convenient that '' and 0 are skipped.
     if (classInfo[name]) {
       o.push(name);
     }
@@ -31,7 +32,7 @@ export function classString(
 }
 
 /**
- * Returns a css style string formed from the `styleInfo` object. Property names
+ * Returns a CSS style string formed from the `styleInfo` object. Property names
  * are automatically converted from *camelCase* to *dash-case*, so that you can use
  * unquoted names like `backgroundColor`. The property values are formatted
  * as css. For example `{backgroundColor: 'red', borderTop: '5px'}` becomes

@@ -20,29 +20,32 @@ and renders declaratively using `lit-html`.
     if you're using a compiler that supports them, like TypeScript or Babel.
     * With a static `properties` getter.
     * By manually writing getters and setters. You can call `setProperty` or `invalidate`
-    to trigger an update. If you use `setProperty`, you can use `getProperty` in the getter.
+    to trigger an update. If you use `setProperty`, you should use `getProperty` in the getter.
 
-    Properties may be given an options argument which is an object that desribes how to
-    process the property. This may can be either in the `@property({...})` decorator or in the
-    object returned the `properties` getter, e.g. `static get properties { return { foo: {...} }`.
+    Properties can be given an options argument which is an object that describes how to
+    process the property. This can be done either in the `@property({...})` decorator or in the
+    object returned from the `properties` getter, e.g. `static get properties { return { foo: {...} }`.
 
     Property options include:
 
-    * `attribute`: Describes how and if the property becomes an observedAttribute.
+    * `attribute`: Describes how and if the property becomes an observed attribute.
     If the value is false, the property is not added to `observedAttributes`.
-    If true or absent, the lowercased property name is observed (e.g. `fooBar` becomes `fobar`).
+    If true or absent, the lowercased property name is observed (e.g. `fooBar` becomes `foobar`).
     If a string, the string value is observed (e.g `attribute: 'foo-bar'`).
-    * `type`: Describes how to convert the attribute to/from a property.
+    * `type`: Describes how to serialize and deserialize the attribute to/from a property.
     If this value is a function, it is used to deserialize the attribute value
     a the property value. If it's an object, it can have keys for `fromAttribute` and
     `toAttribute` where `fromAttribute` is the deserialize function and `toAttribute`
-    is a serialize function used to convert the property to an attribute.
+    is a serialize function used to set the property to an attribute. If no `toAttribute`
+    function is provided and `reflect` is set to true, the property value is set
+    directly to the attribute.
     * `reflect`: Describes if the property should reflect to an attribute.
-    If true, when the property is set, the attribute value is set using the
-    attribute name taken from the property's `attribute` and the value
-    of the property serialized using `type.toAttribute` if it exists.
+    If true, when the property is set, the attribute is set using the
+    attribute name determined according to the rules for the `attribute`
+    propety option and the value of the property serialized using the rules from
+    the `type` property option.
     * `shouldInvalidate`: Describes if setting a property should trigger
-    invalidation and updating. This function takes the `new` and `oldValue` and
+    invalidation and updating. This function takes the `newValue` and `oldValue` and
     returns true if invalidation should occur. If not present, a strict identity
     check is used. This is useful if a property should be considered dirty only
     if some condition is met, like if a key of an object value changes.
@@ -205,7 +208,7 @@ class MyElement extends LitElement {
   foo = 'foo';
 
   @property({type: Number})
-  wales = 5;
+  whales = 5;
 
   constructor() {
     super();

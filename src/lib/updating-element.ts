@@ -37,38 +37,39 @@ type AttributeType<T = any> = AttributeSerializer<T>|((value: string) => T);
 export interface PropertyDeclaration<T = any> {
 
   /**
-   * Describes how and if the property becomes an observedAttribute.
+   * Describes how and if the property becomes an observed attribute.
    * If the value is false, the property is not added to `observedAttributes`.
-   * If true or absent, the lowercased property name is observed (e.g. `fooBar` becomes `fobar`).
+   * If true or absent, the lowercased property name is observed (e.g. `fooBar` becomes `foobar`).
    * If a string, the string value is observed (e.g `attribute: 'foo-bar'`).
    */
   attribute?: boolean|string;
 
   /**
-   * Describes how to convert the attribute to/from a property.
+   * Describes how to serialize and deserialize the attribute to/from a property.
    * If this value is a function, it is used to deserialize the attribute value
-   * a the property value. If it's an AttributeSerializer, it can have keys for
-   * `fromAttribute` and `toAttribute` where `fromAttribute` is the deserialize
-   * function and `toAttribute` is a serialize function used to convert the property
-   * to an attribute.
+   * a the property value. If it's an object, it can have keys for `fromAttribute` and
+   * `toAttribute` where `fromAttribute` is the deserialize function and `toAttribute`
+   * is a serialize function used to set the property to an attribute. If no `toAttribute`
+   * function is provided and `reflect` is set to true, the property value is set
+   * directly to the attribute.
    */
   type?: AttributeType<T>;
 
   /**
    * Describes if the property should reflect to an attribute.
-   * If true, when the property is set, the attribute value is set using the
-   * attribute name taken from the property's `attribute` and the value
-   * of the property serialized using `type.toAttribute` if it exists.
+   * If true, when the property is set, the attribute is set using the
+   * attribute name determined according to the rules for the `attribute`
+   * propety option and the value of the property serialized using the rules from
+   * the `type` property option.
    */
   reflect?: boolean;
 
   /**
    * Describes if setting a property should trigger invalidation and updating.
-   * This function takes the new and oldValue and returns true if invalidation
-   * should occur. If not present, a strict identity check is used. This is useful
-   * if a property should be considered dirty only if some condition is met;
-   * for example, the function could return true only when the key property of
-   * an object value changed.
+   * This function takes the `newValue` and `oldValue` and returns true if
+   * invalidation should occur. If not present, a strict identity check is
+   * used. This is useful if a property should be considered dirty only
+   * if some condition is met, like if a key of an object value changes.
    */
   shouldInvalidate?(value: T, oldValue: T): boolean;
 
