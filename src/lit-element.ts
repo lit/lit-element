@@ -16,7 +16,7 @@ import {TemplateResult} from 'lit-html';
 import {UpdatingElement, PropertyValues} from './lib/updating-element.js';
 
 export {property, identity, BooleanAttribute, PropertyDeclarations, PropertyDeclaration, PropertyValues} from './lib/updating-element.js';
-export {html, svg} from 'lit-html/lib/lit-extended';
+export {html, svg} from 'lit-html/lit-html';
 
 
 export abstract class LitElement extends UpdatingElement {

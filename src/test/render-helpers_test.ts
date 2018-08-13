@@ -50,7 +50,7 @@ suite('Render Helpers', () => {
       render() {
         const {foo, bar, baz} = this;
         return html
-        `<div class$="${classString({ foo, bar, zonk: baz })}"></div>`;
+        `<div class="${classString({ foo, bar, zonk: baz })}"></div>`;
       }
     }
     customElements.define(generateElementName(), E);
@@ -88,7 +88,7 @@ suite('Render Helpers', () => {
 
       render() {
         const {marginTop, paddingTop, zug} = this;
-        return html`<div style$="${
+        return html`<div style="${
             styleString({
               marginTop,
               paddingTop,

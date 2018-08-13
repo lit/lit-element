@@ -674,7 +674,7 @@ suite('LitElement', () => {
              const prop = 'prop';
              const event = (e: Event) => { this._event = e; };
              return html
-             `<div attr$="${attr}" prop="${prop}" on-zug="${event}"></div>`;
+             `<div attr="${attr}" .prop="${prop}" @zug="${event}"></div>`;
            }
          }
          customElements.define(generateElementName(), E);
