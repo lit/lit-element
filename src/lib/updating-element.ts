@@ -301,13 +301,13 @@ export abstract class UpdatingElement extends HTMLElement {
   /**
    * Object with keys for all properties with their current values.
    */
-  private _props: PropertyValues = {};
+  private _propertyValues: PropertyValues = {};
 
   /**
    * Object with keys for any properties that have changed since the last
    * update cycle with previous values.
    */
-  private _changedProps?: PropertyValues|undefined;
+  private _changedProperties?: PropertyValues|undefined;
 
   /**
    * Node or ShadowRoot into which element DOM should be rendered. Defaults
@@ -377,7 +377,7 @@ export abstract class UpdatingElement extends HTMLElement {
    * to get property values of registered properties.
    */
   protected getProperty(name: string) {
-    return this._props[name];
+    return this._propertyValues[name];
   }
 
   /**
@@ -388,17 +388,17 @@ export abstract class UpdatingElement extends HTMLElement {
    * it does not trigger `invalidate`.
    */
   protected setProperty(name: string, value: unknown) {
-    const old = this._props[name];
+    const old = this._propertyValues[name];
     const ctor = (this.constructor as typeof UpdatingElement);
     if (ctor._propertyShouldInvalidate(name, value, old)) {
       // track old value when changing.
-      if (!this._changedProps) {
-        this._changedProps = {};
+      if (!this._changedProperties) {
+        this._changedProperties = {};
       }
-      if (!(name in this._changedProps)) {
-        this._changedProps[name] = this._props[name];
+      if (!(name in this._changedProperties)) {
+        this._changedProperties[name] = this._propertyValues[name];
       }
-      this._props[name] = value;
+      this._propertyValues[name] = value;
       this.invalidate();
     }
   }
@@ -445,7 +445,7 @@ export abstract class UpdatingElement extends HTMLElement {
    */
   async invalidate() {
     // Do not re-queue validation if already invalid (pending) or currently updating.
-    if (this._isPendingUpdate()) {
+    if (this._isPendingUpdate) {
       return this._validatePromise;
     }
     this._validationState = invalid;
@@ -462,8 +462,8 @@ export abstract class UpdatingElement extends HTMLElement {
       this._instanceProperties = undefined;
     }
     // Rip off changedProps.
-    const changedProps = this._changedProps || {};
-    this._changedProps = undefined;
+    const changedProps = this._changedProperties || {};
+    this._changedProperties = undefined;
     if (this.shouldUpdate(changedProps)) {
       // During update (which is abstract), setting properties does not trigger invalidation.
       this.update(changedProps);
@@ -490,14 +490,14 @@ export abstract class UpdatingElement extends HTMLElement {
     }
     // Only resolve the promise if we finish in a valid state (finishUpdate
     // did not trigger more work).
-    if (this._validationState === valid && this._validateResolver !== undefined) {
-      this._validateResolver();
+    if (this._validationState === valid) {
+      this._validateResolver!();
       this._validateResolver = undefined;
     }
     return this._validatePromise;
   }
 
-  private _isPendingUpdate() {
+  private get _isPendingUpdate() {
     return this._validationState === invalid;
   }
 
@@ -505,7 +505,7 @@ export abstract class UpdatingElement extends HTMLElement {
    * Returns a Promise that resolves when the element has finished updating.
    */
   get updateComplete() {
-    return this._isPendingUpdate() ? this._validatePromise : Promise.resolve();
+    return this._isPendingUpdate ? this._validatePromise : Promise.resolve();
   }
 
   /**
@@ -521,6 +521,8 @@ export abstract class UpdatingElement extends HTMLElement {
   /**
    * Updates the element. By default this method reflects property values to attributes.
    * It should be implemented to render and keep updated DOM in the element's root.
+   * Note, within `update()` setting properties does not trigger `invalidate()`, allowing
+   * property values to be computed and validated before DOM is rendered and updated.
    * * @param _changedProperties changed properties with old values
    */
   protected update(_changedProperties: PropertyValues): void {
@@ -532,8 +534,16 @@ export abstract class UpdatingElement extends HTMLElement {
   /**
    * Finishes updating the element. This method does nothing by default and
    * can be implemented to perform post update tasks on element DOM.
+   * Note, setting properties in `finishUpdate()` triggers `invalidate()`.
+   * There are a couple of common cases when it's useful to implement
+   * `finishUpdate`:
+   * (1) A property should be updated based on the rendered state of the
+   * DOM. In this case it's important to avoid creating a loop since setting
+   * properties triggers invalidate and update.
+   * (2) The `updateComplete` promise should block on the `updateComplete` promise
+   * of a rendered `UpdatingElement`.
    * * @param _changedProperties changed properties with old values
-   * * @returns {Promise} Optionally can return a promise that blocks
+   * * @returns {Promise} Optionally, this function can return a promise that blocks
    * resolution of the `invalidate` and updateComplete` promise.
    */
   protected finishUpdate?(_changedProperties: PropertyValues): void|Promise<unknown>;
