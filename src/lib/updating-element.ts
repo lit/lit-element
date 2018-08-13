@@ -199,7 +199,7 @@ export abstract class UpdatingElement extends HTMLElement {
       this._finalize();
       this._observedAttributes = [];
       for (const p in this._classProperties) {
-        const attr = this.attributeNameForProperty(p);
+        const attr = this._attributeNameForProperty(p);
         if (attr !== undefined) {
           this._attributeToPropertyMap[attr] = p;
           this._observedAttributes.push(attr);
@@ -242,9 +242,9 @@ export abstract class UpdatingElement extends HTMLElement {
   /**
    * Returns the property name for the given attribute `name`.
    */
-  private static attributeNameForProperty(name: string) {
+  private static _attributeNameForProperty(name: string) {
     const info = this._classProperties[name];
-    const attribute = info && info.attribute;
+    const attribute = info !== undefined && info.attribute;
     return attribute === false ? undefined : (typeof attribute === 'string' ?
         attribute : name.toLowerCase());
   }
@@ -254,10 +254,9 @@ export abstract class UpdatingElement extends HTMLElement {
    * Called when a property value is set and uses the `shouldInvalidate`
    * option for the property if present or a strict identity check.
    */
-  // tslint:disable-next-line no-any
-  private static propertyShouldInvalidate(name: string, value: any, old: any) {
+  private static _propertyShouldInvalidate(name: string, value: unknown, old: unknown) {
     const info = this._classProperties[name];
-    const fn = info && info.shouldInvalidate || identity;
+    const fn = info !== undefined && info.shouldInvalidate || identity;
     return fn(value, old);
   }
 
@@ -266,10 +265,10 @@ export abstract class UpdatingElement extends HTMLElement {
    * Called via the `attributeChangedCallback` and uses the property's `type`
    * or `type.fromAttribute` property option.
    */
-  private static propertyValueFromAttribute(name: string, value: string) {
+  private static _propertyValueFromAttribute(name: string, value: string) {
     const info = this._classProperties[name];
     const type = info && info.type;
-    if (!type) {
+    if (type === undefined) {
       return value;
     }
     const fromAttribute = typeof type === 'function' ? type : type.fromAttribute;
@@ -283,10 +282,9 @@ export abstract class UpdatingElement extends HTMLElement {
    * attribute will be set to the value.
    * This uses the property's `reflect` and `type.toAttribute` property options.
    */
-  // tslint:disable-next-line no-any
-  private static propertyValueToAttribute(name: string, value: any) {
+  private static _propertyValueToAttribute(name: string, value: unknown) {
     const info = this._classProperties[name];
-    if (!info || !info.reflect) {
+    if (info === undefined || info.reflect === undefined) {
       return;
     }
     const toAttribute = info.type && (info.type as AttributeSerializer).toAttribute || String;
@@ -296,9 +294,9 @@ export abstract class UpdatingElement extends HTMLElement {
   private _validationState: ValidationState = disabled;
   private _isReflectingProperty: boolean = false;
   private _instanceProperties: PropertyValues|undefined;
-  private _validatePromise: any = undefined;
+  private _validatePromise: Promise<unknown>|undefined;
   private _validateResolver: (() => void)|undefined;
-  private _firstUpdated: boolean = false;
+  private _firstUpdateFinished: boolean = false;
 
   /**
    * Object with keys for all properties with their current values.
@@ -327,7 +325,7 @@ export abstract class UpdatingElement extends HTMLElement {
    * create the element `root` node and captures any pre-set values for
    * registered properties.
    */
-  initialize() {
+  protected initialize() {
     this.renderRoot = this.createRenderRoot();
     // Apply any properties set on the instance before upgrade time.
     for (const p in (this.constructor as typeof UpdatingElement)._classProperties) {
@@ -389,11 +387,10 @@ export abstract class UpdatingElement extends HTMLElement {
    * the element. If a property value is set inside the `update` method,
    * it does not trigger `invalidate`.
    */
-  // tslint:disable-next-line no-any
-  protected setProperty(name: string, value: any) {
+  protected setProperty(name: string, value: unknown) {
     const old = this._props[name];
     const ctor = (this.constructor as typeof UpdatingElement);
-    if (ctor.propertyShouldInvalidate(name, value, old)) {
+    if (ctor._propertyShouldInvalidate(name, value, old)) {
       // track old value when changing.
       if (!this._changedProps) {
         this._changedProps = {};
@@ -406,11 +403,11 @@ export abstract class UpdatingElement extends HTMLElement {
     }
   }
 
-  private _propertyToAttribute(name: string, value: any) {
+  private _propertyToAttribute(name: string, value: unknown) {
     const ctor = (this.constructor as typeof UpdatingElement);
-    const attrValue = ctor.propertyValueToAttribute(name, value);
+    const attrValue = ctor._propertyValueToAttribute(name, value);
     if (attrValue !== undefined) {
-      const attr = ctor.attributeNameForProperty(name);
+      const attr = ctor._attributeNameForProperty(name);
       if (attr !== undefined) {
         // Track if the property is being reflected to avoid
         // setting the property again via `attributeChangedCallback`. Note:
@@ -436,7 +433,7 @@ export abstract class UpdatingElement extends HTMLElement {
     if (!this._isReflectingProperty) {
       const ctor = (this.constructor as typeof UpdatingElement);
       const propName = ctor._attributeToPropertyMap[name];
-      this[propName as keyof this] = ctor.propertyValueFromAttribute(propName, value);
+      this[propName as keyof this] = ctor._propertyValueFromAttribute(propName, value);
     }
   }
 
@@ -471,15 +468,21 @@ export abstract class UpdatingElement extends HTMLElement {
       // During update (which is abstract), setting properties does not trigger invalidation.
       this.update(changedProps);
       this._validationState = valid;
+      if (!this._firstUpdateFinished) {
+        this._firstUpdateFinished = true;
+        if (typeof this.finishFirstUpdate === 'function') {
+          const result = this.finishFirstUpdate();
+          if (result != null && typeof (result as PromiseLike<unknown>).then === 'function') {
+            await result;
+          }
+        }
+      }
       // During finishUpdate (which is abstract), setting properties does trigger invalidation,
       // and users may choose to await other state, like children being updated.
       if (typeof this.finishUpdate === 'function') {
-        await this.finishUpdate(changedProps);
-      }
-      if (!this._firstUpdated) {
-        this._firstUpdated = true;
-        if (typeof this.firstUpdated === 'function') {
-          this.firstUpdated();
+        const result = this.finishUpdate(changedProps);
+        if (result != null && typeof (result as PromiseLike<unknown>).then === 'function') {
+          await result;
         }
       }
     } else {
@@ -533,13 +536,15 @@ export abstract class UpdatingElement extends HTMLElement {
    * * @returns {Promise} Optionally can return a promise that blocks
    * resolution of the `invalidate` and updateComplete` promise.
    */
-  protected finishUpdate?(_changedProperties: PropertyValues): void|Promise<any>;
+  protected finishUpdate?(_changedProperties: PropertyValues): void|Promise<unknown>;
 
   /**
    * Called with the element is first updated. This method does nothing by
    * default and can be implemented to perform post first update tasks on
-   * element DOM. Any tasks which should synchronous with dynamic updates
-   * should be implemented in `finishUpdate`.
+   * element DOM. Any tasks which depend on dynamic updates should instead
+   * be implemented in `finishUpdate`.
+   * * @returns {Promise} Optionally can return a promise that blocks
+   * resolution of the `invalidate` and updateComplete` promise.
    */
-  protected firstUpdated?(): void;
+  protected finishFirstUpdate?(): void;
 }

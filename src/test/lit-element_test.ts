@@ -691,7 +691,7 @@ suite('LitElement', () => {
        });
 
   test(
-      'firstUpdated called when element first updates', async () => {
+      'finishFirstUpdate called when element first updates', async () => {
         class E extends LitElement {
 
           wasUpdated = 0;
@@ -703,7 +703,7 @@ suite('LitElement', () => {
 
           render() { return html``; }
 
-          firstUpdated() {
+          finishFirstUpdate() {
             this.wasFirstUpdated++;
           }
 
@@ -723,7 +723,7 @@ suite('LitElement', () => {
       });
 
   test(
-      'render lifecycle order: shouldUpdate, update, render, finishUpdate, firstUpdated, updateComplete', async () => {
+      'render lifecycle order: shouldUpdate, update, render, finishUpdate, finishFirstUpdate, updateComplete', async () => {
         class E extends LitElement {
           static get properties() { return {
             foo: {type: Number}
@@ -750,8 +750,8 @@ suite('LitElement', () => {
             this.info.push('finishUpdate');
           }
 
-          firstUpdated() {
-            this.info.push('firistUpdated');
+          finishFirstUpdate() {
+            this.info.push('finishFirstUpdate');
           }
 
         }
@@ -762,7 +762,7 @@ suite('LitElement', () => {
         el.info.push('updateComplete');
         assert.deepEqual(
             el.info,
-            [ 'shouldUpdate', 'before-update', 'render', 'finishUpdate', 'firistUpdated', 'updateComplete' ]);
+            [ 'shouldUpdate', 'before-update', 'render', 'finishFirstUpdate', 'finishUpdate', 'updateComplete' ]);
       });
 
   test('setting properties in update does not trigger invalidation', async () => {
