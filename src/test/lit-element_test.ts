@@ -335,6 +335,63 @@ suite('LitElement', () => {
       assert.equal(el[zug], 66);
 
     });
+
+    // TODO(sorvell): Skipping since this is not currently supported, see:
+    // https://github.com/Polymer/lit-element/issues/146
+    test.skip('properties as symbols can set property options', async() => {
+
+      const zug = Symbol();
+
+      class E extends LitElement {
+
+        static get properties() {
+          return {
+            foo: {},
+            [zug]: {attribute: 'zug', reflect: true, fromAttribute: (value: string) => Number(value) + 100}
+          };
+        }
+
+        constructor() {
+          super();
+          (this as any).updated = 0;
+          (this as any).foo = 5;
+          (this as any)[zug] = 6;
+        }
+
+        render() {
+          return html``;
+        }
+
+        update(changedProperties: PropertyValues) {
+          (this as any).updated++;
+          super.update(changedProperties);
+        }
+
+      }
+      customElements.define(generateElementName(), E);
+      const el = new E() as any;
+      container.appendChild(el);
+      await el.updateComplete;
+      assert.equal(el.updated, 1);
+      assert.equal(el.foo, 5);
+      assert.equal(el[zug], 6);
+      assert.equal(el.getAttribute('zug'), '6');
+      el.foo = 55;
+      await el.updateComplete;
+      assert.equal(el.updated, 2);
+      assert.equal(el.foo, 55);
+      assert.equal(el[zug], 6);
+      el[zug] = 66;
+      await el.updateComplete;
+      assert.equal(el.updated, 3);
+      assert.equal(el.foo, 55);
+      assert.equal(el[zug], 66);
+      assert.equal(el.getAttribute('zug'), '66');
+      el.setAttribute('zug', '10');
+      await el.updateComplete;
+      assert.equal(el[zug], 110);
+
+    });
   }
 
 

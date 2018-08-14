@@ -229,6 +229,12 @@ export abstract class UpdatingElement extends HTMLElement {
       makeProperty(p, this.prototype);
     }
     // support symbols in properties (IE11 does not support this)
+    // TODO(sorvell): Currently it's not supported to have property options
+    // for Symbol properties. To do so would likely require changing
+    // internal storage to Maps for easier iteration. In particular, `_classProperties`
+    // and `update(changedProperties)` would both be Maps.
+    // Need to consider if this is worth doing. See
+    // https://github.com/Polymer/lit-element/issues/146.
     if (typeof Object.getOwnPropertySymbols === 'function') {
       Object.getOwnPropertySymbols(props).forEach((p) => makeProperty(p, this.prototype));
     }
