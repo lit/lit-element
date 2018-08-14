@@ -67,7 +67,7 @@ class CustomElementVisitor extends Visitor implements IDecoratorVisitor {
   }
 
   visit(node: ts.Node): ts.VisitResult<ts.Node> {
-    if (!ts.isClassDeclaration(node)) {
+    if (!ts.isClassDeclaration(node) || !node.name) {
       return ts.visitEachChild(node, (child) =>
         this.visit(child), this.context);
     }
@@ -87,11 +87,11 @@ class CustomElementVisitor extends Visitor implements IDecoratorVisitor {
     }
 
     const name = args[0];
-    const defineCall = ts.createCall(
+    const defineCall = ts.createStatement(ts.createCall(
       ts.createPropertyAccess(
-        ts.createIdentifier('define'),
-        'customElements'
-      ), undefined, [name]);
+        ts.createIdentifier('customElements'),
+        ts.createIdentifier('define')
+      ), undefined, [name, node.name]));
 
     return [node, defineCall];
   }
@@ -209,7 +209,7 @@ class PropertyVisitor extends Visitor implements IDecoratorVisitor {
   }
 }
 
-export function decoratorTransformer(): ts.TransformerFactory<ts.SourceFile> {
+export function decoratorTransformer<T extends ts.Node>(): ts.TransformerFactory<T> {
   return (context) => {
     const visitors = [
       new CustomElementVisitor(context),
