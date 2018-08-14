@@ -220,6 +220,15 @@ export function decoratorTransformer<T extends ts.Node>(): ts.TransformerFactory
       let result: ts.VisitResult<ts.Node> = node;
 
       for (const visitor of visitors) {
+        if (!result) {
+          break;
+        }
+
+        if (Array.isArray(result)) {
+          // What do? some kinda recursion probably needs to go on here
+          break;
+        }
+
         result = visitor.visit(result);
       }
 
