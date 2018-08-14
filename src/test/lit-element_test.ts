@@ -802,6 +802,56 @@ suite('LitElement', () => {
     assert.equal(el.shadowRoot!.textContent, '6');
   });
 
+  test('setting properties in update reflects to attribute and is included in `changedProps` passed to `finishUpdate`', async () => {
+    class E extends LitElement {
+
+      static get properties() {
+        return {
+          foo: {},
+          bar: {},
+          zot: {reflect: true}
+        };
+      }
+
+      changedProperties = {};
+
+      update(changedProperties: PropertyValues) {
+        (this as any).zot = (this as any).foo + (this as any).bar;
+        super.update(changedProperties);
+      }
+
+      finishUpdate(changedProperties: PropertyValues) {
+        this.changedProperties = changedProperties;
+      }
+
+      render() {
+        return html``;
+      }
+
+    }
+    customElements.define(generateElementName(), E);
+    const el = new E() as any;
+    container.appendChild(el);
+    await el.updateComplete;
+    assert.deepEqual(el.changedProperties, {zot: undefined});
+    assert.isNaN(el.zot);
+    assert.equal(el.getAttribute('zot'), 'NaN');
+    el.bar = 1;
+    el.foo = 1;
+    await el.updateComplete;
+    assert.equal(el.foo, 1);
+    assert.equal(el.bar, 1);
+    assert.equal(el.zot, 2);
+    assert.deepEqual(el.changedProperties, {foo: undefined, bar: undefined, zot: NaN});
+    assert.equal(el.getAttribute('zot'), '2');
+    el.bar = 2;
+    await el.updateComplete;
+    assert.equal(el.bar, 2);
+    assert.equal(el.zot, 3);
+    assert.deepEqual(el.changedProperties, {bar: 1, zot: 2});
+    assert.equal(el.getAttribute('zot'), '3');
+  });
+
   test('setting properties in finishUpdate does trigger invalidation blocks updateComplete', async () => {
     class E extends LitElement {
 

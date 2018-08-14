@@ -293,9 +293,9 @@ export abstract class UpdatingElement extends HTMLElement {
 
   private _validationState: ValidationState = disabled;
   private _isReflectingProperty: boolean = false;
-  private _instanceProperties: PropertyValues|undefined;
-  private _validatePromise: Promise<unknown>|undefined;
-  private _validateResolver: (() => void)|undefined;
+  private _instanceProperties: PropertyValues|undefined = undefined;
+  private _validatePromise: Promise<unknown>|undefined = undefined;
+  private _validateResolver: (() => void)|undefined = undefined;
   private _firstUpdateFinished: boolean = false;
 
   /**
@@ -462,11 +462,11 @@ export abstract class UpdatingElement extends HTMLElement {
       this._instanceProperties = undefined;
     }
     // Rip off changedProps.
-    const changedProps = this._changedProperties || {};
-    this._changedProperties = undefined;
+    const changedProps = this._changedProperties || (this._changedProperties = {});
     if (this.shouldUpdate(changedProps)) {
       // During update (which is abstract), setting properties does not trigger invalidation.
       this.update(changedProps);
+      this._changedProperties = undefined;
       this._validationState = valid;
       if (!this._firstUpdateFinished) {
         this._firstUpdateFinished = true;
@@ -486,12 +486,15 @@ export abstract class UpdatingElement extends HTMLElement {
         }
       }
     } else {
+      this._changedProperties = undefined;
       this._validationState = valid;
     }
     // Only resolve the promise if we finish in a valid state (finishUpdate
-    // did not trigger more work).
-    if (this._validationState === valid) {
-      this._validateResolver!();
+    // did not trigger more work). Note, if invalidate is triggered multiple
+    // times in `finishUpdate`, only the first time will resolve the promise
+    // by calling `_validateResolver`. This is why we guard for its existence.
+    if (this._validationState === valid && typeof this._validateResolver === 'function') {
+      this._validateResolver();
       this._validateResolver = undefined;
     }
     return this._validatePromise;
