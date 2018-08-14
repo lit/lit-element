@@ -321,11 +321,6 @@ export abstract class UpdatingElement extends HTMLElement {
   private _firstUpdateFinished: boolean = false;
 
   /**
-   * Object with keys for all properties with their current values.
-   */
-  private _propertyValues: PropertyValues = {};
-
-  /**
    * Object with keys for any properties that have changed since the last
    * update cycle with previous values.
    */
