@@ -291,7 +291,9 @@ suite('LitElement', () => {
   });
 
   if (Object.getOwnPropertySymbols) {
-    test('properties defined using symbols', async() => {
+    // TODO(sorvell): Skipping symbol tests since support is extremely limited, see:
+    // https://github.com/Polymer/lit-element/issues/146
+    test.skip('properties defined using symbols', async() => {
 
       const zug = Symbol();
 
@@ -336,8 +338,6 @@ suite('LitElement', () => {
 
     });
 
-    // TODO(sorvell): Skipping since this is not currently supported, see:
-    // https://github.com/Polymer/lit-element/issues/146
     test.skip('properties as symbols can set property options', async() => {
 
       const zug = Symbol();
@@ -690,7 +690,7 @@ suite('LitElement', () => {
         'changed');
   });
 
-  test('User defined accessor using setProperty/getProperty can trigger update/render', async () => {
+  test('User defined accessor can trigger update/render', async () => {
     class E extends LitElement {
       __bar?: number;
 
@@ -699,11 +699,11 @@ suite('LitElement', () => {
       info: string[] = [];
       foo = 0;
 
-      get bar() { return this.getProperty('bar'); }
+      get bar() { return this.__bar; }
 
       set bar(value) {
         this.__bar = Number(value);
-        this.setProperty('bar', value);
+        this.invalidate();
       }
 
       render() {

@@ -93,26 +93,6 @@ export interface PropertyValues {
 }
 
 /**
- * Creates a property accessor on the given prototype if one does not exist.
- * Uses `getProperty` and `setProperty` to manage the property's value.
- */
-const makeProperty = (name: PropertyKey, proto: Object) => {
-  if (name in proto) {
-    return;
-  }
-  Object.defineProperty(proto, name, {
-    get() {
-      return this.getProperty(name);
-    },
-    set(value) {
-      this.setProperty(name, value);
-    },
-    configurable: true,
-    enumerable: true
-  });
-};
-
-/**
  * Creates and sets object used to memoize all class property values. Object
  * is chained from superclass.
  */
@@ -130,7 +110,7 @@ export const property = (options: PropertyDeclaration = {}) => (proto: Object, n
   const ctor = proto.constructor as typeof UpdatingElement;
   ensurePropertyStorage(ctor);
   ctor._classProperties[name] = options;
-  makeProperty(name, proto);
+  ctor.createProperty(name);
 };
 
 
@@ -210,6 +190,41 @@ export abstract class UpdatingElement extends HTMLElement {
   }
 
   /**
+   * Creates a property accessor on the element prototype if one does not exist.
+   * The property setter calls the property's `shouldInvalidate` property option
+   * or uses a strict identity check to determine if the set should trigger
+   * invalidation and update.
+   */
+  static createProperty(name: PropertyKey) {
+    if (name in this.prototype) {
+      return;
+    }
+    const key = typeof name === 'symbol' ? Symbol() : `__${name}`;
+    Object.defineProperty(this.prototype, name, {
+      get() {
+        return this[key];
+      },
+      set(value) {
+        const old = this[key];
+        const ctor = (this.constructor as typeof UpdatingElement);
+        if (ctor._propertyShouldInvalidate(name, value, old)) {
+          // track old value when changing.
+          if (!this._changedProperties) {
+            this._changedProperties = {};
+          }
+          if (!(name in this._changedProperties)) {
+            this._changedProperties[name] = old;
+          }
+          this[key] = value;
+          this.invalidate();
+        }
+      },
+      configurable: true,
+      enumerable: true
+    });
+  }
+
+  /**
    * Creates property accessors for registered properties and ensures
    * any superclasses are also finalized.
    */
@@ -226,7 +241,7 @@ export abstract class UpdatingElement extends HTMLElement {
     // make any properties
     const props = this.properties;
     for (const p in props) {
-      makeProperty(p, this.prototype);
+      this.createProperty(p);
     }
     // support symbols in properties (IE11 does not support this)
     // TODO(sorvell): Currently it's not supported to have property options
@@ -236,7 +251,7 @@ export abstract class UpdatingElement extends HTMLElement {
     // Need to consider if this is worth doing. See
     // https://github.com/Polymer/lit-element/issues/146.
     if (typeof Object.getOwnPropertySymbols === 'function') {
-      Object.getOwnPropertySymbols(props).forEach((p) => makeProperty(p, this.prototype));
+      Object.getOwnPropertySymbols(props).forEach((p) => this.createProperty(p));
     }
     // initialize map populated in observedAttributes
     this._attributeToPropertyMap = {};
@@ -260,8 +275,9 @@ export abstract class UpdatingElement extends HTMLElement {
    * Called when a property value is set and uses the `shouldInvalidate`
    * option for the property if present or a strict identity check.
    */
-  private static _propertyShouldInvalidate(name: string, value: unknown, old: unknown) {
-    const info = this._classProperties[name];
+  private static _propertyShouldInvalidate(name: PropertyKey, value: unknown, old: unknown) {
+    // Note, typed using `any` due to TypeScript's lack of support for symbol index keys.
+    const info = (this._classProperties as any)[name];
     const fn = info !== undefined && info.shouldInvalidate || identity;
     return fn(value, old);
   }
@@ -375,37 +391,6 @@ export abstract class UpdatingElement extends HTMLElement {
   attributeChangedCallback(name: string, old: string, value: string) {
     if (old !== value) {
       this._attributeToProperty(name, value);
-    }
-  }
-
-  /**
-   * Returns the value of the property with `name`. This method is used
-   * to get property values of registered properties.
-   */
-  protected getProperty(name: string) {
-    return this._propertyValues[name];
-  }
-
-  /**
-   * Sets the property `name` to the given `value`. This method is used
-   * to set property values of registered properties.
-   * Setting a property value calls `invalidate` which asynchronously updates
-   * the element. If a property value is set inside the `update` method,
-   * it does not trigger `invalidate`.
-   */
-  protected setProperty(name: string, value: unknown) {
-    const old = this._propertyValues[name];
-    const ctor = (this.constructor as typeof UpdatingElement);
-    if (ctor._propertyShouldInvalidate(name, value, old)) {
-      // track old value when changing.
-      if (!this._changedProperties) {
-        this._changedProperties = {};
-      }
-      if (!(name in this._changedProperties)) {
-        this._changedProperties[name] = this._propertyValues[name];
-      }
-      this._propertyValues[name] = value;
-      this.invalidate();
     }
   }
 

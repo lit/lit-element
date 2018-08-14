@@ -19,8 +19,9 @@ and renders declaratively using `lit-html`.
     * As class fields with the `@property()` [decorator](https://github.com/tc39/proposal-decorators#decorators),
     if you're using a compiler that supports them, like TypeScript or Babel.
     * With a static `properties` getter.
-    * By manually writing getters and setters. You can call `setProperty` or `invalidate`
-    to trigger an update. If you use `setProperty`, you should use `getProperty` in the getter.
+    * By manually writing getters and setters. This can be useful if tasks should
+    be performed when a property is set, for example validation. You can call `invalidate()`
+    in the setter to trigger an update.
 
     Properties can be given an options argument which is an object that describes how to
     process the property. This can be done either in the `@property({...})` decorator or in the
