@@ -132,10 +132,10 @@ export const identity = (value: unknown, old: unknown) => {
   return old !== value && (old === old || value === value);
 };
 
-const disabled = 0;
-const valid = 1;
-const invalid = 2;
-type ValidationState = typeof disabled | typeof valid | typeof invalid;
+const STATE_HAS_UPDATED = 1;
+const STATE_IS_VALID = 1 << 2;
+const STATE_IS_REFLECTING = 1 << 3;
+type ValidationState = typeof STATE_HAS_UPDATED | typeof STATE_IS_VALID | typeof STATE_IS_REFLECTING;
 
 /**
  * Base element class which manages element properties and attributes. When
@@ -300,12 +300,10 @@ export abstract class UpdatingElement extends HTMLElement {
     return (typeof toAttribute === 'function') ? toAttribute(value) : null;
   }
 
-  private _validationState: ValidationState = disabled;
-  private _isReflectingProperty: boolean = false;
+  private _validationState: ValidationState = STATE_IS_VALID;
   private _instanceProperties: PropertyValues|undefined = undefined;
   private _validatePromise: Promise<unknown>|undefined = undefined;
   private _validateResolver: (() => void)|undefined = undefined;
-  private _firstUpdateFinished: boolean = false;
 
   /**
    * Object with keys for any properties that have changed since the last
@@ -363,7 +361,7 @@ export abstract class UpdatingElement extends HTMLElement {
    * Uses ShadyCSS to keep element DOM updated.
    */
   connectedCallback() {
-    if (this._validationState !== disabled && typeof window.ShadyCSS !== 'undefined') {
+    if ((this._validationState & STATE_HAS_UPDATED) && typeof window.ShadyCSS !== 'undefined') {
       window.ShadyCSS.styleElement(this);
     }
     this.invalidate();
@@ -391,13 +389,15 @@ export abstract class UpdatingElement extends HTMLElement {
         // stack at time of calling. However, since we process attributes
         // in `update` this should not be possible (or an extreme corner case
         // that we'd like to discover).
-        this._isReflectingProperty = true;
+        // mark state reflecting
+        this._validationState = this._validationState | STATE_IS_REFLECTING;
         if (attrValue === null) {
           this.removeAttribute(attr);
         } else {
           this.setAttribute(attr, attrValue);
         }
-        this._isReflectingProperty = false;
+        // mark state not reflecting
+        this._validationState = this._validationState & ~STATE_IS_REFLECTING;
       }
     }
   }
@@ -405,7 +405,7 @@ export abstract class UpdatingElement extends HTMLElement {
   private _attributeToProperty(name: string, value: string) {
     // Use tracking info to avoid deserializing attribute value if it was
     // just set from a property setter.
-    if (!this._isReflectingProperty) {
+    if (!(this._validationState & STATE_IS_REFLECTING)) {
       const ctor = (this.constructor as typeof UpdatingElement);
       const propName = ctor._attributeToPropertyMap.get(name);
       if (propName !== undefined) {
@@ -425,7 +425,8 @@ export abstract class UpdatingElement extends HTMLElement {
     if (this._isPendingUpdate) {
       return this._validatePromise;
     }
-    this._validationState = invalid;
+    // mark state invalid...
+    this._validationState = this._validationState & ~STATE_IS_VALID;
     // Make a new promise only if the current one is not pending resolution
     // (resolver has not been set to undefined)
     if (this._validateResolver === undefined) {
@@ -451,9 +452,11 @@ export abstract class UpdatingElement extends HTMLElement {
         changedProperties = new Map(this._changedProperties);
       }
       this._changedProperties.clear();
-      this._validationState = valid;
-      if (!this._firstUpdateFinished) {
-        this._firstUpdateFinished = true;
+      // mark state valid
+      this._validationState = this._validationState | STATE_IS_VALID;
+      if (!(this._validationState & STATE_HAS_UPDATED)) {
+        // mark state has updated
+        this._validationState = this._validationState | STATE_HAS_UPDATED;
         if (typeof this.finishFirstUpdate === 'function') {
           // During `finishFirstUpdate` (which is optional), setting properties triggers invalidation,
           // and users may choose to await other state.
@@ -473,13 +476,14 @@ export abstract class UpdatingElement extends HTMLElement {
       }
     } else {
       this._changedProperties.clear();
-      this._validationState = valid;
+      // mark state valid
+      this._validationState = this._validationState | STATE_IS_VALID;
     }
     // Only resolve the promise if we finish in a valid state (finishUpdate
     // did not trigger more work). Note, if invalidate is triggered multiple
     // times in `finishUpdate`, only the first time will resolve the promise
     // by calling `_validateResolver`. This is why we guard for its existence.
-    if (this._validationState === valid && typeof this._validateResolver === 'function') {
+    if ((this._validationState & STATE_IS_VALID) && typeof this._validateResolver === 'function') {
       this._validateResolver();
       this._validateResolver = undefined;
     }
@@ -487,7 +491,7 @@ export abstract class UpdatingElement extends HTMLElement {
   }
 
   private get _isPendingUpdate() {
-    return this._validationState === invalid;
+    return !(this._validationState & STATE_IS_VALID);
   }
 
   /**
