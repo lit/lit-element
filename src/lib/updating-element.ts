@@ -84,13 +84,11 @@ export interface PropertyDeclarations {
   [key: string]: PropertyDeclaration;
 }
 
-interface AttributeMap {
-  [key: string]: string;
-}
+type PropertyDeclarationMap = Map<PropertyKey, PropertyDeclaration>;
 
-export interface PropertyValues {
-  [key: string]: unknown;
-}
+type AttributeMap = Map<string, PropertyKey>;
+
+export type PropertyValues = Map<PropertyKey, unknown>;
 
 /**
  * Creates and sets object used to memoize all class property values. Object
@@ -98,7 +96,7 @@ export interface PropertyValues {
  */
 const ensurePropertyStorage = (ctor: typeof UpdatingElement) => {
   if (!ctor.hasOwnProperty('_classProperties')) {
-    ctor._classProperties = Object.create(Object.getPrototypeOf(ctor)._classProperties);
+    ctor._classProperties = new Map(Object.getPrototypeOf(ctor)._classProperties);
   }
 };
 
@@ -109,7 +107,7 @@ const ensurePropertyStorage = (ctor: typeof UpdatingElement) => {
 export const property = (options: PropertyDeclaration = {}) => (proto: Object, name: string) => {
   const ctor = proto.constructor as typeof UpdatingElement;
   ensurePropertyStorage(ctor);
-  ctor._classProperties[name] = options;
+  ctor._classProperties.set(name, options);
   ctor.createProperty(name);
 };
 
@@ -150,7 +148,7 @@ export abstract class UpdatingElement extends HTMLElement {
    * Maps attribute names to properties; for example `foobar` attribute
    * to `fooBar` property.
    */
-  private static _attributeToPropertyMap: AttributeMap = {};
+  private static _attributeToPropertyMap: AttributeMap = new Map();
 
   /**
    * Marks class as having finished creating properties.
@@ -166,7 +164,7 @@ export abstract class UpdatingElement extends HTMLElement {
   /**
    * Memoized list of all class properties, including any superclass properties.
    */
-  static _classProperties: PropertyDeclarations = {};
+  static _classProperties: PropertyDeclarationMap = new Map();
 
   static properties: PropertyDeclarations = {};
 
@@ -178,10 +176,10 @@ export abstract class UpdatingElement extends HTMLElement {
       // note: piggy backing on this to ensure we're _finalized.
       this._finalize();
       this._observedAttributes = [];
-      for (const p in this._classProperties) {
+      for (const p of this._classProperties.keys()) {
         const attr = this._attributeNameForProperty(p);
         if (attr !== undefined) {
-          this._attributeToPropertyMap[attr] = p;
+          this._attributeToPropertyMap.set(attr, p);
           this._observedAttributes.push(attr);
         }
       }
@@ -209,11 +207,8 @@ export abstract class UpdatingElement extends HTMLElement {
         const ctor = (this.constructor as typeof UpdatingElement);
         if (ctor._propertyShouldInvalidate(name, value, old)) {
           // track old value when changing.
-          if (!this._changedProperties) {
-            this._changedProperties = {};
-          }
-          if (!(name in this._changedProperties)) {
-            this._changedProperties[name] = old;
+          if (!this._changedProperties.has(name)) {
+            this._changedProperties.set(name, old);
           }
           this[key] = value;
           this.invalidate();
@@ -238,36 +233,29 @@ export abstract class UpdatingElement extends HTMLElement {
       superCtor._finalize();
     }
     this._finalized = true;
+    ensurePropertyStorage(this);
+    // initialize map populated in observedAttributes
+    this._attributeToPropertyMap = new Map();
     // make any properties
     const props = this.properties;
-    for (const p in props) {
-      this.createProperty(p);
-    }
     // support symbols in properties (IE11 does not support this)
-    // TODO(sorvell): Currently it's not supported to have property options
-    // for Symbol properties. To do so would likely require changing
-    // internal storage to Maps for easier iteration. In particular, `_classProperties`
-    // and `update(changedProperties)` would both be Maps.
-    // Need to consider if this is worth doing. See
-    // https://github.com/Polymer/lit-element/issues/146.
-    if (typeof Object.getOwnPropertySymbols === 'function') {
-      Object.getOwnPropertySymbols(props).forEach((p) => this.createProperty(p));
+    const propKeys = [...Object.getOwnPropertyNames(props),
+        ...(typeof Object.getOwnPropertySymbols === 'function') ? Object.getOwnPropertySymbols(props) : []];
+    for (const p of propKeys) {
+      this.createProperty(p);
+      // note, use of `any` is due to TypeSript lack of support for symbol in index types
+      this._classProperties.set(p, (props as any)[p]);
     }
-    // initialize map populated in observedAttributes
-    this._attributeToPropertyMap = {};
-    // memoize list of all class properties.
-    ensurePropertyStorage(this);
-    Object.assign(this._classProperties, props);
   }
 
   /**
    * Returns the property name for the given attribute `name`.
    */
-  private static _attributeNameForProperty(name: string) {
-    const info = this._classProperties[name];
+  private static _attributeNameForProperty(name: PropertyKey) {
+    const info = this._classProperties.get(name);
     const attribute = info !== undefined && info.attribute;
     return attribute === false ? undefined : (typeof attribute === 'string' ?
-        attribute : name.toLowerCase());
+        attribute : (typeof name === 'string' ? name.toLowerCase() : undefined));
   }
 
   /**
@@ -276,8 +264,7 @@ export abstract class UpdatingElement extends HTMLElement {
    * option for the property if present or a strict identity check.
    */
   private static _propertyShouldInvalidate(name: PropertyKey, value: unknown, old: unknown) {
-    // Note, typed using `any` due to TypeScript's lack of support for symbol index keys.
-    const info = (this._classProperties as any)[name];
+    const info = this._classProperties.get(name);
     const fn = info !== undefined && info.shouldInvalidate || identity;
     return fn(value, old);
   }
@@ -287,8 +274,8 @@ export abstract class UpdatingElement extends HTMLElement {
    * Called via the `attributeChangedCallback` and uses the property's `type`
    * or `type.fromAttribute` property option.
    */
-  private static _propertyValueFromAttribute(name: string, value: string) {
-    const info = this._classProperties[name];
+  private static _propertyValueFromAttribute(name: PropertyKey, value: string) {
+    const info = this._classProperties.get(name);
     const type = info && info.type;
     if (type === undefined) {
       return value;
@@ -304,8 +291,8 @@ export abstract class UpdatingElement extends HTMLElement {
    * attribute will be set to the value.
    * This uses the property's `reflect` and `type.toAttribute` property options.
    */
-  private static _propertyValueToAttribute(name: string, value: unknown) {
-    const info = this._classProperties[name];
+  private static _propertyValueToAttribute(name: PropertyKey, value: unknown) {
+    const info = this._classProperties.get(name);
     if (info === undefined || info.reflect === undefined) {
       return;
     }
@@ -324,7 +311,7 @@ export abstract class UpdatingElement extends HTMLElement {
    * Object with keys for any properties that have changed since the last
    * update cycle with previous values.
    */
-  private _changedProperties?: PropertyValues|undefined;
+  private _changedProperties: PropertyValues = new Map();
 
   /**
    * Node or ShadowRoot into which element DOM should be rendered. Defaults
@@ -338,23 +325,25 @@ export abstract class UpdatingElement extends HTMLElement {
   }
 
   /**
-   * Performs element initialization. By default this calls `createRoot` to
-   * create the element `root` node and captures any pre-set values for
+   * Performs element initialization. By default this calls `createRenderRoot` to
+   * create the element `renderRoot` node and captures any pre-set values for
    * registered properties.
    */
   protected initialize() {
     this.renderRoot = this.createRenderRoot();
     // Apply any properties set on the instance before upgrade time.
-    for (const p in (this.constructor as typeof UpdatingElement)._classProperties) {
+    for (const p of (this.constructor as typeof UpdatingElement)._classProperties.keys()) {
       if (this.hasOwnProperty(p)) {
         const value = this[p as keyof this];
         delete this[p as keyof this];
-        this._instanceProperties = this._instanceProperties || {};
-        // NOTE: must capture these into a bag and reset at when validating
+        if (!this._instanceProperties) {
+          this._instanceProperties = new Map();
+        }
+        // NOTE: must capture these into a map and reset at when validating
         // to avoid stomping on a user value set in the constructor. Being
         // async doesn't help here since the subclass' constructor value should
         // be overwritten.
-        this._instanceProperties![p] = value;
+        this._instanceProperties.set(p, value);
       }
     }
   }
@@ -389,7 +378,7 @@ export abstract class UpdatingElement extends HTMLElement {
     }
   }
 
-  private _propertyToAttribute(name: string, value: unknown) {
+  private _propertyToAttribute(name: PropertyKey, value: unknown) {
     const ctor = (this.constructor as typeof UpdatingElement);
     const attrValue = ctor._propertyValueToAttribute(name, value);
     if (attrValue !== undefined) {
@@ -418,8 +407,10 @@ export abstract class UpdatingElement extends HTMLElement {
     // just set from a property setter.
     if (!this._isReflectingProperty) {
       const ctor = (this.constructor as typeof UpdatingElement);
-      const propName = ctor._attributeToPropertyMap[name];
-      this[propName as keyof this] = ctor._propertyValueFromAttribute(propName, value);
+      const propName = ctor._attributeToPropertyMap.get(name);
+      if (propName !== undefined) {
+        this[propName as keyof this] = ctor._propertyValueFromAttribute(propName, value);
+      }
     }
   }
 
@@ -444,35 +435,44 @@ export abstract class UpdatingElement extends HTMLElement {
     await 0;
     // Mixin instance properties once, if they exist.
     if (this._instanceProperties) {
-      Object.assign(this, this._instanceProperties);
+      for (const [p, v] of this._instanceProperties) {
+        (this as any)[p] = v;
+      }
       this._instanceProperties = undefined;
     }
-    // Rip off changedProps.
-    const changedProps = this._changedProperties || (this._changedProperties = {});
-    if (this.shouldUpdate(changedProps)) {
-      // During update (which is abstract), setting properties does not trigger invalidation.
-      this.update(changedProps);
-      this._changedProperties = undefined;
+    if (this.shouldUpdate(this._changedProperties)) {
+      // During update, setting properties does not trigger invalidation.
+      this.update(this._changedProperties);
+      // copy changedProperties to hand to finishUpdate.
+      let changedProperties;
+      const hasFinishUpdate = (typeof this.finishUpdate === 'function');
+      // clone changedProperties before resetting only if needed for finishUpdate.
+      if (hasFinishUpdate) {
+        changedProperties = new Map(this._changedProperties);
+      }
+      this._changedProperties.clear();
       this._validationState = valid;
       if (!this._firstUpdateFinished) {
         this._firstUpdateFinished = true;
         if (typeof this.finishFirstUpdate === 'function') {
+          // During `finishFirstUpdate` (which is optional), setting properties triggers invalidation,
+          // and users may choose to await other state.
           const result = this.finishFirstUpdate();
           if (result != null && typeof (result as PromiseLike<unknown>).then === 'function') {
             await result;
           }
         }
       }
-      // During finishUpdate (which is abstract), setting properties does trigger invalidation,
+      // During `finishUpdate` (which is optional), setting properties triggers invalidation,
       // and users may choose to await other state, like children being updated.
-      if (typeof this.finishUpdate === 'function') {
-        const result = this.finishUpdate(changedProps);
+      if (hasFinishUpdate) {
+        const result = this.finishUpdate!(changedProperties as PropertyValues);
         if (result != null && typeof (result as PromiseLike<unknown>).then === 'function') {
           await result;
         }
       }
     } else {
-      this._changedProperties = undefined;
+      this._changedProperties.clear();
       this._validationState = valid;
     }
     // Only resolve the promise if we finish in a valid state (finishUpdate
@@ -501,7 +501,7 @@ export abstract class UpdatingElement extends HTMLElement {
    * Controls whether or not `update` should be called when the element invalidates.
    * By default, this method always returns true, but this can be customized to
    * control when to update.
-   * * @param _changedProperties changed properties with old values
+   * * @param _changedProperties Map of changed properties with old values
    */
   protected shouldUpdate(_changedProperties: PropertyValues): boolean {
     return true;
@@ -512,10 +512,10 @@ export abstract class UpdatingElement extends HTMLElement {
    * It should be implemented to render and keep updated DOM in the element's root.
    * Note, within `update()` setting properties does not trigger `invalidate()`, allowing
    * property values to be computed and validated before DOM is rendered and updated.
-   * * @param _changedProperties changed properties with old values
+   * * @param _changedProperties Map of changed properties with old values
    */
   protected update(_changedProperties: PropertyValues): void {
-    for (const name in _changedProperties) {
+    for (const name of _changedProperties.keys()) {
       this._propertyToAttribute(name, (this as any)[name]);
     }
   }
@@ -531,7 +531,7 @@ export abstract class UpdatingElement extends HTMLElement {
    * properties triggers invalidate and update.
    * (2) The `updateComplete` promise should block on the `updateComplete` promise
    * of a rendered `UpdatingElement`.
-   * * @param _changedProperties changed properties with old values
+   * * @param _changedProperties Map of changed properties with old values
    * * @returns {Promise} Optionally, this function can return a promise that blocks
    * resolution of the `invalidate` and updateComplete` promise.
    */

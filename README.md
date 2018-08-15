@@ -143,7 +143,7 @@ See the [source](https://github.com/PolymerLabs/lit-element/blob/master/src/lit-
   render. By default this creates a shadowRoot for the element.
   To render into the element's childNodes, return `this`.
 
-  * `shouldUpdate(changedProps)` (protected): Implement to control if updating and rendering
+  * `shouldUpdate(changedProperties)` (protected): Implement to control if updating and rendering
   should occur when property values change or `invalidate` is called. The `changedProps`
   argument is an object with keys for the changed properties pointing to their previous values.
   By default, this method always returns true, but this can be customized as
@@ -160,7 +160,7 @@ See the [source](https://github.com/PolymerLabs/lit-element/blob/master/src/lit-
   Note, since `render()` is called by `update()` setting properties does not trigger
   `invalidate()`, allowing property values to be computed and validated.
 
-  * `finishUpdate(changedProps): Promise?` (protected): Called after element DOM has been updated and
+  * `finishUpdate(changedProperties): Promise?` (protected): Called after element DOM has been updated and
   before the `updateComplete` promise is resolved. Implement to directly control rendered DOM.
   Typically this is not needed as `lit-html` can be used in the `render` method
   to set properties, attributes, and event listeners. However, it is sometimes useful
@@ -170,6 +170,10 @@ See the [source](https://github.com/PolymerLabs/lit-element/blob/master/src/lit-
   returns a `Promise`, it will be *awaited* before resolving the `updateComplete` promise.
   Setting properties in `finishUpdate()` does trigger `invalidate()` and blocks
   the `updateComplete` promise.
+
+  * `finishFirstUpdate(changedProperties): Promise?` (protected) Called after element DOM has been
+  updated the first time. This method can be useful for capturing references to rendered static
+  nodes that must be directly acted upon, for example in `finishUpdate`.
 
   * `updateComplete`: Returns a promise which resolves after the element next renders.
 

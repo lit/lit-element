@@ -291,9 +291,7 @@ suite('LitElement', () => {
   });
 
   if (Object.getOwnPropertySymbols) {
-    // TODO(sorvell): Skipping symbol tests since support is extremely limited, see:
-    // https://github.com/Polymer/lit-element/issues/146
-    test.skip('properties defined using symbols', async() => {
+    test('properties defined using symbols', async() => {
 
       const zug = Symbol();
 
@@ -338,7 +336,7 @@ suite('LitElement', () => {
 
     });
 
-    test.skip('properties as symbols can set property options', async() => {
+    test('properties as symbols can set property options', async() => {
 
       const zug = Symbol();
 
@@ -346,25 +344,17 @@ suite('LitElement', () => {
 
         static get properties() {
           return {
-            foo: {},
-            [zug]: {attribute: 'zug', reflect: true, fromAttribute: (value: string) => Number(value) + 100}
+            [zug]: {attribute: 'zug', reflect: true, type: (value: string) => Number(value) + 100}
           };
         }
 
         constructor() {
           super();
-          (this as any).updated = 0;
-          (this as any).foo = 5;
-          (this as any)[zug] = 6;
+          (this as any)[zug] = 5;
         }
 
         render() {
           return html``;
-        }
-
-        update(changedProperties: PropertyValues) {
-          (this as any).updated++;
-          super.update(changedProperties);
         }
 
       }
@@ -372,25 +362,16 @@ suite('LitElement', () => {
       const el = new E() as any;
       container.appendChild(el);
       await el.updateComplete;
-      assert.equal(el.updated, 1);
-      assert.equal(el.foo, 5);
+      assert.equal(el[zug], 5);
+      assert.equal(el.getAttribute('zug'), '5');
+      el[zug] = 6;
+      await el.updateComplete;
       assert.equal(el[zug], 6);
       assert.equal(el.getAttribute('zug'), '6');
-      el.foo = 55;
+      el.setAttribute('zug', '7');
       await el.updateComplete;
-      assert.equal(el.updated, 2);
-      assert.equal(el.foo, 55);
-      assert.equal(el[zug], 6);
-      el[zug] = 66;
-      await el.updateComplete;
-      assert.equal(el.updated, 3);
-      assert.equal(el.foo, 55);
-      assert.equal(el[zug], 66);
-      assert.equal(el.getAttribute('zug'), '66');
-      el.setAttribute('zug', '10');
-      await el.updateComplete;
-      assert.equal(el[zug], 110);
-
+      assert.equal(el.getAttribute('zug'), '107');
+      assert.equal(el[zug], 107);
     });
   }
 
@@ -870,7 +851,7 @@ suite('LitElement', () => {
         };
       }
 
-      changedProperties = {};
+      changedProperties: PropertyValues|undefined = undefined;
 
       update(changedProperties: PropertyValues) {
         (this as any).zot = (this as any).foo + (this as any).bar;
@@ -890,7 +871,7 @@ suite('LitElement', () => {
     const el = new E() as any;
     container.appendChild(el);
     await el.updateComplete;
-    assert.deepEqual(el.changedProperties, {zot: undefined});
+    assert.deepEqual(el.changedProperties, new Map([['zot', undefined]]));
     assert.isNaN(el.zot);
     assert.equal(el.getAttribute('zot'), 'NaN');
     el.bar = 1;
@@ -899,13 +880,13 @@ suite('LitElement', () => {
     assert.equal(el.foo, 1);
     assert.equal(el.bar, 1);
     assert.equal(el.zot, 2);
-    assert.deepEqual(el.changedProperties, {foo: undefined, bar: undefined, zot: NaN});
+    assert.deepEqual(el.changedProperties, new Map([['foo', undefined], ['bar', undefined], ['zot', NaN]]));
     assert.equal(el.getAttribute('zot'), '2');
     el.bar = 2;
     await el.updateComplete;
     assert.equal(el.bar, 2);
     assert.equal(el.zot, 3);
-    assert.deepEqual(el.changedProperties, {bar: 1, zot: 2});
+    assert.deepEqual(el.changedProperties, new Map([['bar', 1], ['zot', 2]]));
     assert.equal(el.getAttribute('zot'), '3');
   });
 
