@@ -96,7 +96,13 @@ export type PropertyValues = Map<PropertyKey, unknown>;
  */
 const ensurePropertyStorage = (ctor: typeof UpdatingElement) => {
   if (!ctor.hasOwnProperty('_classProperties')) {
-    ctor._classProperties = new Map(Object.getPrototypeOf(ctor)._classProperties);
+    ctor._classProperties = new Map();
+    // NOTE: Workaround IE11 not supporting Map constructor argument.
+    const superProperties = Object.getPrototypeOf(ctor)._classProperties;
+    if (superProperties !== undefined) {
+      superProperties.forEach((v: any, k: PropertyKey) =>
+        ctor._classProperties.set(k, v));
+    }
   }
 };
 
