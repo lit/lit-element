@@ -31,7 +31,7 @@
     "typescript": "^3.0.1",
     "uglify-es": "^3.3.9",
     "wct-browser-legacy": "^1.0.1",
-    "web-component-tester": "^6.7.1"
+    "web-component-tester": "^6.8.0"
   },
   "typings": "lit-element.d.ts",
   "dependencies": {
