@@ -20,8 +20,8 @@ and renders declaratively using `lit-html`.
     if you're using a compiler that supports them, like TypeScript or Babel.
     * With a static `properties` getter.
     * By manually writing getters and setters. This can be useful if tasks should
-    be performed when a property is set, for example validation. You can call `invalidate()`
-    in the setter to trigger an update.
+    be performed when a property is set, for example validation. Call `invalidateProperty(name, oldValue)`
+    in the setter to trigger an update and use any configured property options.
 
     Properties can be given an options argument which is an object that describes how to
     process the property. This can be done either in the `@property({...})` decorator or in the
@@ -138,10 +138,11 @@ into the element. This is the only method that must be implemented by subclasses
 See the [source](https://github.com/PolymerLabs/lit-element/blob/master/src/lit-element.ts#L90)
  for detailed API info, here are some highlights.
 
-  * `createRenderRoot()` (protected): Implement to customize where the
-  element's template is rendered by returning an element into which to
-  render. By default this creates a shadowRoot for the element.
-  To render into the element's childNodes, return `this`.
+  * `render()` (protected): Implement to describe the element's DOM using `lit-html`. Ideally,
+  the `render` implementation is a pure function using only the element's current properties
+  to describe the element template. This is the only method that must be implemented by subclasses.
+  Note, since `render()` is called by `update()` setting properties does not trigger
+  `invalidate()`, allowing property values to be computed and validated.
 
   * `shouldUpdate(changedProperties)` (protected): Implement to control if updating and rendering
   should occur when property values change or `invalidate` is called. The `changedProps`
@@ -154,12 +155,6 @@ See the [source](https://github.com/PolymerLabs/lit-element/blob/master/src/lit-
   during `update()` setting properties does not trigger `invalidate()`, allowing
   property values to be computed and validated.
 
-  * `render()` (protected): Implement to describe the element's DOM using `lit-html`. Ideally,
-  the `render` implementation is a pure function using only the element's current properties
-  to describe the element template. This is the only method that must be implemented by subclasses.
-  Note, since `render()` is called by `update()` setting properties does not trigger
-  `invalidate()`, allowing property values to be computed and validated.
-
   * `finishUpdate(changedProperties): Promise?` (protected): Called after element DOM has been updated and
   before the `updateComplete` promise is resolved. Implement to directly control rendered DOM.
   Typically this is not needed as `lit-html` can be used in the `render` method
@@ -171,16 +166,25 @@ See the [source](https://github.com/PolymerLabs/lit-element/blob/master/src/lit-
   Setting properties in `finishUpdate()` does trigger `invalidate()` and blocks
   the `updateComplete` promise.
 
-  * `finishFirstUpdate(changedProperties): Promise?` (protected) Called after element DOM has been
+  * `finishFirstUpdate(): Promise?` (protected) Called after element DOM has been
   updated the first time. This method can be useful for capturing references to rendered static
   nodes that must be directly acted upon, for example in `finishUpdate`.
 
-  * `updateComplete`: Returns a promise which resolves after the element next renders.
+  * `updateComplete`: Returns a promise which resolves after the element next updates and renders.
 
   * `invalidate`: Call to request the element to asynchronously update regardless
   of whether or not any property changes are pending.
 
-## Update Lifecycle
+  * `invalidateProperty(name, oldValue)`: Triggers an invalidation for a specific property.
+  This is useful when manually implementing a propert setter. Call `invalidateProperty`
+  instead of `invalidate` to ensure that any configured property options are honored.
+
+  * `createRenderRoot()` (protected): Implement to customize where the
+  element's template is rendered by returning an element into which to
+  render. By default this creates a shadowRoot for the element.
+  To render into the element's childNodes, return `this`.
+
+## Advanced: Update Lifecycle
 
 * When the element is first connected or a property is set (e.g. `element.foo = 5`)
   and the property's `shouldInvalidate(value, oldValue)` returns true. Then

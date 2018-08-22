@@ -217,21 +217,7 @@ export abstract class UpdatingElement extends HTMLElement {
       set(value) {
         const oldValue = this[name];
         this[key] = value;
-        if ((this.constructor as typeof UpdatingElement)._propertyShouldInvalidate(value,
-            oldValue, options.shouldInvalidate)) {
-          // track old value when changing.
-          if (!this._changedProperties.has(name)) {
-            this._changedProperties.set(name, oldValue);
-          }
-          // add to reflecting properties set
-          if (options.reflect === true) {
-            if (this._reflectingProperties === undefined) {
-              this._reflectingProperties = new Map();
-            }
-            this._reflectingProperties.set(name, options);
-          }
-          this.invalidate();
-        }
+        this.invalidateProperty(name, oldValue, options);
       },
       configurable: true,
       enumerable: true
@@ -450,6 +436,39 @@ export abstract class UpdatingElement extends HTMLElement {
         const options = ctor._classProperties.get(propName);
         this[propName as keyof this] = ctor._propertyValueFromAttribute(value, options);
       }
+    }
+  }
+
+  /**
+   * Triggers an invalidation and records an old value for the specified
+   * property to be presented in the `changedProperties` argument to `update`
+   * and `finishUpdate`. When manually creating a property setter, this
+   * method should be called to trigger an invalidation that honors any of the
+   * property options specified for the given property.
+   *
+   * @param name {PropertyKey}
+   * @param oldValue {any}
+   */
+  protected invalidateProperty(name: PropertyKey, oldValue: any, options?: PropertyDeclaration) {
+    // if not passed in, take options from class properties.
+    if (options === undefined) {
+      options = (this.constructor as typeof UpdatingElement)._classProperties.get(name) ||
+          defaultPropertyDeclaration;
+    }
+    if ((this.constructor as typeof UpdatingElement)._propertyShouldInvalidate(this[name as keyof this],
+        oldValue, options.shouldInvalidate)) {
+      // track old value when changing.
+      if (!this._changedProperties.has(name)) {
+        this._changedProperties.set(name, oldValue);
+      }
+      // add to reflecting properties set
+      if (options.reflect === true) {
+        if (this._reflectingProperties === undefined) {
+          this._reflectingProperties = new Map();
+        }
+        this._reflectingProperties.set(name, options);
+      }
+      this.invalidate();
     }
   }
 

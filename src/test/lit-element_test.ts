@@ -743,6 +743,66 @@ suite('LitElement', () => {
     assert.equal(stripExpressionDelimeters(el.shadowRoot!.innerHTML), '020');
   });
 
+  test('User defined accessor can use property options via `invalidateProperty`', async () => {
+    const fromAttribute = (value: any) => parseInt(value);
+    const toAttribute = (value: any) => `${value}-attr`;
+    const shouldInvalidate = (value: any, old: any) => isNaN(old) || value > old;
+    class E extends LitElement {
+
+      updated = 0;
+      __bar: any;
+
+      static get properties() {
+        return {
+          bar: {attribute: 'attr-bar', reflect: true, type: {fromAttribute, toAttribute}, shouldInvalidate}
+        };
+      }
+
+      constructor() {
+        super();
+        this.bar = 5;
+      }
+
+      update(changed: PropertyValues) {
+        super.update(changed);
+        this.updated++;
+      }
+
+      get bar() { return this.__bar; }
+
+      set bar(value) {
+        const old = this.bar;
+        this.__bar = Number(value);
+        this.invalidateProperty('bar', old);
+      }
+
+      render() { return html``; }
+
+    }
+    customElements.define(generateElementName(), E);
+    const el = new E();
+    container.appendChild(el);
+    await el.updateComplete;
+    assert.equal(el.updated, 1);
+    assert.equal(el.bar, 5);
+    assert.equal(el.getAttribute('attr-bar'), `5-attr`);
+    el.setAttribute('attr-bar', '7');
+    await el.updateComplete;
+    assert.equal(el.updated, 2);
+    assert.equal(el.bar, 7);
+    assert.equal(el.getAttribute('attr-bar'), `7-attr`);
+    el.bar = 4;
+    await el.updateComplete;
+    assert.equal(el.updated, 2);
+    assert.equal(el.bar, 4);
+    assert.equal(el.getAttribute('attr-bar'), `7-attr`);
+    el.setAttribute('attr-bar', '3');
+    await el.updateComplete;
+    assert.equal(el.updated, 2);
+    assert.equal(el.bar, 3);
+    assert.equal(el.getAttribute('attr-bar'), `3`);
+  });
+
   test('updates/renders attributes, properties, and event listeners via lit-html',
        async () => {
          class E extends LitElement {
