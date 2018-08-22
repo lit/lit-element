@@ -991,7 +991,7 @@ suite('LitElement', () => {
     assert.equal(el.getAttribute('zot'), '3');
   });
 
-  test('setting properties in finishUpdate does trigger invalidation blocks updateComplete', async () => {
+  test('setting properties in finishUpdate does trigger invalidation and does not block updateComplete', async () => {
     class E extends LitElement {
 
       static get properties() {
@@ -999,20 +999,23 @@ suite('LitElement', () => {
           foo: {}
         };
       }
-      promiseFulfilled = false;
       foo = 0;
       updated = 0;
       fooMax = 2;
 
-      async finishUpdate() {
+      update(changed: PropertyValues) {
         this.updated++;
+        super.update(changed);
+      }
+
+      finishUpdate() {
         if (this.foo < this.fooMax) {
           this.foo++;
         }
       }
 
       render() {
-        return html`${this.foo}`;
+        return html``;
       }
 
     }
@@ -1020,18 +1023,56 @@ suite('LitElement', () => {
     const el = new E();
     container.appendChild(el);
     await el.updateComplete;
-    assert.equal(el.foo, 2);
-    assert.equal(el.updated, 3);
-    assert.equal(el.shadowRoot!.textContent, '2');
-    el.fooMax = 10;
-    el.foo = 5;
+    assert.equal(el.foo, 1);
+    assert.equal(el.updated, 1);
     await el.updateComplete;
-    assert.equal(el.foo, 10);
-    assert.equal(el.updated, 9);
-    assert.equal(el.shadowRoot!.textContent, '10');
+    assert.equal(el.foo, 2);
+    assert.equal(el.updated, 2);
   });
 
-  test('can await promise in finishUpdate', async () => {
+  test('updateComplete can block properties set in finishUpdate', async () => {
+    class E extends LitElement {
+
+      static get properties() {
+        return {
+          foo: {}
+        };
+      }
+      foo = 1;
+      updated = 0;
+      fooMax = 10;
+
+      update(changed: PropertyValues) {
+        this.updated++;
+        super.update(changed);
+      }
+
+      finishUpdate() {
+        if (this.foo < this.fooMax) {
+          this.foo++;
+        }
+      }
+
+      render() {
+        return html``;
+      }
+
+      get updateComplete() {
+        return (async () => {
+          while (!await super.updateComplete) {}
+        })();
+      }
+
+    }
+    customElements.define(generateElementName(), E);
+    const el = new E();
+    container.appendChild(el);
+    await el.updateComplete;
+    assert.equal(el.foo, 10);
+    assert.equal(el.updated, 10);
+  });
+
+  test('can await promise in updateComplete', async () => {
     class E extends LitElement {
 
       static get properties() {
@@ -1046,13 +1087,16 @@ suite('LitElement', () => {
         return html`${this.foo}`;
       }
 
-      async finishUpdate() {
-        await new Promise((resolve) => {
-          setTimeout(() => {
-            this.promiseFulfilled = true;
-            resolve();
-          }, 1);
-        });
+      get updateComplete() {
+        return (async () => {
+          await super.updateComplete;
+          await new Promise((resolve) => {
+            setTimeout(() => {
+              this.promiseFulfilled = true;
+              resolve();
+            }, 1);
+          });
+        })();
       }
 
     }
@@ -1063,37 +1107,7 @@ suite('LitElement', () => {
     assert.isTrue(el.promiseFulfilled);
   });
 
-  test('updateComplete resolved after any properties set within finishUpdate', async () => {
-    class E extends LitElement {
-
-      static get properties() {
-        return {
-          foo: {}
-        };
-      }
-
-      foo = 0;
-
-      render() {
-        return html`${this.foo}`;
-      }
-
-      async finishUpdate() {
-        if (this.foo < 10) {
-          this.foo++;
-        }
-      }
-
-    }
-    customElements.define(generateElementName(), E);
-    const el = new E();
-    container.appendChild(el);
-    await el.updateComplete;
-    assert.equal(el.foo, 10);
-    assert.equal(el.shadowRoot!.textContent, '10');
-  });
-
-  test('can await sub-element updateComplete in finishUpdate', async () => {
+  test('can await sub-element updateComplete', async () => {
     class E extends LitElement {
 
       static get properties() {
@@ -1108,13 +1122,16 @@ suite('LitElement', () => {
         return html`${this.foo}`;
       }
 
-      async finishUpdate() {
-        await new Promise((resolve) => {
-          setTimeout(() => {
-            this.promiseFulfilled = true;
-            resolve();
-          }, 0);
-        });
+      get updateComplete() {
+        return (async () => {
+          await super.updateComplete;
+          await new Promise((resolve) => {
+            setTimeout(() => {
+              this.promiseFulfilled = true;
+              resolve();
+            }, 1);
+          });
+        })();
       }
 
     }
@@ -1128,10 +1145,16 @@ suite('LitElement', () => {
         return html`<x-1224></x-1224>`;
       }
 
-      async finishUpdate() {
+      finishFirstUpdate() {
         this.inner = this.shadowRoot!.querySelector('x-1224');
-        this.inner!.foo = 'yo';
-        await this.inner!.updateComplete;
+      }
+
+      get updateComplete() {
+        return (async () => {
+          await super.updateComplete;
+          this.inner!.foo = 'yo';
+          await this.inner!.updateComplete;
+        })();
       }
 
     }

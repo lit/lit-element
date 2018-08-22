@@ -155,29 +155,36 @@ See the [source](https://github.com/PolymerLabs/lit-element/blob/master/src/lit-
   during `update()` setting properties does not trigger `invalidate()`, allowing
   property values to be computed and validated.
 
-  * `finishUpdate(changedProperties): Promise?` (protected): Called after element DOM has been updated and
+  * `finishUpdate(changedProperties)`: (protected): Called after element DOM has been updated and
   before the `updateComplete` promise is resolved. Implement to directly control rendered DOM.
   Typically this is not needed as `lit-html` can be used in the `render` method
   to set properties, attributes, and event listeners. However, it is sometimes useful
   for calling methods on rendered elements, for example focusing an input:
   `this.shadowRoot.querySelector('input').focus()`. The `changedProps` argument is an object
-  with keys for the changed properties pointing to their previous values. If this function
-  returns a `Promise`, it will be *awaited* before resolving the `updateComplete` promise.
-  Setting properties in `finishUpdate()` does trigger `invalidate()` and blocks
-  the `updateComplete` promise.
+  with keys for the changed properties pointing to their previous values.
 
-  * `finishFirstUpdate(): Promise?` (protected) Called after element DOM has been
+  * `finishFirstUpdate()`: (protected) Called after element DOM has been
   updated the first time. This method can be useful for capturing references to rendered static
   nodes that must be directly acted upon, for example in `finishUpdate`.
 
-  * `updateComplete`: Returns a promise which resolves after the element next updates and renders.
+  * `updateComplete`:  Returns a Promise that resolves when the element has finished updating
+  to a boolean value that is true if the element finished the update
+  without triggering another update. This can happen if a property
+  is set in `finishUpdate` for example.
+  This getter can be implemented to await additional state. For example, it
+  is sometimes useful to await a rendered element before fulfilling this
+  promise. To do this, first await `super.updateComplete` then any subsequent
+  state.
 
   * `invalidate`: Call to request the element to asynchronously update regardless
-  of whether or not any property changes are pending.
+  of whether or not any property changes are pending. This should only be called
+  when an element should update based on some state not stored in properties,
+  since setting properties automically calls `invalidate`.
 
-  * `invalidateProperty(name, oldValue)`: Triggers an invalidation for a specific property.
-  This is useful when manually implementing a propert setter. Call `invalidateProperty`
-  instead of `invalidate` to ensure that any configured property options are honored.
+  * `invalidateProperty(name, oldValue)` (protected): Triggers an invalidation for
+  a specific property. This is useful when manually implementing a propert setter.
+  Call `invalidateProperty` instead of `invalidate` to ensure that any configured
+  property options are honored.
 
   * `createRenderRoot()` (protected): Implement to customize where the
   element's template is rendered by returning an element into which to
@@ -197,9 +204,10 @@ See the [source](https://github.com/PolymerLabs/lit-element/blob/master/src/lit-
         will *not* trigger `invalidate()`. This calls
         * `render()` which should return a `lit-html` TemplateResult
           (e.g. <code>html\`Hello ${world}\`</code>)
+      * `finishFirstUpdate()` is then called to do post *first* update/render tasks.
+        Note, setting properties here will trigger `invalidate()`.
       * `finishUpdate(changedProps)` is then called to do post update/render tasks.
-        Note, setting properties here will trigger `invalidate()` and block
-        the `updateComplete` promise.
+        Note, setting properties here will trigger `invalidate()`.
     * `updateComplete` promise is resolved only if the element is
       not in an invalid state.
 * Any code awaiting the element's `updateComplete` promise runs and observes

@@ -104,24 +104,31 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         console.log('updated!', changedProps);
       }
 
-      async finishUpdate(changedProps) {
-        if (!this._inner) {
-          this._inner = this.shadowRoot.querySelector('x-inner');
-        }
-        await this._inner.updateComplete;
+      finishFirstUpdate(changedProps) {
+        this._inner = this.shadowRoot.querySelector('x-inner');
       }
+
+      finishUpdate() {
+        if (this.whales < 100) {
+          this.whales++;
+        }
+      }
+
+      get updateComplete() {
+        return (async () => {
+          await super.updateComplete;
+          await this._inner.updateComplete;
+          while (!await super.updateComplete) {};
+        })();
+      };
     }
 
-    addEventListener('WebComponentsReady', function() { console.log('wcr - module')})
-
-    console.log('defined class');
     customElements.define('my-element', MyElement);
-    console.log('get', customElements.get('my-element'));
 
     (async () => {
       const x = document.querySelector('my-element');
       await x.updateComplete;
-      console.log(x.shadowRoot.querySelector('x-inner').shadowRoot.textContent);
+      console.log('updateComplete!', x.shadowRoot.querySelector('x-inner').shadowRoot.textContent, x.whales);
     })();
   </script>
 </body></html>

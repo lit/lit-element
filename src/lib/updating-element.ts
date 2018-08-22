@@ -91,29 +91,11 @@ type AttributeMap = Map<string, PropertyKey>;
 export type PropertyValues = Map<PropertyKey, unknown>;
 
 /**
- * Creates and sets object used to memoize all class property values. Object
- * is chained from superclass.
- */
-const ensurePropertyStorage = (ctor: typeof UpdatingElement) => {
-  if (!ctor.hasOwnProperty('_classProperties')) {
-    ctor._classProperties = new Map();
-    // NOTE: Workaround IE11 not supporting Map constructor argument.
-    const superProperties = Object.getPrototypeOf(ctor)._classProperties;
-    if (superProperties !== undefined) {
-      superProperties.forEach((v: any, k: PropertyKey) =>
-        ctor._classProperties.set(k, v));
-    }
-  }
-};
-
-/**
  * Decorator which creates a property. Optionally a `PropertyDeclaration` object
  * can be supplied to describe how the property should be configured.
  */
 export const property = (options?: PropertyDeclaration) => (proto: Object, name: string) => {
-  const ctor = proto.constructor as typeof UpdatingElement;
-  ensurePropertyStorage(ctor);
-  ctor.createProperty(name, options);
+  (proto.constructor as typeof UpdatingElement).createProperty(name, options);
 };
 
 // serializer/deserializers for boolean attribute
@@ -140,12 +122,12 @@ const defaultPropertyDeclaration: PropertyDeclaration = {
   shouldInvalidate: notEqual
 };
 
-const microtaskPromise = Promise.resolve();
+const microtaskPromise = new Promise((resolve) => resolve(true));
 
 const STATE_HAS_UPDATED = 1;
-const STATE_IS_VALID = 1 << 2;
+const STATE_IS_UPDATING = 1 << 2;
 const STATE_IS_REFLECTING = 1 << 3;
-type ValidationState = typeof STATE_HAS_UPDATED | typeof STATE_IS_VALID | typeof STATE_IS_REFLECTING;
+type ValidationState = typeof STATE_HAS_UPDATED | typeof STATE_IS_UPDATING | typeof STATE_IS_REFLECTING;
 
 /**
  * Base element class which manages element properties and attributes. When
@@ -170,11 +152,10 @@ export abstract class UpdatingElement extends HTMLElement {
    */
   private static _observedAttributes: string[]|undefined;
 
-  // TODO(sorvell): intended to be private but called by decorator.
   /**
    * Memoized list of all class properties, including any superclass properties.
    */
-  static _classProperties: PropertyDeclarationMap = new Map();
+  private static _classProperties: PropertyDeclarationMap = new Map();
 
   static properties: PropertyDeclarations = {};
 
@@ -204,6 +185,16 @@ export abstract class UpdatingElement extends HTMLElement {
    * invalidation and update.
    */
   static createProperty(name: PropertyKey, options: PropertyDeclaration = defaultPropertyDeclaration) {
+    // ensure private storage for property declarations.
+    if (!this.hasOwnProperty('_classProperties')) {
+      this._classProperties = new Map();
+      // NOTE: Workaround IE11 not supporting Map constructor argument.
+      const superProperties = Object.getPrototypeOf(this)._classProperties;
+      if (superProperties !== undefined) {
+        superProperties.forEach((v: any, k: PropertyKey) =>
+          this._classProperties.set(k, v));
+      }
+    }
     this._classProperties.set(name, options);
     // Allow user defined accessors by not replacing an existing own-property accessor.
     if (this.prototype.hasOwnProperty(name)) {
@@ -238,7 +229,6 @@ export abstract class UpdatingElement extends HTMLElement {
       superCtor._finalize();
     }
     this._finalized = true;
-    ensurePropertyStorage(this);
     // initialize map populated in observedAttributes
     this._attributeToPropertyMap = new Map();
     // make any properties
@@ -266,7 +256,8 @@ export abstract class UpdatingElement extends HTMLElement {
    * Called when a property value is set and uses the `shouldInvalidate`
    * option for the property if present or a strict identity check.
    */
-  private static _propertyShouldInvalidate(value: unknown, old: unknown, shouldInvalidate: ShouldInvalidate = notEqual) {
+  private static _propertyShouldInvalidate(value: unknown, old: unknown,
+      shouldInvalidate: ShouldInvalidate = notEqual) {
     return shouldInvalidate(value, old);
   }
 
@@ -303,10 +294,9 @@ export abstract class UpdatingElement extends HTMLElement {
     return (typeof toAttribute === 'function') ? toAttribute(value) : null;
   }
 
-  private _validationState: ValidationState = STATE_IS_VALID;
+  private _validationState: ValidationState = 0;
   private _instanceProperties: PropertyValues|undefined = undefined;
   private _validatePromise: Promise<unknown>|undefined = undefined;
-  private _validateResolver: (() => void)|undefined = undefined;
 
   /**
    * Map with keys for any properties that have changed since the last
@@ -475,85 +465,79 @@ export abstract class UpdatingElement extends HTMLElement {
   /**
    * Invalidates the element causing it to asynchronously update regardless
    * of whether or not any property changes are pending. This method is
-   * automatically called when any registered property changes. Returns a Promise
-   * that resolves when the element has finished updating.
+   * automatically called when any registered property changes.
    */
   async invalidate() {
-    // Do not re-queue validation if already invalid (pending) or currently updating.
-    if (this._isPendingUpdate) {
-      return this._validatePromise;
-    }
-    // mark state invalid...
-    this._validationState = this._validationState & ~STATE_IS_VALID;
-    // Make a new promise only if the current one is not pending resolution
-    // (resolver has not been set to undefined)
-    if (this._validateResolver === undefined) {
-      this._validatePromise = new Promise((resolve) => this._validateResolver = resolve);
-    }
-    // Wait a tick to actually process changes (allows batching).
-    await 0;
-    // Mixin instance properties once, if they exist.
-    if (this._instanceProperties) {
-      this._applyInstanceProperties();
-    }
-    if (this.shouldUpdate(this._changedProperties)) {
-      // During update, setting properties does not trigger invalidation.
-      this.update(this._changedProperties);
-      // copy changedProperties to hand to finishUpdate.
-      let changedProperties;
-      const hasFinishUpdate = (typeof this.finishUpdate === 'function');
-      // clone changedProperties before resetting only if needed for finishUpdate.
-      if (hasFinishUpdate) {
-        changedProperties = new Map(this._changedProperties);
-      }
-      this._changedProperties.clear();
-      // mark state valid
-      this._validationState = this._validationState | STATE_IS_VALID;
-      if (!(this._validationState & STATE_HAS_UPDATED)) {
-        // mark state has updated
-        this._validationState = this._validationState | STATE_HAS_UPDATED;
-        if (typeof this.finishFirstUpdate === 'function') {
-          // During `finishFirstUpdate` (which is optional), setting properties triggers invalidation,
-          // and users may choose to await other state.
-          const result = this.finishFirstUpdate();
-          if (result != null && typeof (result as PromiseLike<unknown>).then === 'function') {
-            await result;
-          }
-        }
-      }
-      // During `finishUpdate` (which is optional), setting properties triggers invalidation,
-      // and users may choose to await other state, like children being updated.
-      if (hasFinishUpdate) {
-        const result = this.finishUpdate!(changedProperties as PropertyValues);
-        if (result != null && typeof (result as PromiseLike<unknown>).then === 'function') {
-          await result;
-        }
-      }
-    } else {
-      this._changedProperties.clear();
-      // mark state valid
-      this._validationState = this._validationState | STATE_IS_VALID;
-    }
-    // Only resolve the promise if we finish in a valid state (finishUpdate
-    // did not trigger more work). Note, if invalidate is triggered multiple
-    // times in `finishUpdate`, only the first time will resolve the promise
-    // by calling `_validateResolver`. This is why we guard for its existence.
-    if ((this._validationState & STATE_IS_VALID) && typeof this._validateResolver === 'function') {
-      this._validateResolver();
-      this._validateResolver = undefined;
+    if (!this._isUpdating) {
+      // mark state invalid...
+      this._validationState = this._validationState | STATE_IS_UPDATING;
+      let resolver: any;
+      this._validatePromise = new Promise((r) => {
+        this._validatePromise = undefined;
+        resolver = r;
+      });
+      await microtaskPromise;
+      this._validate();
+      resolver!(!this._isUpdating);
     }
     return this._validatePromise;
   }
 
-  private get _isPendingUpdate() {
-    return !(this._validationState & STATE_IS_VALID);
+  private get _isUpdating() {
+    return (this._validationState & STATE_IS_UPDATING);
   }
 
   /**
-   * Returns a Promise that resolves when the element has finished updating.
+   * Validates the element by updating it via `update`, `finishUpdate`,
+   * and `finishFirstUpdate`.
+   */
+  private _validate() {
+    // Mixin instance properties once, if they exist.
+    if (this._instanceProperties) {
+      this._applyInstanceProperties();
+    }
+    if (!this.shouldUpdate(this._changedProperties)) {
+      this._markUpdated();
+      return;
+    }
+    // During update, setting properties does not trigger invalidation.
+    this.update(this._changedProperties);
+    // copy changedProperties to hand to finishUpdate.
+    const changedProperties = this._changedProperties;
+    this._markUpdated();
+    // After update (finishFirstUpdate, finishUpdate), properties *do* trigger invalidation.
+    if (!(this._validationState & STATE_HAS_UPDATED)) {
+      // mark state has updated
+      this._validationState = this._validationState | STATE_HAS_UPDATED;
+      if (typeof this.finishFirstUpdate === 'function') {
+        this.finishFirstUpdate();
+      }
+    }
+    if (typeof this.finishUpdate === 'function') {
+      this.finishUpdate(changedProperties);
+    }
+  }
+
+  private _markUpdated() {
+    this._changedProperties = new Map();
+    this._validationState = this._validationState & ~STATE_IS_UPDATING;
+  }
+
+  /**
+   * Returns a Promise that resolves when the element has finished updating
+   * to a boolean value that is true if the element finished the update
+   * without triggering another update. This can happen if a property
+   * is set in `finishUpdate` for example.
+   * This getter can be implemented to await additional state. For example, it
+   * is sometimes useful to await a rendered element before fulfilling this
+   * promise. To do this, first await `super.updateComplete` then any subsequent
+   * state.
+   *
+   * @returns {Promise} The promise returns a boolean that indicates if the
+   * update resolved without triggering another update.
    */
   get updateComplete() {
-    return this._isPendingUpdate ? this._validatePromise : microtaskPromise;
+    return this._validatePromise || microtaskPromise;
   }
 
   /**
