@@ -116,16 +116,9 @@ export const property = (options?: PropertyDeclaration) => (proto: Object, name:
   ctor.createProperty(name, options);
 };
 
-/**
- * AttributeSerializer which configures properties which should reflect to and
- * from boolean attributes. If the attribute exists, the property is set to true.
- * If the property value is truthy, the attribute is set to an empty string;
- * otherwise, the attribute is removed.
- */
-export const BooleanAttribute: AttributeSerializer = {
-  fromAttribute: (value: string) => value !== null,
-  toAttribute: (value: string) => value ? '' : null
-};
+// serializer/deserializers for boolean attribute
+const fromBooleanAttribute = (value: string) => value !== null;
+const toBooleanAttribute = (value: string) => value ? '' : null;
 
 export interface ShouldInvalidate {
   (value: unknown, old: unknown): boolean;
@@ -301,7 +294,9 @@ export abstract class UpdatingElement extends HTMLElement {
     if (type === undefined) {
       return value;
     }
-    const fromAttribute = typeof type === 'function' ? type : type.fromAttribute;
+    // Note: special case `Boolean` so users can use it as a `type`.
+    const fromAttribute = type === Boolean ? fromBooleanAttribute :
+        (typeof type === 'function' ? type : type.fromAttribute);
     return fromAttribute ? fromAttribute(value) : value;
   }
 
@@ -316,7 +311,9 @@ export abstract class UpdatingElement extends HTMLElement {
     if (options === undefined || options.reflect === undefined) {
       return;
     }
-    const toAttribute = options.type && (options.type as AttributeSerializer).toAttribute || String;
+    // Note: special case `Boolean` so users can use it as a `type`.
+    const toAttribute = options.type === Boolean ? toBooleanAttribute :
+        (options.type && (options.type as AttributeSerializer).toAttribute || String);
     return (typeof toAttribute === 'function') ? toAttribute(value) : null;
   }
 

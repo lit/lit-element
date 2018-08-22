@@ -12,7 +12,7 @@
  * http://polymer.github.io/PATENTS.txt
  */
 
-import {html, LitElement, BooleanAttribute, PropertyDeclarations, PropertyValues} from '../lit-element.js';
+import {html, LitElement, PropertyDeclarations, PropertyValues} from '../lit-element.js';
 
 import {stripExpressionDelimeters, generateElementName} from './test-helpers.js';
 
@@ -567,16 +567,37 @@ suite('LitElement', () => {
     assert.equal(sub.nug, 5);
   });
 
-   test('Attributes reflect with type.toAttribute and BooleanAttribute', async () => {
+   test('Attributes reflect', async () => {
+    const suffix = '-reflected';
     class E extends LitElement {
       static get properties() {
         return {
-          foo: {type: Number, reflect: true},
-          bar: {type: BooleanAttribute, reflect: true}
+          foo: {reflect: true, type: {toAttribute: (value: any) => `${value}${suffix}`}}
         };
       }
 
       foo = 0;
+
+      render() { return html``; }
+    }
+    customElements.define(generateElementName(), E);
+    const el = new E();
+    container.appendChild(el);
+    await el.updateComplete;
+    assert.equal(el.getAttribute('foo'), `0${suffix}`);
+    el.foo = 5;
+    await el.updateComplete;
+    assert.equal(el.getAttribute('foo'), `5${suffix}`);
+  });
+
+  test('Attributes reflect with type: Boolean', async () => {
+    class E extends LitElement {
+      static get properties() {
+        return {
+          bar: {type: Boolean, reflect: true}
+        };
+      }
+
       bar = true;
 
       render() { return html``; }
@@ -585,13 +606,13 @@ suite('LitElement', () => {
     const el = new E();
     container.appendChild(el);
     await el.updateComplete;
-    assert.equal(el.getAttribute('foo'), '0');
     assert.equal(el.getAttribute('bar'), '');
-    el.foo = 5;
     el.bar = false;
     await el.updateComplete;
-    assert.equal(el.getAttribute('foo'), '5');
     assert.equal(el.hasAttribute('bar'), false);
+    el.bar = true;
+    await el.updateComplete;
+    assert.equal(el.getAttribute('bar'), '');
   });
 
   test('updates/renders when properties change', async () => {
