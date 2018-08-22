@@ -10,11 +10,11 @@
 
 LitElement uses [lit-html](https://github.com/Polymer/lit-html) to render into the
 element's [Shadow DOM](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_shadow_DOM)
-and adds API help manage element properties and attributes. LitElement reacts to changes in properties
+and adds API to help manage element properties and attributes. LitElement reacts to changes in properties
 and renders declaratively using `lit-html`.
 
-  * **Setup properties:** LitElement supports observable properties which may trigger an
-  update when set. These properties can be written in a few ways:
+  * **Setup properties:** LitElement supports observable properties that cause the element to update.
+  These properties can be declared in a few ways:
 
     * As class fields with the `@property()` [decorator](https://github.com/tc39/proposal-decorators#decorators),
     if you're using a compiler that supports them, like TypeScript or Babel.
@@ -29,8 +29,8 @@ and renders declaratively using `lit-html`.
 
     Property options include:
 
-    * `attribute`: Describes how and if the property becomes an observed attribute.
-    If the value is false, the property is not added to `observedAttributes`.
+    * `attribute`: Describes how and whether the property becomes an observed attribute.
+    If the value is `false`, the property is not added to `observedAttributes`.
     If true or absent, the lowercased property name is observed (e.g. `fooBar` becomes `foobar`).
     If a string, the string value is observed (e.g `attribute: 'foo-bar'`).
     * `type`: Describes how to serialize and deserialize the attribute to/from a property.
@@ -38,16 +38,16 @@ and renders declaratively using `lit-html`.
     a the property value. If it's an object, it can have keys for `fromAttribute` and
     `toAttribute` where `fromAttribute` is the deserialize function and `toAttribute`
     is a serialize function used to set the property to an attribute. If no `toAttribute`
-    function is provided and `reflect` is set to true, the property value is set
+    function is provided and `reflect` is set to `true`, the property value is set
     directly to the attribute.
     * `reflect`: Describes if the property should reflect to an attribute.
-    If true, when the property is set, the attribute is set using the
+    If `true`, when the property is set, the attribute is set using the
     attribute name determined according to the rules for the `attribute`
     propety option and the value of the property serialized using the rules from
     the `type` property option.
     * `shouldInvalidate`: Describes if setting a property should trigger
     invalidation and updating. This function takes the `newValue` and `oldValue` and
-    returns true if invalidation should occur. If not present, a strict identity
+    returns `true` if invalidation should occur. If not present, a strict identity
     check is used. This is useful if a property should be considered dirty only
     if some condition is met, like if a key of an object value changes.
 
@@ -63,8 +63,9 @@ and renders declaratively using `lit-html`.
 
     * static elements: ``` html`<div>Hi</div>` ```
     * expression: ``` html`<div>${disabled ? 'Off' : 'On'}</div>` ```
-    * attribute: ``` html`<div class$="${color} special"></div>` ```
-    * event handler: ``` html`<button on-click="${(e) => this._clickHandler(e)}"></button>` ```
+    * property: ``` html`<x-foo .bar="${bar}"></x-foo>` ```
+    * attribute: ``` html`<div class="${color} special"></div>` ```
+    * event handler: ``` html`<button @click="${(e) => this._clickHandler(e)}"></button>` ```
 
 ## Getting started
 
@@ -113,7 +114,7 @@ into the element. This is the only method that must be implemented by subclasses
 ```html
   <script src="node_modules/@webcomponents/webcomponents-bundle.js"></script>
   <script type="module">
-    import {LitElement, html} from '@polymer/lit-element';
+    import {LitElement, html, property} from '@polymer/lit-element';
 
     class MyElement extends LitElement {
 
@@ -135,24 +136,21 @@ into the element. This is the only method that must be implemented by subclasses
 
 ## API Documentation
 
-See the [source](https://github.com/PolymerLabs/lit-element/blob/master/src/lit-element.ts#L90)
- for detailed API info, here are some highlights.
-
   * `render()` (protected): Implement to describe the element's DOM using `lit-html`. Ideally,
-  the `render` implementation is a pure function using only the element's current properties
+  the `render` implementation is a [pure function](https://en.wikipedia.org/wiki/Pure_function) using only the element's current properties
   to describe the element template. This is the only method that must be implemented by subclasses.
-  Note, since `render()` is called by `update()` setting properties does not trigger
+  Note, since `render()` is called by `update()`, setting properties does not trigger
   `invalidate()`, allowing property values to be computed and validated.
 
   * `shouldUpdate(changedProperties)` (protected): Implement to control if updating and rendering
-  should occur when property values change or `invalidate` is called. The `changedProps`
+  should occur when property values change or `invalidate` is called. The `changedProperties`
   argument is an object with keys for the changed properties pointing to their previous values.
   By default, this method always returns true, but this can be customized as
   an optimization to avoid updating work when changes occur, which should not be rendered.
 
-  * `update()` (protected): This method calls `render()` and then uses `lit-html` to
+  * `update()` (protected): This method calls `render()` and then uses `lit-html` in order to
   render the template DOM. Override to customize how the element renders DOM. Note,
-  during `update()` setting properties does not trigger `invalidate()`, allowing
+  within `update()`, setting properties does not trigger `invalidate()`, allowing
   property values to be computed and validated.
 
   * `finishUpdate(changedProperties)`: (protected): Called after element DOM has been updated and
@@ -160,10 +158,10 @@ See the [source](https://github.com/PolymerLabs/lit-element/blob/master/src/lit-
   Typically this is not needed as `lit-html` can be used in the `render` method
   to set properties, attributes, and event listeners. However, it is sometimes useful
   for calling methods on rendered elements, for example focusing an input:
-  `this.shadowRoot.querySelector('input').focus()`. The `changedProps` argument is an object
+  `this.shadowRoot.querySelector('input').focus()`. The `changedProperties` argument is an object
   with keys for the changed properties pointing to their previous values.
 
-  * `finishFirstUpdate()`: (protected) Called after element DOM has been
+  * `finishFirstUpdate()`: (protected) Called after the element's DOM has been
   updated the first time. This method can be useful for capturing references to rendered static
   nodes that must be directly acted upon, for example in `finishUpdate`.
 
@@ -197,26 +195,25 @@ See the [source](https://github.com/PolymerLabs/lit-element/blob/master/src/lit-
   and the property's `shouldInvalidate(value, oldValue)` returns true. Then
   * `invalidate()` tries to update the element after waiting a [microtask](https://jakearchibald.com/2015/tasks-microtasks-queues-and-schedules/) (at the end
   of the event loop, before the next paint). Then
-    * `shouldUpdate(changedProps)` is called and if this returns true which it
+    * `shouldUpdate(changedProperties)` is called and if this returns true which it
       does by default:
-      * `update(changedProps)` is called to update the element.
+      * `update(changedProperties)` is called to update the element.
         Note, setting properties inside `update()` will set their values but
         will *not* trigger `invalidate()`. This calls
         * `render()` which should return a `lit-html` TemplateResult
           (e.g. <code>html\`Hello ${world}\`</code>)
       * `finishFirstUpdate()` is then called to do post *first* update/render tasks.
         Note, setting properties here will trigger `invalidate()`.
-      * `finishUpdate(changedProps)` is then called to do post update/render tasks.
+      * `finishUpdate(changedProperties)` is then called to do post update/render tasks.
         Note, setting properties here will trigger `invalidate()`.
-    * `updateComplete` promise is resolved only if the element is
-      not in an invalid state.
+    * `updateComplete` promise is resolved.
 * Any code awaiting the element's `updateComplete` promise runs and observes
   the element in the updated state.
 
 ## Bigger Example
 
 ```JavaScript
-import {LitElement, html} from '@polymer/lit-element';
+import {LitElement, html, property} from '@polymer/lit-element';
 
 class MyElement extends LitElement {
 

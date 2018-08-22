@@ -37,8 +37,8 @@ type AttributeType<T = any> = AttributeSerializer<T>|((value: string) => T);
 export interface PropertyDeclaration<T = any> {
 
   /**
-   * Describes how and if the property becomes an observed attribute.
-   * If the value is false, the property is not added to `observedAttributes`.
+   * Describes how and whether the property becomes an observed attribute.
+   * If the value is `false`, the property is not added to `observedAttributes`.
    * If true or absent, the lowercased property name is observed (e.g. `fooBar` becomes `foobar`).
    * If a string, the string value is observed (e.g `attribute: 'foo-bar'`).
    */
@@ -50,14 +50,14 @@ export interface PropertyDeclaration<T = any> {
    * a the property value. If it's an object, it can have keys for `fromAttribute` and
    * `toAttribute` where `fromAttribute` is the deserialize function and `toAttribute`
    * is a serialize function used to set the property to an attribute. If no `toAttribute`
-   * function is provided and `reflect` is set to true, the property value is set
+   * function is provided and `reflect` is set to `true`, the property value is set
    * directly to the attribute.
    */
   type?: AttributeType<T>;
 
   /**
    * Describes if the property should reflect to an attribute.
-   * If true, when the property is set, the attribute is set using the
+   * If `true`, when the property is set, the attribute is set using the
    * attribute name determined according to the rules for the `attribute`
    * propety option and the value of the property serialized using the rules from
    * the `type` property option.
@@ -66,7 +66,7 @@ export interface PropertyDeclaration<T = any> {
 
   /**
    * Describes if setting a property should trigger invalidation and updating.
-   * This function takes the `newValue` and `oldValue` and returns true if
+   * This function takes the `newValue` and `oldValue` and returns `true` if
    * invalidation should occur. If not present, a strict identity check
    * (eg. === operator) is used. This is useful if a property should be
    * considered dirty only if some condition is met, like if a key of an
@@ -553,7 +553,7 @@ export abstract class UpdatingElement extends HTMLElement {
   /**
    * Updates the element. By default this method reflects property values to attributes.
    * It should be implemented to render and keep updated DOM in the element's root.
-   * Note, within `update()` setting properties does not trigger `invalidate()`, allowing
+   * Note, within `update()`, setting properties does not trigger `invalidate()`, allowing
    * property values to be computed and validated before DOM is rendered and updated.
    * * @param _changedProperties Map of changed properties with old values
    */
@@ -567,29 +567,21 @@ export abstract class UpdatingElement extends HTMLElement {
   }
 
   /**
-   * Finishes updating the element. This method does nothing by default and
-   * can be implemented to perform post update tasks on element DOM.
-   * Note, setting properties in `finishUpdate()` triggers `invalidate()`.
-   * There are a couple of common cases when it's useful to implement
-   * `finishUpdate`:
-   * (1) A property should be updated based on the rendered state of the
-   * DOM. In this case it's important to avoid creating a loop since setting
-   * properties triggers invalidate and update.
-   * (2) The `updateComplete` promise should block on the `updateComplete` promise
-   * of a rendered `UpdatingElement`.
+   * Called after element DOM has been updated and before the `updateComplete`
+   * promise is resolved. Implement to directly control rendered DOM.
+   * It is sometimes useful for calling methods on rendered elements, for
+   * example focusing an input: `this.shadowRoot.querySelector('input').focus()`.
+   * The `changedProperties` argument is an object with keys for the changed
+   * properties pointing to their previous values.
+   *
    * * @param _changedProperties Map of changed properties with old values
-   * * @returns {Promise} Optionally, this function can return a promise that blocks
-   * resolution of the `invalidate` and updateComplete` promise.
    */
-  protected finishUpdate?(_changedProperties: PropertyValues): void|Promise<unknown>;
+  protected finishUpdate?(_changedProperties: PropertyValues): void;
 
   /**
-   * Called with the element is first updated. This method does nothing by
-   * default and can be implemented to perform post first update tasks on
-   * element DOM. Any tasks which depend on dynamic updates should instead
-   * be implemented in `finishUpdate`.
-   * * @returns {Promise} Optionally can return a promise that blocks
-   * resolution of the `invalidate` and updateComplete` promise.
+   * Called after the element's DOM has been updated the first time. This method can
+   * be useful for capturing references to rendered static nodes that must be
+   * directly acted upon, for example in `finishUpdate`.
    */
   protected finishFirstUpdate?(): void;
 }
