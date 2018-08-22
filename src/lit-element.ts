@@ -15,7 +15,7 @@ import {render} from 'lit-html/lib/shady-render';
 import {TemplateResult} from 'lit-html/core';
 import {UpdatingElement, PropertyValues} from './lib/updating-element.js';
 
-export {property, identity, BooleanAttribute, PropertyDeclarations, PropertyDeclaration, PropertyValues} from './lib/updating-element.js';
+export * from './lib/updating-element.js';
 export {html, svg} from 'lit-html/lit-html';
 
 
