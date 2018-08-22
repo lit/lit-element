@@ -190,6 +190,13 @@ suite('LitElement', () => {
       toAttribute = 1;
       all = 10;
 
+      updated = 0;
+
+      update(changed: PropertyValues) {
+        this.updated++;
+        super.update(changed);
+      }
+
       render() { return html``; }
 
     }
@@ -197,6 +204,7 @@ suite('LitElement', () => {
     const el = new E();
     container.appendChild(el);
     await el.updateComplete;
+    assert.equal(el.updated, 1);
     assert.equal(el.noAttr, 'noAttr');
     assert.equal(el.atTr, 'attr');
     assert.equal(el.customAttr, 'customAttr');
@@ -209,34 +217,48 @@ suite('LitElement', () => {
     el.setAttribute('noattr', 'noAttr2');
     el.setAttribute('attr', 'attr2');
     el.setAttribute('custom', 'customAttr2');
-    el.shouldInvalidate = 5;
     el.setAttribute('fromattribute', '2attr');
     el.toAttribute = 2;
     el.all = 5;
     await el.updateComplete;
+    assert.equal(el.updated, 2);
     assert.equal(el.noAttr, 'noAttr');
     assert.equal(el.atTr, 'attr2');
     assert.equal(el.customAttr, 'customAttr2');
-    assert.equal(el.shouldInvalidate, 10);
     assert.equal(el.fromAttribute, 2);
     assert.equal(el.toAttribute, 2);
     assert.equal(el.getAttribute('toattribute'), '2-attr');
-    assert.equal(el.all, 10);
-    el.shouldInvalidate = 15;
+    assert.equal(el.all, 5);
     el.all = 15;
     await el.updateComplete;
-    assert.equal(el.shouldInvalidate, 15);
+    assert.equal(el.updated, 3);
     assert.equal(el.all, 15);
     assert.equal(el.getAttribute('all-attr'), '15-attr');
     el.setAttribute('all-attr', '16-attr');
     await el.updateComplete;
+    assert.equal(el.updated, 4);
     assert.equal(el.getAttribute('all-attr'), '16-attr');
     assert.equal(el.all, 16);
+    el.shouldInvalidate = 5;
+    await el.updateComplete;
+    assert.equal(el.shouldInvalidate, 5);
+    assert.equal(el.updated, 4);
+    el.shouldInvalidate = 15;
+    await el.updateComplete;
+    assert.equal(el.shouldInvalidate, 15);
+    assert.equal(el.updated, 5);
+    el.setAttribute('all-attr', '5-attr');
+    await el.updateComplete;
+    assert.equal(el.all, 5);
+    assert.equal(el.updated, 5);
+    el.all = 15;
+    await el.updateComplete;
+    assert.equal(el.all, 15);
+    assert.equal(el.updated, 6);
   });
 
   test('attributes deserialize from html', async() => {
 
-    const shouldInvalidate = (value: any, old: any) => old === undefined || value > old;
     const fromAttribute = (value: any) => parseInt(value);
     const toAttributeOnly = (value: any) => typeof value === 'string' && value.indexOf(`-attr`) > 0 ? value : `${value}-attr`;
     const toAttribute = (value: any) => `${value}-attr`;
@@ -246,17 +268,15 @@ suite('LitElement', () => {
           noAttr: {attribute: false},
           atTr: {attribute: true},
           customAttr: {attribute: 'custom', reflect: true},
-          shouldInvalidate: {shouldInvalidate},
           fromAttribute: {type: fromAttribute},
           toAttribute: {reflect: true, type: {toAttribute: toAttributeOnly}},
-          all: {attribute: 'all-attr', shouldInvalidate, type: {fromAttribute, toAttribute}, reflect: true},
+          all: {attribute: 'all-attr', type: {fromAttribute, toAttribute}, reflect: true},
         };
       }
 
       noAttr = 'noAttr';
       atTr = 'attr';
       customAttr = 'customAttr';
-      shouldInvalidate = 10;
       fromAttribute = 1;
       toAttribute: string|number = 1;
       all = 10;
@@ -270,7 +290,6 @@ suite('LitElement', () => {
       noattr="1"
       attr="2"
       custom="3"
-      shouldInvalidate="5"
       fromAttribute="6-attr"
       toAttribute="7"
       all-attr="11-attr"></${name}>`;
@@ -281,8 +300,6 @@ suite('LitElement', () => {
     assert.equal(el.atTr, '2');
     assert.equal(el.customAttr, '3');
     assert.equal(el.getAttribute('custom'), '3');
-    assert.equal(el.shouldInvalidate, 10);
-    assert.equal(el.getAttribute('shouldinvalidate'), '5');
     assert.equal(el.fromAttribute, 6);
     assert.equal(el.toAttribute, '7');
     assert.equal(el.getAttribute('toattribute'), '7-attr');
@@ -333,7 +350,6 @@ suite('LitElement', () => {
       assert.equal(el.updated, 3);
       assert.equal(el.foo, 55);
       assert.equal(el[zug], 66);
-
     });
 
     test('properties as symbols can set property options', async() => {
@@ -395,9 +411,13 @@ suite('LitElement', () => {
       atTr = 'attr';
       customAttr = 'customAttr';
       shouldInvalidate = 10;
-      fromAttribute = 1;
-      toAttribute = 1;
-      all = 10;
+
+      updated = 0;
+
+      update(changed: PropertyValues) {
+        this.updated++;
+        super.update(changed);
+      }
 
       render() { return html``; }
 
@@ -414,15 +434,9 @@ suite('LitElement', () => {
         };
       }
 
-      noAttr = 'noAttr';
-      atTr = 'attr';
-      customAttr = 'customAttr';
-      shouldInvalidate = 10;
       fromAttribute = 1;
       toAttribute = 1;
       all = 10;
-
-      render() { return html``; }
 
     }
 
@@ -435,16 +449,6 @@ suite('LitElement', () => {
         };
       }
 
-      noAttr = 'noAttr';
-      atTr = 'attr';
-      customAttr = 'customAttr';
-      shouldInvalidate = 10;
-      fromAttribute = 1;
-      toAttribute = 1;
-      all = 10;
-
-      render() { return html``; }
-
     }
 
     customElements.define(generateElementName(), G);
@@ -452,6 +456,7 @@ suite('LitElement', () => {
     const el = new G();
     container.appendChild(el);
     await el.updateComplete;
+    assert.equal(el.updated, 1);
     assert.equal(el.noAttr, 'noAttr');
     assert.equal(el.atTr, 'attr');
     assert.equal(el.customAttr, 'customAttr');
@@ -464,29 +469,44 @@ suite('LitElement', () => {
     el.setAttribute('noattr', 'noAttr2');
     el.setAttribute('attr', 'attr2');
     el.setAttribute('custom', 'customAttr2');
-    el.shouldInvalidate = 5;
     el.setAttribute('fromattribute', '2attr');
     el.toAttribute = 2;
     el.all = 5;
     await el.updateComplete;
+    assert.equal(el.updated, 2);
     assert.equal(el.noAttr, 'noAttr');
     assert.equal(el.atTr, 'attr2');
     assert.equal(el.customAttr, 'customAttr2');
-    assert.equal(el.shouldInvalidate, 10);
     assert.equal(el.fromAttribute, 2);
     assert.equal(el.toAttribute, 2);
     assert.equal(el.getAttribute('toattribute'), '2-attr');
-    assert.equal(el.all, 10);
-    el.shouldInvalidate = 15;
+    assert.equal(el.all, 5);
     el.all = 15;
     await el.updateComplete;
-    assert.equal(el.shouldInvalidate, 15);
+    assert.equal(el.updated, 3);
     assert.equal(el.all, 15);
     assert.equal(el.getAttribute('all-attr'), '15-attr');
     el.setAttribute('all-attr', '16-attr');
     await el.updateComplete;
+    assert.equal(el.updated, 4);
     assert.equal(el.getAttribute('all-attr'), '16-attr');
     assert.equal(el.all, 16);
+    el.shouldInvalidate = 5;
+    await el.updateComplete;
+    assert.equal(el.shouldInvalidate, 5);
+    assert.equal(el.updated, 4);
+    el.shouldInvalidate = 15;
+    await el.updateComplete;
+    assert.equal(el.shouldInvalidate, 15);
+    assert.equal(el.updated, 5);
+    el.setAttribute('all-attr', '5-attr');
+    await el.updateComplete;
+    assert.equal(el.all, 5);
+    assert.equal(el.updated, 5);
+    el.all = 15;
+    await el.updateComplete;
+    assert.equal(el.all, 15);
+    assert.equal(el.updated, 6);
 
   });
 
