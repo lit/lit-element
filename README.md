@@ -180,7 +180,7 @@ into the element. This is the only method that must be implemented by subclasses
   since setting properties automically calls `invalidate`.
 
   * `invalidateProperty(name, oldValue)` (protected): Triggers an invalidation for
-  a specific property. This is useful when manually implementing a propert setter.
+  a specific property. This is useful when manually implementing a property setter.
   Call `invalidateProperty` instead of `invalidate` to ensure that any configured
   property options are honored.
 
