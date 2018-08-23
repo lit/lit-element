@@ -337,7 +337,7 @@ export abstract class UpdatingElement extends HTMLElement {
    * runs.
    */
   private _saveInstanceProperties() {
-    for (const p of (this.constructor as typeof UpdatingElement)._classProperties.keys()) {
+    for (const [p] of (this.constructor as typeof UpdatingElement)._classProperties) {
       if (this.hasOwnProperty(p)) {
         const value = this[p as keyof this];
         delete this[p as keyof this];
