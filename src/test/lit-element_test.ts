@@ -1336,14 +1336,14 @@ suite('LitElement', () => {
     container.appendChild(el);
     await el.updateComplete;
     assert.equal(el.inner!.shadowRoot!.textContent, 'outer');
-    assert.equal(el.inner!.attr, 'outer');
+    assert.equal((el.inner! as any).attr, 'outer');
     assert.equal(el.inner!.getAttribute('attr'), 'outer');
     assert.equal(el.inner!.bool, false);
     el.bar = 'test';
     el.bool = true;
     await el.updateComplete;
     assert.equal(el.inner!.shadowRoot!.textContent, 'test');
-    assert.equal(el.inner!.attr, 'test');
+    assert.equal((el.inner! as any).attr, 'test');
     assert.equal(el.inner!.getAttribute('attr'), 'test');
     assert.equal(el.inner!.bool, true);
   });
