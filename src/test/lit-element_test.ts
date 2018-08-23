@@ -1022,12 +1022,16 @@ suite('LitElement', () => {
     customElements.define(generateElementName(), E);
     const el = new E();
     container.appendChild(el);
-    await el.updateComplete;
+    let result = await el.updateComplete;
+    assert.isFalse(result);
     assert.equal(el.foo, 1);
     assert.equal(el.updated, 1);
-    await el.updateComplete;
+    result = await el.updateComplete;
+    assert.isFalse(result);
     assert.equal(el.foo, 2);
     assert.equal(el.updated, 2);
+    result = await el.updateComplete;
+    assert.isTrue(result);
   });
 
   test('updateComplete can block properties set in finishUpdate', async () => {
@@ -1060,6 +1064,7 @@ suite('LitElement', () => {
       get updateComplete() {
         return (async () => {
           while (!await super.updateComplete) {}
+          return true;
         })();
       }
 
@@ -1067,7 +1072,8 @@ suite('LitElement', () => {
     customElements.define(generateElementName(), E);
     const el = new E();
     container.appendChild(el);
-    await el.updateComplete;
+    const result = await el.updateComplete;
+    assert.isTrue(result);
     assert.equal(el.foo, 10);
     assert.equal(el.updated, 10);
   });
@@ -1089,11 +1095,10 @@ suite('LitElement', () => {
 
       get updateComplete() {
         return (async () => {
-          await super.updateComplete;
-          await new Promise((resolve) => {
+          return await super.updateComplete && await new Promise((resolve) => {
             setTimeout(() => {
               this.promiseFulfilled = true;
-              resolve();
+              resolve(true);
             }, 1);
           });
         })();
@@ -1103,7 +1108,8 @@ suite('LitElement', () => {
     customElements.define(generateElementName(), E);
     const el = new E();
     container.appendChild(el);
-    await el.updateComplete;
+    const result = await el.updateComplete;
+    assert.isTrue(result);
     assert.isTrue(el.promiseFulfilled);
   });
 
@@ -1124,11 +1130,10 @@ suite('LitElement', () => {
 
       get updateComplete() {
         return (async () => {
-          await super.updateComplete;
-          await new Promise((resolve) => {
+          return await super.updateComplete && await new Promise((resolve) => {
             setTimeout(() => {
               this.promiseFulfilled = true;
-              resolve();
+              resolve(true);
             }, 1);
           });
         })();
@@ -1153,7 +1158,7 @@ suite('LitElement', () => {
         return (async () => {
           await super.updateComplete;
           this.inner!.foo = 'yo';
-          await this.inner!.updateComplete;
+          return await this.inner!.updateComplete && await super.updateComplete;
         })();
       }
 
@@ -1161,7 +1166,8 @@ suite('LitElement', () => {
     customElements.define(generateElementName(), F);
     const el = new F();
     container.appendChild(el);
-    await el.updateComplete;
+    const result = await el.updateComplete;
+    assert.isTrue(result);
     assert.equal(el.inner!.shadowRoot!.textContent, 'yo');
     assert.isTrue(el.inner!.promiseFulfilled);
   });
@@ -1241,8 +1247,7 @@ suite('LitElement', () => {
 
       get updateComplete() {
         return (async () => {
-          await super.updateComplete;
-          await this.inner!.updateComplete;
+          return await super.updateComplete && await this.inner!.updateComplete;
         })();
       }
 
