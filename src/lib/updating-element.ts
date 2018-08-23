@@ -290,7 +290,7 @@ export abstract class UpdatingElement extends HTMLElement {
 
   private _validationState: ValidationState = 0;
   private _instanceProperties: PropertyValues|undefined = undefined;
-  private _validatePromise: Promise<unknown>|undefined = undefined;
+  private _validatePromise: Promise<unknown> = microtaskPromise;
 
   /**
    * Map with keys for any properties that have changed since the last
@@ -466,8 +466,9 @@ export abstract class UpdatingElement extends HTMLElement {
       // mark state invalid...
       this._validationState = this._validationState | STATE_IS_UPDATING;
       let resolver: any;
+      const previousValidatePromise = this._validatePromise;
       this._validatePromise = new Promise((r) => resolver = r);
-      await microtaskPromise;
+      await previousValidatePromise;
       this._validate();
       resolver!(!this._isUpdating);
     }
@@ -512,7 +513,7 @@ export abstract class UpdatingElement extends HTMLElement {
    * update resolved without triggering another update.
    */
   get updateComplete() {
-    return this._validatePromise || microtaskPromise;
+    return this._validatePromise;
   }
 
   /**

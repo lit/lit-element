@@ -1125,6 +1125,37 @@ suite('LitElement', () => {
     assert.isTrue(result);
   });
 
+  test('setting properties after `super.update` can await until updateComplete returns true', async () => {
+    class E extends LitElement {
+
+      static get properties() {
+        return {
+          foo: {}
+        };
+      }
+      foo = 0;
+      updated = 0;
+
+      update(changed: PropertyValues) {
+        this.updated++;
+        super.update(changed);
+        if (this.foo < 10) {
+          this.foo++;
+        }
+      }
+
+      render() {
+        return html``;
+      }
+
+    }
+    customElements.define(generateElementName(), E);
+    const el = new E();
+    container.appendChild(el);
+    while (!await el.updateComplete) {}
+    assert.equal(el.foo, 10);
+  });
+
   test('updateComplete can block properties set after `super.update`', async () => {
     class E extends LitElement {
 
