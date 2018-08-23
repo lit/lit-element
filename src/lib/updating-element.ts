@@ -431,10 +431,10 @@ export abstract class UpdatingElement extends HTMLElement {
 
   /**
    * Triggers an invalidation and records an old value for the specified
-   * property to be presented in the `changedProperties` argument to `update`
-   * and `finishUpdate`. When manually creating a property setter, this
-   * method should be called to trigger an invalidation that honors any of the
-   * property options specified for the given property.
+   * property to be presented in the `changedProperties` argument to `update`.
+   * When manually creating a property setter, this method should be called to
+   * trigger an invalidation that honors any of the property options specified
+   * for the given property.
    *
    * @param name {PropertyKey}
    * @param oldValue {any}
@@ -485,8 +485,7 @@ export abstract class UpdatingElement extends HTMLElement {
   }
 
   /**
-   * Validates the element by updating it via `update`, `finishUpdate`,
-   * and `finishFirstUpdate`.
+   * Validates the element by updating it via `update`.
    */
   private _validate() {
     // Mixin instance properties once, if they exist.
@@ -506,10 +505,10 @@ export abstract class UpdatingElement extends HTMLElement {
   }
 
   /**
-   * Returns a Promise that resolves when the element has finished updating
-   * to a boolean value that is true if the element finished the update
-   * without triggering another update. This can happen if a property
-   * is set in `finishUpdate` for example.
+   * Returns a Promise that resolves when the element has completed updating
+   * that resolves to a boolean value that is `true` if the element completed
+   * the update without triggering another update. This can happen if a property
+   * is set in `update()` after the call to `super.update()` for example.
    * This getter can be implemented to await additional state. For example, it
    * is sometimes useful to await a rendered element before fulfilling this
    * promise. To do this, first await `super.updateComplete` then any subsequent

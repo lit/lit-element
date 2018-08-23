@@ -155,7 +155,7 @@ into the element. This is the only method that must be implemented by subclasses
   for calling methods on rendered elements, for example focusing an input:
   `this.shadowRoot.querySelector('input').focus()`. The `changedProperties` argument is a Map
   with keys for the changed properties pointing to their previous values.
-  Note, calling `super.update()` is required. Before calling `super.upadate()`,
+  Note, calling `super.update()` is required. Before calling `super.update()`,
   changes made to properties do not trigger `invalidate()`, after calling `super.update()`,
   changes do trigger `invalidate()`.
 
@@ -163,14 +163,13 @@ into the element. This is the only method that must be implemented by subclasses
   updated the first time. This method can be useful for capturing references to rendered static
   nodes that must be directly acted upon, for example in `update()`.
 
-  * `updateComplete`:  Returns a Promise that resolves when the element has finished updating
-  to a boolean value that is true if the element finished the update
-  without triggering another update. This can happen if a property
-  is set in `finishUpdate` for example.
-  This getter can be implemented to await additional state. For example, it
-  is sometimes useful to await a rendered element before fulfilling this
-  promise. To do this, first await `super.updateComplete` then any subsequent
-  state.
+  * `updateComplete`:  Returns a Promise that resolves when the element has completed
+  updating that resolves to a boolean value that is `true` if the element completed the
+  update without triggering another update. This can happen if a property is set in
+  `update()` after the call to `super.update()` for example. This getter can be
+  implemented to await additional state. For example, it is sometimes useful to
+  await a rendered element before fulfilling this promise. To do this, first
+  await `super.updateComplete` then any subsequent state.
 
   * `invalidate`: Call to request the element to asynchronously update regardless
   of whether or not any property changes are pending. This should only be called
@@ -196,15 +195,16 @@ into the element. This is the only method that must be implemented by subclasses
     * `shouldUpdate(changedProperties)` is called and if this returns true which it
       does by default:
       * `update(changedProperties)` is called to update the element.
-        Note, setting properties inside `update()` will set their values but
-        will *not* trigger `invalidate()`. This calls
+        Note, setting properties inside `update()` before calling `super.update()`
+        will set their values but will *not* trigger `invalidate()`. After
+        the call to `super.update()` setting properties will trigger `invalidate()`.
+        Update calls:
         * `render()` which should return a `lit-html` TemplateResult
           (e.g. <code>html\`Hello ${world}\`</code>)
-      * `finishFirstUpdate()` is then called to do post *first* update/render tasks.
-        Note, setting properties here will trigger `invalidate()`.
-      * `finishUpdate(changedProperties)` is then called to do post update/render tasks.
-        Note, setting properties here will trigger `invalidate()`.
-    * `updateComplete` promise is resolved.
+        * `firstRendered()` is then called to do post *first* render tasks.
+          Note, setting properties here will trigger `invalidate()`.
+    * `updateComplete` promise is resolved with a boolean that is `true` if the
+    element is not pending another update (due to properties set within the update).
 * Any code awaiting the element's `updateComplete` promise runs and observes
   the element in the updated state.
 
