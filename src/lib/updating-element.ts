@@ -77,8 +77,9 @@ export interface PropertyDeclaration<T = any> {
 }
 
 /**
- * Object that describes accessors to be created on the element prototype.
- * An accessor is created for each key with the given options.
+ * Map of properties to PropertyDeclaration options. For each property an
+ * accessor is made, and the property is processed according to the
+ * PropertyDeclaration options.
  */
 export interface PropertyDeclarations {
   [key: string]: PropertyDeclaration;
@@ -249,7 +250,7 @@ export abstract class UpdatingElement extends HTMLElement {
    * Called when a property value is set and uses the `shouldInvalidate`
    * option for the property if present or a strict identity check.
    */
-  private static _propertyShouldInvalidate(value: unknown, old: unknown,
+  private static _valueShouldInvalidate(value: unknown, old: unknown,
       shouldInvalidate: ShouldInvalidate = notEqual) {
     return shouldInvalidate(value, old);
   }
@@ -438,7 +439,7 @@ export abstract class UpdatingElement extends HTMLElement {
       options = (this.constructor as typeof UpdatingElement)._classProperties.get(name) ||
           defaultPropertyDeclaration;
     }
-    if ((this.constructor as typeof UpdatingElement)._propertyShouldInvalidate(this[name as keyof this],
+    if ((this.constructor as typeof UpdatingElement)._valueShouldInvalidate(this[name as keyof this],
         oldValue, options.shouldInvalidate)) {
       // track old value when changing.
       if (!this._changedProperties.has(name)) {
@@ -526,9 +527,12 @@ export abstract class UpdatingElement extends HTMLElement {
 
   /**
    * Updates the element. By default this method reflects property values to attributes.
-   * It should be implemented to render and keep updated DOM in the element's root.
-   * Note, within `update()`, setting properties does not trigger `invalidate()`, allowing
+   * It should be overridden to render and keep updated DOM in the element's root.
+   * Within `update()` setting properties does not trigger `invalidate()`, allowing
    * property values to be computed and validated before DOM is rendered and updated.
+   * This means in an override of `update()`, before calling `super.update()`
+   * setting properties will not trigger another update, but after calling `super.update()`
+   * setting properties will trigger another update.
    * * @param _changedProperties Map of changed properties with old values
    */
   protected update(_changedProperties: PropertyValues): void {

@@ -31,11 +31,18 @@ export abstract class LitElement extends UpdatingElement {
   static render = render;
 
   /**
-   * Override which performs element rendering by calling the `render` method.
-   * Override to perform tasks before and/or after updating.
+   * Updates the element. This method reflects property values to attributes
+   * and calls `render` to render DOM via lit-html. It should be overridden to
+   * perform tasks on rendered DOM. Within `update()` setting properties does
+   * not trigger `invalidate()`, allowing property values to be computed and
+   * validated before DOM is rendered and updated. This means in an override
+   * of `update()`, before calling `super.update()` setting properties will not
+   * trigger another update, but after calling `super.update()` setting
+   * properties will trigger another update.
+   * * @param changedProperties Map of changed properties with old values
    */
-  protected update(_props: PropertyValues) {
-    super.update(_props);
+  protected update(changedProperties: PropertyValues) {
+    super.update(changedProperties);
     if (typeof this.render === 'function') {
       (this.constructor as typeof LitElement).render(this.render(), this.renderRoot!, this.localName!);
     } else {
@@ -51,11 +58,18 @@ export abstract class LitElement extends UpdatingElement {
 
   /**
    Invoked on each update to perform rendering tasks. This method must return a
-   lit-html TemplateResult.
+   lit-html TemplateResult. Setting properties in `render()` will not trigger
+   the element to update.
    * @returns {TemplateResult} Must return a lit-html TemplateResult.
    */
-  protected abstract render(): TemplateResult;
+  protected render?(): TemplateResult;
 
+  /**
+   Invoked when the element's DOM is first rendered. Override to perform
+   post rendering tasks via DOM APIs. For example, focusing a rendered element.
+   Setting properties in `firstRendered()` will trigger the element to update.
+   * @returns {TemplateResult} Must return a lit-html TemplateResult.
+   */
   protected firstRendered?(): void;
 
 }

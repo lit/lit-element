@@ -189,24 +189,23 @@ into the element. This is the only method that must be implemented by subclasses
 ## Advanced: Update Lifecycle
 
 * When the element is first connected or a property is set (e.g. `element.foo = 5`)
-  and the property's `shouldInvalidate(value, oldValue)` returns true. Then
-  * `invalidate()` tries to update the element after waiting a [microtask](https://jakearchibald.com/2015/tasks-microtasks-queues-and-schedules/) (at the end
-  of the event loop, before the next paint). Then
-    * `shouldUpdate(changedProperties)` is called and if this returns true which it
-      does by default:
-      * `update(changedProperties)` is called to update the element.
-        Note, setting properties inside `update()` before calling `super.update()`
-        will set their values but will *not* trigger `invalidate()`. After
-        the call to `super.update()` setting properties will trigger `invalidate()`.
-        Update calls:
-        * `render()` which should return a `lit-html` TemplateResult
-          (e.g. <code>html\`Hello ${world}\`</code>)
-        * `firstRendered()` is then called to do post *first* render tasks.
-          Note, setting properties here will trigger `invalidate()`.
-    * `updateComplete` promise is resolved with a boolean that is `true` if the
-    element is not pending another update (due to properties set within the update).
-* Any code awaiting the element's `updateComplete` promise runs and observes
-  the element in the updated state.
+and the property's `shouldInvalidate(value, oldValue)` returns true.
+* `invalidate()`: Updates the element after waiting a [microtask](https://jakearchibald.com/2015/tasks-microtasks-queues-and-schedules/) (at the end
+of the event loop, before the next paint).
+* `shouldUpdate(changedProperties)`: The update proceeds if this returns true, which
+it does by default.
+* `update(changedProperties)`: Updates the element. Setting properties inside
+update is handled specially. Before calling `super.update()`, setting properties
+will *not* trigger an update. After calling `super.update()` setting properties will
+trigger an update.
+  * `render()`: Return a `lit-html` TemplateResult (e.g. <code>html\`Hello ${world}\`</code>)
+  to render element DOM. Setting properties in `render()` does not trigger an update.
+  * `firstRendered()`: After the DOM is rendered the first time,
+  do post *first* render tasks. Setting properties in `firstRendered()` does
+  trigger an update.
+* `updateComplete` promise is resolved with a boolean that is `true` if the
+element is not pending another update, and any code awaiting the element's
+`updateComplete` promise runs and observes the element in the updated state.
 
 ## Bigger Example
 
