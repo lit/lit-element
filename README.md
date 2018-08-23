@@ -149,21 +149,19 @@ into the element. This is the only method that must be implemented by subclasses
   an optimization to avoid updating work when changes occur, which should not be rendered.
 
   * `update()` (protected): This method calls `render()` and then uses `lit-html` in order to
-  render the template DOM. Override to customize how the element renders DOM. Note,
-  within `update()`, setting properties does not trigger `invalidate()`, allowing
-  property values to be computed and validated.
-
-  * `finishUpdate(changedProperties)`: (protected): Called after element DOM has been updated and
-  before the `updateComplete` promise is resolved. Implement to directly control rendered DOM.
+  render the template DOM. Implement to directly control rendered DOM.
   Typically this is not needed as `lit-html` can be used in the `render` method
   to set properties, attributes, and event listeners. However, it is sometimes useful
   for calling methods on rendered elements, for example focusing an input:
-  `this.shadowRoot.querySelector('input').focus()`. The `changedProperties` argument is an object
+  `this.shadowRoot.querySelector('input').focus()`. The `changedProperties` argument is a Map
   with keys for the changed properties pointing to their previous values.
+  Note, calling `super.update()` is required. Before calling `super.upadate()`,
+  changes made to properties do not trigger `invalidate()`, after calling `super.update()`,
+  changes do trigger `invalidate()`.
 
-  * `finishFirstUpdate()`: (protected) Called after the element's DOM has been
+  * `firstRendered()`: (protected) Called after the element's DOM has been
   updated the first time. This method can be useful for capturing references to rendered static
-  nodes that must be directly acted upon, for example in `finishUpdate`.
+  nodes that must be directly acted upon, for example in `update()`.
 
   * `updateComplete`:  Returns a Promise that resolves when the element has finished updating
   to a boolean value that is true if the element finished the update

@@ -104,22 +104,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         console.log('updated!', changedProps);
       }
 
-      finishFirstUpdate(changedProps) {
+      firstRendered() {
         this._inner = this.shadowRoot.querySelector('x-inner');
-      }
-
-      finishUpdate() {
-        if (this.whales < 100) {
-          this.whales++;
-        }
       }
 
       get updateComplete() {
         return (async () => {
-          await super.updateComplete;
-          await this._inner.updateComplete;
-          while (!await super.updateComplete) {};
-          return true;
+          return await super.updateComplete && await this._inner.updateComplete;
         })();
       };
     }

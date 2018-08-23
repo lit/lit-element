@@ -328,8 +328,9 @@ suite('LitElement', () => {
           return html``;
         }
 
-        update() {
+        update(changedProperties: PropertyValues) {
           this.updated++;
+          super.update(changedProperties);
         }
 
       }
@@ -830,20 +831,21 @@ suite('LitElement', () => {
     });
 
   test(
-      'finishFirstUpdate called when element first updates', async () => {
+      'firstRendered called when element first renders', async () => {
         class E extends LitElement {
 
           wasUpdated = 0;
-          wasFirstUpdated = 0;
+          wasFirstRendered = 0;
 
-          update(_props: PropertyValues) {
+          update(changedProperties: PropertyValues) {
             this.wasUpdated++;
+            super.update(changedProperties);
           }
 
           render() { return html``; }
 
-          finishFirstUpdate() {
-            this.wasFirstUpdated++;
+          firstRendered() {
+            this.wasFirstRendered++;
           }
 
         }
@@ -852,17 +854,17 @@ suite('LitElement', () => {
         container.appendChild(el);
         await el.updateComplete;
         assert.equal(el.wasUpdated, 1);
-        assert.equal(el.wasFirstUpdated, 1);
+        assert.equal(el.wasFirstRendered, 1);
         await el.invalidate();
         assert.equal(el.wasUpdated, 2);
-        assert.equal(el.wasFirstUpdated, 1);
+        assert.equal(el.wasFirstRendered, 1);
         await el.invalidate();
         assert.equal(el.wasUpdated, 3);
-        assert.equal(el.wasFirstUpdated, 1);
+        assert.equal(el.wasFirstRendered, 1);
       });
 
   test(
-      'render lifecycle order: shouldUpdate, update, render, finishUpdate, finishFirstUpdate, updateComplete', async () => {
+      'render lifecycle order: shouldUpdate, update, render, firstRendered, after update, updateComplete', async () => {
         class E extends LitElement {
           static get properties() { return {
             foo: {type: Number}
@@ -883,14 +885,11 @@ suite('LitElement', () => {
           update(props: PropertyValues) {
             this.info.push('before-update');
             super.update(props);
+            this.info.push('after-update');
           }
 
-          finishUpdate(_changedProps: PropertyValues) {
-            this.info.push('finishUpdate');
-          }
-
-          finishFirstUpdate() {
-            this.info.push('finishFirstUpdate');
+          firstRendered() {
+            this.info.push('firstRendered');
           }
 
         }
@@ -901,7 +900,7 @@ suite('LitElement', () => {
         el.info.push('updateComplete');
         assert.deepEqual(
             el.info,
-            [ 'shouldUpdate', 'before-update', 'render', 'finishFirstUpdate', 'finishUpdate', 'updateComplete' ]);
+            [ 'shouldUpdate', 'before-update', 'render', 'firstRendered', 'after-update', 'updateComplete' ]);
       });
 
   test('setting properties in update does not trigger invalidation', async () => {
@@ -941,7 +940,7 @@ suite('LitElement', () => {
     assert.equal(el.shadowRoot!.textContent, '6');
   });
 
-  test('setting properties in update reflects to attribute and is included in `changedProps` passed to `finishUpdate`', async () => {
+  test('setting properties in update reflects to attribute and is included in `changedProps`', async () => {
     class E extends LitElement {
 
       static get properties() {
@@ -957,9 +956,6 @@ suite('LitElement', () => {
       update(changedProperties: PropertyValues) {
         (this as any).zot = (this as any).foo + (this as any).bar;
         super.update(changedProperties);
-      }
-
-      finishUpdate(changedProperties: PropertyValues) {
         this.changedProperties = changedProperties;
       }
 
@@ -991,7 +987,7 @@ suite('LitElement', () => {
     assert.equal(el.getAttribute('zot'), '3');
   });
 
-  test('setting properties in finishUpdate does trigger invalidation and does not block updateComplete', async () => {
+  test('setting properties after `super.update` does trigger invalidation and does not block updateComplete', async () => {
     class E extends LitElement {
 
       static get properties() {
@@ -1006,9 +1002,6 @@ suite('LitElement', () => {
       update(changed: PropertyValues) {
         this.updated++;
         super.update(changed);
-      }
-
-      finishUpdate() {
         if (this.foo < this.fooMax) {
           this.foo++;
         }
@@ -1034,7 +1027,7 @@ suite('LitElement', () => {
     assert.isTrue(result);
   });
 
-  test('updateComplete can block properties set in finishUpdate', async () => {
+  test('updateComplete can block properties set after `super.update`', async () => {
     class E extends LitElement {
 
       static get properties() {
@@ -1049,9 +1042,6 @@ suite('LitElement', () => {
       update(changed: PropertyValues) {
         this.updated++;
         super.update(changed);
-      }
-
-      finishUpdate() {
         if (this.foo < this.fooMax) {
           this.foo++;
         }
@@ -1150,7 +1140,7 @@ suite('LitElement', () => {
         return html`<x-1224></x-1224>`;
       }
 
-      finishFirstUpdate() {
+      firstRendered() {
         this.inner = this.shadowRoot!.querySelector('x-1224');
       }
 
@@ -1241,7 +1231,7 @@ suite('LitElement', () => {
         return html`<x-2448 .foo="${this.bar}" attr="${this.bar}" .bool="${this.bool}"></x-2448>`;
       }
 
-      finishFirstUpdate() {
+      firstRendered() {
         this.inner = this.shadowRoot!.querySelector('x-2448');
       }
 

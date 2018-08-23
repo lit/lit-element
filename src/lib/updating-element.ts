@@ -472,10 +472,7 @@ export abstract class UpdatingElement extends HTMLElement {
       // mark state invalid...
       this._validationState = this._validationState | STATE_IS_UPDATING;
       let resolver: any;
-      this._validatePromise = new Promise((r) => {
-        this._validatePromise = undefined;
-        resolver = r;
-      });
+      this._validatePromise = new Promise((r) => resolver = r);
       await microtaskPromise;
       this._validate();
       resolver!(!this._isUpdating);
@@ -496,31 +493,16 @@ export abstract class UpdatingElement extends HTMLElement {
     if (this._instanceProperties) {
       this._applyInstanceProperties();
     }
-    if (!this.shouldUpdate(this._changedProperties)) {
+    if (this.shouldUpdate(this._changedProperties)) {
+      this.update(this._changedProperties);
+    } else {
       this._markUpdated();
-      return;
-    }
-    // During update, setting properties does not trigger invalidation.
-    this.update(this._changedProperties);
-    // copy changedProperties to hand to finishUpdate.
-    const changedProperties = this._changedProperties;
-    this._markUpdated();
-    // After update (finishFirstUpdate, finishUpdate), properties *do* trigger invalidation.
-    if (!(this._validationState & STATE_HAS_UPDATED)) {
-      // mark state has updated
-      this._validationState = this._validationState | STATE_HAS_UPDATED;
-      if (typeof this.finishFirstUpdate === 'function') {
-        this.finishFirstUpdate();
-      }
-    }
-    if (typeof this.finishUpdate === 'function') {
-      this.finishUpdate(changedProperties);
     }
   }
 
   private _markUpdated() {
     this._changedProperties = new Map();
-    this._validationState = this._validationState & ~STATE_IS_UPDATING;
+    this._validationState = this._validationState & ~STATE_IS_UPDATING | STATE_HAS_UPDATED;
   }
 
   /**
@@ -564,24 +546,8 @@ export abstract class UpdatingElement extends HTMLElement {
       }
       this._reflectingProperties = undefined;
     }
+    // Before this (before calling super)...
+    this._markUpdated();
   }
 
-  /**
-   * Called after element DOM has been updated and before the `updateComplete`
-   * promise is resolved. Implement to directly control rendered DOM.
-   * It is sometimes useful for calling methods on rendered elements, for
-   * example focusing an input: `this.shadowRoot.querySelector('input').focus()`.
-   * The `changedProperties` argument is an object with keys for the changed
-   * properties pointing to their previous values.
-   *
-   * * @param _changedProperties Map of changed properties with old values
-   */
-  protected finishUpdate?(_changedProperties: PropertyValues): void;
-
-  /**
-   * Called after the element's DOM has been updated the first time. This method can
-   * be useful for capturing references to rendered static nodes that must be
-   * directly acted upon, for example in `finishUpdate`.
-   */
-  protected finishFirstUpdate?(): void;
 }
