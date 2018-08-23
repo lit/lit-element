@@ -148,11 +148,6 @@ export abstract class UpdatingElement extends HTMLElement {
   private static _finalized = true;
 
   /**
-   * Memoized result of computed observedAttributes.
-   */
-  private static _observedAttributes: string[]|undefined;
-
-  /**
    * Memoized list of all class properties, including any superclass properties.
    */
   private static _classProperties: PropertyDeclarationMap = new Map();
@@ -163,20 +158,18 @@ export abstract class UpdatingElement extends HTMLElement {
    * Returns a list of attributes corresponding to the registered properties.
    */
   static get observedAttributes() {
-    if (!this.hasOwnProperty('_observedAttributes')) {
       // note: piggy backing on this to ensure we're _finalized.
       this._finalize();
-      this._observedAttributes = [];
+    const attributes = [];
       for (const [p, v] of this._classProperties) {
         const attr = this._attributeNameForProperty(p, v);
         if (attr !== undefined) {
           this._attributeToPropertyMap.set(attr, p);
-          this._observedAttributes.push(attr);
+        attributes.push(attr);
         }
       }
+    return attributes;
     }
-    return this._observedAttributes;
-  }
 
   /**
    * Creates a property accessor on the element prototype if one does not exist.
