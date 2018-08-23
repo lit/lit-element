@@ -198,11 +198,10 @@ it does by default.
 update is handled specially. Before calling `super.update()`, setting properties
 will *not* trigger an update. After calling `super.update()` setting properties will
 trigger an update.
-  * `render()`: Return a `lit-html` TemplateResult (e.g. <code>html\`Hello ${world}\`</code>)
+  * `render()`: Returns a `lit-html` TemplateResult (e.g. <code>html\`Hello ${world}\`</code>)
   to render element DOM. Setting properties in `render()` does not trigger an update.
-  * `firstRendered()`: After the DOM is rendered the first time,
-  do post *first* render tasks. Setting properties in `firstRendered()` does
-  trigger an update.
+  * `firstRendered()`: Called after the DOM is rendered the first time.
+  Setting properties in `firstRendered()` does trigger an update.
 * `updateComplete` promise is resolved with a boolean that is `true` if the
 element is not pending another update, and any code awaiting the element's
 `updateComplete` promise runs and observes the element in the updated state.
