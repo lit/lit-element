@@ -804,30 +804,30 @@ suite('LitElement', () => {
   });
 
   test('updates/renders attributes, properties, and event listeners via lit-html',
-       async () => {
-         class E extends LitElement {
-           _event?: Event;
+    async () => {
+      class E extends LitElement {
+        _event?: Event;
 
-           render() {
-             const attr = 'attr';
-             const prop = 'prop';
-             const event = (e: Event) => { this._event = e; };
-             return html
-             `<div attr="${attr}" .prop="${prop}" @zug="${event}"></div>`;
-           }
-         }
-         customElements.define(generateElementName(), E);
-         const el = new E();
-         container.appendChild(el);
-         await el.updateComplete;
-         const d = el.shadowRoot!.querySelector('div')! as (HTMLDivElement &
-                                                            {prop: string});
-         assert.equal(d.getAttribute('attr'), 'attr');
-         assert.equal(d.prop, 'prop');
-         const e = new Event('zug');
-         d.dispatchEvent(e);
-         assert.equal(el._event, e);
-       });
+        render() {
+          const attr = 'attr';
+          const prop = 'prop';
+          const event = (e: Event) => { this._event = e; };
+          return html
+          `<div attr="${attr}" .prop="${prop}" @zug="${event}"></div>`;
+        }
+      }
+      customElements.define(generateElementName(), E);
+      const el = new E();
+      container.appendChild(el);
+      await el.updateComplete;
+      const d = el.shadowRoot!.querySelector('div')! as (HTMLDivElement &
+                                                        {prop: string});
+      assert.equal(d.getAttribute('attr'), 'attr');
+      assert.equal(d.prop, 'prop');
+      const e = new Event('zug');
+      d.dispatchEvent(e);
+      assert.equal(el._event, e);
+    });
 
   test(
       'finishFirstUpdate called when element first updates', async () => {
@@ -1196,6 +1196,72 @@ suite('LitElement', () => {
     assert.equal((el as any).foo, 'hi');
     assert.equal((el as any).bar, false);
     assert.equal((el as any).zug, objectValue);
+  });
+
+  test('can set properties and attributes on sub-element', async () => {
+    class E extends LitElement {
+
+      static get properties() {
+        return {
+          foo: {},
+          attr: {},
+          bool: {type: Boolean}
+        };
+      }
+      foo = 'hi';
+      bool = false;
+
+      render() {
+        return html`${this.foo}`;
+      }
+
+    }
+    customElements.define('x-2448', E);
+
+    class F extends LitElement {
+
+      inner: E|null = null;
+
+      static get properties() {
+        return {
+          bar: {},
+          bool: {type: Boolean}
+        };
+      }
+      bar = 'outer';
+      bool = false;
+
+      render() {
+        return html`<x-2448 .foo="${this.bar}" attr="${this.bar}" .bool="${this.bool}"></x-2448>`;
+      }
+
+      finishFirstUpdate() {
+        this.inner = this.shadowRoot!.querySelector('x-2448');
+      }
+
+      get updateComplete() {
+        return (async () => {
+          await super.updateComplete;
+          await this.inner!.updateComplete;
+        })();
+      }
+
+    }
+    customElements.define(generateElementName(), F);
+    const el = new F();
+    container.appendChild(el);
+    await el.updateComplete;
+    assert.equal(el.inner!.shadowRoot!.textContent, 'outer');
+    assert.equal(el.inner!.attr, 'outer');
+    assert.equal(el.inner!.getAttribute('attr'), 'outer');
+    assert.equal(el.inner!.bool, false);
+    el.bar = 'test';
+    el.bool = true;
+    await el.updateComplete;
+    assert.equal(el.inner!.shadowRoot!.textContent, 'test');
+    assert.equal(el.inner!.attr, 'test');
+    assert.equal(el.inner!.getAttribute('attr'), 'test');
+    assert.equal(el.inner!.bool, true);
   });
 
 });
