@@ -21,6 +21,15 @@ export {html, svg} from 'lit-html/lit-html';
 
 export abstract class LitElement extends UpdatingElement {
 
+  private _firstRendered = false;
+  /**
+   * Render method used to render the lit-html TemplateResult to the element's DOM.
+   * @param {TemplateResult} Template to render.
+   * @param {Element|DocumentFragment} Node into which to render.
+   * @param {String} Element name.
+   */
+  static render = render;
+
   /**
    * Override which performs element rendering by calling the `render` method.
    * Override to perform tasks before and/or after updating.
@@ -28,9 +37,15 @@ export abstract class LitElement extends UpdatingElement {
   protected update(_props: PropertyValues) {
     super.update(_props);
     if (typeof this.render === 'function') {
-      render(this.render(), this.renderRoot!, this.localName!);
+      (this.constructor as typeof LitElement).render(this.render(), this.renderRoot!, this.localName!);
     } else {
       throw new Error('render() not implemented');
+    }
+    if (!this._firstRendered) {
+      this._firstRendered = true;
+      if (typeof this.firstRendered === 'function') {
+        this.firstRendered();
+      }
     }
   }
 
@@ -40,5 +55,7 @@ export abstract class LitElement extends UpdatingElement {
    * @returns {TemplateResult} Must return a lit-html TemplateResult.
    */
   protected abstract render(): TemplateResult;
+
+  protected firstRendered?(): void;
 
 }
