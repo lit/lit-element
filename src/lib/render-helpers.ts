@@ -44,7 +44,7 @@ export function styleString(
   const o = [];
   for (const name in styleInfo) {
     const v = styleInfo[name];
-    if (v != null) {
+    if (v || v === 0) {
       o.push(`${name.replace(/([A-Z])/, '-$1').toLowerCase()}: ${v}`);
     }
   }

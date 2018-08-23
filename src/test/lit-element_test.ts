@@ -1029,7 +1029,7 @@ suite('LitElement', () => {
     assert.equal(el.shadowRoot!.textContent, '6');
   });
 
-  test('setting properties in update reflects to attribute and is included in `changedProps`', async () => {
+  test('setting properties in update reflects to attribute and is included in `changedProperties`', async () => {
     class E extends LitElement {
 
       static get properties() {
@@ -1057,7 +1057,9 @@ suite('LitElement', () => {
     const el = new E() as any;
     container.appendChild(el);
     await el.updateComplete;
-    assert.deepEqual(el.changedProperties, new Map([['zot', undefined]]));
+    const testMap = new Map();
+    testMap.set('zot', undefined);
+    assert.deepEqual(el.changedProperties, testMap);
     assert.isNaN(el.zot);
     assert.equal(el.getAttribute('zot'), 'NaN');
     el.bar = 1;
@@ -1066,13 +1068,20 @@ suite('LitElement', () => {
     assert.equal(el.foo, 1);
     assert.equal(el.bar, 1);
     assert.equal(el.zot, 2);
-    assert.deepEqual(el.changedProperties, new Map([['foo', undefined], ['bar', undefined], ['zot', NaN]]));
+    testMap.clear();
+    testMap.set('foo', undefined);
+    testMap.set('bar', undefined);
+    testMap.set('zot', NaN);
+    assert.deepEqual(el.changedProperties, testMap);
     assert.equal(el.getAttribute('zot'), '2');
     el.bar = 2;
     await el.updateComplete;
     assert.equal(el.bar, 2);
     assert.equal(el.zot, 3);
-    assert.deepEqual(el.changedProperties, new Map([['bar', 1], ['zot', 2]]));
+    testMap.clear();
+    testMap.set('bar', 1);
+    testMap.set('zot', 2);
+    assert.deepEqual(el.changedProperties, testMap);
     assert.equal(el.getAttribute('zot'), '3');
   });
 
