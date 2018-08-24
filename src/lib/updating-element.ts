@@ -128,7 +128,7 @@ const microtaskPromise = new Promise((resolve) => resolve(true));
 const STATE_HAS_UPDATED = 1;
 const STATE_IS_INVALID = 1 << 2;
 const STATE_IS_REFLECTING = 1 << 3;
-type ValidationState = typeof STATE_HAS_UPDATED | typeof STATE_IS_INVALID | typeof STATE_IS_REFLECTING;
+type UpdateState = typeof STATE_HAS_UPDATED | typeof STATE_IS_INVALID | typeof STATE_IS_REFLECTING;
 
 /**
  * Base element class which manages element properties and attributes. When
@@ -288,9 +288,9 @@ export abstract class UpdatingElement extends HTMLElement {
     return (typeof toAttribute === 'function') ? toAttribute(value) : null;
   }
 
-  private _validationState: ValidationState = 0;
+  private _updateState: UpdateState = 0;
   private _instanceProperties: PropertyValues|undefined = undefined;
-  private _validatePromise: Promise<unknown> = microtaskPromise;
+  private _updatePromise: Promise<unknown> = microtaskPromise;
 
   /**
    * Map with keys for any properties that have changed since the last
@@ -368,7 +368,7 @@ export abstract class UpdatingElement extends HTMLElement {
    * Uses ShadyCSS to keep element DOM updated.
    */
   connectedCallback() {
-    if ((this._validationState & STATE_HAS_UPDATED) && window.ShadyCSS !== undefined) {
+    if ((this._updateState & STATE_HAS_UPDATED) && window.ShadyCSS !== undefined) {
       window.ShadyCSS.styleElement(this);
     }
     this.invalidate();
@@ -398,14 +398,14 @@ export abstract class UpdatingElement extends HTMLElement {
         // in `update` this should not be possible (or an extreme corner case
         // that we'd like to discover).
         // mark state reflecting
-        this._validationState = this._validationState | STATE_IS_REFLECTING;
+        this._updateState = this._updateState | STATE_IS_REFLECTING;
         if (attrValue === null) {
           this.removeAttribute(attr);
         } else {
           this.setAttribute(attr, attrValue);
         }
         // mark state not reflecting
-        this._validationState = this._validationState & ~STATE_IS_REFLECTING;
+        this._updateState = this._updateState & ~STATE_IS_REFLECTING;
       }
     }
   }
@@ -413,7 +413,7 @@ export abstract class UpdatingElement extends HTMLElement {
   private _attributeToProperty(name: string, value: string) {
     // Use tracking info to avoid deserializing attribute value if it was
     // just set from a property setter.
-    if (!(this._validationState & STATE_IS_REFLECTING)) {
+    if (!(this._updateState & STATE_IS_REFLECTING)) {
       const ctor = (this.constructor as typeof UpdatingElement);
       const propName = ctor._attributeToPropertyMap.get(name);
       if (propName !== undefined) {
@@ -464,25 +464,25 @@ export abstract class UpdatingElement extends HTMLElement {
   async invalidate() {
     if (!this._isInvalid) {
       // mark state invalid...
-      this._validationState = this._validationState | STATE_IS_INVALID;
+      this._updateState = this._updateState | STATE_IS_INVALID;
       let resolver: any;
-      const previousValidatePromise = this._validatePromise;
-      this._validatePromise = new Promise((r) => resolver = r);
+      const previousValidatePromise = this._updatePromise;
+      this._updatePromise = new Promise((r) => resolver = r);
       await previousValidatePromise;
-      this._validate();
+      this._flush();
       resolver!(!this._isInvalid);
     }
-    return this._validatePromise;
+    return this._updatePromise;
   }
 
   private get _isInvalid() {
-    return (this._validationState & STATE_IS_INVALID);
+    return (this._updateState & STATE_IS_INVALID);
   }
 
   /**
    * Validates the element by updating it via `update`.
    */
-  private _validate() {
+  private _flush() {
     // Mixin instance properties once, if they exist.
     if (this._instanceProperties) {
       this._applyInstanceProperties();
@@ -496,7 +496,7 @@ export abstract class UpdatingElement extends HTMLElement {
 
   private _markUpdated() {
     this._changedProperties = new Map();
-    this._validationState = this._validationState & ~STATE_IS_INVALID | STATE_HAS_UPDATED;
+    this._updateState = this._updateState & ~STATE_IS_INVALID | STATE_HAS_UPDATED;
   }
 
   /**
@@ -513,7 +513,7 @@ export abstract class UpdatingElement extends HTMLElement {
    * update resolved without triggering another update.
    */
   get updateComplete() {
-    return this._validatePromise;
+    return this._updatePromise;
   }
 
   /**
