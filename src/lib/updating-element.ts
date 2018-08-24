@@ -126,9 +126,9 @@ const defaultPropertyDeclaration: PropertyDeclaration = {
 const microtaskPromise = new Promise((resolve) => resolve(true));
 
 const STATE_HAS_UPDATED = 1;
-const STATE_IS_UPDATING = 1 << 2;
+const STATE_IS_INVALID = 1 << 2;
 const STATE_IS_REFLECTING = 1 << 3;
-type ValidationState = typeof STATE_HAS_UPDATED | typeof STATE_IS_UPDATING | typeof STATE_IS_REFLECTING;
+type ValidationState = typeof STATE_HAS_UPDATED | typeof STATE_IS_INVALID | typeof STATE_IS_REFLECTING;
 
 /**
  * Base element class which manages element properties and attributes. When
@@ -159,18 +159,18 @@ export abstract class UpdatingElement extends HTMLElement {
    * Returns a list of attributes corresponding to the registered properties.
    */
   static get observedAttributes() {
-      // note: piggy backing on this to ensure we're _finalized.
-      this._finalize();
+    // note: piggy backing on this to ensure we're _finalized.
+    this._finalize();
     const attributes = [];
-      for (const [p, v] of this._classProperties) {
-        const attr = this._attributeNameForProperty(p, v);
-        if (attr !== undefined) {
-          this._attributeToPropertyMap.set(attr, p);
+    for (const [p, v] of this._classProperties) {
+      const attr = this._attributeNameForProperty(p, v);
+      if (attr !== undefined) {
+        this._attributeToPropertyMap.set(attr, p);
         attributes.push(attr);
-        }
       }
-    return attributes;
     }
+    return attributes;
+  }
 
   /**
    * Creates a property accessor on the element prototype if one does not exist.
@@ -368,7 +368,7 @@ export abstract class UpdatingElement extends HTMLElement {
    * Uses ShadyCSS to keep element DOM updated.
    */
   connectedCallback() {
-    if ((this._validationState & STATE_HAS_UPDATED) && typeof window.ShadyCSS !== 'undefined') {
+    if ((this._validationState & STATE_HAS_UPDATED) && window.ShadyCSS !== undefined) {
       window.ShadyCSS.styleElement(this);
     }
     this.invalidate();
@@ -462,21 +462,21 @@ export abstract class UpdatingElement extends HTMLElement {
    * automatically called when any registered property changes.
    */
   async invalidate() {
-    if (!this._isUpdating) {
+    if (!this._isInvalid) {
       // mark state invalid...
-      this._validationState = this._validationState | STATE_IS_UPDATING;
+      this._validationState = this._validationState | STATE_IS_INVALID;
       let resolver: any;
       const previousValidatePromise = this._validatePromise;
       this._validatePromise = new Promise((r) => resolver = r);
       await previousValidatePromise;
       this._validate();
-      resolver!(!this._isUpdating);
+      resolver!(!this._isInvalid);
     }
     return this._validatePromise;
   }
 
-  private get _isUpdating() {
-    return (this._validationState & STATE_IS_UPDATING);
+  private get _isInvalid() {
+    return (this._validationState & STATE_IS_INVALID);
   }
 
   /**
@@ -496,7 +496,7 @@ export abstract class UpdatingElement extends HTMLElement {
 
   private _markUpdated() {
     this._changedProperties = new Map();
-    this._validationState = this._validationState & ~STATE_IS_UPDATING | STATE_HAS_UPDATED;
+    this._validationState = this._validationState & ~STATE_IS_INVALID | STATE_HAS_UPDATED;
   }
 
   /**
