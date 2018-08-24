@@ -18,6 +18,8 @@ import {
   LitElement,
 } from '../lit-element.js';
 
+import {generateElementName, nextFrame, getComputedStyleValue} from './test-helpers.js';
+
 declare global {
   interface Window {
     ShadyDOM: any; // tslint:disable-line
@@ -40,9 +42,10 @@ suite('Styling', () => {
     }
   });
 
-  test('content shadowRoot is styled', () => {
-    customElements.define('s-1', class extends LitElement {
-      _render() { return html`
+  test('content shadowRoot is styled', async () => {
+    const name = generateElementName();
+    customElements.define(name, class extends LitElement {
+      render() { return html`
         <style>
           div {
             border: 2px solid blue;
@@ -51,20 +54,22 @@ suite('Styling', () => {
         <div>Testing...</div>`;
       }
     });
-    const el = document.createElement('s-1');
+    const el = document.createElement(name);
     container.appendChild(el);
+    await (el as LitElement).updateComplete;
     const div = el.shadowRoot!.querySelector('div');
-    assert.equal(getComputedStyle(div!).getPropertyValue('border-top-width').trim(), '2px');
+    assert.equal(getComputedStyleValue(div!, 'border-top-width').trim(), '2px');
   });
 
-  test('shared styling rendered into shadowRoot is styled', () => {
+  test('shared styling rendered into shadowRoot is styled', async () => {
     const style = html`<style>
       div {
         border: 4px solid blue;
       }
     </style>`;
-    customElements.define('s-2', class extends LitElement {
-      _render() { return html`
+    const name = generateElementName();
+    customElements.define(name, class extends LitElement {
+      render() { return html`
         <style>
           div {
             border: 2px solid blue;
@@ -74,15 +79,17 @@ suite('Styling', () => {
         <div>Testing...</div>`;
       }
     });
-    const el = document.createElement('s-2');
+    const el = document.createElement(name);
     container.appendChild(el);
+    await (el as LitElement).updateComplete;
     const div = el.shadowRoot!.querySelector('div');
-    assert.equal(getComputedStyle(div!).getPropertyValue('border-top-width').trim(), '4px');
+    assert.equal(getComputedStyleValue(div!, 'border-top-width').trim(), '4px');
   });
 
-  test('custom properties render', () => {
-    customElements.define('s-3', class extends LitElement {
-      _render() { return html`
+  test('custom properties render', async () => {
+    const name = generateElementName();
+    customElements.define(name, class extends LitElement {
+      render() { return html`
         <style>
           :host {
             --border: 8px solid red;
@@ -94,15 +101,16 @@ suite('Styling', () => {
         <div>Testing...</div>`;
       }
     });
-    const el = document.createElement('s-3');
+    const el = document.createElement(name);
     container.appendChild(el);
+    await (el as LitElement).updateComplete;
     const div = el.shadowRoot!.querySelector('div');
-    assert.equal(getComputedStyle(div!).getPropertyValue('border-top-width').trim(), '8px');
+    assert.equal(getComputedStyleValue(div!, 'border-top-width').trim(), '8px');
   });
 
-  test('custom properties flow to nested elements', () => {
-    customElements.define('s-4-inner', class extends LitElement {
-      _render() { return html`
+  test('custom properties flow to nested elements', async () => {
+    customElements.define('x-inner', class extends LitElement {
+      render() { return html`
         <style>
           div {
             border: var(--border);
@@ -111,25 +119,38 @@ suite('Styling', () => {
         <div>Testing...</div>`;
       }
     });
-    customElements.define('s-4', class extends LitElement {
-      _render() { return html`
+    const name = generateElementName();
+    class E extends LitElement {
+      inner: LitElement|null = null;
+
+      render() { return html`
         <style>
-          s-4-inner {
+          x-inner {
             --border: 8px solid red;
           }
         </style>
-        <s-4-inner></s-4-inner>`;
+        <x-inner></x-inner>`;
       }
-    });
-    const el = document.createElement('s-4');
+
+      firstRendered() {
+        this.inner = this.shadowRoot!.querySelector('x-inner')! as LitElement;
+      }
+    }
+    customElements.define(name, E);
+    const el = document.createElement(name) as E;
     container.appendChild(el);
-    const div = el.shadowRoot!.querySelector('s-4-inner')!.shadowRoot!.querySelector('div');
-    assert.equal(getComputedStyle(div!).getPropertyValue('border-top-width').trim(), '8px');
+
+    // Workaround for Safari 9 Promise timing bugs.
+    await el.updateComplete && await el.inner!.updateComplete;
+
+    await nextFrame();
+    const div = el.inner!.shadowRoot!.querySelector('div');
+    assert.equal(getComputedStyleValue(div!, 'border-top-width').trim(), '8px');
   });
 
-  test('elements with custom properties can move between elements', (done) => {
-    customElements.define('s-5-inner', class extends LitElement {
-      _render() { return html`
+  test('elements with custom properties can move between elements', async () => {
+    customElements.define('x-inner1', class extends LitElement {
+      render() { return html`
         <style>
           div {
             border: var(--border);
@@ -138,42 +159,61 @@ suite('Styling', () => {
         <div>Testing...</div>`;
       }
     });
-    customElements.define('s-5', class extends LitElement {
-      _render() { return html`
+    const name1 = generateElementName();
+    customElements.define(name1, class extends LitElement {
+
+      inner: Element|null = null;
+
+      render() { return html`
         <style>
-          s-5-inner {
+          x-inner1 {
             --border: 2px solid red;
           }
         </style>
-        <s-5-inner></s-5-inner>`;
+        <x-inner1></x-inner1>`;
+      }
+
+      firstRendered() {
+        this.inner = this.shadowRoot!.querySelector('x-inner1');
       }
     });
-    customElements.define('s-6', class extends LitElement {
-      _render() { return html`
+    const name2 = generateElementName();
+    customElements.define(name2, class extends LitElement {
+
+      render() { return html`
         <style>
-          s-5-inner {
+          x-inner1 {
             --border: 8px solid red;
           }
         </style>`;
       }
+
     });
-    const el = document.createElement('s-5');
-    const el2 = document.createElement('s-6');
+    const el = document.createElement(name1) as LitElement;
+    const el2 = document.createElement(name2);
     container.appendChild(el);
     container.appendChild(el2);
-    const inner = el.shadowRoot!.querySelector('s-5-inner');
-    const div = inner!.shadowRoot!.querySelector('div');
-    assert.equal(getComputedStyle(div!).getPropertyValue('border-top-width').trim(), '2px');
+    let div: Element|null;
+
+    // Workaround for Safari 9 Promise timing bugs.
+    await el.updateComplete;
+
+    await nextFrame();
+    const inner = el.shadowRoot!.querySelector('x-inner1');
+    div = inner!.shadowRoot!.querySelector('div');
+    assert.equal(getComputedStyleValue(div!, 'border-top-width').trim(), '2px');
     el2!.shadowRoot!.appendChild(inner!);
-    requestAnimationFrame(() => {
-      assert.equal(getComputedStyle(div!).getPropertyValue('border-top-width').trim(), '8px');
-      done();
-    });
+
+    // Workaround for Safari 9 Promise timing bugs.
+    await el.updateComplete;
+
+    await nextFrame();
+    assert.equal(getComputedStyleValue(div!, 'border-top-width').trim(), '8px');
   });
 
-  test('@apply renders in nested elements', () => {
-    customElements.define('s-7-inner', class extends LitElement {
-      _render() { return html`
+  test('@apply renders in nested elements', async () => {
+    customElements.define('x-inner2', class extends LitElement {
+      render() { return html`
         <style>
           div {
             @apply --bag;
@@ -182,22 +222,34 @@ suite('Styling', () => {
         <div>Testing...</div>`;
       }
     });
-    customElements.define('s-7', class extends LitElement {
-      _render() { return html`
+    const name = generateElementName();
+    class E extends LitElement {
+      inner: LitElement|null = null;
+      render() { return html`
         <style>
-          s-7-inner {
+          x-inner2 {
             --bag: {
               border: 10px solid red;
             }
           }
         </style>
-        <s-7-inner></s-7-inner>`;
+        <x-inner2></x-inner2>`;
       }
-    });
-    const el = document.createElement('s-7');
+
+      firstRendered() {
+        this.inner = this.shadowRoot!.querySelector('x-inner2') as LitElement;
+      }
+    }
+    customElements.define(name, E);
+    const el = document.createElement(name) as E;
     container.appendChild(el);
-    const div = el.shadowRoot!.querySelector('s-7-inner')!.shadowRoot!.querySelector('div');
-    assert.equal(getComputedStyle(div!).getPropertyValue('border-top-width').trim(), '10px');
+
+    // Workaround for Safari 9 Promise timing bugs.
+    await el.updateComplete && await el.inner!.updateComplete;
+
+    await nextFrame();
+    const div = el.shadowRoot!.querySelector('x-inner2')!.shadowRoot!.querySelector('div');
+    assert.equal(getComputedStyleValue(div!, 'border-top-width').trim(), '10px');
   });
 
 });
@@ -223,8 +275,9 @@ suite('ShadyDOM', () => {
 
   test('properties in styles render with initial value and cannot be changed', async () => {
     let border = `6px solid blue`;
-    customElements.define('shady-1', class extends LitElement {
-      _render() { return html`
+    const name = generateElementName();
+    customElements.define(name, class extends LitElement {
+      render() { return html`
         <style>
           div {
             border: ${border};
@@ -233,14 +286,15 @@ suite('ShadyDOM', () => {
         <div>Testing...</div>`;
       }
     });
-    const el = document.createElement('shady-1') as LitElement;
+    const el = document.createElement(name) as LitElement;
     container.appendChild(el);
+    await el.updateComplete;
     const div = el.shadowRoot!.querySelector('div');
-    assert.equal(getComputedStyle(div!).getPropertyValue('border-top-width').trim(), '6px');
+    assert.equal(getComputedStyleValue(div!, 'border-top-width').trim(), '6px');
     border = `4px solid orange`;
-    el.requestRender();
-    await el.renderComplete;
-    assert.equal(getComputedStyle(div!).getPropertyValue('border-top-width').trim(), '6px');
+    el.invalidate();
+    await el.updateComplete;
+    assert.equal(getComputedStyleValue(div!, 'border-top-width').trim(), '6px');
   });
 
 });

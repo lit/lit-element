@@ -14,7 +14,8 @@
     "noFallthroughCasesInSwitch": true,
     "outDir": "./",
     // Only necessary because @types/uglify-js can't find types for source-map
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "experimentalDecorators": true
   },
   "include": [
     "custom_typings/**/*.ts",
