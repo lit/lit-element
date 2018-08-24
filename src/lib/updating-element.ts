@@ -285,7 +285,7 @@ export abstract class UpdatingElement extends HTMLElement {
     // Note: special case `Boolean` so users can use it as a `type`.
     const toAttribute = options.type === Boolean ? toBooleanAttribute :
         (options.type && (options.type as AttributeSerializer).toAttribute || String);
-    return (typeof toAttribute === 'function') ? toAttribute(value) : null;
+    return toAttribute(value);
   }
 
   private _updateState: UpdateState = 0;
