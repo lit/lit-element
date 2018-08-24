@@ -1180,11 +1180,8 @@ suite('LitElement', () => {
         return html``;
       }
 
-      get updateComplete() {
-        return (async () => {
-          while (!await super.updateComplete) {}
-          return true;
-        })();
+      get updateComplete(): Promise<any> {
+        return super.updateComplete.then((v) => v || this.updateComplete);
       }
 
     }
@@ -1274,11 +1271,10 @@ suite('LitElement', () => {
       }
 
       get updateComplete() {
-        return (async () => {
-          await super.updateComplete;
+        return super.updateComplete.then(() => {
           this.inner!.foo = 'yo';
-          return await this.inner!.updateComplete && await super.updateComplete;
-        })();
+          return this.inner!.updateComplete.then(() => super.updateComplete);
+        });
       }
 
     }
@@ -1365,9 +1361,7 @@ suite('LitElement', () => {
       }
 
       get updateComplete() {
-        return (async () => {
-          return await super.updateComplete && await this.inner!.updateComplete;
-        })();
+        return super.updateComplete.then(() => this.inner!.updateComplete);
       }
 
     }
