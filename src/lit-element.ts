@@ -62,7 +62,7 @@ export abstract class LitElement extends UpdatingElement {
    the element to update.
    * @returns {TemplateResult} Must return a lit-html TemplateResult.
    */
-  protected render?(): TemplateResult;
+  protected abstract render(): TemplateResult;
 
   /**
    Invoked when the element's DOM is first rendered. Override to perform
