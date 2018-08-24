@@ -120,7 +120,9 @@ suite('Styling', () => {
       }
     });
     const name = generateElementName();
-    customElements.define(name, class extends LitElement {
+    class E extends LitElement {
+      inner: LitElement|null = null;
+
       render() { return html`
         <style>
           x-inner {
@@ -129,11 +131,20 @@ suite('Styling', () => {
         </style>
         <x-inner></x-inner>`;
       }
-    });
-    const el = document.createElement(name);
+
+      firstRendered() {
+        this.inner = this.shadowRoot!.querySelector('x-inner')! as LitElement;
+      }
+    }
+    customElements.define(name, E);
+    const el = document.createElement(name) as E;
     container.appendChild(el);
+
+    // Workaround for Safari 9 Promise timing bugs.
+    await el.updateComplete && await el.inner!.updateComplete;
+
     await nextFrame();
-    const div = el.shadowRoot!.querySelector('x-inner')!.shadowRoot!.querySelector('div');
+    const div = el.inner!.shadowRoot!.querySelector('div');
     assert.equal(getComputedStyleValue(div!, 'border-top-width').trim(), '8px');
   });
 
@@ -150,6 +161,9 @@ suite('Styling', () => {
     });
     const name1 = generateElementName();
     customElements.define(name1, class extends LitElement {
+
+      inner: Element|null = null;
+
       render() { return html`
         <style>
           x-inner1 {
@@ -158,9 +172,14 @@ suite('Styling', () => {
         </style>
         <x-inner1></x-inner1>`;
       }
+
+      firstRendered() {
+        this.inner = this.shadowRoot!.querySelector('x-inner1');
+      }
     });
     const name2 = generateElementName();
     customElements.define(name2, class extends LitElement {
+
       render() { return html`
         <style>
           x-inner1 {
@@ -168,17 +187,26 @@ suite('Styling', () => {
           }
         </style>`;
       }
+
     });
-    const el = document.createElement(name1);
+    const el = document.createElement(name1) as LitElement;
     const el2 = document.createElement(name2);
     container.appendChild(el);
     container.appendChild(el2);
     let div: Element|null;
+
+    // Workaround for Safari 9 Promise timing bugs.
+    await el.updateComplete;
+
     await nextFrame();
     const inner = el.shadowRoot!.querySelector('x-inner1');
     div = inner!.shadowRoot!.querySelector('div');
     assert.equal(getComputedStyleValue(div!, 'border-top-width').trim(), '2px');
     el2!.shadowRoot!.appendChild(inner!);
+
+    // Workaround for Safari 9 Promise timing bugs.
+    await el.updateComplete;
+
     await nextFrame();
     assert.equal(getComputedStyleValue(div!, 'border-top-width').trim(), '8px');
   });
@@ -195,7 +223,8 @@ suite('Styling', () => {
       }
     });
     const name = generateElementName();
-    customElements.define(name, class extends LitElement {
+    class E extends LitElement {
+      inner: LitElement|null = null;
       render() { return html`
         <style>
           x-inner2 {
@@ -206,9 +235,18 @@ suite('Styling', () => {
         </style>
         <x-inner2></x-inner2>`;
       }
-    });
-    const el = document.createElement(name);
+
+      firstRendered() {
+        this.inner = this.shadowRoot!.querySelector('x-inner2') as LitElement;
+      }
+    }
+    customElements.define(name, E);
+    const el = document.createElement(name) as E;
     container.appendChild(el);
+
+    // Workaround for Safari 9 Promise timing bugs.
+    await el.updateComplete && await el.inner!.updateComplete;
+
     await nextFrame();
     const div = el.shadowRoot!.querySelector('x-inner2')!.shadowRoot!.querySelector('div');
     assert.equal(getComputedStyleValue(div!, 'border-top-width').trim(), '10px');
