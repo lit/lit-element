@@ -12,7 +12,7 @@
  * http://polymer.github.io/PATENTS.txt
  */
 import {render} from 'lit-html/lib/shady-render';
-import {TemplateResult} from 'lit-html/core';
+import {TemplateResult} from 'lit-html';
 import {UpdatingElement, PropertyValues} from './lib/updating-element.js';
 
 export * from './lib/updating-element.js';
