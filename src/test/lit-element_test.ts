@@ -1245,14 +1245,10 @@ suite('LitElement', () => {
       }
 
       get updateComplete() {
-        return (async () => {
-          return await super.updateComplete && await new Promise((resolve) => {
-            setTimeout(() => {
-              this.promiseFulfilled = true;
-              resolve(true);
-            }, 1);
-          });
-        })();
+        return super.updateComplete.then(() => new Promise((resolve) => setTimeout(() => {
+          this.promiseFulfilled = true;
+          resolve(true);
+          }, 1)));
       }
 
     }
@@ -1273,7 +1269,7 @@ suite('LitElement', () => {
       get updateComplete() {
         return super.updateComplete.then(() => {
           this.inner!.foo = 'yo';
-          return this.inner!.updateComplete.then(() => super.updateComplete);
+          return this.inner!.updateComplete;
         });
       }
 
