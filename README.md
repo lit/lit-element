@@ -17,7 +17,7 @@ and renders declaratively using `lit-html`.
   These properties can be declared in a few ways:
 
     * As class fields with the `@property()` [decorator](https://github.com/tc39/proposal-decorators#decorators),
-    if you're using a compiler that supports them, like TypeScript or Babel.
+    if you're using a compiler that supports them, like [TypeScript](https://www.typescriptlang.org/) or [Babel](https://babeljs.io/).
     * With a static `properties` getter.
     * By manually writing getters and setters. This can be useful if tasks should
     be performed when a property is set, for example validation. Call `invalidateProperty(name, oldValue)`
@@ -84,6 +84,11 @@ and renders declaratively using `lit-html`.
 
         ```npm i @polymer/lit-element```
 
+    1. Install the webcomponents polyfill. If you're developing a reusable package, this should be a dev dependency.
+
+        ```npm i @webcomponentsjs/webcomponents```
+
+
     1. Create an element by extending LitElement and calling `customElements.define` with your class (see the examples below).
 
     1. Install the Polymer CLI:
@@ -92,7 +97,7 @@ and renders declaratively using `lit-html`.
 
     1. Run the development server and open a browser pointing to its URL:
 
-        ```polymer serve```
+        ```polymer serve --npm```
 
     > LitElement is published on [npm](https://www.npmjs.com/package/@polymer/lit-element) using JavaScript Modules.
     This means it can take advantage of the standard native JavaScript module loader available in all current major browsers.
@@ -112,14 +117,20 @@ current properties to return a `lit-html` template result to render
 into the element. This is the only method that must be implemented by subclasses.
 
 ```html
-  <script src="node_modules/@webcomponents/webcomponents-bundle.js"></script>
+  <script src="node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
   <script type="module">
     import {LitElement, html, property} from '@polymer/lit-element';
 
     class MyElement extends LitElement {
 
-      @property({type: String})
-      mood = 'happy';
+      static get properties() {
+        mood: {type: String}
+      }
+
+      constructors() {
+        super();
+        this.mood = 'happy';
+      }
 
       render() {
         return html`<style> .mood { color: green; } </style>
@@ -208,7 +219,10 @@ element is not pending another update, and any code awaiting the element's
 
 ## Bigger Example
 
-```JavaScript
+Note, this example uses decroators to create properties. Decorators are a proposed
+standard currently available in [TypeScript](https://www.typescriptlang.org/) or [Babel](https://babeljs.io/).
+
+```ts
 import {LitElement, html, property} from '@polymer/lit-element';
 
 class MyElement extends LitElement {
