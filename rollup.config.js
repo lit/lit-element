@@ -14,6 +14,7 @@
 
 import filesize from 'rollup-plugin-filesize';
 import {terser} from 'rollup-plugin-terser';
+import resolve from 'rollup-plugin-node-resolve';
 
 export default {
   input: 'lit-element.js',
@@ -27,6 +28,7 @@ export default {
     }
   },
   plugins: [
+    resolve(),
     terser({
       warnings: true,
       mangle: {
