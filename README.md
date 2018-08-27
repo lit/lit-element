@@ -17,7 +17,7 @@ and renders declaratively using `lit-html`.
   These properties can be declared in a few ways:
 
     * As class fields with the `@property()` [decorator](https://github.com/tc39/proposal-decorators#decorators),
-    if you're using a compiler that supports them, like TypeScript or Babel.
+    if you're using a compiler that supports them, like [TypeScript](https://www.typescriptlang.org/) or [Babel](https://babeljs.io/).
     * With a static `properties` getter.
     * By manually writing getters and setters. This can be useful if tasks should
     be performed when a property is set, for example validation. Call `invalidateProperty(name, oldValue)`
@@ -84,11 +84,16 @@ and renders declaratively using `lit-html`.
 
         ```npm i @polymer/lit-element```
 
+    1. Install the webcomponents polyfill. If you're developing a reusable package, this should be a dev dependency which you load in your tests, demos, etc.
+
+        ```npm i -D @webcomponents/webcomponentsjs```
+
+
     1. Create an element by extending LitElement and calling `customElements.define` with your class (see the examples below).
 
     1. Install the Polymer CLI:
 
-        ```npm i -g polymer-cli@next```
+        ```npm i -g polymer-cli```
 
     1. Run the development server and open a browser pointing to its URL:
 
@@ -112,14 +117,22 @@ current properties to return a `lit-html` template result to render
 into the element. This is the only method that must be implemented by subclasses.
 
 ```html
-  <script src="node_modules/@webcomponents/webcomponents-bundle.js"></script>
+  <script src="node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
   <script type="module">
     import {LitElement, html, property} from '@polymer/lit-element';
 
     class MyElement extends LitElement {
 
-      @property({type: String})
-      mood = 'happy';
+      static get properties() {
+        return {
+          mood: {type: String}
+        };
+      }
+
+      constructor() {
+        super();
+        this.mood = 'happy';
+      }
 
       render() {
         return html`<style> .mood { color: green; } </style>
@@ -174,7 +187,7 @@ into the element. This is the only method that must be implemented by subclasses
   * `invalidate`: Call to request the element to asynchronously update regardless
   of whether or not any property changes are pending. This should only be called
   when an element should update based on some state not stored in properties,
-  since setting properties automically calls `invalidate`.
+  since setting properties automatically calls `invalidate`.
 
   * `invalidateProperty(name, oldValue)` (protected): Triggers an invalidation for
   a specific property. This is useful when manually implementing a property setter.
@@ -208,7 +221,10 @@ element is not pending another update, and any code awaiting the element's
 
 ## Bigger Example
 
-```JavaScript
+Note, this example uses decorators to create properties. Decorators are a proposed
+standard currently available in [TypeScript](https://www.typescriptlang.org/) or [Babel](https://babeljs.io/).
+
+```ts
 import {LitElement, html, property} from '@polymer/lit-element';
 
 class MyElement extends LitElement {
