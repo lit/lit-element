@@ -84,20 +84,20 @@ and renders declaratively using `lit-html`.
 
         ```npm i @polymer/lit-element```
 
-    1. Install the webcomponents polyfill. If you're developing a reusable package, this should be a dev dependency.
+    1. Install the webcomponents polyfill. If you're developing a reusable package, this should be a dev dependency which you load in your tests, demos, etc.
 
-        ```npm i @webcomponentsjs/webcomponents```
+        ```npm i -D @webcomponents/webcomponentsjs```
 
 
     1. Create an element by extending LitElement and calling `customElements.define` with your class (see the examples below).
 
     1. Install the Polymer CLI:
 
-        ```npm i -g polymer-cli@next```
+        ```npm i -g polymer-cli```
 
     1. Run the development server and open a browser pointing to its URL:
 
-        ```polymer serve --npm```
+        ```polymer serve```
 
     > LitElement is published on [npm](https://www.npmjs.com/package/@polymer/lit-element) using JavaScript Modules.
     This means it can take advantage of the standard native JavaScript module loader available in all current major browsers.
@@ -124,10 +124,12 @@ into the element. This is the only method that must be implemented by subclasses
     class MyElement extends LitElement {
 
       static get properties() {
-        mood: {type: String}
+        return {
+          mood: {type: String}
+        };
       }
 
-      constructors() {
+      constructor() {
         super();
         this.mood = 'happy';
       }
@@ -185,7 +187,7 @@ into the element. This is the only method that must be implemented by subclasses
   * `invalidate`: Call to request the element to asynchronously update regardless
   of whether or not any property changes are pending. This should only be called
   when an element should update based on some state not stored in properties,
-  since setting properties automically calls `invalidate`.
+  since setting properties automatically calls `invalidate`.
 
   * `invalidateProperty(name, oldValue)` (protected): Triggers an invalidation for
   a specific property. This is useful when manually implementing a property setter.
@@ -219,7 +221,7 @@ element is not pending another update, and any code awaiting the element's
 
 ## Bigger Example
 
-Note, this example uses decroators to create properties. Decorators are a proposed
+Note, this example uses decorators to create properties. Decorators are a proposed
 standard currently available in [TypeScript](https://www.typescriptlang.org/) or [Babel](https://babeljs.io/).
 
 ```ts
