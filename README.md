@@ -161,7 +161,7 @@ into the element. This is the only method that must be implemented by subclasses
   By default, this method always returns true, but this can be customized as
   an optimization to avoid updating work when changes occur, which should not be rendered.
 
-  * `update()` (protected): This method calls `render()` and then uses `lit-html` in order to
+  * `update(changedProperties)` (protected): This method calls `render()` and then uses `lit-html` in order to
   render the template DOM. Implement to directly control rendered DOM.
   Typically this is not needed as `lit-html` can be used in the `render` method
   to set properties, attributes, and event listeners. However, it is sometimes useful
