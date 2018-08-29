@@ -1089,7 +1089,62 @@ suite('LitElement', () => {
     assert.equal(el.getAttribute('zot'), '3');
   });
 
-  test('setting properties after `super.update` does trigger invalidation and does not block updateComplete', async () => {
+  test('can make properties for native accessors and render', async () => {
+    class E extends LitElement {
+
+      static get properties() {
+        return {
+          id: {reflect: true},
+          name: {reflect: true},
+          title: {reflect: true},
+          foo: {}
+        };
+      }
+
+      name: string;
+      foo: string;
+
+      changedProperties: PropertyValues|undefined = undefined;
+
+      constructor() {
+        super();
+        this.id = 'id';
+        this.name = 'name';
+        this.title = 'title';
+        this.foo = 'foo';
+      }
+
+      update(changedProperties: PropertyValues) {
+        (this as any).zot = (this as any).foo + (this as any).bar;
+        super.update(changedProperties);
+        this.changedProperties = changedProperties;
+      }
+
+      render() {
+        return html`${this.id}-${this.name}-${this.title}-${this.foo}`;
+      }
+
+    }
+    customElements.define(generateElementName(), E);
+    const el = new E() as any;
+    container.appendChild(el);
+    await el.updateComplete;
+    const testMap = new Map();
+    testMap.set('id', undefined);
+    testMap.set('name', undefined);
+    testMap.set('title', undefined);
+    testMap.set('foo', undefined);
+    assert.deepEqual(el.changedProperties, testMap);
+    assert.equal(el.shadowRoot!.textContent, 'id-name-title-foo');
+    assert.equal((window as any).id, el);
+    el.id = 'id2';
+    el.name = 'name2';
+    await el.updateComplete;
+    assert.equal(el.shadowRoot!.textContent, 'id2-name2-title-foo');
+    assert.equal((window as any).id2, el);
+  });
+
+  test('setting properties in `updated` does trigger invalidation and does not block updateComplete', async () => {
     class E extends LitElement {
 
       static get properties() {
