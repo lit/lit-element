@@ -199,7 +199,7 @@ export abstract class UpdatingElement extends HTMLElement {
       set(value) {
         const oldValue = this[name];
         this[key] = value;
-        this.requestUpdate(name, oldValue, options);
+        this._requestPropertyUpdate(name, oldValue, options);
       },
       configurable: true,
       enumerable: true
@@ -220,7 +220,7 @@ export abstract class UpdatingElement extends HTMLElement {
       superCtor._finalize();
     }
     this._finalized = true;
-    // initialize map populated in observedAttributes
+    // initialize Map populated in observedAttributes
     this._attributeToPropertyMap = new Map();
     // make any properties
     const props = this.properties;
@@ -324,7 +324,7 @@ export abstract class UpdatingElement extends HTMLElement {
   /**
    * Fixes any properties set on the instance before upgrade time.
    * Otherwise these would shadow the accessor and break these properties.
-   * The properties are stored in a map which is played back after the constructor
+   * The properties are stored in a Map which is played back after the constructor
    * runs.
    */
   private _saveInstanceProperties() {
@@ -425,46 +425,48 @@ export abstract class UpdatingElement extends HTMLElement {
 
   /**
    * Requests an update which is processed asynchronously. This should
-   * only be called when an element should update based on some state not triggered
-   * by setting a property or when manually implementing a property
-   * setter. In this case, pass the property `name` and `oldValue` to ensure that any
-   * configured property options are honored.
+   * be called when an element should update based on some state not triggered
+   * by setting a property. In this case, pass no arguments. It should also be called
+   * when manually implementing a property setter. In this case, pass the property
+   * `name` and `oldValue` to ensure that any configured property options are honored.
+   * Returns the `updateComplete` Promise which is resolved when the update completes.
    *
    * @param name {PropertyKey} (optional) name of requesting property
    * @param oldValue {any} (optional) old value of requesting property
-   * @returns {Promise} A promise that is resolved when the update completes.
+   * @returns {Promise} A Promise that is resolved when the update completes.
    */
-  requestUpdate(name?: PropertyKey, oldValue?: any, options?: PropertyDeclaration) {
-    // if not passed in, take options from class properties.
+  requestUpdate(name?: PropertyKey, oldValue?: any) {
     if (name !== undefined) {
-      if (options === undefined) {
-        options = (this.constructor as typeof UpdatingElement)._classProperties.get(name) ||
-            defaultPropertyDeclaration;
-      }
-      if (!this._maybeChangeProperty(name, oldValue, options)) {
-        return this.updateComplete;
-      }
+      const options = (this.constructor as typeof UpdatingElement)._classProperties.get(name) ||
+          defaultPropertyDeclaration;
+      return this._requestPropertyUpdate(name, oldValue, options);
     }
     return this._invalidate();
   }
 
-  private _maybeChangeProperty(name: PropertyKey, oldValue: any, options: PropertyDeclaration) {
-    if ((this.constructor as typeof UpdatingElement)._valueHasChanged(this[name as keyof this],
+  /**
+   * Requests an update for a specific property and records change information.
+   * @param name {PropertyKey} name of requesting property
+   * @param oldValue {any} old value of requesting property
+   * @param options {PropertyDeclaration}
+   */
+  private _requestPropertyUpdate(name: PropertyKey, oldValue: any, options: PropertyDeclaration) {
+    if (!(this.constructor as typeof UpdatingElement)._valueHasChanged(this[name as keyof this],
         oldValue, options.hasChanged)) {
-      // track old value when changing.
-      if (!this._changedProperties.has(name)) {
-        this._changedProperties.set(name, oldValue);
-      }
-      // add to reflecting properties set
-      if (options.reflect === true) {
-        if (this._reflectingProperties === undefined) {
-          this._reflectingProperties = new Map();
-        }
-        this._reflectingProperties.set(name, options);
-      }
-      return true;
+      return this.updateComplete;
     }
-    return false;
+    // track old value when changing.
+    if (!this._changedProperties.has(name)) {
+      this._changedProperties.set(name, oldValue);
+    }
+    // add to reflecting properties set
+    if (options.reflect === true) {
+      if (this._reflectingProperties === undefined) {
+        this._reflectingProperties = new Map();
+      }
+      this._reflectingProperties.set(name, options);
+    }
+    return this._invalidate();
   }
 
   /**
@@ -504,7 +506,7 @@ export abstract class UpdatingElement extends HTMLElement {
       const needsFirstUpdate = !(this._updateState & STATE_HAS_UPDATED);
       this._markUpdated();
       if (needsFirstUpdate) {
-        this.firstUpdated();
+        this.firstUpdated(changedProperties);
       }
       this.updated(changedProperties);
     } else {
@@ -523,10 +525,10 @@ export abstract class UpdatingElement extends HTMLElement {
    * the update without triggering another update. This happens if a property
    * is set in `updated()`. This getter can be implemented to await additional
    * state. For example, it is sometimes useful to await a rendered element before
-   * fulfilling this promise. To do this, first await `super.updateComplete`
+   * fulfilling this Promise. To do this, first await `super.updateComplete`
    * then any subsequent state.
    *
-   * @returns {Promise} The promise returns a boolean that indicates if the
+   * @returns {Promise} The Promise returns a boolean that indicates if the
    * update resolved without triggering another update.
    */
   get updateComplete() {
@@ -535,8 +537,9 @@ export abstract class UpdatingElement extends HTMLElement {
 
   /**
    * Controls whether or not `update` should be called when the element requests
-   * an update. By default, this method always returns true, but this can be
+   * an update. By default, this method always returns `true`, but this can be
    * customized to control when to update.
+   *
    * * @param _changedProperties Map of changed properties with old values
    */
   protected shouldUpdate(_changedProperties: PropertyValues): boolean {
@@ -544,9 +547,10 @@ export abstract class UpdatingElement extends HTMLElement {
   }
 
   /**
-   * Updates the element. By default this method reflects property values to attributes.
-   * It should be overridden to render and keep updated DOM in the element's root.
+   * Updates the element. This method reflects property values to attributes.
+   * It can be overridden to render and keep updated DOM in the element's `renderRoot`.
    * Setting properties inside this method will *not* trigger another update.
+   *
    * * @param _changedProperties Map of changed properties with old values
    */
   protected update(_changedProperties: PropertyValues) {
@@ -559,19 +563,25 @@ export abstract class UpdatingElement extends HTMLElement {
   }
 
   /**
-   Invoked whenever the element is updated. Implement to perform
-   post updating tasks via DOM APIs, for example, focusing an element.
-   Setting properties inside this method will trigger the element to update.
+   * Invoked whenever the element is updated. Implement to perform
+   * post-updating tasks via DOM APIs, for example, focusing an element.
+   *
+   * Setting properties inside this method will trigger the element to update
+   * again after this update cycle completes.
+   *
+   * * @param _changedProperties Map of changed properties with old values
    */
   protected updated(_changedProperties: PropertyValues) {}
 
   /**
-   Invoked when the element is first updated. Implement to perform one time
-   work on the element after update. Setting properties inside this method will
-   trigger the element to update.
+   * Invoked when the element is first updated. Implement to perform one time
+   * work on the element after update.
+   *
+   * Setting properties inside this method will trigger the element to update
+   * again after this update cycle completes.
+   *
+   * * @param _changedProperties Map of changed properties with old values
    */
-  protected firstUpdated() {
-
-  }
+  protected firstUpdated(_changedProperties: PropertyValues) {}
 
 }

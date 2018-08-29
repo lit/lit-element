@@ -1026,8 +1026,12 @@ suite('LitElement', () => {
       '`firstUpdated` called when element first updates', async () => {
         class E extends LitElement {
 
+          @property()
+          foo = 1;
+
           wasUpdatedCount = 0;
           wasFirstUpdated = 0;
+          changedProperties: PropertyValues|undefined;
 
           update(changedProperties: PropertyValues) {
             this.wasUpdatedCount++;
@@ -1036,7 +1040,8 @@ suite('LitElement', () => {
 
           render() { return html``; }
 
-          firstUpdated() {
+          firstUpdated(changedProperties: PropertyValues) {
+            this.changedProperties = changedProperties;
             this.wasFirstUpdated++;
           }
 
@@ -1045,6 +1050,9 @@ suite('LitElement', () => {
         const el = new E();
         container.appendChild(el);
         await el.updateComplete;
+        const testMap = new Map();
+        testMap.set('foo', undefined);
+        assert.deepEqual(el.changedProperties, testMap);
         assert.equal(el.wasUpdatedCount, 1);
         assert.equal(el.wasFirstUpdated, 1);
         await el.requestUpdate();

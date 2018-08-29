@@ -17,7 +17,7 @@ and renders declaratively using `lit-html`.
   These properties can be declared in a few ways:
 
     * As class fields with the `@property()` [decorator](https://github.com/tc39/proposal-decorators#decorators),
-    if you're using a compiler that supports them, like [TypeScript](https://www.typescriptlang.org/) or [Babel](https://babeljs.io/).
+    if you're using a compiler that supports them, like [TypeScript](https://www.typescriptlang.org/) or [Babel](https://babeljs.io/docs/en/babel-plugin-proposal-decorators).
     * With a static `properties` getter.
     * By manually writing getters and setters. This can be useful if tasks should
     be performed when a property is set, for example validation. Call `requestUpdate(name, oldValue)`
@@ -155,37 +155,38 @@ into the element. This is the only method that must be implemented by subclasses
 
   * `shouldUpdate(changedProperties)` (protected): Implement to control if updating and rendering
   should occur when property values change or `requestUpdate()` is called. The `changedProperties`
-  argument is a map with keys for the changed properties pointing to their previous values.
-  By default, this method always returns true, but this can be customized as
+  argument is a Map with keys for the changed properties pointing to their previous values.
+  By default, this method always returns `true`, but this can be customized as
   an optimization to avoid updating work when changes occur, which should not be rendered.
 
   * `update(changedProperties)` (protected): This method calls `render()` and then uses `lit-html`
   in order to render the template DOM. It also updates any reflected attributes based on
   property values. Setting properties inside this method will *not* trigger another update..
 
-  * `firstUpdated()`: (protected) Called after the element's DOM has been
-  updated the first time. This method can be useful for capturing references to rendered static
-  nodes that must be directly acted upon, for example in `updated()`. Setting properties
-  inside this method will trigger the element to update.
+  * `firstUpdated(changedProperties)`: (protected) Called after the element's DOM has been
+  updated the first time, immediately before `updated()` is called.
+  This method can be useful for capturing references to rendered static nodes that
+  must be directly acted upon, for example in `updated()`.
+  Setting properties inside this method will trigger the element to update.
 
   * `updated(changedProperties)`: (protected) Called whenever the element's DOM has been
   updated and rendered. Implement to perform post updating tasks via DOM APIs, for example,
   focusing an element. Setting properties inside this method will trigger the element to update.
 
   * `updateComplete`: Returns a Promise that resolves when the element has completed
-  updating that resolves to a boolean value that is `true` if the element completed the
-  update without triggering another update. This happens if a property is set in
+  updating. The Promise value is a boolean that is `true` if the element completed the
+  update without triggering another update. This happens if a property is set inside
   `updated()`. This getter can be implemented to await additional state.
   For example, it is sometimes useful to await a rendered element before fulfilling
-  this promise. To do this, first await `super.updateComplete` then any subsequent state.
+  this Promise. To do this, first await `super.updateComplete` then any subsequent state.
 
   * `requestUpdate(name?, oldValue?)`: Call to request the element to asynchronously
   update regardless of whether or not any property changes are pending. This should
-  only be called when an element should update based on some state not triggered
-  by setting a property or when manually implementing a property setter. In this
-  case, pass the property `name` and `oldValue` to ensure that any configured
-  property options are honored. Returns the `updateComplete` promise which is
-  resolved when the update completes.
+  be called when an element should update based on some state not triggered
+  by setting a property. In this case, pass no arguments. It should also be called
+  when manually implementing a property setter. In this case, pass the property
+  `name` and `oldValue` to ensure that any configured property options are honored.
+  Returns the `updateComplete` Promise which is resolved when the update completes.
 
   * `createRenderRoot()` (protected): Implement to customize where the
   element's template is rendered by returning an element into which to
@@ -195,28 +196,29 @@ into the element. This is the only method that must be implemented by subclasses
 ## Advanced: Update Lifecycle
 
 * When the element is first connected or a property is set (e.g. `element.foo = 5`)
-and the property's `hasChanged(value, oldValue)` returns true.
-* `requestUpdate()`: Updates the element after waiting a [microtask](https://jakearchibald.com/2015/tasks-microtasks-queues-and-schedules/) (at the end
+and the property's `hasChanged(value, oldValue)` returns `true`.
+* `requestUpdate()`: Updates the element after awaiting a [microtask](https://jakearchibald.com/2015/tasks-microtasks-queues-and-schedules/) (at the end
 of the event loop, before the next paint).
-* `shouldUpdate(changedProperties)`: The update proceeds if this returns true, which
+* `shouldUpdate(changedProperties)`: The update proceeds if this returns `true`, which
 it does by default.
 * `update(changedProperties)`: Updates the element. Setting properties inside this
 method will *not* trigger the element to update.
   * `render()`: Returns a `lit-html` TemplateResult (e.g. <code>html\`Hello ${world}\`</code>)
   to render element DOM. Setting properties inside this method will *not* trigger
   the element to update.
-* `firstUpdated()`: Called after the element is updated the first time.
-  Setting properties inside this method will trigger the element to update.
-* `updated()`: Called whenever the element is updated. Setting properties inside
-this method will trigger the element to update.
-* `updateComplete` promise is resolved with a boolean that is `true` if the
+* `firstUpdated(changedProperties)`: Called after the element is updated the first time,
+immediately before `updated` is called. Setting properties inside this method will
+trigger the element to update.
+* `updated(changedProperties)`: Called whenever the element is updated.
+Setting properties inside this method will trigger the element to update.
+* `updateComplete` Promise is resolved with a boolean that is `true` if the
 element is not pending another update, and any code awaiting the element's
-`updateComplete` promise runs and observes the element in the updated state.
+`updateComplete` Promise runs and observes the element in the updated state.
 
 ## Bigger Example
 
 Note, this example uses decorators to create properties. Decorators are a proposed
-standard currently available in [TypeScript](https://www.typescriptlang.org/) or [Babel](https://babeljs.io/).
+standard currently available in [TypeScript](https://www.typescriptlang.org/) or [Babel](https://babeljs.io/docs/en/babel-plugin-proposal-decorators).
 
 ```ts
 import {LitElement, html, property} from '@polymer/lit-element';

@@ -32,7 +32,7 @@ export abstract class LitElement extends UpdatingElement {
   /**
    * Updates the element. This method reflects property values to attributes
    * and calls `render` to render DOM via lit-html. Setting properties inside
-   * this method will *not* trigger the element to update.
+   * this method will *not* trigger another update.
    * * @param _changedProperties Map of changed properties with old values
    */
   protected update(changedProperties: PropertyValues) {
