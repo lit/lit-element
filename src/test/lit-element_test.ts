@@ -1085,7 +1085,7 @@ suite('LitElement', () => {
           }
 
           updated() {
-            this.info.push('updated')
+            this.info.push('updated');
           }
 
         }
@@ -1306,7 +1306,7 @@ suite('LitElement', () => {
         super.update(changed);
       }
 
-      updated(changed: PropertyValues) {
+      updated() {
         if (this.foo < 10) {
           this.foo++;
         }
