@@ -20,7 +20,7 @@ and renders declaratively using `lit-html`.
     if you're using a compiler that supports them, like [TypeScript](https://www.typescriptlang.org/) or [Babel](https://babeljs.io/).
     * With a static `properties` getter.
     * By manually writing getters and setters. This can be useful if tasks should
-    be performed when a property is set, for example validation. Call `invalidateProperty(name, oldValue)`
+    be performed when a property is set, for example validation. Call `requestUpdate(name, oldValue)`
     in the setter to trigger an update and use any configured property options.
 
     Properties can be given an options argument which is an object that describes how to
@@ -29,27 +29,27 @@ and renders declaratively using `lit-html`.
 
     Property options include:
 
-    * `attribute`: Describes how and whether the property becomes an observed attribute.
+    * `attribute`: Indicates how and whether the property becomes an observed attribute.
     If the value is `false`, the property is not added to `observedAttributes`.
     If true or absent, the lowercased property name is observed (e.g. `fooBar` becomes `foobar`).
     If a string, the string value is observed (e.g `attribute: 'foo-bar'`).
-    * `type`: Describes how to serialize and deserialize the attribute to/from a property.
+    * `type`: Indicates how to serialize and deserialize the attribute to/from a property.
     If this value is a function, it is used to deserialize the attribute value
     a the property value. If it's an object, it can have keys for `fromAttribute` and
     `toAttribute` where `fromAttribute` is the deserialize function and `toAttribute`
     is a serialize function used to set the property to an attribute. If no `toAttribute`
     function is provided and `reflect` is set to `true`, the property value is set
     directly to the attribute.
-    * `reflect`: Describes if the property should reflect to an attribute.
+    * `reflect`: Indicates if the property should reflect to an attribute.
     If `true`, when the property is set, the attribute is set using the
     attribute name determined according to the rules for the `attribute`
     propety option and the value of the property serialized using the rules from
     the `type` property option.
-    * `shouldInvalidate`: Describes if setting a property should trigger
-    invalidation and updating. This function takes the `newValue` and `oldValue` and
-    returns `true` if invalidation should occur. If not present, a strict identity
-    check is used. This is useful if a property should be considered dirty only
-    if some condition is met, like if a key of an object value changes.
+    * `hasChanged`: Indicates if a property should be considered changed when it's set.
+    This function takes the `newValue` and `oldValue` and returns `true` if an
+    update should be requested. If not present, a strict identity check is used.
+    This is useful if a property should be considered dirty only if some condition
+    is met, like if a key of an object value changes.
 
   * **React to changes:** LitElement reacts to changes in properties and attributes by
   asynchronously rendering, ensuring changes are batched. This reduces overhead
@@ -153,11 +153,11 @@ into the element. This is the only method that must be implemented by subclasses
   the `render` implementation is a [pure function](https://en.wikipedia.org/wiki/Pure_function) using only the element's current properties
   to describe the element template. This is the only method that must be implemented by subclasses.
   Note, since `render()` is called by `update()`, setting properties does not trigger
-  `invalidate()`, allowing property values to be computed and validated.
+  an update, allowing property values to be computed and validated.
 
   * `shouldUpdate(changedProperties)` (protected): Implement to control if updating and rendering
-  should occur when property values change or `invalidate` is called. The `changedProperties`
-  argument is an object with keys for the changed properties pointing to their previous values.
+  should occur when property values change or `requestUpdate()` is called. The `changedProperties`
+  argument is a map with keys for the changed properties pointing to their previous values.
   By default, this method always returns true, but this can be customized as
   an optimization to avoid updating work when changes occur, which should not be rendered.
 
@@ -182,15 +182,13 @@ into the element. This is the only method that must be implemented by subclasses
   await a rendered element before fulfilling this promise. To do this, first
   await `super.updateComplete` then any subsequent state.
 
-  * `invalidate()`: Call to request the element to asynchronously update regardless
-  of whether or not any property changes are pending. This should only be called
-  when an element should update based on some state not stored in properties,
-  since setting properties automatically calls `invalidate`.
-
-  * `invalidateProperty(name, oldValue)` (protected): Triggers an invalidation for
-  a specific property. This is useful when manually implementing a property setter.
-  Call `invalidateProperty` instead of `invalidate` to ensure that any configured
-  property options are honored.
+  * `requestUpdate(name?, oldValue?)`: Call to request the element to asynchronously
+  update regardless of whether or not any property changes are pending. This should
+  only be called when an element should update based on some state not triggered
+  by setting a property or when manually implementing a property setter. In this
+  case, pass the property `name` and `oldValue` to ensure that any configured
+  property options are honored. Returns the `updateComplete` promise which is
+  resolved when the update completes.
 
   * `createRenderRoot()` (protected): Implement to customize where the
   element's template is rendered by returning an element into which to
@@ -200,8 +198,8 @@ into the element. This is the only method that must be implemented by subclasses
 ## Advanced: Update Lifecycle
 
 * When the element is first connected or a property is set (e.g. `element.foo = 5`)
-and the property's `shouldInvalidate(value, oldValue)` returns true.
-* `invalidate()`: Updates the element after waiting a [microtask](https://jakearchibald.com/2015/tasks-microtasks-queues-and-schedules/) (at the end
+and the property's `hasChanged(value, oldValue)` returns true.
+* `requestUpdate()`: Updates the element after waiting a [microtask](https://jakearchibald.com/2015/tasks-microtasks-queues-and-schedules/) (at the end
 of the event loop, before the next paint).
 * `shouldUpdate(changedProperties)`: The update proceeds if this returns true, which
 it does by default.

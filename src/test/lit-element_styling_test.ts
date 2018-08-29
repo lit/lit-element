@@ -292,7 +292,7 @@ suite('ShadyDOM', () => {
     const div = el.shadowRoot!.querySelector('div');
     assert.equal(getComputedStyleValue(div!, 'border-top-width').trim(), '6px');
     border = `4px solid orange`;
-    el.invalidate();
+    el.requestUpdate();
     await el.updateComplete;
     assert.equal(getComputedStyleValue(div!, 'border-top-width').trim(), '6px');
   });

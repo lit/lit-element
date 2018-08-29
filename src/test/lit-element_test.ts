@@ -51,7 +51,7 @@ suite('LitElement', () => {
     });
   });
 
-  test('invalidate waits until update/rendering', async () => {
+  test('`requestUpdate` waits until update/rendering', async () => {
     class E extends LitElement {
       updateCount = 0;
       render() { return html`${++this.updateCount}`; }
@@ -59,21 +59,21 @@ suite('LitElement', () => {
     customElements.define(generateElementName(), E);
     const el = new E();
     container.appendChild(el);
-    await el.invalidate();
+    await el.requestUpdate();
     assert.equal(
         stripExpressionDelimeters(el.shadowRoot!.innerHTML),
         '1');
-    await el.invalidate();
+    await el.requestUpdate();
     assert.equal(
         stripExpressionDelimeters(el.shadowRoot!.innerHTML),
         '2');
-    await el.invalidate();
+    await el.requestUpdate();
     assert.equal(
         stripExpressionDelimeters(el.shadowRoot!.innerHTML),
         '3');
   });
 
-  test('updateComplete waits for invalidate but does not trigger invalidation, async', async () => {
+  test('`updateComplete` waits for `requestUpdate` but does not trigger update, async', async () => {
     class E extends LitElement {
       updateCount = 0;
       render() { return html`${++this.updateCount}`; }
@@ -89,7 +89,7 @@ suite('LitElement', () => {
     assert.equal(
         stripExpressionDelimeters(el.shadowRoot!.innerHTML),
         '1');
-    el.invalidate();
+    el.requestUpdate();
     await el.updateComplete;
     assert.equal(
         stripExpressionDelimeters(el.shadowRoot!.innerHTML),
@@ -100,7 +100,7 @@ suite('LitElement', () => {
         '2');
   });
 
-  test('shouldUpdate controls update/rendering',
+  test('`shouldUpdate` controls update/rendering',
        async () => {
          class E extends LitElement {
 
@@ -119,16 +119,16 @@ suite('LitElement', () => {
              stripExpressionDelimeters(el.shadowRoot!.innerHTML),
              '1');
          el.needsUpdate = false;
-         await el.invalidate();
+         await el.requestUpdate();
          assert.equal(
              stripExpressionDelimeters(el.shadowRoot!.innerHTML),
              '1');
          el.needsUpdate = true;
-         await el.invalidate();
+         await el.requestUpdate();
          assert.equal(
              stripExpressionDelimeters(el.shadowRoot!.innerHTML),
              '2');
-         await el.invalidate();
+         await el.requestUpdate();
          assert.equal(
              stripExpressionDelimeters(el.shadowRoot!.innerHTML),
              '3');
@@ -166,7 +166,7 @@ suite('LitElement', () => {
 
   test('property options', async() => {
 
-    const shouldInvalidate = (value: any, old: any) => old === undefined || value > old;
+    const hasChanged = (value: any, old: any) => old === undefined || value > old;
     const fromAttribute = (value: any) => parseInt(value);
     const toAttribute = (value: any) => `${value}-attr`;
     class E extends LitElement {
@@ -175,17 +175,17 @@ suite('LitElement', () => {
           noAttr: {attribute: false},
           atTr: {attribute: true},
           customAttr: {attribute: 'custom', reflect: true},
-          shouldInvalidate: {shouldInvalidate},
+          hasChanged: {hasChanged},
           fromAttribute: {type: fromAttribute},
           toAttribute: {reflect: true, type: {toAttribute}},
-          all: {attribute: 'all-attr', shouldInvalidate, type: {fromAttribute, toAttribute}, reflect: true},
+          all: {attribute: 'all-attr', hasChanged, type: {fromAttribute, toAttribute}, reflect: true},
         };
       }
 
       noAttr = 'noAttr';
       atTr = 'attr';
       customAttr = 'customAttr';
-      shouldInvalidate = 10;
+      hasChanged = 10;
       fromAttribute = 1;
       toAttribute = 1;
       all = 10;
@@ -208,7 +208,7 @@ suite('LitElement', () => {
     assert.equal(el.noAttr, 'noAttr');
     assert.equal(el.atTr, 'attr');
     assert.equal(el.customAttr, 'customAttr');
-    assert.equal(el.shouldInvalidate, 10);
+    assert.equal(el.hasChanged, 10);
     assert.equal(el.fromAttribute, 1);
     assert.equal(el.toAttribute, 1);
     assert.equal(el.getAttribute('toattribute'), '1-attr');
@@ -239,13 +239,13 @@ suite('LitElement', () => {
     assert.equal(el.updateCount, 4);
     assert.equal(el.getAttribute('all-attr'), '16-attr');
     assert.equal(el.all, 16);
-    el.shouldInvalidate = 5;
+    el.hasChanged = 5;
     await el.updateComplete;
-    assert.equal(el.shouldInvalidate, 5);
+    assert.equal(el.hasChanged, 5);
     assert.equal(el.updateCount, 4);
-    el.shouldInvalidate = 15;
+    el.hasChanged = 15;
     await el.updateComplete;
-    assert.equal(el.shouldInvalidate, 15);
+    assert.equal(el.hasChanged, 15);
     assert.equal(el.updateCount, 5);
     el.setAttribute('all-attr', '5-attr');
     await el.updateComplete;
@@ -259,7 +259,7 @@ suite('LitElement', () => {
 
   test('property options via decorator', async() => {
 
-    const shouldInvalidate = (value: any, old: any) => old === undefined || value > old;
+    const hasChanged = (value: any, old: any) => old === undefined || value > old;
     const fromAttribute = (value: any) => parseInt(value);
     const toAttribute = (value: any) => `${value}-attr`;
     class E extends LitElement {
@@ -270,13 +270,13 @@ suite('LitElement', () => {
       atTr = 'attr';
       @property({attribute: 'custom', reflect: true})
       customAttr = 'customAttr';
-      @property({shouldInvalidate})
-      shouldInvalidate = 10;
+      @property({hasChanged})
+      hasChanged = 10;
       @property({type: fromAttribute})
       fromAttribute = 1;
       @property({reflect: true, type: {toAttribute}})
       toAttribute = 1;
-      @property({attribute: 'all-attr', shouldInvalidate, type: {fromAttribute, toAttribute}, reflect: true})
+      @property({attribute: 'all-attr', hasChanged, type: {fromAttribute, toAttribute}, reflect: true})
       all = 10;
 
       updateCount = 0;
@@ -297,7 +297,7 @@ suite('LitElement', () => {
     assert.equal(el.noAttr, 'noAttr');
     assert.equal(el.atTr, 'attr');
     assert.equal(el.customAttr, 'customAttr');
-    assert.equal(el.shouldInvalidate, 10);
+    assert.equal(el.hasChanged, 10);
     assert.equal(el.fromAttribute, 1);
     assert.equal(el.toAttribute, 1);
     assert.equal(el.getAttribute('toattribute'), '1-attr');
@@ -328,13 +328,13 @@ suite('LitElement', () => {
     assert.equal(el.updateCount, 4);
     assert.equal(el.getAttribute('all-attr'), '16-attr');
     assert.equal(el.all, 16);
-    el.shouldInvalidate = 5;
+    el.hasChanged = 5;
     await el.updateComplete;
-    assert.equal(el.shouldInvalidate, 5);
+    assert.equal(el.hasChanged, 5);
     assert.equal(el.updateCount, 4);
-    el.shouldInvalidate = 15;
+    el.hasChanged = 15;
     await el.updateComplete;
-    assert.equal(el.shouldInvalidate, 15);
+    assert.equal(el.hasChanged, 15);
     assert.equal(el.updateCount, 5);
     el.setAttribute('all-attr', '5-attr');
     await el.updateComplete;
@@ -348,18 +348,18 @@ suite('LitElement', () => {
 
   test('can mix property options via decorator and via getter', async() => {
 
-    const shouldInvalidate = (value: any, old: any) => old === undefined || value > old;
+    const hasChanged = (value: any, old: any) => old === undefined || value > old;
     const fromAttribute = (value: any) => parseInt(value);
     const toAttribute = (value: any) => `${value}-attr`;
     class E extends LitElement {
 
-      @property({shouldInvalidate})
-      shouldInvalidate = 10;
+      @property({hasChanged})
+      hasChanged = 10;
       @property({type: fromAttribute})
       fromAttribute = 1;
       @property({reflect: true, type: {toAttribute}})
       toAttribute = 1;
-      @property({attribute: 'all-attr', shouldInvalidate, type: {fromAttribute, toAttribute}, reflect: true})
+      @property({attribute: 'all-attr', hasChanged, type: {fromAttribute, toAttribute}, reflect: true})
       all = 10;
 
       updateCount = 0;
@@ -399,7 +399,7 @@ suite('LitElement', () => {
     assert.equal(el.noAttr, 'noAttr');
     assert.equal(el.atTr, 'attr');
     assert.equal(el.customAttr, 'customAttr');
-    assert.equal(el.shouldInvalidate, 10);
+    assert.equal(el.hasChanged, 10);
     assert.equal(el.fromAttribute, 1);
     assert.equal(el.toAttribute, 1);
     assert.equal(el.getAttribute('toattribute'), '1-attr');
@@ -430,13 +430,13 @@ suite('LitElement', () => {
     assert.equal(el.updateCount, 4);
     assert.equal(el.getAttribute('all-attr'), '16-attr');
     assert.equal(el.all, 16);
-    el.shouldInvalidate = 5;
+    el.hasChanged = 5;
     await el.updateComplete;
-    assert.equal(el.shouldInvalidate, 5);
+    assert.equal(el.hasChanged, 5);
     assert.equal(el.updateCount, 4);
-    el.shouldInvalidate = 15;
+    el.hasChanged = 15;
     await el.updateComplete;
-    assert.equal(el.shouldInvalidate, 15);
+    assert.equal(el.hasChanged, 15);
     assert.equal(el.updateCount, 5);
     el.setAttribute('all-attr', '5-attr');
     await el.updateComplete;
@@ -586,7 +586,7 @@ suite('LitElement', () => {
 
   test('property options compose when subclassing', async() => {
 
-    const shouldInvalidate = (value: any, old: any) => old === undefined || value > old;
+    const hasChanged = (value: any, old: any) => old === undefined || value > old;
     const fromAttribute = (value: any) => parseInt(value);
     const toAttribute = (value: any) => `${value}-attr`;
     class E extends LitElement {
@@ -595,14 +595,14 @@ suite('LitElement', () => {
           noAttr: {attribute: false},
           atTr: {attribute: true},
           customAttr: {},
-          shouldInvalidate: {},
+          hasChanged: {},
         };
       }
 
       noAttr = 'noAttr';
       atTr = 'attr';
       customAttr = 'customAttr';
-      shouldInvalidate = 10;
+      hasChanged = 10;
 
       updateCount = 0;
 
@@ -620,7 +620,7 @@ suite('LitElement', () => {
       static get properties(): PropertyDeclarations {
         return {
           customAttr: {attribute: 'custom', reflect: true},
-          shouldInvalidate: {shouldInvalidate},
+          hasChanged: {hasChanged},
           fromAttribute: {},
           toAttribute: {},
         };
@@ -637,7 +637,7 @@ suite('LitElement', () => {
         return {
           fromAttribute: {type: fromAttribute},
           toAttribute: {reflect: true, type: {toAttribute}},
-          all: {attribute: 'all-attr', shouldInvalidate, type: {fromAttribute, toAttribute}, reflect: true},
+          all: {attribute: 'all-attr', hasChanged, type: {fromAttribute, toAttribute}, reflect: true},
         };
       }
 
@@ -652,7 +652,7 @@ suite('LitElement', () => {
     assert.equal(el.noAttr, 'noAttr');
     assert.equal(el.atTr, 'attr');
     assert.equal(el.customAttr, 'customAttr');
-    assert.equal(el.shouldInvalidate, 10);
+    assert.equal(el.hasChanged, 10);
     assert.equal(el.fromAttribute, 1);
     assert.equal(el.toAttribute, 1);
     assert.equal(el.getAttribute('toattribute'), '1-attr');
@@ -683,13 +683,13 @@ suite('LitElement', () => {
     assert.equal(el.updateCount, 4);
     assert.equal(el.getAttribute('all-attr'), '16-attr');
     assert.equal(el.all, 16);
-    el.shouldInvalidate = 5;
+    el.hasChanged = 5;
     await el.updateComplete;
-    assert.equal(el.shouldInvalidate, 5);
+    assert.equal(el.hasChanged, 5);
     assert.equal(el.updateCount, 4);
-    el.shouldInvalidate = 15;
+    el.hasChanged = 15;
     await el.updateComplete;
-    assert.equal(el.shouldInvalidate, 15);
+    assert.equal(el.hasChanged, 15);
     assert.equal(el.updateCount, 5);
     el.setAttribute('all-attr', '5-attr');
     await el.updateComplete;
@@ -916,8 +916,9 @@ suite('LitElement', () => {
       get bar() { return this.__bar; }
 
       set bar(value) {
+        const old = this.bar;
         this.__bar = Number(value);
-        this.invalidate();
+        this.requestUpdate('bar', old);
       }
 
       render() {
@@ -935,10 +936,10 @@ suite('LitElement', () => {
     assert.equal(stripExpressionDelimeters(el.shadowRoot!.innerHTML), '020');
   });
 
-  test('User defined accessor can use property options via `invalidateProperty`', async () => {
+  test('User defined accessor can use property options via `requestUpdate`', async () => {
     const fromAttribute = (value: any) => parseInt(value);
     const toAttribute = (value: any) => `${value}-attr`;
-    const shouldInvalidate = (value: any, old: any) => isNaN(old) || value > old;
+    const hasChanged = (value: any, old: any) => isNaN(old) || value > old;
     class E extends LitElement {
 
       updateCount = 0;
@@ -946,7 +947,7 @@ suite('LitElement', () => {
 
       static get properties() {
         return {
-          bar: {attribute: 'attr-bar', reflect: true, type: {fromAttribute, toAttribute}, shouldInvalidate}
+          bar: {attribute: 'attr-bar', reflect: true, type: {fromAttribute, toAttribute}, hasChanged}
         };
       }
 
@@ -965,7 +966,7 @@ suite('LitElement', () => {
       set bar(value) {
         const old = this.bar;
         this.__bar = Number(value);
-        this.invalidateProperty('bar', old);
+        this.requestUpdate('bar', old);
       }
 
       render() { return html``; }
@@ -995,7 +996,7 @@ suite('LitElement', () => {
     assert.equal(el.getAttribute('attr-bar'), `3`);
   });
 
-  test('updates/renders attributes, properties, and event listeners via lit-html',
+  test('updates/renders attributes, properties, and event listeners via `lit-html`',
     async () => {
       class E extends LitElement {
         _event?: Event;
@@ -1022,7 +1023,7 @@ suite('LitElement', () => {
     });
 
   test(
-      'firstUpdated called when element first updates', async () => {
+      '`firstUpdated` called when element first updates', async () => {
         class E extends LitElement {
 
           wasUpdatedCount = 0;
@@ -1046,10 +1047,10 @@ suite('LitElement', () => {
         await el.updateComplete;
         assert.equal(el.wasUpdatedCount, 1);
         assert.equal(el.wasFirstUpdated, 1);
-        await el.invalidate();
+        await el.requestUpdate();
         assert.equal(el.wasUpdatedCount, 2);
         assert.equal(el.wasFirstUpdated, 1);
-        await el.invalidate();
+        await el.requestUpdate();
         assert.equal(el.wasUpdatedCount, 3);
         assert.equal(el.wasFirstUpdated, 1);
       });
@@ -1098,7 +1099,7 @@ suite('LitElement', () => {
             [ 'shouldUpdate', 'before-update', 'render', 'after-update', 'firstUpdated', 'updated', 'updateComplete' ]);
       });
 
-  test('setting properties in update does not trigger invalidation', async () => {
+  test('setting properties in update does not trigger update', async () => {
     class E extends LitElement {
 
       static get properties() {
@@ -1191,7 +1192,7 @@ suite('LitElement', () => {
     assert.equal(el.getAttribute('zot'), '3');
   });
 
-  test('can make properties for native accessors and render', async () => {
+  test('can make properties for native accessors', async () => {
     class E extends LitElement {
 
       static get properties() {
@@ -1246,7 +1247,7 @@ suite('LitElement', () => {
     assert.equal((window as any).id2, el);
   });
 
-  test('setting properties in `updated` does trigger invalidation and does not block updateComplete', async () => {
+  test('setting properties in `updated` does trigger update and does not block updateComplete', async () => {
     class E extends LitElement {
 
       static get properties() {
@@ -1289,7 +1290,7 @@ suite('LitElement', () => {
     assert.isTrue(result);
   });
 
-  test('setting properties in `updated()` can await until updateComplete returns true', async () => {
+  test('setting properties in `updated` can await until updateComplete returns true', async () => {
     class E extends LitElement {
 
       static get properties() {
@@ -1323,7 +1324,7 @@ suite('LitElement', () => {
     assert.equal(el.foo, 10);
   });
 
-  test('updateComplete can block properties set in `updated()`', async () => {
+  test('`updateComplete` can block properties set in `updated`', async () => {
     class E extends LitElement {
 
       static get properties() {
@@ -1364,7 +1365,7 @@ suite('LitElement', () => {
     assert.equal(el.updateCount, 10);
   });
 
-  test('can await promise in updateComplete', async () => {
+  test('can await promise in `updateComplete`', async () => {
     class E extends LitElement {
 
       static get properties() {
@@ -1399,7 +1400,7 @@ suite('LitElement', () => {
     assert.isTrue(el.promiseFulfilled);
   });
 
-  test('invalidate resolved at `updateComplete` time', async () => {
+  test('`requestUpdate` resolved at `updateComplete` time', async () => {
     class E extends LitElement {
 
       static get properties() {
@@ -1433,12 +1434,12 @@ suite('LitElement', () => {
     assert.isTrue(result);
     assert.isTrue(el.promiseFulfilled);
     el.promiseFulfilled = false;
-    result = await el.invalidate() as boolean;
+    result = await el.requestUpdate() as boolean;
     assert.isTrue(result);
     assert.isTrue(el.promiseFulfilled);
   });
 
-  test('can await sub-element updateComplete', async () => {
+  test('can await sub-element `updateComplete`', async () => {
     class E extends LitElement {
 
       static get properties() {
