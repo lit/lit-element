@@ -176,11 +176,10 @@ into the element. This is the only method that must be implemented by subclasses
 
   * `updateComplete`: Returns a Promise that resolves when the element has completed
   updating that resolves to a boolean value that is `true` if the element completed the
-  update without triggering another update. This can happen if a property is set in
-  `update()` after the call to `super.update()` for example. This getter can be
-  implemented to await additional state. For example, it is sometimes useful to
-  await a rendered element before fulfilling this promise. To do this, first
-  await `super.updateComplete` then any subsequent state.
+  update without triggering another update. This happens if a property is set in
+  `updated()`. This getter can be implemented to await additional state.
+  For example, it is sometimes useful to await a rendered element before fulfilling
+  this promise. To do this, first await `super.updateComplete` then any subsequent state.
 
   * `requestUpdate(name?, oldValue?)`: Call to request the element to asynchronously
   update regardless of whether or not any property changes are pending. This should

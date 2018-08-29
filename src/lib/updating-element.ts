@@ -519,12 +519,11 @@ export abstract class UpdatingElement extends HTMLElement {
   /**
    * Returns a Promise that resolves when the element has completed updating
    * that resolves to a boolean value that is `true` if the element completed
-   * the update without triggering another update. This can happen if a property
-   * is set in `update()` after the call to `super.update()` for example.
-   * This getter can be implemented to await additional state. For example, it
-   * is sometimes useful to await a rendered element before fulfilling this
-   * promise. To do this, first await `super.updateComplete` then any subsequent
-   * state.
+   * the update without triggering another update. This happens if a property
+   * is set in `updated()`. This getter can be implemented to await additional
+   * state. For example, it is sometimes useful to await a rendered element before
+   * fulfilling this promise. To do this, first await `super.updateComplete`
+   * then any subsequent state.
    *
    * @returns {Promise} The promise returns a boolean that indicates if the
    * update resolved without triggering another update.
@@ -560,7 +559,7 @@ export abstract class UpdatingElement extends HTMLElement {
 
   /**
    Invoked whenever the element is updated. Implement to perform
-   post updating tasks via DOM APIs. For example, focusing an element.
+   post updating tasks via DOM APIs, for example, focusing an element.
    Setting properties inside this method will trigger the element to update.
    */
   protected updated(_changedProperties: PropertyValues) {}
