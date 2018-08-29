@@ -65,11 +65,9 @@ export interface PropertyDeclaration<T = any> {
   reflect?: boolean;
 
   /**
-   * Indicates if a property should be considered changed when it's set.
-   * This function takes the `newValue` and `oldValue` and returns `true` if an
-   * update should be requested. If not present, a strict identity check is used.
-   * This is useful if a property should be considered dirty only if some
-   * condition is met, like if a key of an object value changes.
+   * A function that indicates if a property should be considered changed when it
+   * is set. The function should take the `newValue` and `oldValue` and return
+   * `true` if an update should be requested.
    */
   hasChanged?(value: T, oldValue: T): boolean;
 
@@ -125,9 +123,9 @@ const defaultPropertyDeclaration: PropertyDeclaration = {
 const microtaskPromise = new Promise((resolve) => resolve(true));
 
 const STATE_HAS_UPDATED = 1;
-const STATE_IS_UPDATE_REQUESTED = 1 << 2;
+const STATE_UPDATE_REQUESTED = 1 << 2;
 const STATE_IS_REFLECTING = 1 << 3;
-type UpdateState = typeof STATE_HAS_UPDATED | typeof STATE_IS_UPDATE_REQUESTED | typeof STATE_IS_REFLECTING;
+type UpdateState = typeof STATE_HAS_UPDATED | typeof STATE_UPDATE_REQUESTED | typeof STATE_IS_REFLECTING;
 
 /**
  * Base element class which manages element properties and attributes. When
@@ -367,10 +365,13 @@ export abstract class UpdatingElement extends HTMLElement {
    * Uses ShadyCSS to keep element DOM updated.
    */
   connectedCallback() {
-    if ((this._updateState & STATE_HAS_UPDATED) && window.ShadyCSS !== undefined) {
-      window.ShadyCSS.styleElement(this);
+    if ((this._updateState & STATE_HAS_UPDATED)) {
+      if (window.ShadyCSS !== undefined) {
+        window.ShadyCSS.styleElement(this);
+      }
+    } else {
+      this.requestUpdate();
     }
-    this.requestUpdate();
   }
 
   /**
@@ -474,7 +475,7 @@ export abstract class UpdatingElement extends HTMLElement {
   private async _invalidate() {
     if (!this._hasRequestedUpdate) {
       // mark state updating...
-      this._updateState = this._updateState | STATE_IS_UPDATE_REQUESTED;
+      this._updateState = this._updateState | STATE_UPDATE_REQUESTED;
       let resolver: any;
       const previousValidatePromise = this._updatePromise;
       this._updatePromise = new Promise((r) => resolver = r);
@@ -486,7 +487,7 @@ export abstract class UpdatingElement extends HTMLElement {
   }
 
   private get _hasRequestedUpdate() {
-    return (this._updateState & STATE_IS_UPDATE_REQUESTED);
+    return (this._updateState & STATE_UPDATE_REQUESTED);
   }
 
   /**
@@ -513,7 +514,7 @@ export abstract class UpdatingElement extends HTMLElement {
 
   private _markUpdated() {
     this._changedProperties = new Map();
-    this._updateState = this._updateState & ~STATE_IS_UPDATE_REQUESTED | STATE_HAS_UPDATED;
+    this._updateState = this._updateState & ~STATE_UPDATE_REQUESTED | STATE_HAS_UPDATED;
   }
 
   /**
@@ -545,7 +546,7 @@ export abstract class UpdatingElement extends HTMLElement {
   /**
    * Updates the element. By default this method reflects property values to attributes.
    * It should be overridden to render and keep updated DOM in the element's root.
-   * Setting properties inside this method will *not* trigger the element to update.
+   * Setting properties inside this method will *not* trigger another update.
    * * @param _changedProperties Map of changed properties with old values
    */
   protected update(_changedProperties: PropertyValues) {

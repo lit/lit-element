@@ -45,11 +45,9 @@ and renders declaratively using `lit-html`.
     attribute name determined according to the rules for the `attribute`
     propety option and the value of the property serialized using the rules from
     the `type` property option.
-    * `hasChanged`: Indicates if a property should be considered changed when it's set.
-    This function takes the `newValue` and `oldValue` and returns `true` if an
-    update should be requested. If not present, a strict identity check is used.
-    This is useful if a property should be considered dirty only if some condition
-    is met, like if a key of an object value changes.
+    * `hasChanged`: A function that indicates if a property should be considered
+    changed when it is set. The function should take the `newValue` and `oldValue`
+    and return `true` if an update should be requested.
 
   * **React to changes:** LitElement reacts to changes in properties and attributes by
   asynchronously rendering, ensuring changes are batched. This reduces overhead
@@ -163,7 +161,7 @@ into the element. This is the only method that must be implemented by subclasses
 
   * `update(changedProperties)` (protected): This method calls `render()` and then uses `lit-html`
   in order to render the template DOM. It also updates any reflected attributes based on
-  property values. Setting properties inside this method will *not* trigger the element to update.
+  property values. Setting properties inside this method will *not* trigger another update..
 
   * `firstUpdated()`: (protected) Called after the element's DOM has been
   updated the first time. This method can be useful for capturing references to rendered static
