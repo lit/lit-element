@@ -53,8 +53,8 @@ suite('LitElement', () => {
 
   test('invalidate waits until update/rendering', async () => {
     class E extends LitElement {
-      updated = 0;
-      render() { return html`${++this.updated}`; }
+      updateCount = 0;
+      render() { return html`${++this.updateCount}`; }
     }
     customElements.define(generateElementName(), E);
     const el = new E();
@@ -75,8 +75,8 @@ suite('LitElement', () => {
 
   test('updateComplete waits for invalidate but does not trigger invalidation, async', async () => {
     class E extends LitElement {
-      updated = 0;
-      render() { return html`${++this.updated}`; }
+      updateCount = 0;
+      render() { return html`${++this.updateCount}`; }
     }
     customElements.define(generateElementName(), E);
     const el = new E();
@@ -105,11 +105,11 @@ suite('LitElement', () => {
          class E extends LitElement {
 
            needsUpdate = true;
-           updated = 0;
+           updateCount = 0;
 
            shouldUpdate() { return this.needsUpdate; }
 
-           render() { return html`${++this.updated}`; }
+           render() { return html`${++this.updateCount}`; }
          }
          customElements.define(generateElementName(), E);
          const el = new E();
@@ -190,10 +190,10 @@ suite('LitElement', () => {
       toAttribute = 1;
       all = 10;
 
-      updated = 0;
+      updateCount = 0;
 
       update(changed: PropertyValues) {
-        this.updated++;
+        this.updateCount++;
         super.update(changed);
       }
 
@@ -204,7 +204,7 @@ suite('LitElement', () => {
     const el = new E();
     container.appendChild(el);
     await el.updateComplete;
-    assert.equal(el.updated, 1);
+    assert.equal(el.updateCount, 1);
     assert.equal(el.noAttr, 'noAttr');
     assert.equal(el.atTr, 'attr');
     assert.equal(el.customAttr, 'customAttr');
@@ -221,7 +221,7 @@ suite('LitElement', () => {
     el.toAttribute = 2;
     el.all = 5;
     await el.updateComplete;
-    assert.equal(el.updated, 2);
+    assert.equal(el.updateCount, 2);
     assert.equal(el.noAttr, 'noAttr');
     assert.equal(el.atTr, 'attr2');
     assert.equal(el.customAttr, 'customAttr2');
@@ -231,30 +231,30 @@ suite('LitElement', () => {
     assert.equal(el.all, 5);
     el.all = 15;
     await el.updateComplete;
-    assert.equal(el.updated, 3);
+    assert.equal(el.updateCount, 3);
     assert.equal(el.all, 15);
     assert.equal(el.getAttribute('all-attr'), '15-attr');
     el.setAttribute('all-attr', '16-attr');
     await el.updateComplete;
-    assert.equal(el.updated, 4);
+    assert.equal(el.updateCount, 4);
     assert.equal(el.getAttribute('all-attr'), '16-attr');
     assert.equal(el.all, 16);
     el.shouldInvalidate = 5;
     await el.updateComplete;
     assert.equal(el.shouldInvalidate, 5);
-    assert.equal(el.updated, 4);
+    assert.equal(el.updateCount, 4);
     el.shouldInvalidate = 15;
     await el.updateComplete;
     assert.equal(el.shouldInvalidate, 15);
-    assert.equal(el.updated, 5);
+    assert.equal(el.updateCount, 5);
     el.setAttribute('all-attr', '5-attr');
     await el.updateComplete;
     assert.equal(el.all, 5);
-    assert.equal(el.updated, 5);
+    assert.equal(el.updateCount, 5);
     el.all = 15;
     await el.updateComplete;
     assert.equal(el.all, 15);
-    assert.equal(el.updated, 6);
+    assert.equal(el.updateCount, 6);
   });
 
   test('property options via decorator', async() => {
@@ -279,10 +279,10 @@ suite('LitElement', () => {
       @property({attribute: 'all-attr', shouldInvalidate, type: {fromAttribute, toAttribute}, reflect: true})
       all = 10;
 
-      updated = 0;
+      updateCount = 0;
 
       update(changed: PropertyValues) {
-        this.updated++;
+        this.updateCount++;
         super.update(changed);
       }
 
@@ -293,7 +293,7 @@ suite('LitElement', () => {
     const el = new E();
     container.appendChild(el);
     await el.updateComplete;
-    assert.equal(el.updated, 1);
+    assert.equal(el.updateCount, 1);
     assert.equal(el.noAttr, 'noAttr');
     assert.equal(el.atTr, 'attr');
     assert.equal(el.customAttr, 'customAttr');
@@ -310,7 +310,7 @@ suite('LitElement', () => {
     el.toAttribute = 2;
     el.all = 5;
     await el.updateComplete;
-    assert.equal(el.updated, 2);
+    assert.equal(el.updateCount, 2);
     assert.equal(el.noAttr, 'noAttr');
     assert.equal(el.atTr, 'attr2');
     assert.equal(el.customAttr, 'customAttr2');
@@ -320,30 +320,30 @@ suite('LitElement', () => {
     assert.equal(el.all, 5);
     el.all = 15;
     await el.updateComplete;
-    assert.equal(el.updated, 3);
+    assert.equal(el.updateCount, 3);
     assert.equal(el.all, 15);
     assert.equal(el.getAttribute('all-attr'), '15-attr');
     el.setAttribute('all-attr', '16-attr');
     await el.updateComplete;
-    assert.equal(el.updated, 4);
+    assert.equal(el.updateCount, 4);
     assert.equal(el.getAttribute('all-attr'), '16-attr');
     assert.equal(el.all, 16);
     el.shouldInvalidate = 5;
     await el.updateComplete;
     assert.equal(el.shouldInvalidate, 5);
-    assert.equal(el.updated, 4);
+    assert.equal(el.updateCount, 4);
     el.shouldInvalidate = 15;
     await el.updateComplete;
     assert.equal(el.shouldInvalidate, 15);
-    assert.equal(el.updated, 5);
+    assert.equal(el.updateCount, 5);
     el.setAttribute('all-attr', '5-attr');
     await el.updateComplete;
     assert.equal(el.all, 5);
-    assert.equal(el.updated, 5);
+    assert.equal(el.updateCount, 5);
     el.all = 15;
     await el.updateComplete;
     assert.equal(el.all, 15);
-    assert.equal(el.updated, 6);
+    assert.equal(el.updateCount, 6);
   });
 
   test('attributes deserialize from html', async() => {
@@ -409,7 +409,7 @@ suite('LitElement', () => {
             [zug]: {}
           };
         }
-        updated = 0;
+        updateCount = 0;
         foo = 5;
         [zug] = 6;
 
@@ -418,7 +418,7 @@ suite('LitElement', () => {
         }
 
         update(changedProperties: PropertyValues) {
-          this.updated++;
+          this.updateCount++;
           super.update(changedProperties);
         }
 
@@ -427,17 +427,17 @@ suite('LitElement', () => {
       const el = new E();
       container.appendChild(el);
       await el.updateComplete;
-      assert.equal(el.updated, 1);
+      assert.equal(el.updateCount, 1);
       assert.equal(el.foo, 5);
       assert.equal(el[zug], 6);
       el.foo = 55;
       await el.updateComplete;
-      assert.equal(el.updated, 2);
+      assert.equal(el.updateCount, 2);
       assert.equal(el.foo, 55);
       assert.equal(el[zug], 6);
       el[zug] = 66;
       await el.updateComplete;
-      assert.equal(el.updated, 3);
+      assert.equal(el.updateCount, 3);
       assert.equal(el.foo, 55);
       assert.equal(el[zug], 66);
     });
@@ -502,10 +502,10 @@ suite('LitElement', () => {
       customAttr = 'customAttr';
       shouldInvalidate = 10;
 
-      updated = 0;
+      updateCount = 0;
 
       update(changed: PropertyValues) {
-        this.updated++;
+        this.updateCount++;
         super.update(changed);
       }
 
@@ -546,7 +546,7 @@ suite('LitElement', () => {
     const el = new G();
     container.appendChild(el);
     await el.updateComplete;
-    assert.equal(el.updated, 1);
+    assert.equal(el.updateCount, 1);
     assert.equal(el.noAttr, 'noAttr');
     assert.equal(el.atTr, 'attr');
     assert.equal(el.customAttr, 'customAttr');
@@ -563,7 +563,7 @@ suite('LitElement', () => {
     el.toAttribute = 2;
     el.all = 5;
     await el.updateComplete;
-    assert.equal(el.updated, 2);
+    assert.equal(el.updateCount, 2);
     assert.equal(el.noAttr, 'noAttr');
     assert.equal(el.atTr, 'attr2');
     assert.equal(el.customAttr, 'customAttr2');
@@ -573,30 +573,30 @@ suite('LitElement', () => {
     assert.equal(el.all, 5);
     el.all = 15;
     await el.updateComplete;
-    assert.equal(el.updated, 3);
+    assert.equal(el.updateCount, 3);
     assert.equal(el.all, 15);
     assert.equal(el.getAttribute('all-attr'), '15-attr');
     el.setAttribute('all-attr', '16-attr');
     await el.updateComplete;
-    assert.equal(el.updated, 4);
+    assert.equal(el.updateCount, 4);
     assert.equal(el.getAttribute('all-attr'), '16-attr');
     assert.equal(el.all, 16);
     el.shouldInvalidate = 5;
     await el.updateComplete;
     assert.equal(el.shouldInvalidate, 5);
-    assert.equal(el.updated, 4);
+    assert.equal(el.updateCount, 4);
     el.shouldInvalidate = 15;
     await el.updateComplete;
     assert.equal(el.shouldInvalidate, 15);
-    assert.equal(el.updated, 5);
+    assert.equal(el.updateCount, 5);
     el.setAttribute('all-attr', '5-attr');
     await el.updateComplete;
     assert.equal(el.all, 5);
-    assert.equal(el.updated, 5);
+    assert.equal(el.updateCount, 5);
     el.all = 15;
     await el.updateComplete;
     assert.equal(el.all, 15);
-    assert.equal(el.updated, 6);
+    assert.equal(el.updateCount, 6);
 
   });
 
@@ -740,15 +740,15 @@ suite('LitElement', () => {
       value = '1';
       attrValue = 'attr';
 
-      updatedValue = '';
-      updatedAttrValue = '';
+      updateCountValue = '';
+      updateCountAttrValue = '';
 
       render() { return html``; }
 
       update(props: PropertyValues) {
         super.update(props);
-        this.updatedValue = this.value;
-        this.updatedAttrValue = this.attrValue;
+        this.updateCountValue = this.value;
+        this.updateCountAttrValue = this.attrValue;
       }
     }
     customElements.define(generateElementName(), E);
@@ -756,25 +756,25 @@ suite('LitElement', () => {
     container.appendChild(el);
     assert.ok(el.shadowRoot);
     await el.updateComplete;
-    assert.equal(el.updatedValue, '1');
-    assert.equal(el.updatedAttrValue, 'attr');
+    assert.equal(el.updateCountValue, '1');
+    assert.equal(el.updateCountAttrValue, 'attr');
     el.value = '2';
     await el.updateComplete;
-    assert.equal(el.updatedValue, '2');
-    assert.equal(el.updatedAttrValue, 'attr');
+    assert.equal(el.updateCountValue, '2');
+    assert.equal(el.updateCountAttrValue, 'attr');
     el.attrValue = 'attr2';
     await el.updateComplete;
-    assert.equal(el.updatedValue, '2');
-    assert.equal(el.updatedAttrValue, 'attr2');
+    assert.equal(el.updateCountValue, '2');
+    assert.equal(el.updateCountAttrValue, 'attr2');
     el.setAttribute('attrvalue', 'attr3');
     await el.updateComplete;
-    assert.equal(el.updatedValue, '2');
-    assert.equal(el.updatedAttrValue, 'attr3');
+    assert.equal(el.updateCountValue, '2');
+    assert.equal(el.updateCountAttrValue, 'attr3');
     el.value = '3';
     el.setAttribute('attrvalue', 'attr4');
     await el.updateComplete;
-    assert.equal(el.updatedValue, '3');
-    assert.equal(el.updatedAttrValue, 'attr4');
+    assert.equal(el.updateCountValue, '3');
+    assert.equal(el.updateCountAttrValue, 'attr4');
   });
 
   test('updates/renders changes when attributes change', async () => {
@@ -839,7 +839,7 @@ suite('LitElement', () => {
     const shouldInvalidate = (value: any, old: any) => isNaN(old) || value > old;
     class E extends LitElement {
 
-      updated = 0;
+      updateCount = 0;
       __bar: any;
 
       static get properties() {
@@ -855,7 +855,7 @@ suite('LitElement', () => {
 
       update(changed: PropertyValues) {
         super.update(changed);
-        this.updated++;
+        this.updateCount++;
       }
 
       get bar() { return this.__bar; }
@@ -873,22 +873,22 @@ suite('LitElement', () => {
     const el = new E();
     container.appendChild(el);
     await el.updateComplete;
-    assert.equal(el.updated, 1);
+    assert.equal(el.updateCount, 1);
     assert.equal(el.bar, 5);
     assert.equal(el.getAttribute('attr-bar'), `5-attr`);
     el.setAttribute('attr-bar', '7');
     await el.updateComplete;
-    assert.equal(el.updated, 2);
+    assert.equal(el.updateCount, 2);
     assert.equal(el.bar, 7);
     assert.equal(el.getAttribute('attr-bar'), `7-attr`);
     el.bar = 4;
     await el.updateComplete;
-    assert.equal(el.updated, 2);
+    assert.equal(el.updateCount, 2);
     assert.equal(el.bar, 4);
     assert.equal(el.getAttribute('attr-bar'), `7-attr`);
     el.setAttribute('attr-bar', '3');
     await el.updateComplete;
-    assert.equal(el.updated, 2);
+    assert.equal(el.updateCount, 2);
     assert.equal(el.bar, 3);
     assert.equal(el.getAttribute('attr-bar'), `3`);
   });
@@ -920,21 +920,21 @@ suite('LitElement', () => {
     });
 
   test(
-      'firstRendered called when element first renders', async () => {
+      'firstUpdated called when element first updates', async () => {
         class E extends LitElement {
 
-          wasUpdated = 0;
-          wasFirstRendered = 0;
+          wasUpdatedCount = 0;
+          wasFirstUpdated = 0;
 
           update(changedProperties: PropertyValues) {
-            this.wasUpdated++;
+            this.wasUpdatedCount++;
             super.update(changedProperties);
           }
 
           render() { return html``; }
 
-          firstRendered() {
-            this.wasFirstRendered++;
+          firstUpdated() {
+            this.wasFirstUpdated++;
           }
 
         }
@@ -942,18 +942,18 @@ suite('LitElement', () => {
         const el = new E();
         container.appendChild(el);
         await el.updateComplete;
-        assert.equal(el.wasUpdated, 1);
-        assert.equal(el.wasFirstRendered, 1);
+        assert.equal(el.wasUpdatedCount, 1);
+        assert.equal(el.wasFirstUpdated, 1);
         await el.invalidate();
-        assert.equal(el.wasUpdated, 2);
-        assert.equal(el.wasFirstRendered, 1);
+        assert.equal(el.wasUpdatedCount, 2);
+        assert.equal(el.wasFirstUpdated, 1);
         await el.invalidate();
-        assert.equal(el.wasUpdated, 3);
-        assert.equal(el.wasFirstRendered, 1);
+        assert.equal(el.wasUpdatedCount, 3);
+        assert.equal(el.wasFirstUpdated, 1);
       });
 
   test(
-      'render lifecycle order: shouldUpdate, update, render, firstRendered, after update, updateComplete', async () => {
+      'render lifecycle order', async () => {
         class E extends LitElement {
           static get properties() { return {
             foo: {type: Number}
@@ -977,8 +977,12 @@ suite('LitElement', () => {
             this.info.push('after-update');
           }
 
-          firstRendered() {
-            this.info.push('firstRendered');
+          firstUpdated() {
+            this.info.push('firstUpdated');
+          }
+
+          updated() {
+            this.info.push('updated')
           }
 
         }
@@ -989,7 +993,7 @@ suite('LitElement', () => {
         el.info.push('updateComplete');
         assert.deepEqual(
             el.info,
-            [ 'shouldUpdate', 'before-update', 'render', 'firstRendered', 'after-update', 'updateComplete' ]);
+            [ 'shouldUpdate', 'before-update', 'render', 'after-update', 'firstUpdated', 'updated', 'updateComplete' ]);
       });
 
   test('setting properties in update does not trigger invalidation', async () => {
@@ -1002,10 +1006,10 @@ suite('LitElement', () => {
       }
       promiseFulfilled = false;
       foo = 0;
-      updated = 0;
+      updateCount = 0;
 
       update(props: PropertyValues) {
-        this.updated++;
+        this.updateCount++;
         this.foo++;
         super.update(props);
       }
@@ -1020,12 +1024,12 @@ suite('LitElement', () => {
     container.appendChild(el);
     await el.updateComplete;
     assert.equal(el.foo, 1);
-    assert.equal(el.updated, 1);
+    assert.equal(el.updateCount, 1);
     assert.equal(el.shadowRoot!.textContent, '1');
     el.foo = 5;
     await el.updateComplete;
     assert.equal(el.foo, 6);
-    assert.equal(el.updated, 2);
+    assert.equal(el.updateCount, 2);
     assert.equal(el.shadowRoot!.textContent, '6');
   });
 
@@ -1094,12 +1098,15 @@ suite('LitElement', () => {
         };
       }
       foo = 0;
-      updated = 0;
+      updateCount = 0;
       fooMax = 2;
 
       update(changed: PropertyValues) {
-        this.updated++;
+        this.updateCount++;
         super.update(changed);
+      }
+
+      updated() {
         if (this.foo < this.fooMax) {
           this.foo++;
         }
@@ -1116,16 +1123,16 @@ suite('LitElement', () => {
     let result = await el.updateComplete;
     assert.isFalse(result);
     assert.equal(el.foo, 1);
-    assert.equal(el.updated, 1);
+    assert.equal(el.updateCount, 1);
     result = await el.updateComplete;
     assert.isFalse(result);
     assert.equal(el.foo, 2);
-    assert.equal(el.updated, 2);
+    assert.equal(el.updateCount, 2);
     result = await el.updateComplete;
     assert.isTrue(result);
   });
 
-  test('setting properties after `super.update` can await until updateComplete returns true', async () => {
+  test('setting properties in `updated()` can await until updateComplete returns true', async () => {
     class E extends LitElement {
 
       static get properties() {
@@ -1134,11 +1141,14 @@ suite('LitElement', () => {
         };
       }
       foo = 0;
-      updated = 0;
+      updateCount = 0;
 
       update(changed: PropertyValues) {
-        this.updated++;
+        this.updateCount++;
         super.update(changed);
+      }
+
+      updated(changed: PropertyValues) {
         if (this.foo < 10) {
           this.foo++;
         }
@@ -1156,7 +1166,7 @@ suite('LitElement', () => {
     assert.equal(el.foo, 10);
   });
 
-  test('updateComplete can block properties set after `super.update`', async () => {
+  test('updateComplete can block properties set in `updated()`', async () => {
     class E extends LitElement {
 
       static get properties() {
@@ -1165,12 +1175,15 @@ suite('LitElement', () => {
         };
       }
       foo = 1;
-      updated = 0;
+      updateCount = 0;
       fooMax = 10;
 
       update(changed: PropertyValues) {
-        this.updated++;
+        this.updateCount++;
         super.update(changed);
+      }
+
+      updated() {
         if (this.foo < this.fooMax) {
           this.foo++;
         }
@@ -1191,7 +1204,7 @@ suite('LitElement', () => {
     const result = await el.updateComplete;
     assert.isTrue(result);
     assert.equal(el.foo, 10);
-    assert.equal(el.updated, 10);
+    assert.equal(el.updateCount, 10);
   });
 
   test('can await promise in updateComplete', async () => {
@@ -1229,6 +1242,45 @@ suite('LitElement', () => {
     assert.isTrue(el.promiseFulfilled);
   });
 
+  test('invalidate resolved at `updateComplete` time', async () => {
+    class E extends LitElement {
+
+      static get properties() {
+        return {
+          foo: {}
+        };
+      }
+      promiseFulfilled = false;
+      foo = 0;
+
+      render() {
+        return html`${this.foo}`;
+      }
+
+      get updateComplete() {
+        return (async () => {
+          return await super.updateComplete && await new Promise((resolve) => {
+            setTimeout(() => {
+              this.promiseFulfilled = true;
+              resolve(true);
+            }, 1);
+          });
+        })();
+      }
+
+    }
+    customElements.define(generateElementName(), E);
+    const el = new E();
+    container.appendChild(el);
+    let result = await el.updateComplete;
+    assert.isTrue(result);
+    assert.isTrue(el.promiseFulfilled);
+    el.promiseFulfilled = false;
+    result = await el.invalidate() as boolean;
+    assert.isTrue(result);
+    assert.isTrue(el.promiseFulfilled);
+  });
+
   test('can await sub-element updateComplete', async () => {
     class E extends LitElement {
 
@@ -1262,7 +1314,7 @@ suite('LitElement', () => {
         return html`<x-1224></x-1224>`;
       }
 
-      firstRendered() {
+      firstUpdated() {
         this.inner = this.shadowRoot!.querySelector('x-1224');
       }
 
@@ -1352,7 +1404,7 @@ suite('LitElement', () => {
         return html`<x-2448 .foo="${this.bar}" attr="${this.bar}" .bool="${this.bool}"></x-2448>`;
       }
 
-      firstRendered() {
+      firstUpdated() {
         this.inner = this.shadowRoot!.querySelector('x-2448');
       }
 

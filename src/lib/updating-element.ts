@@ -469,10 +469,10 @@ export abstract class UpdatingElement extends HTMLElement {
       const previousValidatePromise = this._updatePromise;
       this._updatePromise = new Promise((r) => resolver = r);
       await previousValidatePromise;
-      this._flush();
+      this._validate();
       resolver!(!this._isInvalid);
     }
-    return this._updatePromise;
+    return this.updateComplete;
   }
 
   private get _isInvalid() {
@@ -480,15 +480,22 @@ export abstract class UpdatingElement extends HTMLElement {
   }
 
   /**
-   * Validates the element by updating it via `update`.
+   * Validates the element by updating it.
    */
-  private _flush() {
+  private _validate() {
     // Mixin instance properties once, if they exist.
     if (this._instanceProperties) {
       this._applyInstanceProperties();
     }
     if (this.shouldUpdate(this._changedProperties)) {
-      this.update(this._changedProperties);
+      const changedProperties = this._changedProperties;
+      this.update(changedProperties);
+      const needsFirstUpdate = !(this._updateState & STATE_HAS_UPDATED);
+      this._markUpdated();
+      if (needsFirstUpdate) {
+        this.firstUpdated();
+      }
+      this.updated(changedProperties);
     } else {
       this._markUpdated();
     }
@@ -529,22 +536,32 @@ export abstract class UpdatingElement extends HTMLElement {
   /**
    * Updates the element. By default this method reflects property values to attributes.
    * It should be overridden to render and keep updated DOM in the element's root.
-   * Within `update()` setting properties does not trigger `invalidate()`, allowing
-   * property values to be computed and validated before DOM is rendered and updated.
-   * This means in an override of `update()`, before calling `super.update()`
-   * setting properties will not trigger another update, but after calling `super.update()`
-   * setting properties will trigger another update.
+   * Setting properties inside this method will *not* trigger the element to update.
    * * @param _changedProperties Map of changed properties with old values
    */
-  protected update(_changedProperties: PropertyValues): void {
+  protected update(_changedProperties: PropertyValues) {
     if (this._reflectingProperties !== undefined && this._reflectingProperties.size > 0) {
       for (const [k, v] of this._reflectingProperties) {
         this._propertyToAttribute(k, this[k as keyof this], v);
       }
       this._reflectingProperties = undefined;
     }
-    // Before this (before calling super)...
-    this._markUpdated();
+  }
+
+  /**
+   Invoked whenever the element is updated. Implement to perform
+   post updating tasks via DOM APIs. For example, focusing an element.
+   Setting properties inside this method will trigger the element to update.
+   */
+  protected updated(_changedProperties: PropertyValues) {}
+
+  /**
+   Invoked when the element is first updated. Implement to perform one time
+   work on the element after update. Setting properties inside this method will
+   trigger the element to update.
+   */
+  protected firstUpdated() {
+
   }
 
 }

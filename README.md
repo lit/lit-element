@@ -161,22 +161,20 @@ into the element. This is the only method that must be implemented by subclasses
   By default, this method always returns true, but this can be customized as
   an optimization to avoid updating work when changes occur, which should not be rendered.
 
-  * `update()` (protected): This method calls `render()` and then uses `lit-html` in order to
-  render the template DOM. Implement to directly control rendered DOM.
-  Typically this is not needed as `lit-html` can be used in the `render` method
-  to set properties, attributes, and event listeners. However, it is sometimes useful
-  for calling methods on rendered elements, for example focusing an input:
-  `this.shadowRoot.querySelector('input').focus()`. The `changedProperties` argument is a Map
-  with keys for the changed properties pointing to their previous values.
-  Note, calling `super.update()` is required. Before calling `super.update()`,
-  changes made to properties do not trigger `invalidate()`, after calling `super.update()`,
-  changes do trigger `invalidate()`.
+  * `update(changedProperties)` (protected): This method calls `render()` and then uses `lit-html`
+  in order to render the template DOM. It also updates any reflected attributes based on
+  property values. Setting properties inside this method will *not* trigger the element to update.
 
-  * `firstRendered()`: (protected) Called after the element's DOM has been
+  * `firstUpdated()`: (protected) Called after the element's DOM has been
   updated the first time. This method can be useful for capturing references to rendered static
-  nodes that must be directly acted upon, for example in `update()`.
+  nodes that must be directly acted upon, for example in `updated()`. Setting properties
+  inside this method will trigger the element to update.
 
-  * `updateComplete`:  Returns a Promise that resolves when the element has completed
+  * `updated(changedProperties)`: (protected) Called whenever the element's DOM has been
+  updated and rendered. Implement to perform post updating tasks via DOM APIs, for example,
+  focusing an element. Setting properties inside this method will trigger the element to update.
+
+  * `updateComplete`: Returns a Promise that resolves when the element has completed
   updating that resolves to a boolean value that is `true` if the element completed the
   update without triggering another update. This can happen if a property is set in
   `update()` after the call to `super.update()` for example. This getter can be
@@ -184,7 +182,7 @@ into the element. This is the only method that must be implemented by subclasses
   await a rendered element before fulfilling this promise. To do this, first
   await `super.updateComplete` then any subsequent state.
 
-  * `invalidate`: Call to request the element to asynchronously update regardless
+  * `invalidate()`: Call to request the element to asynchronously update regardless
   of whether or not any property changes are pending. This should only be called
   when an element should update based on some state not stored in properties,
   since setting properties automatically calls `invalidate`.
@@ -207,14 +205,15 @@ and the property's `shouldInvalidate(value, oldValue)` returns true.
 of the event loop, before the next paint).
 * `shouldUpdate(changedProperties)`: The update proceeds if this returns true, which
 it does by default.
-* `update(changedProperties)`: Updates the element. Setting properties inside
-update is handled specially. Before calling `super.update()`, setting properties
-will *not* trigger an update. After calling `super.update()` setting properties will
-trigger an update.
+* `update(changedProperties)`: Updates the element. Setting properties inside this
+method will *not* trigger the element to update.
   * `render()`: Returns a `lit-html` TemplateResult (e.g. <code>html\`Hello ${world}\`</code>)
-  to render element DOM. Setting properties in `render()` does not trigger an update.
-  * `firstRendered()`: Called after the DOM is rendered the first time.
-  Setting properties in `firstRendered()` does trigger an update.
+  to render element DOM. Setting properties inside this method will *not* trigger
+  the element to update.
+* `firstUpdated()`: Called after the element is updated the first time.
+  Setting properties inside this method will trigger the element to update.
+* `updated()`: Called whenever the element is updated. Setting properties inside
+this method will trigger the element to update.
 * `updateComplete` promise is resolved with a boolean that is `true` if the
 element is not pending another update, and any code awaiting the element's
 `updateComplete` promise runs and observes the element in the updated state.

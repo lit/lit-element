@@ -132,7 +132,7 @@ suite('Styling', () => {
         <x-inner></x-inner>`;
       }
 
-      firstRendered() {
+      firstUpdated() {
         this.inner = this.shadowRoot!.querySelector('x-inner')! as LitElement;
       }
     }
@@ -173,7 +173,7 @@ suite('Styling', () => {
         <x-inner1></x-inner1>`;
       }
 
-      firstRendered() {
+      firstUpdated() {
         this.inner = this.shadowRoot!.querySelector('x-inner1');
       }
     });
@@ -236,7 +236,7 @@ suite('Styling', () => {
         <x-inner2></x-inner2>`;
       }
 
-      firstRendered() {
+      firstUpdated() {
         this.inner = this.shadowRoot!.querySelector('x-inner2') as LitElement;
       }
     }

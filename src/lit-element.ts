@@ -21,7 +21,6 @@ export {html, svg} from 'lit-html/lit-html';
 
 export abstract class LitElement extends UpdatingElement {
 
-  private _firstRendered = false;
   /**
    * Render method used to render the lit-html TemplateResult to the element's DOM.
    * @param {TemplateResult} Template to render.
@@ -32,14 +31,9 @@ export abstract class LitElement extends UpdatingElement {
 
   /**
    * Updates the element. This method reflects property values to attributes
-   * and calls `render` to render DOM via lit-html. It should be overridden to
-   * perform tasks on rendered DOM. Within `update()` setting properties does
-   * not trigger `invalidate()`, allowing property values to be computed and
-   * validated before DOM is rendered and updated. This means in an override
-   * of `update()`, before calling `super.update()` setting properties will not
-   * trigger another update, but after calling `super.update()` setting
-   * properties will trigger another update.
-   * * @param changedProperties Map of changed properties with old values
+   * and calls `render` to render DOM via lit-html. Setting properties inside
+   * this method will *not* trigger the element to update.
+   * * @param _changedProperties Map of changed properties with old values
    */
   protected update(changedProperties: PropertyValues) {
     super.update(changedProperties);
@@ -48,28 +42,13 @@ export abstract class LitElement extends UpdatingElement {
     } else {
       throw new Error('render() not implemented');
     }
-    if (!this._firstRendered) {
-      this._firstRendered = true;
-      if (typeof this.firstRendered === 'function') {
-        this.firstRendered();
-      }
-    }
   }
 
   /**
    Invoked on each update to perform rendering tasks. This method must return a
-   lit-html TemplateResult. Setting properties in `render()` will not trigger
-   the element to update.
+   lit-html TemplateResult. Setting properties inside this method will *not*
+   trigger the element to update.
    * @returns {TemplateResult} Must return a lit-html TemplateResult.
    */
   protected abstract render(): TemplateResult;
-
-  /**
-   Invoked when the element's DOM is first rendered. Override to perform
-   post rendering tasks via DOM APIs. For example, focusing a rendered element.
-   Setting properties in `firstRendered()` will trigger the element to update.
-   * @returns {TemplateResult} Must return a lit-html TemplateResult.
-   */
-  protected firstRendered?(): void;
-
 }
