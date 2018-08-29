@@ -346,6 +346,108 @@ suite('LitElement', () => {
     assert.equal(el.updateCount, 6);
   });
 
+  test('can mix property options via decorator and via getter', async() => {
+
+    const shouldInvalidate = (value: any, old: any) => old === undefined || value > old;
+    const fromAttribute = (value: any) => parseInt(value);
+    const toAttribute = (value: any) => `${value}-attr`;
+    class E extends LitElement {
+
+      @property({shouldInvalidate})
+      shouldInvalidate = 10;
+      @property({type: fromAttribute})
+      fromAttribute = 1;
+      @property({reflect: true, type: {toAttribute}})
+      toAttribute = 1;
+      @property({attribute: 'all-attr', shouldInvalidate, type: {fromAttribute, toAttribute}, reflect: true})
+      all = 10;
+
+      updateCount = 0;
+
+      static get properties() {
+        return {
+          noAttr: {attribute: false},
+          atTr: {attribute: true},
+          customAttr: {attribute: 'custom', reflect: true},
+        };
+      }
+
+      noAttr: string|undefined;
+      atTr: string|undefined;
+      customAttr: string|undefined;
+
+      constructor() {
+        super();
+        this.noAttr = 'noAttr';
+        this.atTr = 'attr';
+        this.customAttr = 'customAttr';
+      }
+
+      update(changed: PropertyValues) {
+        this.updateCount++;
+        super.update(changed);
+      }
+
+      render() { return html``; }
+
+    }
+    customElements.define(generateElementName(), E);
+    const el = new E();
+    container.appendChild(el);
+    await el.updateComplete;
+    assert.equal(el.updateCount, 1);
+    assert.equal(el.noAttr, 'noAttr');
+    assert.equal(el.atTr, 'attr');
+    assert.equal(el.customAttr, 'customAttr');
+    assert.equal(el.shouldInvalidate, 10);
+    assert.equal(el.fromAttribute, 1);
+    assert.equal(el.toAttribute, 1);
+    assert.equal(el.getAttribute('toattribute'), '1-attr');
+    assert.equal(el.all, 10);
+    assert.equal(el.getAttribute('all-attr'), '10-attr');
+    el.setAttribute('noattr', 'noAttr2');
+    el.setAttribute('attr', 'attr2');
+    el.setAttribute('custom', 'customAttr2');
+    el.setAttribute('fromattribute', '2attr');
+    el.toAttribute = 2;
+    el.all = 5;
+    await el.updateComplete;
+    assert.equal(el.updateCount, 2);
+    assert.equal(el.noAttr, 'noAttr');
+    assert.equal(el.atTr, 'attr2');
+    assert.equal(el.customAttr, 'customAttr2');
+    assert.equal(el.fromAttribute, 2);
+    assert.equal(el.toAttribute, 2);
+    assert.equal(el.getAttribute('toattribute'), '2-attr');
+    assert.equal(el.all, 5);
+    el.all = 15;
+    await el.updateComplete;
+    assert.equal(el.updateCount, 3);
+    assert.equal(el.all, 15);
+    assert.equal(el.getAttribute('all-attr'), '15-attr');
+    el.setAttribute('all-attr', '16-attr');
+    await el.updateComplete;
+    assert.equal(el.updateCount, 4);
+    assert.equal(el.getAttribute('all-attr'), '16-attr');
+    assert.equal(el.all, 16);
+    el.shouldInvalidate = 5;
+    await el.updateComplete;
+    assert.equal(el.shouldInvalidate, 5);
+    assert.equal(el.updateCount, 4);
+    el.shouldInvalidate = 15;
+    await el.updateComplete;
+    assert.equal(el.shouldInvalidate, 15);
+    assert.equal(el.updateCount, 5);
+    el.setAttribute('all-attr', '5-attr');
+    await el.updateComplete;
+    assert.equal(el.all, 5);
+    assert.equal(el.updateCount, 5);
+    el.all = 15;
+    await el.updateComplete;
+    assert.equal(el.all, 15);
+    assert.equal(el.updateCount, 6);
+  });
+
   test('attributes deserialize from html', async() => {
 
     const fromAttribute = (value: any) => parseInt(value);
