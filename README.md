@@ -97,7 +97,7 @@ and renders declaratively using `lit-html`.
 
     1. Run the development server and open a browser pointing to its URL:
 
-        ```polymer serve```
+        ```polymer serve --npm```
 
     > LitElement is published on [npm](https://www.npmjs.com/package/@polymer/lit-element) using JavaScript Modules.
     This means it can take advantage of the standard native JavaScript module loader available in all current major browsers.
