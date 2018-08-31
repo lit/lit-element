@@ -43,7 +43,7 @@ and renders declaratively using `lit-html`.
     * `reflect`: Indicates if the property should reflect to an attribute.
     If `true`, when the property is set, the attribute is set using the
     attribute name determined according to the rules for the `attribute`
-    propety option and the value of the property serialized using the rules from
+    property option and the value of the property serialized using the rules from
     the `type` property option.
     * `hasChanged`: A function that indicates if a property should be considered
     changed when it is set. The function should take the `newValue` and `oldValue`
@@ -161,7 +161,7 @@ into the element. This is the only method that must be implemented by subclasses
 
   * `update(changedProperties)` (protected): This method calls `render()` and then uses `lit-html`
   in order to render the template DOM. It also updates any reflected attributes based on
-  property values. Setting properties inside this method will *not* trigger another update..
+  property values. Setting properties inside this method will *not* trigger another update.
 
   * `firstUpdated(changedProperties)`: (protected) Called after the element's DOM has been
   updated the first time, immediately before `updated()` is called.
@@ -175,8 +175,8 @@ into the element. This is the only method that must be implemented by subclasses
 
   * `updateComplete`: Returns a Promise that resolves when the element has completed
   updating. The Promise value is a boolean that is `true` if the element completed the
-  update without triggering another update. This happens if a property is set inside
-  `updated()`. This getter can be implemented to await additional state.
+  update without triggering another update. The Promise result is `false` if a
+  property was set inside `updated()`. This getter can be implemented to await additional state.
   For example, it is sometimes useful to await a rendered element before fulfilling
   this Promise. To do this, first await `super.updateComplete` then any subsequent state.
 
@@ -195,14 +195,15 @@ into the element. This is the only method that must be implemented by subclasses
 
 ## Advanced: Update Lifecycle
 
-* When the element is first connected or a property is set (e.g. `element.foo = 5`)
-and the property's `hasChanged(value, oldValue)` returns `true`.
+* A property is set (e.g. `element.foo = 5`).
+* If the property's `hasChanged(value, oldValue)` returns `false`, the element does not
+update. If it returns `true`, `requestUdpate()` is called to schedule an update.
 * `requestUpdate()`: Updates the element after awaiting a [microtask](https://jakearchibald.com/2015/tasks-microtasks-queues-and-schedules/) (at the end
 of the event loop, before the next paint).
 * `shouldUpdate(changedProperties)`: The update proceeds if this returns `true`, which
 it does by default.
 * `update(changedProperties)`: Updates the element. Setting properties inside this
-method will *not* trigger the element to update.
+method will *not* trigger another update.
   * `render()`: Returns a `lit-html` TemplateResult (e.g. <code>html\`Hello ${world}\`</code>)
   to render element DOM. Setting properties inside this method will *not* trigger
   the element to update.
