@@ -59,7 +59,7 @@ export interface PropertyDeclaration<T = any> {
    * Indicates if the property should reflect to an attribute.
    * If `true`, when the property is set, the attribute is set using the
    * attribute name determined according to the rules for the `attribute`
-   * propety option and the value of the property serialized using the rules from
+   * property option and the value of the property serialized using the rules from
    * the `type` property option.
    */
   reflect?: boolean;
@@ -520,13 +520,13 @@ export abstract class UpdatingElement extends HTMLElement {
   }
 
   /**
-   * Returns a Promise that resolves when the element has completed updating
-   * that resolves to a boolean value that is `true` if the element completed
-   * the update without triggering another update. This happens if a property
-   * is set in `updated()`. This getter can be implemented to await additional
-   * state. For example, it is sometimes useful to await a rendered element before
-   * fulfilling this Promise. To do this, first await `super.updateComplete`
-   * then any subsequent state.
+   * Returns a Promise that resolves when the element has completed updating.
+   * The Promise value is a boolean that is `true` if the element completed the
+   * update without triggering another update. The Promise result is `false` if a
+   * property was set inside `updated()`. This getter can be implemented to await
+   * additional state. For example, it is sometimes useful to await a rendered
+   * element before fulfilling this Promise. To do this, first await
+   * `super.updateComplete` then any subsequent state.
    *
    * @returns {Promise} The Promise returns a boolean that indicates if the
    * update resolved without triggering another update.
