@@ -1064,6 +1064,56 @@ suite('LitElement', () => {
       });
 
   test(
+      '`firstUpdated` called when element first updates even if first `shouldUpdate` returned false', async () => {
+        class E extends LitElement {
+
+          @property()
+          foo = 1;
+
+          triedToUpdatedCount = 0;
+          wasUpdatedCount = 0;
+          wasFirstUpdated = 0;
+          changedProperties: PropertyValues|undefined;
+
+          shouldUpdate() {
+              this.triedToUpdatedCount++;
+              return this.triedToUpdatedCount > 1;
+          }
+
+          update(changedProperties: PropertyValues) {
+            this.wasUpdatedCount++;
+            super.update(changedProperties);
+          }
+
+          render() { return html ``; }
+
+          firstUpdated(changedProperties: PropertyValues) {
+            this.changedProperties = changedProperties;
+            this.wasFirstUpdated++;
+          }
+        }
+
+        customElements.define(generateElementName(), E);
+        const el = new E();
+        container.appendChild(el);
+        await el.updateComplete;
+        const testMap = new Map();
+        testMap.set('foo', undefined);
+        assert.equal(el.triedToUpdatedCount, 1);
+        assert.equal(el.wasUpdatedCount, 0);
+        assert.equal(el.wasFirstUpdated, 0);
+        await el.requestUpdate();
+        assert.deepEqual(el.changedProperties, testMap);
+        assert.equal(el.triedToUpdatedCount, 2);
+        assert.equal(el.wasUpdatedCount, 1);
+        assert.equal(el.wasFirstUpdated, 1);
+        await el.requestUpdate();
+        assert.equal(el.triedToUpdatedCount, 3);
+        assert.equal(el.wasUpdatedCount, 2);
+        assert.equal(el.wasFirstUpdated, 1);
+    });
+
+  test(
       'render lifecycle order', async () => {
         class E extends LitElement {
           static get properties() { return {

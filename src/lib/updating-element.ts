@@ -510,13 +510,16 @@ export abstract class UpdatingElement extends HTMLElement {
       }
       this.updated(changedProperties);
     } else {
-      this._markUpdated();
+      this._markNotUpdated();
     }
   }
-
   private _markUpdated() {
     this._changedProperties = new Map();
     this._updateState = this._updateState & ~STATE_UPDATE_REQUESTED | STATE_HAS_UPDATED;
+  }
+  private _markNotUpdated() {
+    this._changedProperties = new Map();
+    this._updateState = this._updateState & ~STATE_UPDATE_REQUESTED;
   }
 
   /**
