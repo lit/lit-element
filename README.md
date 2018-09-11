@@ -23,31 +23,32 @@ and renders declaratively using `lit-html`.
     be performed when a property is set, for example validation. Call `requestUpdate(name, oldValue)`
     in the setter to trigger an update and use any configured property options.
 
-    Properties can be given an options argument which is an object that describes how to
+    Properties can be given an `options` argument which is an object that describes how to
     process the property. This can be done either in the `@property({...})` decorator or in the
     object returned from the `properties` getter, e.g. `static get properties { return { foo: {...} }`.
 
     Property options include:
 
     * `attribute`: Indicates how and whether the property becomes an observed attribute.
-    If the value is `false`, the property is not added to `observedAttributes`.
-    If true or absent, the lowercased property name is observed (e.g. `fooBar` becomes `foobar`).
+    If the value is `false`, the property is not added to the static `observedAttributes` getter.
+    If `true` or absent, the lowercased property name is observed (e.g. `fooBar` becomes `foobar`).
     If a string, the string value is observed (e.g `attribute: 'foo-bar'`).
     * `type`: Indicates how to serialize and deserialize the attribute to/from a property.
-    If this value is a function, it is used to deserialize the attribute value
-    a the property value. If it's an object, it can have keys for `fromAttribute` and
-    `toAttribute` where `fromAttribute` is the deserialize function and `toAttribute`
-    is a serialize function used to set the property to an attribute. If no `toAttribute`
-    function is provided and `reflect` is set to `true`, the property value is set
-    directly to the attribute.
-    * `reflect`: Indicates if the property should reflect to an attribute.
-    If `true`, when the property is set, the attribute is set using the
-    attribute name determined according to the rules for the `attribute`
-    property option and the value of the property serialized using the rules from
-    the `type` property option.
-    * `hasChanged`: A function that indicates if a property should be considered
-    changed when it is set. The function should take the `newValue` and `oldValue`
-    and return `true` if an update should be requested.
+    The value can be a function used for both serialization and deserialization, or it can
+    be an object with individual functions via the optional keys, `fromAttribute` and `toAttribute`.
+    `type` defaults to the `String` constructor, and so does the `toAttribute` and `fromAttribute`
+    keys.
+    * `reflect`: Indicates whether the property should reflect to its associated
+    attribute (as determined by the attribute option).
+    If `true`, when the property is set, the attribute which name is determined
+    according to the rules for the `attribute` property option, will be set to the
+    value of the property serialized using the rules from the `type` property option.
+    Note, `type: Boolean` has special handling by default which means that truthy
+    values result in the presense of the attribute, where as falsy values result
+    in the absense of the attribute.
+    * `hasChanged`: A function that indicates whether a property should be considered
+    changed when it is set and thus result in an update. The function should take the
+    `newValue` and `oldValue` and return `true` if an update should be requested.
 
   * **React to changes:** LitElement reacts to changes in properties and attributes by
   asynchronously rendering, ensuring changes are batched. This reduces overhead
@@ -197,7 +198,7 @@ into the element. This is the only method that must be implemented by subclasses
 
 * A property is set (e.g. `element.foo = 5`).
 * If the property's `hasChanged(value, oldValue)` returns `false`, the element does not
-update. If it returns `true`, `requestUdpate()` is called to schedule an update.
+update. If it returns `true`, `requestUpdate()` is called to schedule an update.
 * `requestUpdate()`: Updates the element after awaiting a [microtask](https://jakearchibald.com/2015/tasks-microtasks-queues-and-schedules/) (at the end
 of the event loop, before the next paint).
 * `shouldUpdate(changedProperties)`: The update proceeds if this returns `true`, which
