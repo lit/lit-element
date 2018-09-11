@@ -71,8 +71,8 @@ and renders declaratively using `lit-html`.
 
     * Runs in all [supported](#supported-browsers) browsers: [StackBlitz](https://stackblitz.com/edit/lit-element-example?file=index.js), [Glitch](https://glitch.com/edit/#!/hello-lit-element?path=index.html)
 
-    * Runs in browsers with [JavaScript Modules](https://caniuse.com/#search=modules): [JSFiddle](https://jsfiddle.net/j6mf6gpo/), [JSBin](http://jsbin.com/zezilad/edit?html,output),
- [CodePen](https://codepen.io/sorvell/pen/BxZgPN).
+    * Runs in browsers with [JavaScript Modules](https://caniuse.com/#search=modules): [JSFiddle](https://jsfiddle.net/xjfLzb9y/1/), [JSBin](http://jsbin.com/vecuyan/edit?html,output),
+ [CodePen](https://codepen.io/sorvell/pen/RYQyoe?editors=1000).
 
  * You can also copy [this HTML file](https://gist.githubusercontent.com/sorvell/48f4b7be35c8748e8f6db5c66d36ee29/raw/2427328cf1ebae5077902a6bff5ddd8db45e83e4/index.html) into a local file and run it in any browser that supports [JavaScript Modules]((https://caniuse.com/#search=modules)).
 
