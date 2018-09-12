@@ -1200,6 +1200,8 @@ suite('LitElement', () => {
     assert.equal(el.getAttribute('zot'), '3');
   });
 
+  // Note, on older browsers (e.g. old Safari/Chrome), native properties
+  // cannot have default values. These will be overwritten by instance values.
   test('can make properties for native accessors', async () => {
     class E extends LitElement {
 
@@ -1212,18 +1214,10 @@ suite('LitElement', () => {
         };
       }
 
-      name: string;
-      foo: string;
+      name: string|undefined;
+      foo = '';
 
       changedProperties: PropertyValues|undefined = undefined;
-
-      constructor() {
-        super();
-        this.id = 'id';
-        this.name = 'name';
-        this.title = 'title';
-        this.foo = 'foo';
-      }
 
       update(changedProperties: PropertyValues) {
         (this as any).zot = (this as any).foo + (this as any).bar;
@@ -1240,12 +1234,11 @@ suite('LitElement', () => {
     const el = new E() as any;
     container.appendChild(el);
     await el.updateComplete;
-    const testMap = new Map();
-    testMap.set('id', undefined);
-    testMap.set('name', undefined);
-    testMap.set('title', undefined);
-    testMap.set('foo', undefined);
-    assert.deepEqual(el.changedProperties, testMap);
+    el.foo = 'foo';
+    el.id = 'id';
+    el.name = 'name';
+    el.title = 'title';
+    await el.updateComplete;
     assert.equal(el.shadowRoot!.textContent, 'id-name-title-foo');
     assert.equal((window as any).id, el);
     el.id = 'id2';
