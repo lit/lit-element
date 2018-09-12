@@ -13,12 +13,17 @@
  */
 
 import '@webcomponents/shadycss/apply-shim.min.js';
+
 import {
   html,
   LitElement,
 } from '../lit-element.js';
 
-import {generateElementName, nextFrame, getComputedStyleValue} from './test-helpers.js';
+import {
+  generateElementName,
+  getComputedStyleValue,
+  nextFrame
+} from './test-helpers.js';
 
 declare global {
   interface Window {
@@ -45,7 +50,8 @@ suite('Styling', () => {
   test('content shadowRoot is styled', async () => {
     const name = generateElementName();
     customElements.define(name, class extends LitElement {
-      render() { return html`
+      render() {
+        return html`
         <style>
           div {
             border: 2px solid blue;
@@ -69,7 +75,8 @@ suite('Styling', () => {
     </style>`;
     const name = generateElementName();
     customElements.define(name, class extends LitElement {
-      render() { return html`
+      render() {
+        return html`
         <style>
           div {
             border: 2px solid blue;
@@ -89,7 +96,8 @@ suite('Styling', () => {
   test('custom properties render', async () => {
     const name = generateElementName();
     customElements.define(name, class extends LitElement {
-      render() { return html`
+      render() {
+        return html`
         <style>
           :host {
             --border: 8px solid red;
@@ -110,7 +118,8 @@ suite('Styling', () => {
 
   test('custom properties flow to nested elements', async () => {
     customElements.define('x-inner', class extends LitElement {
-      render() { return html`
+      render() {
+        return html`
         <style>
           div {
             border: var(--border);
@@ -123,7 +132,8 @@ suite('Styling', () => {
     class E extends LitElement {
       inner: LitElement|null = null;
 
-      render() { return html`
+      render() {
+        return html`
         <style>
           x-inner {
             --border: 8px solid red;
@@ -148,72 +158,76 @@ suite('Styling', () => {
     assert.equal(getComputedStyleValue(div!, 'border-top-width').trim(), '8px');
   });
 
-  test('elements with custom properties can move between elements', async () => {
-    customElements.define('x-inner1', class extends LitElement {
-      render() { return html`
+  test('elements with custom properties can move between elements',
+       async () => {
+         customElements.define('x-inner1', class extends LitElement {
+           render() {
+             return html`
         <style>
           div {
             border: var(--border);
           }
         </style>
         <div>Testing...</div>`;
-      }
-    });
-    const name1 = generateElementName();
-    customElements.define(name1, class extends LitElement {
+           }
+         });
+         const name1 = generateElementName();
+         customElements.define(name1, class extends LitElement {
+           inner: Element|null = null;
 
-      inner: Element|null = null;
-
-      render() { return html`
+           render() {
+             return html`
         <style>
           x-inner1 {
             --border: 2px solid red;
           }
         </style>
         <x-inner1></x-inner1>`;
-      }
+           }
 
-      firstUpdated() {
-        this.inner = this.shadowRoot!.querySelector('x-inner1');
-      }
-    });
-    const name2 = generateElementName();
-    customElements.define(name2, class extends LitElement {
-
-      render() { return html`
+           firstUpdated() {
+             this.inner = this.shadowRoot!.querySelector('x-inner1');
+           }
+         });
+         const name2 = generateElementName();
+         customElements.define(name2, class extends LitElement {
+           render() {
+             return html`
         <style>
           x-inner1 {
             --border: 8px solid red;
           }
         </style>`;
-      }
+           }
+         });
+         const el = document.createElement(name1) as LitElement;
+         const el2 = document.createElement(name2);
+         container.appendChild(el);
+         container.appendChild(el2);
+         let div: Element|null;
 
-    });
-    const el = document.createElement(name1) as LitElement;
-    const el2 = document.createElement(name2);
-    container.appendChild(el);
-    container.appendChild(el2);
-    let div: Element|null;
+         // Workaround for Safari 9 Promise timing bugs.
+         await el.updateComplete;
 
-    // Workaround for Safari 9 Promise timing bugs.
-    await el.updateComplete;
+         await nextFrame();
+         const inner = el.shadowRoot!.querySelector('x-inner1');
+         div = inner!.shadowRoot!.querySelector('div');
+         assert.equal(getComputedStyleValue(div!, 'border-top-width').trim(),
+                      '2px');
+         el2!.shadowRoot!.appendChild(inner!);
 
-    await nextFrame();
-    const inner = el.shadowRoot!.querySelector('x-inner1');
-    div = inner!.shadowRoot!.querySelector('div');
-    assert.equal(getComputedStyleValue(div!, 'border-top-width').trim(), '2px');
-    el2!.shadowRoot!.appendChild(inner!);
+         // Workaround for Safari 9 Promise timing bugs.
+         await el.updateComplete;
 
-    // Workaround for Safari 9 Promise timing bugs.
-    await el.updateComplete;
-
-    await nextFrame();
-    assert.equal(getComputedStyleValue(div!, 'border-top-width').trim(), '8px');
-  });
+         await nextFrame();
+         assert.equal(getComputedStyleValue(div!, 'border-top-width').trim(),
+                      '8px');
+       });
 
   test('@apply renders in nested elements', async () => {
     customElements.define('x-inner2', class extends LitElement {
-      render() { return html`
+      render() {
+        return html`
         <style>
           div {
             @apply --bag;
@@ -225,7 +239,8 @@ suite('Styling', () => {
     const name = generateElementName();
     class E extends LitElement {
       inner: LitElement|null = null;
-      render() { return html`
+      render() {
+        return html`
         <style>
           x-inner2 {
             --bag: {
@@ -248,14 +263,14 @@ suite('Styling', () => {
     await el.updateComplete && await el.inner!.updateComplete;
 
     await nextFrame();
-    const div = el.shadowRoot!.querySelector('x-inner2')!.shadowRoot!.querySelector('div');
-    assert.equal(getComputedStyleValue(div!, 'border-top-width').trim(), '10px');
+    const div = el.shadowRoot!.querySelector(
+                                  'x-inner2')!.shadowRoot!.querySelector('div');
+    assert.equal(getComputedStyleValue(div!, 'border-top-width').trim(),
+                 '10px');
   });
-
 });
 
 suite('ShadyDOM', () => {
-
   let container: HTMLElement;
 
   setup(function() {
@@ -273,28 +288,31 @@ suite('ShadyDOM', () => {
     }
   });
 
-  test('properties in styles render with initial value and cannot be changed', async () => {
-    let border = `6px solid blue`;
-    const name = generateElementName();
-    customElements.define(name, class extends LitElement {
-      render() { return html`
+  test('properties in styles render with initial value and cannot be changed',
+       async () => {
+         let border = `6px solid blue`;
+         const name = generateElementName();
+         customElements.define(name, class extends LitElement {
+           render() {
+             return html`
         <style>
           div {
             border: ${border};
           }
         </style>
         <div>Testing...</div>`;
-      }
-    });
-    const el = document.createElement(name) as LitElement;
-    container.appendChild(el);
-    await el.updateComplete;
-    const div = el.shadowRoot!.querySelector('div');
-    assert.equal(getComputedStyleValue(div!, 'border-top-width').trim(), '6px');
-    border = `4px solid orange`;
-    el.requestUpdate();
-    await el.updateComplete;
-    assert.equal(getComputedStyleValue(div!, 'border-top-width').trim(), '6px');
-  });
-
+           }
+         });
+         const el = document.createElement(name) as LitElement;
+         container.appendChild(el);
+         await el.updateComplete;
+         const div = el.shadowRoot!.querySelector('div');
+         assert.equal(getComputedStyleValue(div!, 'border-top-width').trim(),
+                      '6px');
+         border = `4px solid orange`;
+         el.requestUpdate();
+         await el.updateComplete;
+         assert.equal(getComputedStyleValue(div!, 'border-top-width').trim(),
+                      '6px');
+       });
 });

@@ -15,6 +15,8 @@
 
 import {LitElement} from '../lit-element.js';
 
+import {PropertyDeclaration, UpdatingElement} from './updating-element.js';
+
 export type Constructor<T> = {
   new (...args: unknown[]): T
 };
@@ -47,6 +49,16 @@ export const customElement = (tagName: keyof HTMLElementTagNameMap) =>
       // is helpful to make sure the decorator is applied to elements however.
       return clazz as any;
     };
+
+/**
+ * A property decorator which creates a LitElement property which reflects a
+ * corresponding attribute value. A `PropertyDeclaration` may optionally be
+ * supplied to configure property features.
+ */
+export const property = (options?: PropertyDeclaration) => (proto: Object,
+                                                            name: string) => {
+  (proto.constructor as typeof UpdatingElement).createProperty(name, options);
+};
 
 /**
  * A property decorator that converts a class property into a getter that

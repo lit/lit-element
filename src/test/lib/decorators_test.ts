@@ -12,9 +12,14 @@
  * http://polymer.github.io/PATENTS.txt
  */
 
-import {customElement, query, queryAll} from '../../lib/decorators.js';
-import {html, LitElement} from '../../lit-element.js';
-import { generateElementName } from '../test-helpers.js';
+import {
+  customElement,
+  html,
+  LitElement,
+  query,
+  queryAll
+} from '../../lit-element.js';
+import {generateElementName} from '../test-helpers.js';
 
 const assert = chai.assert;
 
@@ -73,7 +78,7 @@ suite('decorators', () => {
     test('returns null when no match', async () => {
       const c = new C();
       container.appendChild(c);
-      await Promise.resolve();
+      await c.updateComplete;
       const span = c.nope;
       assert.isNull(span);
     });

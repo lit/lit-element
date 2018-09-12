@@ -18,15 +18,16 @@
 interface AttributeSerializer<T = any> {
 
   /**
-   * Deserializing function called to convert an attribute value to a property value.
+   * Deserializing function called to convert an attribute value to a property
+   * value.
    */
   fromAttribute?(value: string): T;
 
   /**
-   * Serializing function called to convert a property value to an attribute value.
+   * Serializing function called to convert a property value to an attribute
+   * value.
    */
   toAttribute?(value: T): string|null;
-
 }
 
 type AttributeType<T = any> = AttributeSerializer<T>|((value: string) => T);
@@ -39,19 +40,21 @@ export interface PropertyDeclaration<T = any> {
   /**
    * Indicates how and whether the property becomes an observed attribute.
    * If the value is `false`, the property is not added to `observedAttributes`.
-   * If true or absent, the lowercased property name is observed (e.g. `fooBar` becomes `foobar`).
-   * If a string, the string value is observed (e.g `attribute: 'foo-bar'`).
+   * If true or absent, the lowercased property name is observed (e.g. `fooBar`
+   * becomes `foobar`). If a string, the string value is observed (e.g
+   * `attribute: 'foo-bar'`).
    */
   attribute?: boolean|string;
 
   /**
-   * Indicates how to serialize and deserialize the attribute to/from a property.
-   * If this value is a function, it is used to deserialize the attribute value
-   * a the property value. If it's an object, it can have keys for `fromAttribute` and
-   * `toAttribute` where `fromAttribute` is the deserialize function and `toAttribute`
-   * is a serialize function used to set the property to an attribute. If no `toAttribute`
-   * function is provided and `reflect` is set to `true`, the property value is set
-   * directly to the attribute.
+   * Indicates how to serialize and deserialize the attribute to/from a
+   * property. If this value is a function, it is used to deserialize the
+   * attribute value a the property value. If it's an object, it can have keys
+   * for `fromAttribute` and `toAttribute` where `fromAttribute` is the
+   * deserialize function and `toAttribute` is a serialize function used to set
+   * the property to an attribute. If no `toAttribute` function is provided and
+   * `reflect` is set to `true`, the property value is set directly to the
+   * attribute.
    */
   type?: AttributeType<T>;
 
@@ -59,18 +62,17 @@ export interface PropertyDeclaration<T = any> {
    * Indicates if the property should reflect to an attribute.
    * If `true`, when the property is set, the attribute is set using the
    * attribute name determined according to the rules for the `attribute`
-   * property option and the value of the property serialized using the rules from
-   * the `type` property option.
+   * property option and the value of the property serialized using the rules
+   * from the `type` property option.
    */
   reflect?: boolean;
 
   /**
-   * A function that indicates if a property should be considered changed when it
-   * is set. The function should take the `newValue` and `oldValue` and return
-   * `true` if an update should be requested.
+   * A function that indicates if a property should be considered changed when
+   * it is set. The function should take the `newValue` and `oldValue` and
+   * return `true` if an update should be requested.
    */
   hasChanged?(value: T, oldValue: T): boolean;
-
 }
 
 /**
@@ -87,14 +89,6 @@ type PropertyDeclarationMap = Map<PropertyKey, PropertyDeclaration>;
 type AttributeMap = Map<string, PropertyKey>;
 
 export type PropertyValues = Map<PropertyKey, unknown>;
-
-/**
- * Decorator which creates a property. Optionally a `PropertyDeclaration` object
- * can be supplied to describe how the property should be configured.
- */
-export const property = (options?: PropertyDeclaration) => (proto: Object, name: string) => {
-  (proto.constructor as typeof UpdatingElement).createProperty(name, options);
-};
 
 // serializer/deserializers for boolean attribute
 const fromBooleanAttribute = (value: string) => value !== null;
@@ -114,10 +108,10 @@ export const notEqual: HasChanged = (value: unknown, old: unknown): boolean => {
 };
 
 const defaultPropertyDeclaration: PropertyDeclaration = {
-  attribute: true,
-  type: String,
-  reflect: false,
-  hasChanged: notEqual
+  attribute : true,
+  type : String,
+  reflect : false,
+  hasChanged : notEqual
 };
 
 const microtaskPromise = new Promise((resolve) => resolve(true));
@@ -125,7 +119,8 @@ const microtaskPromise = new Promise((resolve) => resolve(true));
 const STATE_HAS_UPDATED = 1;
 const STATE_UPDATE_REQUESTED = 1 << 2;
 const STATE_IS_REFLECTING = 1 << 3;
-type UpdateState = typeof STATE_HAS_UPDATED | typeof STATE_UPDATE_REQUESTED | typeof STATE_IS_REFLECTING;
+type UpdateState = typeof STATE_HAS_UPDATED|typeof STATE_UPDATE_REQUESTED|
+    typeof STATE_IS_REFLECTING;
 
 /**
  * Base element class which manages element properties and attributes. When
@@ -175,7 +170,9 @@ export abstract class UpdatingElement extends HTMLElement {
    * or uses a strict identity check to determine whether or not to request
    * an update.
    */
-  static createProperty(name: PropertyKey, options: PropertyDeclaration = defaultPropertyDeclaration) {
+  static createProperty(name: PropertyKey,
+                        options:
+                            PropertyDeclaration = defaultPropertyDeclaration) {
     // ensure private storage for property declarations.
     if (!this.hasOwnProperty('_classProperties')) {
       this._classProperties = new Map();
@@ -183,26 +180,25 @@ export abstract class UpdatingElement extends HTMLElement {
       const superProperties = Object.getPrototypeOf(this)._classProperties;
       if (superProperties !== undefined) {
         superProperties.forEach((v: any, k: PropertyKey) =>
-          this._classProperties.set(k, v));
+                                    this._classProperties.set(k, v));
       }
     }
     this._classProperties.set(name, options);
-    // Allow user defined accessors by not replacing an existing own-property accessor.
+    // Allow user defined accessors by not replacing an existing own-property
+    // accessor.
     if (this.prototype.hasOwnProperty(name)) {
       return;
     }
     const key = typeof name === 'symbol' ? Symbol() : `__${name}`;
     Object.defineProperty(this.prototype, name, {
-      get() {
-        return this[key];
-      },
+      get() { return this[key]; },
       set(value) {
         const oldValue = this[name];
         this[key] = value;
         this._requestPropertyUpdate(name, oldValue, options);
       },
-      configurable: true,
-      enumerable: true
+      configurable : true,
+      enumerable : true
     });
   }
 
@@ -225,10 +221,15 @@ export abstract class UpdatingElement extends HTMLElement {
     // make any properties
     const props = this.properties;
     // support symbols in properties (IE11 does not support this)
-    const propKeys = [...Object.getOwnPropertyNames(props),
-        ...(typeof Object.getOwnPropertySymbols === 'function') ? Object.getOwnPropertySymbols(props) : []];
+    const propKeys = [
+      ...Object.getOwnPropertyNames(props),
+      ...(typeof Object.getOwnPropertySymbols === 'function')
+          ? Object.getOwnPropertySymbols(props)
+          : []
+    ];
     for (const p of propKeys) {
-      // note, use of `any` is due to TypeSript lack of support for symbol in index types
+      // note, use of `any` is due to TypeSript lack of support for symbol in
+      // index types
       this.createProperty(p, (props as any)[p]);
     }
   }
@@ -236,10 +237,15 @@ export abstract class UpdatingElement extends HTMLElement {
   /**
    * Returns the property name for the given attribute `name`.
    */
-  private static _attributeNameForProperty(name: PropertyKey, options?: PropertyDeclaration) {
+  private static _attributeNameForProperty(name: PropertyKey,
+                                           options?: PropertyDeclaration) {
     const attribute = options !== undefined && options.attribute;
-    return attribute === false ? undefined : (typeof attribute === 'string' ?
-        attribute : (typeof name === 'string' ? name.toLowerCase() : undefined));
+    return attribute === false
+               ? undefined
+               : (typeof attribute === 'string'
+                      ? attribute
+                      : (typeof name === 'string' ? name.toLowerCase()
+                                                  : undefined));
   }
 
   /**
@@ -248,7 +254,7 @@ export abstract class UpdatingElement extends HTMLElement {
    * option for the property if present or a strict identity check.
    */
   private static _valueHasChanged(value: unknown, old: unknown,
-      hasChanged: HasChanged = notEqual) {
+                                  hasChanged: HasChanged = notEqual) {
     return hasChanged(value, old);
   }
 
@@ -257,14 +263,17 @@ export abstract class UpdatingElement extends HTMLElement {
    * Called via the `attributeChangedCallback` and uses the property's `type`
    * or `type.fromAttribute` property option.
    */
-  private static _propertyValueFromAttribute(value: string, options?: PropertyDeclaration) {
+  private static _propertyValueFromAttribute(value: string,
+                                             options?: PropertyDeclaration) {
     const type = options && options.type;
     if (type === undefined) {
       return value;
     }
     // Note: special case `Boolean` so users can use it as a `type`.
-    const fromAttribute = type === Boolean ? fromBooleanAttribute :
-        (typeof type === 'function' ? type : type.fromAttribute);
+    const fromAttribute =
+        type === Boolean
+            ? fromBooleanAttribute
+            : (typeof type === 'function' ? type : type.fromAttribute);
     return fromAttribute ? fromAttribute(value) : value;
   }
 
@@ -275,13 +284,18 @@ export abstract class UpdatingElement extends HTMLElement {
    * attribute will be set to the value.
    * This uses the property's `reflect` and `type.toAttribute` property options.
    */
-  private static _propertyValueToAttribute(value: unknown, options?: PropertyDeclaration) {
+  private static _propertyValueToAttribute(value: unknown,
+                                           options?: PropertyDeclaration) {
     if (options === undefined || options.reflect === undefined) {
       return;
     }
     // Note: special case `Boolean` so users can use it as a `type`.
-    const toAttribute = options.type === Boolean ? toBooleanAttribute :
-        (options.type && (options.type as AttributeSerializer).toAttribute || String);
+    const toAttribute =
+        options.type === Boolean
+            ? toBooleanAttribute
+            : (options.type &&
+                   (options.type as AttributeSerializer).toAttribute ||
+               String);
     return toAttribute(value);
   }
 
@@ -298,7 +312,8 @@ export abstract class UpdatingElement extends HTMLElement {
   /**
    * Map with keys of properties that should be reflected when updated.
    */
-  private _reflectingProperties: Map<PropertyKey, PropertyDeclaration>|undefined = undefined;
+  private _reflectingProperties: Map<PropertyKey, PropertyDeclaration>|
+      undefined = undefined;
 
   /**
    * Node or ShadowRoot into which element DOM should be rendered. Defaults
@@ -312,8 +327,8 @@ export abstract class UpdatingElement extends HTMLElement {
   }
 
   /**
-   * Performs element initialization. By default this calls `createRenderRoot` to
-   * create the element `renderRoot` node and captures any pre-set values for
+   * Performs element initialization. By default this calls `createRenderRoot`
+   * to create the element `renderRoot` node and captures any pre-set values for
    * registered properties.
    */
   protected initialize() {
@@ -324,16 +339,18 @@ export abstract class UpdatingElement extends HTMLElement {
   /**
    * Fixes any properties set on the instance before upgrade time.
    * Otherwise these would shadow the accessor and break these properties.
-   * The properties are stored in a Map which is played back after the constructor
-   * runs. Note, on very old versions of Safari (<=9) or Chrome (<=41), properties
-   * created for native platform properties like (`id` or `name`) may not have default
-   * values set in the element constructor. On these browsers native properties
-   * appear on instances and therefore their default value will overwrite any element
-   * default (e.g. if the element sets this.id = 'id' in the constructor, the 'id'
-   * will become '' since this is the native platform default).
+   * The properties are stored in a Map which is played back after the
+   * constructor runs. Note, on very old versions of Safari (<=9) or Chrome
+   * (<=41), properties created for native platform properties like (`id` or
+   * `name`) may not have default values set in the element constructor. On
+   * these browsers native properties appear on instances and therefore their
+   * default value will overwrite any element default (e.g. if the element sets
+   * this.id = 'id' in the constructor, the 'id' will become '' since this is
+   * the native platform default).
    */
   private _saveInstanceProperties() {
-    for (const [p] of (this.constructor as typeof UpdatingElement)._classProperties) {
+    for (const [p] of (this.constructor as typeof UpdatingElement)
+             ._classProperties) {
       if (this.hasOwnProperty(p)) {
         const value = this[p as keyof this];
         delete this[p as keyof this];
@@ -388,7 +405,8 @@ export abstract class UpdatingElement extends HTMLElement {
     }
   }
 
-  private _propertyToAttribute(name: PropertyKey, value: unknown,
+  private _propertyToAttribute(
+      name: PropertyKey, value: unknown,
       options: PropertyDeclaration = defaultPropertyDeclaration) {
     const ctor = (this.constructor as typeof UpdatingElement);
     const attrValue = ctor._propertyValueToAttribute(value, options);
@@ -423,7 +441,8 @@ export abstract class UpdatingElement extends HTMLElement {
       const propName = ctor._attributeToPropertyMap.get(name);
       if (propName !== undefined) {
         const options = ctor._classProperties.get(propName);
-        this[propName as keyof this] = ctor._propertyValueFromAttribute(value, options);
+        this[propName as keyof this] =
+            ctor._propertyValueFromAttribute(value, options);
       }
     }
   }
@@ -431,10 +450,11 @@ export abstract class UpdatingElement extends HTMLElement {
   /**
    * Requests an update which is processed asynchronously. This should
    * be called when an element should update based on some state not triggered
-   * by setting a property. In this case, pass no arguments. It should also be called
-   * when manually implementing a property setter. In this case, pass the property
-   * `name` and `oldValue` to ensure that any configured property options are honored.
-   * Returns the `updateComplete` Promise which is resolved when the update completes.
+   * by setting a property. In this case, pass no arguments. It should also be
+   * called when manually implementing a property setter. In this case, pass the
+   * property `name` and `oldValue` to ensure that any configured property
+   * options are honored. Returns the `updateComplete` Promise which is resolved
+   * when the update completes.
    *
    * @param name {PropertyKey} (optional) name of requesting property
    * @param oldValue {any} (optional) old value of requesting property
@@ -442,8 +462,9 @@ export abstract class UpdatingElement extends HTMLElement {
    */
   requestUpdate(name?: PropertyKey, oldValue?: any) {
     if (name !== undefined) {
-      const options = (this.constructor as typeof UpdatingElement)._classProperties.get(name) ||
-          defaultPropertyDeclaration;
+      const options = (this.constructor as typeof UpdatingElement)
+                          ._classProperties.get(name) ||
+                      defaultPropertyDeclaration;
       return this._requestPropertyUpdate(name, oldValue, options);
     }
     return this._invalidate();
@@ -455,9 +476,11 @@ export abstract class UpdatingElement extends HTMLElement {
    * @param oldValue {any} old value of requesting property
    * @param options {PropertyDeclaration}
    */
-  private _requestPropertyUpdate(name: PropertyKey, oldValue: any, options: PropertyDeclaration) {
-    if (!(this.constructor as typeof UpdatingElement)._valueHasChanged(this[name as keyof this],
-        oldValue, options.hasChanged)) {
+  private _requestPropertyUpdate(name: PropertyKey, oldValue: any,
+                                 options: PropertyDeclaration) {
+    if (!(this.constructor as typeof UpdatingElement)
+             ._valueHasChanged(this[name as keyof this], oldValue,
+                               options.hasChanged)) {
       return this.updateComplete;
     }
     // track old value when changing.
@@ -508,9 +531,8 @@ export abstract class UpdatingElement extends HTMLElement {
     if (this.shouldUpdate(this._changedProperties)) {
       const changedProperties = this._changedProperties;
       this.update(changedProperties);
-      const needsFirstUpdate = !(this._updateState & STATE_HAS_UPDATED);
       this._markUpdated();
-      if (needsFirstUpdate) {
+      if (!(this._updateState & STATE_HAS_UPDATED)) {
         this._updateState = this._updateState | STATE_HAS_UPDATED;
         this.firstUpdated(changedProperties);
       }
@@ -527,18 +549,16 @@ export abstract class UpdatingElement extends HTMLElement {
   /**
    * Returns a Promise that resolves when the element has completed updating.
    * The Promise value is a boolean that is `true` if the element completed the
-   * update without triggering another update. The Promise result is `false` if a
-   * property was set inside `updated()`. This getter can be implemented to await
-   * additional state. For example, it is sometimes useful to await a rendered
-   * element before fulfilling this Promise. To do this, first await
+   * update without triggering another update. The Promise result is `false` if
+   * a property was set inside `updated()`. This getter can be implemented to
+   * await additional state. For example, it is sometimes useful to await a
+   * rendered element before fulfilling this Promise. To do this, first await
    * `super.updateComplete` then any subsequent state.
    *
    * @returns {Promise} The Promise returns a boolean that indicates if the
    * update resolved without triggering another update.
    */
-  get updateComplete() {
-    return this._updatePromise;
-  }
+  get updateComplete() { return this._updatePromise; }
 
   /**
    * Controls whether or not `update` should be called when the element requests
@@ -553,13 +573,15 @@ export abstract class UpdatingElement extends HTMLElement {
 
   /**
    * Updates the element. This method reflects property values to attributes.
-   * It can be overridden to render and keep updated DOM in the element's `renderRoot`.
-   * Setting properties inside this method will *not* trigger another update.
+   * It can be overridden to render and keep updated DOM in the element's
+   * `renderRoot`. Setting properties inside this method will *not* trigger
+   * another update.
    *
    * * @param _changedProperties Map of changed properties with old values
    */
   protected update(_changedProperties: PropertyValues) {
-    if (this._reflectingProperties !== undefined && this._reflectingProperties.size > 0) {
+    if (this._reflectingProperties !== undefined &&
+        this._reflectingProperties.size > 0) {
       for (const [k, v] of this._reflectingProperties) {
         this._propertyToAttribute(k, this[k as keyof this], v);
       }
@@ -588,5 +610,4 @@ export abstract class UpdatingElement extends HTMLElement {
    * * @param _changedProperties Map of changed properties with old values
    */
   protected firstUpdated(_changedProperties: PropertyValues) {}
-
 }

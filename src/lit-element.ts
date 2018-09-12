@@ -11,18 +11,20 @@
  * subject to an additional IP rights grant found at
  * http://polymer.github.io/PATENTS.txt
  */
-import {render} from 'lit-html/lib/shady-render';
 import {TemplateResult} from 'lit-html';
-import {UpdatingElement, PropertyValues} from './lib/updating-element.js';
+import {render} from 'lit-html/lib/shady-render';
+
+import {PropertyValues, UpdatingElement} from './lib/updating-element.js';
 
 export * from './lib/updating-element.js';
+export * from './lib/decorators.js';
 export {html, svg} from 'lit-html/lit-html';
-
 
 export abstract class LitElement extends UpdatingElement {
 
   /**
-   * Render method used to render the lit-html TemplateResult to the element's DOM.
+   * Render method used to render the lit-html TemplateResult to the element's
+   * DOM.
    * @param {TemplateResult} Template to render.
    * @param {Element|DocumentFragment} Node into which to render.
    * @param {String} Element name.
@@ -38,7 +40,8 @@ export abstract class LitElement extends UpdatingElement {
   protected update(changedProperties: PropertyValues) {
     super.update(changedProperties);
     if (typeof this.render === 'function') {
-      (this.constructor as typeof LitElement).render(this.render(), this.renderRoot!, this.localName!);
+      (this.constructor as typeof LitElement)
+          .render(this.render(), this.renderRoot!, this.localName!);
     } else {
       throw new Error('render() not implemented');
     }
