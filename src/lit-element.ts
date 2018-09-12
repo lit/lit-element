@@ -17,6 +17,7 @@ import {render} from 'lit-html/lib/shady-render';
 import {PropertyValues, UpdatingElement} from './lib/updating-element.js';
 
 export * from './lib/updating-element.js';
+export * from './lib/decorators.js';
 export {html, svg} from 'lit-html/lit-html';
 
 export abstract class LitElement extends UpdatingElement {

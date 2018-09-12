@@ -32,8 +32,6 @@ interface AttributeSerializer<T = any> {
 
 type AttributeType<T = any> = AttributeSerializer<T>|((value: string) => T);
 
-export * from './decorators.js';
-
 /**
  * Defines options for a property accessor.
  */
