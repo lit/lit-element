@@ -31,6 +31,8 @@ interface AttributeSerializer<T = any> {
 
 type AttributeType<T = any> = AttributeSerializer<T>|((value: string) => T);
 
+export * from './decorators.js';
+
 /**
  * Defines options for a property accessor.
  */
@@ -87,14 +89,6 @@ type PropertyDeclarationMap = Map<PropertyKey, PropertyDeclaration>;
 type AttributeMap = Map<string, PropertyKey>;
 
 export type PropertyValues = Map<PropertyKey, unknown>;
-
-/**
- * Decorator which creates a property. Optionally a `PropertyDeclaration` object
- * can be supplied to describe how the property should be configured.
- */
-export const property = (options?: PropertyDeclaration) => (proto: Object, name: string) => {
-  (proto.constructor as typeof UpdatingElement).createProperty(name, options);
-};
 
 // serializer/deserializers for boolean attribute
 const fromBooleanAttribute = (value: string) => value !== null;
