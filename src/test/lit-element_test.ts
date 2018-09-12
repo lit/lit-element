@@ -987,10 +987,9 @@ suite('LitElement', () => {
         const el = new E();
         container.appendChild(el);
         await el.updateComplete;
-        const d = el.shadowRoot!.querySelector('div')! as (HTMLDivElement &
-                                                           {prop : string});
+        const d = el.shadowRoot!.querySelector('div')!;
         assert.equal(d.getAttribute('attr'), 'attr');
-        assert.equal(d.prop, 'prop');
+        assert.equal((d as any).prop, 'prop');
         const e = new Event('zug');
         d.dispatchEvent(e);
         assert.equal(el._event, e);
