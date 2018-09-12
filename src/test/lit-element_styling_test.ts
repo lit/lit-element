@@ -252,6 +252,60 @@ suite('Styling', () => {
     assert.equal(getComputedStyleValue(div!, 'border-top-width').trim(), '10px');
   });
 
+  test.only('@apply renders in nested elements when sub-element renders separately first', async () => {
+    class I extends LitElement {
+      render() { return html`
+        <style>
+          :host {
+            display: block;
+            width: 100px;
+            height: 100px;
+            border: 2px solid black;
+            margin-top: 10px;
+            @apply --bag;
+          }
+        </style>Hi`;
+      }
+    }
+    customElements.define('x-applied', I);
+
+    const name = generateElementName();
+    class E extends LitElement {
+      applied: HTMLElement|undefined;
+
+      render() { return html`
+        <style>
+          :host {
+            --bag: {
+              border: 10px solid black;
+              margin-top: 2px;
+            }
+          }
+        </style>
+        <x-applied></x-applied>`;
+      }
+
+      firstUpdated() {
+        this.applied = this.shadowRoot!.querySelector('x-applied') as LitElement;
+      }
+    }
+    customElements.define(name, E);
+
+    const firstApplied = document.createElement('x-applied') as I;
+    container.appendChild(firstApplied);
+    const el = document.createElement(name) as E;
+    container.appendChild(el);
+
+    // Workaround for Safari 9 Promise timing bugs.
+    await firstApplied.updateComplete && el.updateComplete && await (el.applied as I)!.updateComplete;
+
+    await nextFrame();
+    assert.equal(getComputedStyleValue(firstApplied!, 'border-top-width').trim(), '2px');
+    assert.equal(getComputedStyleValue(firstApplied!, 'margin-top').trim(), '10px');
+    assert.equal(getComputedStyleValue(el.applied!, 'border-top-width').trim(), '10px');
+    assert.equal(getComputedStyleValue(el.applied!, 'margin-top').trim(), '2px');
+  });
+
 });
 
 suite('ShadyDOM', () => {
