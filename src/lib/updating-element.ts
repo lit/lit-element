@@ -511,6 +511,7 @@ export abstract class UpdatingElement extends HTMLElement {
       const needsFirstUpdate = !(this._updateState & STATE_HAS_UPDATED);
       this._markUpdated();
       if (needsFirstUpdate) {
+        this._updateState = this._updateState | STATE_HAS_UPDATED;
         this.firstUpdated(changedProperties);
       }
       this.updated(changedProperties);
@@ -518,10 +519,9 @@ export abstract class UpdatingElement extends HTMLElement {
       this._markUpdated();
     }
   }
-
   private _markUpdated() {
     this._changedProperties = new Map();
-    this._updateState = this._updateState & ~STATE_UPDATE_REQUESTED | STATE_HAS_UPDATED;
+    this._updateState = this._updateState & ~STATE_UPDATE_REQUESTED;
   }
 
   /**
