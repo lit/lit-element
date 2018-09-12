@@ -14,7 +14,8 @@
  */
 
 import {LitElement} from '../lit-element.js';
-import {UpdatingElement, PropertyDeclaration} from './updating-element.js';
+
+import {PropertyDeclaration, UpdatingElement} from './updating-element.js';
 
 export type Constructor<T> = {
   new (...args: unknown[]): T
@@ -54,7 +55,8 @@ export const customElement = (tagName: keyof HTMLElementTagNameMap) =>
  * corresponding attribute value. A `PropertyDeclaration` may optionally be
  * supplied to configure property features.
  */
-export const property = (options?: PropertyDeclaration) => (proto: Object, name: string) => {
+export const property = (options?: PropertyDeclaration) => (proto: Object,
+                                                            name: string) => {
   (proto.constructor as typeof UpdatingElement).createProperty(name, options);
 };
 

@@ -1,11 +1,10 @@
-import { LitElement, html, property } from '../lit-element.js';
+import {html, LitElement, property} from '../lit-element.js';
 
 class TSElement extends LitElement {
 
-  @property()
-  message = 'Hi';
+  @property() message = 'Hi';
 
-  @property({attribute: 'more-info', type: (value: string) => `[${value}]`})
+  @property({attribute : 'more-info', type: (value: string) => `[${value}]`})
   extra = '';
 
   render() {
@@ -18,6 +17,5 @@ class TSElement extends LitElement {
       </style>TSElement says: ${message} ${extra}
     `;
   }
-
 }
 customElements.define('ts-element', TSElement);
