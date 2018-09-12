@@ -14,7 +14,7 @@
 
 import {customElement, query, queryAll} from '../../lib/decorators.js';
 import {html, LitElement} from '../../lit-element.js';
-import { generateElementName } from '../test-helpers.js';
+import {generateElementName} from '../test-helpers.js';
 
 const assert = chai.assert;
 
