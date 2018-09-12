@@ -502,9 +502,8 @@ export abstract class UpdatingElement extends HTMLElement {
     if (this.shouldUpdate(this._changedProperties)) {
       const changedProperties = this._changedProperties;
       this.update(changedProperties);
-      const needsFirstUpdate = !(this._updateState & STATE_HAS_UPDATED);
       this._markUpdated();
-      if (needsFirstUpdate) {
+      if (!(this._updateState & STATE_HAS_UPDATED)) {
         this._updateState = this._updateState | STATE_HAS_UPDATED;
         this.firstUpdated(changedProperties);
       }

@@ -1097,12 +1097,11 @@ suite('LitElement', () => {
         const el = new E();
         container.appendChild(el);
         await el.updateComplete;
-        const testMap = new Map();
-        testMap.set('foo', undefined);
         assert.equal(el.triedToUpdatedCount, 1);
         assert.equal(el.wasUpdatedCount, 0);
         assert.equal(el.wasFirstUpdated, 0);
         await el.requestUpdate();
+        const testMap = new Map();
         assert.deepEqual(el.changedProperties, testMap);
         assert.equal(el.triedToUpdatedCount, 2);
         assert.equal(el.wasUpdatedCount, 1);
