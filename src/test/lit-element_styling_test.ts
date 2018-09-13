@@ -269,9 +269,12 @@ suite('Styling', () => {
                  '10px');
   });
 
-  test('@apply renders in nested elements when sub-element renders separately first', async () => {
-    class I extends LitElement {
-      render() { return htmlWithStyles`
+  test(
+      '@apply renders in nested elements when sub-element renders separately first',
+      async () => {
+        class I extends LitElement {
+          render() {
+            return htmlWithStyles`
         <style>
           :host {
             display: block;
@@ -282,15 +285,16 @@ suite('Styling', () => {
             @apply --bag;
           }
         </style>Hi`;
-      }
-    }
-    customElements.define('x-applied', I);
+          }
+        }
+        customElements.define('x-applied', I);
 
-    const name = generateElementName();
-    class E extends LitElement {
-      applied: HTMLElement|undefined;
+        const name = generateElementName();
+        class E extends LitElement {
+          applied: HTMLElement|undefined;
 
-      render() { return htmlWithStyles`
+          render() {
+            return htmlWithStyles`
         <style>
           :host {
             --bag: {
@@ -300,29 +304,36 @@ suite('Styling', () => {
           }
         </style>
         <x-applied></x-applied>`;
-      }
+          }
 
-      firstUpdated() {
-        this.applied = this.shadowRoot!.querySelector('x-applied') as LitElement;
-      }
-    }
-    customElements.define(name, E);
+          firstUpdated() {
+            this.applied =
+                this.shadowRoot!.querySelector('x-applied') as LitElement;
+          }
+        }
+        customElements.define(name, E);
 
-    const firstApplied = document.createElement('x-applied') as I;
-    container.appendChild(firstApplied);
-    const el = document.createElement(name) as E;
-    container.appendChild(el);
+        const firstApplied = document.createElement('x-applied') as I;
+        container.appendChild(firstApplied);
+        const el = document.createElement(name) as E;
+        container.appendChild(el);
 
-    // Workaround for Safari 9 Promise timing bugs.
-    await firstApplied.updateComplete && el.updateComplete && await (el.applied as I)!.updateComplete;
+        // Workaround for Safari 9 Promise timing bugs.
+        await firstApplied.updateComplete && el.updateComplete &&
+            await (el.applied as I)!.updateComplete;
 
-    await nextFrame();
-    assert.equal(getComputedStyleValue(firstApplied!, 'border-top-width').trim(), '2px');
-    assert.equal(getComputedStyleValue(firstApplied!, 'margin-top').trim(), '10px');
-    assert.equal(getComputedStyleValue(el.applied!, 'border-top-width').trim(), '10px');
-    assert.equal(getComputedStyleValue(el.applied!, 'margin-top').trim(), '2px');
-  });
-
+        await nextFrame();
+        assert.equal(
+            getComputedStyleValue(firstApplied!, 'border-top-width').trim(),
+            '2px');
+        assert.equal(getComputedStyleValue(firstApplied!, 'margin-top').trim(),
+                     '10px');
+        assert.equal(
+            getComputedStyleValue(el.applied!, 'border-top-width').trim(),
+            '10px');
+        assert.equal(getComputedStyleValue(el.applied!, 'margin-top').trim(),
+                     '2px');
+      });
 });
 
 suite('ShadyDOM', () => {
