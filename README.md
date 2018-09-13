@@ -70,10 +70,10 @@ and renders declaratively using `lit-html`.
 
  * The easiest way to try out LitElement is to use one of these online tools:
 
-    * Runs in all [supported](#supported-browsers) browsers: [StackBlitz](https://stackblitz.com/edit/lit-element-example?file=index.js), [Glitch](https://glitch.com/edit/#!/hello-lit-element?path=index.html)
+    * Runs in all [supported](#supported-browsers) browsers: [Glitch](https://glitch.com/edit/#!/hello-lit-element?path=index.html)
 
-    * Runs in browsers with [JavaScript Modules](https://caniuse.com/#search=modules): [JSFiddle](https://jsfiddle.net/j6mf6gpo/), [JSBin](http://jsbin.com/zezilad/edit?html,output),
- [CodePen](https://codepen.io/sorvell/pen/BxZgPN).
+    * Runs in browsers with [JavaScript Modules](https://caniuse.com/#search=modules): [JSFiddle](https://jsfiddle.net/rzhofu81/), [JSBin](http://jsbin.com/vecuyan/edit?html,output),
+ [CodePen](https://codepen.io/sorvell/pen/RYQyoe?editors=1000).
 
  * You can also copy [this HTML file](https://gist.githubusercontent.com/sorvell/48f4b7be35c8748e8f6db5c66d36ee29/raw/2427328cf1ebae5077902a6bff5ddd8db45e83e4/index.html) into a local file and run it in any browser that supports [JavaScript Modules]((https://caniuse.com/#search=modules)).
 
@@ -275,3 +275,8 @@ Chrome, Safari, Opera, Firefox, Edge. In addition, Internet Explorer 11 is also 
 
 ## Known Issues
 
+* On very old versions of Safari (<=9) or Chrome (<=41), properties created for native
+platform properties like (`id` or `name`) may not have default values set in the element constructor.
+On these browsers native properties appear on instances and therefore their default value
+will overwrite any element default (e.g. if the element sets this.id = 'id' in the constructor,
+the 'id' will become '' since this is the native platform default).
