@@ -61,9 +61,9 @@ and renders declaratively using `lit-html`.
   describing dynamic parts with standard JavaScript template expressions:
 
     * static elements: ``` html`<div>Hi</div>` ```
-    * expression: ``` html`<div>${disabled ? 'Off' : 'On'}</div>` ```
-    * property: ``` html`<x-foo .bar="${bar}"></x-foo>` ```
-    * attribute: ``` html`<div class="${color} special"></div>` ```
+    * expression: ``` html`<div>${this.disabled ? 'Off' : 'On'}</div>` ```
+    * property: ``` html`<x-foo .bar="${this.bar}"></x-foo>` ```
+    * attribute: ``` html`<div class="${this.color} special"></div>` ```
     * event handler: ``` html`<button @click="${(e) => this._clickHandler(e)}"></button>` ```
 
 ## Getting started
