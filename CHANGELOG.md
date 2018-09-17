@@ -10,7 +10,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
    Unreleased section, uncommenting the header as necessary.
 -->
 
-<!-- ## Unreleased -->
+## Unreleased
+
+### Removed
+* Removed custom_typings for Polymer as they are no longer needed
+(https://github.com/Polymer/lit-element/issues/186).
 
 ## [0.6.0] - 2018-09-13
 
@@ -18,7 +22,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 * Added `@query()`, `@queryAll()`, and `@customElement` decorators ([#159](https://github.com/Polymer/lit-element/pull/159))
 
 ### Changed
-* Signficantly changed update/render lifecycle and property API. Render lifecycle
+* Significantly changed update/render lifecycle and property API. Render lifecycle
 is now `requestUpdate`, `shouldUpdate`, `update`, `render`, `firstUpdated`
 (first time only), `updated`, `updateComplete`. Property options are now
 `{attribute, reflect, type, hasChanged}`. Properties may be defined in a
