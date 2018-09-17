@@ -205,7 +205,7 @@ of the event loop, before the next paint).
 it does by default.
 * `update(changedProperties)`: Updates the element. Setting properties inside this
 method will *not* trigger another update.
-  * `render()`: Returns a `lit-html` TemplateResult (e.g. <code>html\`Hello ${world}\`</code>)
+* `render()`: Returns a `lit-html` TemplateResult (e.g. <code>html\`Hello ${world}\`</code>)
   to render element DOM. Setting properties inside this method will *not* trigger
   the element to update.
 * `firstUpdated(changedProperties)`: Called after the element is updated the first time,
