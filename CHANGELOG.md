@@ -10,7 +10,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
    Unreleased section, uncommenting the header as necessary.
 -->
 
-## Unreleased
+<!-- ## Unreleased -->
+
+## [0.6.1] - 2018-09-17
+
+### Fixed
+* Fixes part rendering and css custom properties issues introduced with lit-html 0.11.3 by updating to 0.11.4 (https://github.com/Polymer/lit-element/issues/202).
 
 ### Removed
 * Removed custom_typings for Polymer as they are no longer needed
