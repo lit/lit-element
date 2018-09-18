@@ -1,3 +1,5 @@
+import { BabelPropertyDescriptor } from "./decorators";
+
 /**
  * @license
  * Copyright (c) 2017 The Polymer Project Authors. All rights reserved.
@@ -172,7 +174,8 @@ export abstract class UpdatingElement extends HTMLElement {
    */
   static createProperty(name: PropertyKey,
                         options:
-                            PropertyDeclaration = defaultPropertyDeclaration) {
+                            PropertyDeclaration = defaultPropertyDeclaration,
+                        descriptor?:BabelPropertyDescriptor): PropertyDescriptor | null {
     // ensure private storage for property declarations.
     if (!this.hasOwnProperty('_classProperties')) {
       this._classProperties = new Map();
@@ -187,19 +190,29 @@ export abstract class UpdatingElement extends HTMLElement {
     // Allow user defined accessors by not replacing an existing own-property
     // accessor.
     if (this.prototype.hasOwnProperty(name)) {
-      return;
+      return null;
     }
+
     const key = typeof name === 'symbol' ? Symbol() : `__${name}`;
-    Object.defineProperty(this.prototype, name, {
-      get() { return this[key]; },
-      set(value) {
+
+    let defaultInitializer: null | (() => any) = descriptor ? descriptor!.initializer || null : null;
+    return {
+      get(this: any) { 
+            if(defaultInitializer) {
+                return defaultInitializer();
+            } else {
+                return this[key]; 
+            }
+        },
+      set(this:any, value) {
+        defaultInitializer = null;
         const oldValue = this[name];
         this[key] = value;
         this._requestPropertyUpdate(name, oldValue, options);
       },
       configurable : true,
       enumerable : true
-    });
+    };
   }
 
   /**
@@ -230,7 +243,10 @@ export abstract class UpdatingElement extends HTMLElement {
     for (const p of propKeys) {
       // note, use of `any` is due to TypeSript lack of support for symbol in
       // index types
-      this.createProperty(p, (props as any)[p]);
+      const descriptor = this.createProperty(p, (props as any)[p]);
+      if(descriptor) {
+          Object.defineProperty(this.prototype, p, descriptor);
+      }
     }
   }
 

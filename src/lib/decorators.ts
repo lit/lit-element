@@ -21,6 +21,11 @@ export type Constructor<T> = {
   new (...args: unknown[]): T
 };
 
+export type FixedPropertyDecorator = (target: Object, propertyKey: string | symbol, descriptor?: BabelPropertyDescriptor) => any;
+export interface BabelPropertyDescriptor extends PropertyDescriptor {
+    initializer: () => any;
+}
+
 /**
  * Class decorator factory that defines the decorated class as a custom element.
  *
@@ -55,9 +60,9 @@ export const customElement = (tagName: keyof HTMLElementTagNameMap) =>
  * corresponding attribute value. A `PropertyDeclaration` may optionally be
  * supplied to configure property features.
  */
-export const property = (options?: PropertyDeclaration) => (proto: Object,
-                                                            name: string) => {
-  (proto.constructor as typeof UpdatingElement).createProperty(name, options);
+export const property = (options?: PropertyDeclaration):FixedPropertyDecorator => (proto: Object,
+                                                            name: string | symbol, descriptor?:BabelPropertyDescriptor) => {
+  return (proto.constructor as typeof UpdatingElement).createProperty(name, options, descriptor);
 };
 
 /**
