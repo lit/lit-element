@@ -15,7 +15,7 @@
 import '@webcomponents/shadycss/apply-shim.min.js';
 
 import {
-  html,
+  html as htmlWithStyles,
   LitElement,
 } from '../lit-element.js';
 
@@ -51,7 +51,7 @@ suite('Styling', () => {
     const name = generateElementName();
     customElements.define(name, class extends LitElement {
       render() {
-        return html`
+        return htmlWithStyles`
         <style>
           div {
             border: 2px solid blue;
@@ -68,7 +68,7 @@ suite('Styling', () => {
   });
 
   test('shared styling rendered into shadowRoot is styled', async () => {
-    const style = html`<style>
+    const style = htmlWithStyles`<style>
       div {
         border: 4px solid blue;
       }
@@ -76,7 +76,7 @@ suite('Styling', () => {
     const name = generateElementName();
     customElements.define(name, class extends LitElement {
       render() {
-        return html`
+        return htmlWithStyles`
         <style>
           div {
             border: 2px solid blue;
@@ -97,7 +97,7 @@ suite('Styling', () => {
     const name = generateElementName();
     customElements.define(name, class extends LitElement {
       render() {
-        return html`
+        return htmlWithStyles`
         <style>
           :host {
             --border: 8px solid red;
@@ -119,7 +119,7 @@ suite('Styling', () => {
   test('custom properties flow to nested elements', async () => {
     customElements.define('x-inner', class extends LitElement {
       render() {
-        return html`
+        return htmlWithStyles`
         <style>
           div {
             border: var(--border);
@@ -133,7 +133,7 @@ suite('Styling', () => {
       inner: LitElement|null = null;
 
       render() {
-        return html`
+        return htmlWithStyles`
         <style>
           x-inner {
             --border: 8px solid red;
@@ -162,7 +162,7 @@ suite('Styling', () => {
        async () => {
          customElements.define('x-inner1', class extends LitElement {
            render() {
-             return html`
+             return htmlWithStyles`
         <style>
           div {
             border: var(--border);
@@ -176,7 +176,7 @@ suite('Styling', () => {
            inner: Element|null = null;
 
            render() {
-             return html`
+             return htmlWithStyles`
         <style>
           x-inner1 {
             --border: 2px solid red;
@@ -192,7 +192,7 @@ suite('Styling', () => {
          const name2 = generateElementName();
          customElements.define(name2, class extends LitElement {
            render() {
-             return html`
+             return htmlWithStyles`
         <style>
           x-inner1 {
             --border: 8px solid red;
@@ -227,7 +227,7 @@ suite('Styling', () => {
   test('@apply renders in nested elements', async () => {
     customElements.define('x-inner2', class extends LitElement {
       render() {
-        return html`
+        return htmlWithStyles`
         <style>
           div {
             @apply --bag;
@@ -240,7 +240,7 @@ suite('Styling', () => {
     class E extends LitElement {
       inner: LitElement|null = null;
       render() {
-        return html`
+        return htmlWithStyles`
         <style>
           x-inner2 {
             --bag: {
@@ -268,6 +268,72 @@ suite('Styling', () => {
     assert.equal(getComputedStyleValue(div!, 'border-top-width').trim(),
                  '10px');
   });
+
+  test(
+      '@apply renders in nested elements when sub-element renders separately first',
+      async () => {
+        class I extends LitElement {
+          render() {
+            return htmlWithStyles`
+        <style>
+          :host {
+            display: block;
+            width: 100px;
+            height: 100px;
+            border: 2px solid black;
+            margin-top: 10px;
+            @apply --bag;
+          }
+        </style>Hi`;
+          }
+        }
+        customElements.define('x-applied', I);
+
+        const name = generateElementName();
+        class E extends LitElement {
+          applied: HTMLElement|undefined;
+
+          render() {
+            return htmlWithStyles`
+        <style>
+          :host {
+            --bag: {
+              border: 10px solid black;
+              margin-top: 2px;
+            }
+          }
+        </style>
+        <x-applied></x-applied>`;
+          }
+
+          firstUpdated() {
+            this.applied =
+                this.shadowRoot!.querySelector('x-applied') as LitElement;
+          }
+        }
+        customElements.define(name, E);
+
+        const firstApplied = document.createElement('x-applied') as I;
+        container.appendChild(firstApplied);
+        const el = document.createElement(name) as E;
+        container.appendChild(el);
+
+        // Workaround for Safari 9 Promise timing bugs.
+        await firstApplied.updateComplete && el.updateComplete &&
+            await (el.applied as I)!.updateComplete;
+
+        await nextFrame();
+        assert.equal(
+            getComputedStyleValue(firstApplied!, 'border-top-width').trim(),
+            '2px');
+        assert.equal(getComputedStyleValue(firstApplied!, 'margin-top').trim(),
+                     '10px');
+        assert.equal(
+            getComputedStyleValue(el.applied!, 'border-top-width').trim(),
+            '10px');
+        assert.equal(getComputedStyleValue(el.applied!, 'margin-top').trim(),
+                     '2px');
+      });
 });
 
 suite('ShadyDOM', () => {
@@ -294,7 +360,7 @@ suite('ShadyDOM', () => {
          const name = generateElementName();
          customElements.define(name, class extends LitElement {
            render() {
-             return html`
+             return htmlWithStyles`
         <style>
           div {
             border: ${border};
