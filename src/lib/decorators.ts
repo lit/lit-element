@@ -42,7 +42,9 @@ export type Constructor<T> = {
  */
 export const customElement = (tagName: keyof HTMLElementTagNameMap) =>
     (clazz: Constructor<HTMLElement>) => {
-      window.customElements.define(tagName, clazz);
+      if (!window.customElements.get(tagName)) {
+        window.customElements.define(tagName, clazz);
+      }
       // Cast as any because TS doesn't recognize the return type as being a
       // subtype of the decorated class when clazz is typed as
       // `Constructor<HTMLElement>` for some reason. `Constructor<HTMLElement>`
