@@ -60,8 +60,8 @@ export const customElement = (tagName: keyof HTMLElementTagNameMap) =>
  * corresponding attribute value. A `PropertyDeclaration` may optionally be
  * supplied to configure property features.
  */
-export const property = (options?: PropertyDeclaration):FixedPropertyDecorator => (proto: Object,
-                                                            name: string | symbol, descriptor?:BabelPropertyDescriptor) => {
+export const property = (options?: PropertyDeclaration): FixedPropertyDecorator => (proto: Object,
+                                                            name: string | symbol, descriptor?: BabelPropertyDescriptor) => {
   return (proto.constructor as typeof UpdatingElement).createProperty(name, options, descriptor);
 };
 

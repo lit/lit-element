@@ -1,4 +1,4 @@
-import { BabelPropertyDescriptor } from "./decorators";
+import { BabelPropertyDescriptor } from './decorators';
 
 /**
  * @license
@@ -175,7 +175,7 @@ export abstract class UpdatingElement extends HTMLElement {
   static createProperty(name: PropertyKey,
                         options:
                             PropertyDeclaration = defaultPropertyDeclaration,
-                        descriptor?:BabelPropertyDescriptor): PropertyDescriptor | null {
+                        descriptor?: BabelPropertyDescriptor): PropertyDescriptor | null {
     // ensure private storage for property declarations.
     if (!this.hasOwnProperty('_classProperties')) {
       this._classProperties = new Map();
@@ -197,14 +197,14 @@ export abstract class UpdatingElement extends HTMLElement {
 
     let defaultInitializer: null | (() => any) = descriptor ? descriptor!.initializer || null : null;
     return {
-      get(this: any) { 
-            if(defaultInitializer) {
+      get(this: any) {
+            if (defaultInitializer) {
                 return defaultInitializer();
             } else {
-                return this[key]; 
+                return this[key];
             }
         },
-      set(this:any, value) {
+      set(this: any, value) {
         defaultInitializer = null;
         const oldValue = this[name];
         this[key] = value;
@@ -244,7 +244,7 @@ export abstract class UpdatingElement extends HTMLElement {
       // note, use of `any` is due to TypeSript lack of support for symbol in
       // index types
       const descriptor = this.createProperty(p, (props as any)[p]);
-      if(descriptor) {
+      if (descriptor) {
           Object.defineProperty(this.prototype, p, descriptor);
       }
     }
