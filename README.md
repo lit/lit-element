@@ -118,7 +118,7 @@ into the element. This is the only method that must be implemented by subclasses
 ```html
   <script src="node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
   <script type="module">
-    import {LitElement, html, property} from '@polymer/lit-element';
+    import {LitElement, html} from '@polymer/lit-element';
 
     class MyElement extends LitElement {
 
