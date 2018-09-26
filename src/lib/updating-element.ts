@@ -398,7 +398,7 @@ export abstract class UpdatingElement extends HTMLElement {
 
   /**
    * Allows for `super.disconnectedCallback()` in extensions while
-   * reserving the positibility of making non-breaking feature additions
+   * reserving the possibility of making non-breaking feature additions
    * when disconnecting at some point in the future.
    */
   disconnectedCallback() {}
