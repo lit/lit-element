@@ -65,7 +65,7 @@ and renders declaratively using `lit-html`.
     * expression: ``` html`<div>${this.disabled ? 'Off' : 'On'}</div>` ```
     * property: ``` html`<x-foo .bar="${this.bar}"></x-foo>` ```
     * attribute: ``` html`<div class="${this.color} special"></div>` ```
-    * event handler: ``` html`<button @click="${(e) => this._clickHandler(e)}"></button>` ```
+    * event handler: ``` html`<button @click="${this._clickHandler}"></button>` ```
 
 ## Getting started
 
