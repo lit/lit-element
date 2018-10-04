@@ -5,6 +5,7 @@
 
 [![Published on npm](https://img.shields.io/npm/v/@polymer/lit-element.svg)](https://www.npmjs.com/package/@polymer/lit-element)
 [![Published on webcomponents.org](https://img.shields.io/badge/webcomponents.org-published-blue.svg)](https://www.webcomponents.org/element/@polymer/lit-element)
+[![Mentioned in Awesome lit-html](https://awesome.re/mentioned-badge.svg)](https://github.com/web-padawan/awesome-lit-html)
 
 ## A simple base class for creating custom elements rendered with lit-html.
 
