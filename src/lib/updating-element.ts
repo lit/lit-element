@@ -15,7 +15,7 @@
 /**
  * Converts property values to and from attribute values.
  */
-interface AttributeSerializer<T = any> {
+export interface AttributeSerializer<T = any> {
 
   /**
    * Deserializing function called to convert an attribute value to a property
