@@ -117,4 +117,7 @@ function _query<T>(queryFn: (target: NodeSelector, selector: string) => T) {
  *     }
  */
 export const eventOptions = (options: EventListenerOptions) =>
-    (proto: any, name: string) => { Object.assign(proto[name], options);};
+    (proto: any, name: string) => {
+      // This comment is here to fix a disagreement between formatter and linter
+      Object.assign(proto[name], options);
+    };
