@@ -113,7 +113,7 @@ and renders declaratively using `lit-html`.
   getter that returns the element's properties). (which automatically become observed attributes).
   1. Then implement a `render()` method and use the element's
 current properties to return a `lit-html` template result to render
-into the element. This is the only method that must be implemented by subclasses.
+into the element.
 
 ```html
   <script src="node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
@@ -149,10 +149,9 @@ into the element. This is the only method that must be implemented by subclasses
 ## API Documentation
 
   * `render()` (protected): Implement to describe the element's DOM using `lit-html`. Ideally,
-  the `render` implementation is a [pure function](https://en.wikipedia.org/wiki/Pure_function) using only the element's current properties
-  to describe the element template. This is the only method that must be implemented by subclasses.
-  Note, since `render()` is called by `update()`, setting properties does not trigger
-  an update, allowing property values to be computed and validated.
+  the `render` implementation is a [pure function](https://en.wikipedia.org/wiki/Pure_function) using only the element's current properties to describe the element template. Note, since
+  `render()` is called by `update()`, setting properties does not trigger an
+  update, allowing property values to be computed and validated.
 
   * `shouldUpdate(changedProperties)` (protected): Implement to control if updating and rendering
   should occur when property values change or `requestUpdate()` is called. The `changedProperties`

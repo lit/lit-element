@@ -10,7 +10,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
    Unreleased section, uncommenting the header as necessary.
 -->
 
-<!-- ## Unreleased -->
+## Unreleased
+
+### Changed
+
+### Added
+* A `disconnectedCallback()` function was added (https://github.com/Polymer/lit-element/pull/213).
+
+### Changed
+* LitElement changed to a non-abstract class to be more compatible with the JavaScript mixin pattern
+(https://github.com/Polymer/lit-element/issues/227).
 
 ## [0.6.1] - 2018-09-17
 
