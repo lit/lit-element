@@ -10,18 +10,23 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
    Unreleased section, uncommenting the header as necessary.
 -->
 
-## Unreleased
+<!-- ## Unreleased -->
+
+<!-- ### Changed -->
+<!-- ### Added -->
+<!-- ### Removed -->
+<!-- ### Fixed -->
+
+## [0.6.2] - 2018-10-05
 
 ### Changed
 * LitElement changed to a non-abstract class to be more compatible with the JavaScript mixin pattern
 ([#227](https://github.com/Polymer/lit-element/issues/227)).
-* Update lit-html dependency to ^0.12.0 ([#244](https://github.com/Polymer/lit-element/pull/244)),
-* Passes the components `this` reference to lit-html as the `eventContext`, allowing unbound event listener methods. ([#244](https://github.com/Polymer/lit-element/pull/244)).
+* Update lit-html dependency to ^0.12.0 ([#244](https://github.com/Polymer/lit-element/pull/244)).
+* Passes the component's `this` reference to lit-html as the `eventContext`, allowing unbound event listener methods ([#244](https://github.com/Polymer/lit-element/pull/244)).
 ### Added
-* A `disconnectedCallback()` method was added to UpdatingElement([#213](https://github.com/Polymer/lit-element/pull/213)).
+* A `disconnectedCallback()` method was added to UpdatingElement ([#213](https://github.com/Polymer/lit-element/pull/213)).
 * Added `@eventOptions()` decorator for setting event listener options on methods ([#244](https://github.com/Polymer/lit-element/pull/244)).
-<!-- ### Removed -->
-<!-- ### Fixed -->
 
 ## [0.6.1] - 2018-09-17
 
