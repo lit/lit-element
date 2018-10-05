@@ -18,7 +18,7 @@ import {LitElement} from '../lit-element.js';
 import {PropertyDeclaration, UpdatingElement} from './updating-element.js';
 
 export type Constructor<T> = {
-  new (...args: unknown[]): T
+  new (...args: any[]): T
 };
 
 /**
@@ -89,3 +89,35 @@ function _query<T>(queryFn: (target: NodeSelector, selector: string) => T) {
     });
   };
 }
+
+/**
+ * Adds event listener options to a method used as an event listener in a
+ * lit-html template.
+ *
+ * @param options An object that specifis event listener options as accepted by
+ * `EventTarget#addEventListener` and `EventTarget#removeEventListener`.
+ *
+ * Current browsers support the `capture`, `passive`, and `once` options. See:
+ * https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener#Parameters
+ *
+ * @example
+ *
+ *     class MyElement {
+ *
+ *       clicked = false;
+ *
+ *       render() {
+ *         return html`<div @click=${this._onClick}`><button></button></div>`;
+ *       }
+ *
+ *       @eventOptions({capture: true})
+ *       _onClick(e) {
+ *         this.clicked = true;
+ *       }
+ *     }
+ */
+export const eventOptions = (options: EventListenerOptions) =>
+    (proto: any, name: string) => {
+      // This comment is here to fix a disagreement between formatter and linter
+      Object.assign(proto[name], options);
+    };

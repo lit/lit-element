@@ -42,16 +42,16 @@ export class LitElement extends UpdatingElement {
     const templateResult = this.render() as any;
     if (templateResult instanceof TemplateResult) {
       (this.constructor as typeof LitElement)
-          .render(templateResult, this.renderRoot!, this.localName!);
+          .render(templateResult, this.renderRoot!,
+                  {scopeName : this.localName!, eventContext : this});
     }
   }
 
   /**
-   Invoked on each update to perform rendering tasks. This method must return a
-   lit-html TemplateResult. Setting properties inside this method will *not*
-   trigger the element to update.
+   * Invoked on each update to perform rendering tasks. This method must return
+   * a lit-html TemplateResult. Setting properties inside this method will *not*
+   * trigger the element to update.
    * @returns {TemplateResult} Must return a lit-html TemplateResult.
    */
   protected render() {}
-
 }

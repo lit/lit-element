@@ -978,7 +978,7 @@ suite('LitElement', () => {
           render() {
             const attr = 'attr';
             const prop = 'prop';
-            const event = (e: Event) => { this._event = e; };
+            const event = function(this: E, e: Event) { this._event = e; };
             return html
             `<div attr="${attr}" .prop="${prop}" @zug="${event}"></div>`;
           }
@@ -994,6 +994,24 @@ suite('LitElement', () => {
         d.dispatchEvent(e);
         assert.equal(el._event, e);
       });
+
+  test('event listeners are invoked with the right `this` value', async () => {
+    class E extends LitElement {
+      event?: Event;
+
+      render() { return html`<div @test=${this.onTest}></div>`; }
+
+      onTest(e: Event) { this.event = e; }
+    }
+    customElements.define(generateElementName(), E);
+    const el = new E();
+    container.appendChild(el);
+    await el.updateComplete;
+    const div = el.shadowRoot!.querySelector('div')!;
+    const event = new Event('test');
+    div.dispatchEvent(event);
+    assert.equal(el.event, event);
+  });
 
   test('`firstUpdated` called when element first updates', async () => {
     class E extends LitElement {

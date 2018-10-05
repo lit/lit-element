@@ -12,6 +12,7 @@
  * http://polymer.github.io/PATENTS.txt
  */
 
+import {eventOptions} from '../../lib/decorators.js';
 import {
   customElement,
   html,
@@ -118,6 +119,33 @@ suite('decorators', () => {
       // This is not true in ShadyDOM:
       // assert.instanceOf(divs, NodeList);
       assert.lengthOf(spans, 0);
+    });
+  });
+
+  suite('@eventOptions', () => {
+    test('allows capturing listeners', async () => {
+      @customElement(generateElementName() as keyof HTMLElementTagNameMap)
+      class C extends LitElement {
+        eventPhase?: number;
+
+        render() {
+          return html`
+            <div @click=${this.onClick}><button></button></div>
+          `;
+        }
+
+        @eventOptions({capture : true})
+        onClick(e: Event) {
+          this.eventPhase = e.eventPhase;
+        }
+      }
+
+      const c = new C();
+      container.appendChild(c);
+      await c.updateComplete;
+      const button = c.shadowRoot!.querySelector('button')!;
+      button.click();
+      assert.equal(c.eventPhase, Event.CAPTURING_PHASE);
     });
   });
 });
