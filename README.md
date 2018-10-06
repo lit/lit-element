@@ -119,7 +119,7 @@ into the element.
 ```html
   <script src="node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
   <script type="module">
-    import {LitElement, html} from '@polymer/lit-element';
+    import {LitElement, html} from './node_modules/@polymer/lit-element/lit-element.js';
 
     class MyElement extends LitElement {
 
