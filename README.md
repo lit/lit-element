@@ -224,6 +224,7 @@ standard currently available in [TypeScript](https://www.typescriptlang.org/) or
 
 ```ts
 import {LitElement, html, property} from '@polymer/lit-element';
+import {repeat} from 'lit-html/directives/repeat';
 
 class MyElement extends LitElement {
 
