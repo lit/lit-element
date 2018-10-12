@@ -65,6 +65,7 @@ and renders declaratively using `lit-html`.
     * expression: ``` html`<div>${this.disabled ? 'Off' : 'On'}</div>` ```
     * property: ``` html`<x-foo .bar="${this.bar}"></x-foo>` ```
     * attribute: ``` html`<div class="${this.color} special"></div>` ```
+    * boolean attribute: ``` html`<input type="checkbox" ?checked=${checked}>` ```
     * event handler: ``` html`<button @click="${this._clickHandler}"></button>` ```
 
 ## Getting started
