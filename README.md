@@ -45,8 +45,8 @@ and renders declaratively using `lit-html`.
     according to the rules for the `attribute` property option, will be set to the
     value of the property serialized using the rules from the `type` property option.
     Note, `type: Boolean` has special handling by default which means that truthy
-    values result in the presense of the attribute, where as falsy values result
-    in the absense of the attribute.
+    values result in the presence of the attribute, whereas falsy values result
+    in the absence of the attribute.
     * `hasChanged`: A function that indicates whether a property should be considered
     changed when it is set and thus result in an update. The function should take the
     `newValue` and `oldValue` and return `true` if an update should be requested.
