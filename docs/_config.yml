@@ -5,3 +5,4 @@ markdown: kramdown
 kramdown: 
   parse_block_html: true
 projects: projects
+baseurl: lit-element
