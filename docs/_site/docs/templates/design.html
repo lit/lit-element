@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<head>
+  <title>Designing efficient LitElement templates &ndash; lit-element docs</title>
+  
+  <script src="/build/gh-pages/node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
+  <script src="/build/gh-pages/node_modules/@webcomponents/webcomponentsjs/custom-elements-es5-adapter.js"></script>
+
+  <link rel="stylesheet" href= "/css/main.css">
+  <script 
+    type="module" 
+    src="/build/gh-pages/src/index.js">
+  </script>
+</head>
+
+<body>
+  <nav class="main-nav">
+    <a class="logo" href="/">lit-element docs</a>
+    <div class="flex"></div>
+    <ul>
+      <li><a href="https://github.com/polymer/lit-element">GitHub</a></li>
+      <li><a href="/try">Try lit-element</a></li>
+      <li><a href="/api">API</a></li>
+    </ul>
+  </nav>
+
+  <link rel="stylesheet" href="/css/pygments.css">
+<main>
+
+  <nav class="toc">
+    <ul>
+  <li>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+        <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+        <path d="M0 0h24v24H0z" fill="none"/>
+    </svg>
+    <input id="searchBox" type="search" placeholder="Search site">
+  </li>
+  
+  <li>
+    <a href="/try/">Try lit-element</a>
+
+    
+  </li>
+  
+  <li>
+    <a href="/docs/">API Documentation</a>
+
+    
+    <ul>
+        
+        <li>
+          <a href="/docs/create">Create an element</a>
+        </li>
+        
+        <li>
+          <a href="/docs/import">Import an existing element</a>
+        </li>
+        
+        <li>
+          <a href="/docs/templates">Write a template</a>
+        </li>
+        
+        <li>
+          <a href="/docs/properties">Work with properties</a>
+        </li>
+        
+        <li>
+          <a href="/docs/lifecycle">Work with the element lifecycle</a>
+        </li>
+        
+        <li>
+          <a href="/docs/events">Work with events</a>
+        </li>
+        
+        <li>
+          <a href="/docs/reuse">Create reusable features and classes</a>
+        </li>
+        
+        <li>
+          <a href="/docs/style">Style elements with CSS</a>
+        </li>
+        
+        <li>
+          <a href="/docs/api">API reference</a>
+        </li>
+        
+    </ul>
+    
+  </li>
+  
+  <li>
+    <a href="/tools/">Develop and deploy</a>
+
+    
+  </li>
+  
+  <li>
+    <a href="/about">About lit-element</a>
+
+    
+  </li>
+  
+</ul>
+
+  </nav>
+
+  <article>      
+    
+<div class="breadcrumbs">
+  
+  
+  
+  <span>
+    <a href="/docs/">API Documentation</a>
+  </span>
+  
+
+</div>
+
+
+
+
+
+<h1><a href="/docs/templates">Write a template</a></h1>
+<b>In this topic:</b> 
+<ul>
+  
+    
+    <li><a href="/docs/templates/index">Write a template</a></li>
+    
+    
+  
+    
+    <li><a href="/docs/templates/expressions">Use plain JavaScript expressions in a template</a></li>
+    
+    
+  
+    
+    <li><a href="/docs/templates/annotations">Bind data to a child element in a template</a></li>
+    
+    
+  
+    
+    <li><a href="/docs/templates/compose">Compose and nest lit-element templates</a></li>
+    
+    
+  
+    
+    <li><a href="/docs/templates/slots">Render light DOM children in a template</a></li>
+    
+    
+  
+    
+    <li class="current"><a href="/docs/templates/design">Designing efficient LitElement templates</a></li>
+    
+    
+  
+</ul>
+
+<hr />
+
+<h2><a href="/docs/templates/design">Designing efficient LitElement templates</a></h2>
+
+
+
+
+
+
+
+<div class="summary">
+
+  <h3 id="summary">Summary</h3>
+
+  <p>LitElement-based elements render and re-render asynchronously, updating in response to batched property changes. To maximize performance, design your element templates as a function of element properties.</p>
+
+</div>
+
+<h3 id="efficient-rendering">Efficient rendering</h3>
+
+<p>LitElement templates react to property changes. By default, all of an element’s properties are observed, and a change to any one of them will trigger an update.</p>
+
+<p>Updates are processed asynchronously, so that an element re-renders in response to a batch of property changes. Using lit-html to render and re-render templates, only the DOM nodes that change are re-drawn.</p>
+
+<p>This improves performance and ensures consistent state between and during property changes.</p>
+
+<p>The element below updates whenever either of its properties changes. Only the parts of the DOM that change are re-rendered.</p>
+
+<p><em>my-element.js</em></p>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="p">{</span> <span class="nx">LitElement</span><span class="p">,</span> <span class="nx">html</span> <span class="p">}</span> <span class="k">from</span> <span class="s1">'@polymer/lit-element'</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nx">MyElement</span> <span class="kd">extends</span> <span class="nx">LitElement</span> <span class="p">{</span>
+  <span class="kr">static</span> <span class="kd">get</span> <span class="nx">properties</span><span class="p">(){</span>
+    <span class="k">return</span> <span class="p">{</span>
+      <span class="na">prop1</span><span class="p">:</span> <span class="nb">Number</span><span class="p">,</span>
+      <span class="na">prop2</span><span class="p">:</span> <span class="nb">Number</span>
+    <span class="p">};</span>
+  <span class="p">}</span>
+  <span class="kd">constructor</span><span class="p">(){</span>
+    <span class="k">super</span><span class="p">();</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">prop1</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">prop2</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="nx">render</span><span class="p">(){</span>
+    <span class="k">return</span> <span class="nx">html</span><span class="s2">`
+      &lt;p&gt;Static paragraph.&lt;/p&gt;
+      &lt;p&gt;prop1: </span><span class="p">${</span><span class="k">this</span><span class="p">.</span><span class="nx">prop1</span><span class="p">}</span><span class="s2">&lt;/p&gt;
+      &lt;button @click="</span><span class="p">${()</span> <span class="o">=&gt;</span> <span class="k">this</span><span class="p">.</span><span class="nx">changeMe</span><span class="p">(</span><span class="s1">'prop1'</span><span class="p">)}</span><span class="s2">"&gt;change prop1&lt;/button&gt;
+      &lt;button @click="</span><span class="p">${()</span> <span class="o">=&gt;</span> <span class="k">this</span><span class="p">.</span><span class="nx">changeMe</span><span class="p">(</span><span class="s1">'prop2'</span><span class="p">)}</span><span class="s2">"&gt;change prop2&lt;/button&gt;
+    `</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="nx">updated</span><span class="p">(){</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'Updated'</span><span class="p">);</span>
+  <span class="p">}</span>
+  <span class="nx">changeMe</span><span class="p">(</span><span class="nx">prop</span><span class="p">){</span>
+    <span class="kd">var</span> <span class="nx">rand</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">()</span><span class="o">*</span><span class="mi">100</span><span class="p">);</span>
+    <span class="nx">prop</span><span class="o">==</span><span class="s1">'prop1'</span><span class="p">?</span><span class="k">this</span><span class="p">.</span><span class="nx">prop1</span><span class="o">=</span><span class="nx">rand</span><span class="p">:</span><span class="k">this</span><span class="p">.</span><span class="nx">prop2</span><span class="o">=</span><span class="nx">rand</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+<span class="nx">customElements</span><span class="p">.</span><span class="nx">define</span><span class="p">(</span><span class="s1">'my-element'</span><span class="p">,</span> <span class="nx">MyElement</span><span class="p">);</span>
+
+</code></pre></div></div>
+
+<project-displayer folder="/projects/docs/templates1" openFile="my-element.js" forceEmbedLayout="" view="editor">
+<stack-blitz slot="embed"></stack-blitz>
+</project-displayer>
+
+<h3 id="design-templates-as-a-function-of-properties">Design templates as a function of properties</h3>
+
+<p>To maximize the benefits of using the LitElement library, we recommend that you design your element’s template as a pure function of its properties.</p>
+
+<p>This means that an element’s <code class="highlighter-rouge">render</code> function</p>
+
+<ul>
+  <li>should not change the element’s state.</li>
+  <li>should not have side effects.</li>
+  <li>should not depend on anything except the element’s properties.</li>
+  <li>should return the same result when given the same inputs; that is, with the same set of property values, you should get the same template.</li>
+</ul>
+
+<p>We also recommend that you avoid manipulating DOM. Instead, express the element’s template as a function of its state, and capture element state in properties.</p>
+
+<h3 id="example">Example</h3>
+
+<p>The following element uses inefficient DOM manipulation:</p>
+
+<p><em>dom-manip.js</em></p>
+
+<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>import { LitElement, html } from '@polymer/lit-element';
+
+/**
+ * Anti-pattern. Avoid manipulating DOM.
+ */
+class DomManip extends LitElement {
+  constructor(){
+    super();
+    this.addEventListener('stuff-loaded', this.doSomething.bind(this));
+    this.loadStuff();
+  }
+  render(){
+    return html`
+      &lt;p id="message"&gt;Loading&lt;/p&gt;
+    `;
+  }
+  doSomething(){
+    this.shadowRoot.getElementById('message').innerHTML='Loading complete.';
+  }
+  loadStuff(){
+    setInterval(() =&gt; {
+      var loaded = new CustomEvent('stuff-loaded', { detail: {}});
+      this.dispatchEvent(loaded);
+    }, 3000);
+  }
+}
+customElements.define('dom-manip', DomManip);
+
+</code></pre></div></div>
+
+<p>Rewrite the element’s template as a function of its properties by capturing the load message as a property, and setting the property in response to the event:</p>
+
+<p><em>update-properties.js</em></p>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="p">{</span> <span class="nx">LitElement</span><span class="p">,</span> <span class="nx">html</span> <span class="p">}</span> <span class="k">from</span> <span class="s1">'@polymer/lit-element'</span><span class="p">;</span>
+
+<span class="cm">/**
+ * Use this pattern instead.
+ */</span>
+<span class="kd">class</span> <span class="nx">UpdateProperties</span> <span class="kd">extends</span> <span class="nx">LitElement</span> <span class="p">{</span>
+  <span class="kr">static</span> <span class="kd">get</span> <span class="nx">properties</span><span class="p">(){</span>
+    <span class="k">return</span> <span class="p">{</span>
+      <span class="na">message</span><span class="p">:</span> <span class="nb">String</span>
+    <span class="p">};</span>
+  <span class="p">}</span>
+  <span class="kd">constructor</span><span class="p">(){</span>
+    <span class="k">super</span><span class="p">();</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">message</span><span class="o">=</span><span class="s1">'Loading'</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">'stuff-loaded'</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">doSomething</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="k">this</span><span class="p">));</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">loadStuff</span><span class="p">();</span>
+  <span class="p">}</span>
+  <span class="nx">render</span><span class="p">(){</span>
+    <span class="k">return</span> <span class="nx">html</span><span class="s2">`
+      &lt;p&gt;</span><span class="p">${</span><span class="k">this</span><span class="p">.</span><span class="nx">message</span><span class="p">}</span><span class="s2">&lt;/p&gt;
+    `</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="nx">doSomething</span><span class="p">(){</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">message</span><span class="o">=</span><span class="s1">'Loading complete.'</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="nx">loadStuff</span><span class="p">(){</span>
+    <span class="nx">setInterval</span><span class="p">(()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+      <span class="kd">var</span> <span class="nx">loaded</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">CustomEvent</span><span class="p">(</span><span class="s1">'stuff-loaded'</span><span class="p">,</span> <span class="p">{</span> <span class="na">detail</span><span class="p">:</span> <span class="p">{}});</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">dispatchEvent</span><span class="p">(</span><span class="nx">loaded</span><span class="p">);</span>
+    <span class="p">},</span> <span class="mi">3000</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="nx">customElements</span><span class="p">.</span><span class="nx">define</span><span class="p">(</span><span class="s1">'update-properties'</span><span class="p">,</span> <span class="nx">UpdateProperties</span><span class="p">);</span>
+
+</code></pre></div></div>
+
+<project-displayer folder="/projects/docs/templates" openFile="index.html" forceEmbedLayout="" view="editor">
+<stack-blitz slot="embed"></stack-blitz>
+</project-displayer>
+
+
+
+<div class="bottomnav">
+  <span class="prev">
+    
+  </span>
+  <span class="next">
+    
+  </span>
+</div>
+
+
+  
+  </article>
+
+</main>
+
+<script>
+  searchBox.addEventListener('keypress', function(event) {
+    if (event.keyCode === 13) {  // enter
+      // Do the search.
+      const site = 'polymer.github.io/pwa-starter-kit';
+      const query = searchBox.value;
+      window.location = `https://www.google.com/search?q=site%3A${site}+${query}`
+      event.preventDefault();
+    }
+  });
+</script>
+
+
+  <footer>
+    <p>© 2018 Polymer Authors. Code licensed under the
+    <a target="_blank" href="http://polymer.github.io/LICENSE.txt"> BSD License</a>. </p>
+    <ul>
+      <li><a href="https://www.github.com/polymer/pwa-starter-kit" rel="noopener" target="_blank">GitHub</a></li>
+      <li><a href="https://www.twitter.com/polymer" rel="noopener" target="_blank">Twitter</a></li>
+      <li><a href="https://www.youtube.com/watch?v=we3lLo-UFtk" rel="noopener" target="_blank">YouTube</a></li>
+    </ul>
+  </footer>
+</body>
+</html>

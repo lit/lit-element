@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<head>
+  <title>Import an existing element &ndash; lit-element docs</title>
+  
+  <script src="/build/gh-pages/node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
+  <script src="/build/gh-pages/node_modules/@webcomponents/webcomponentsjs/custom-elements-es5-adapter.js"></script>
+
+  <link rel="stylesheet" href= "/css/main.css">
+  <script 
+    type="module" 
+    src="/build/gh-pages/src/index.js">
+  </script>
+</head>
+
+<body>
+  <nav class="main-nav">
+    <a class="logo" href="/">lit-element docs</a>
+    <div class="flex"></div>
+    <ul>
+      <li><a href="https://github.com/polymer/lit-element">GitHub</a></li>
+      <li><a href="/try">Try lit-element</a></li>
+      <li><a href="/api">API</a></li>
+    </ul>
+  </nav>
+
+  <link rel="stylesheet" href="/css/pygments.css">
+<main>
+
+  <nav class="toc">
+    <ul>
+  <li>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+        <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+        <path d="M0 0h24v24H0z" fill="none"/>
+    </svg>
+    <input id="searchBox" type="search" placeholder="Search site">
+  </li>
+  
+  <li>
+    <a href="/try/">Try lit-element</a>
+
+    
+  </li>
+  
+  <li>
+    <a href="/docs/">API Documentation</a>
+
+    
+    <ul>
+        
+        <li>
+          <a href="/docs/create">Create an element</a>
+        </li>
+        
+        <li>
+          <a href="/docs/import">Import an existing element</a>
+        </li>
+        
+        <li>
+          <a href="/docs/templates">Write a template</a>
+        </li>
+        
+        <li>
+          <a href="/docs/properties">Work with properties</a>
+        </li>
+        
+        <li>
+          <a href="/docs/lifecycle">Work with the element lifecycle</a>
+        </li>
+        
+        <li>
+          <a href="/docs/events">Work with events</a>
+        </li>
+        
+        <li>
+          <a href="/docs/reuse">Create reusable features and classes</a>
+        </li>
+        
+        <li>
+          <a href="/docs/style">Style elements with CSS</a>
+        </li>
+        
+        <li>
+          <a href="/docs/api">API reference</a>
+        </li>
+        
+    </ul>
+    
+  </li>
+  
+  <li>
+    <a href="/tools/">Develop and deploy</a>
+
+    
+  </li>
+  
+  <li>
+    <a href="/about">About lit-element</a>
+
+    
+  </li>
+  
+</ul>
+
+  </nav>
+
+  <article>      
+    
+<div class="breadcrumbs">
+  
+  
+  
+  <span>
+    <a href="/docs/">API Documentation</a>
+  </span>
+  
+
+</div>
+
+
+
+ 
+
+<h1><a href="/docs/import.html">Import an existing element</a></h1>
+
+<hr/>
+
+
+
+
+
+<p>Import and use a LitElement-based element in an HTML document or another element.</p>
+
+<p><strong>On this page:</strong></p>
+
+<ul>
+  <li><a href="#thirdparty">Import and use a third-party element</a></li>
+  <li><a href="#own">Import and use your own element</a></li>
+</ul>
+
+<p><a name="thirdparty"></a></p>
+
+<h3 id="import-and-use-a-third-party-element">Import and use a third-party element</h3>
+
+<p>To work with an existing LitElement-based element made by a third party, refer to the third party documentation for instructions on how to install the element and use it in your project.</p>
+
+<p>Many elements are published on npm and can be installed from the command line:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd </span>my-project-folder
+npm install package-name <span class="nt">--save</span>
+</code></pre></div></div>
+
+<p>In an HTML document, an element published on npm can be imported from the <code class="highlighter-rouge">node_modules</code> folder:</p>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;head&gt;</span>
+  <span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"module"</span> <span class="na">src=</span><span class="s">"node_modules/package-name/existing-element.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+<span class="nt">&lt;/head&gt;</span>
+<span class="nt">&lt;body&gt;</span>
+  <span class="nt">&lt;existing-element&gt;&lt;/existing-element&gt;</span>
+<span class="nt">&lt;/body&gt;</span>
+</code></pre></div></div>
+
+<p>To import an existing element and use it in your own LitElement-based project:</p>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="s1">'package-name/existing-element.js'</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nx">MyElement</span> <span class="kd">extends</span> <span class="nx">LitElement</span><span class="p">{</span>
+  <span class="nx">render</span><span class="p">(){</span>
+    <span class="k">return</span> <span class="nx">html</span><span class="s2">`
+      &lt;existing-element&gt;&lt;/existing-element&gt;
+    `</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+<span class="nx">customElements</span><span class="p">.</span><span class="nx">define</span><span class="p">(</span><span class="s1">'existing-element'</span><span class="p">,</span> <span class="nx">MyElement</span><span class="p">);</span>
+</code></pre></div></div>
+
+<div class="note">
+
+  <p><strong>Package names must be transformed into URLs for a browser to load them.</strong> If you’re working with Polymer CLI, <code class="highlighter-rouge">polymer serve</code> and <code class="highlighter-rouge">polymer build</code> take care of this for you. See the <a href="/tools/">Develop and deploy</a> documentation for more info.</p>
+
+</div>
+
+<p><a name="own"></a></p>
+
+<h3 id="import-and-use-your-own-element">Import and use your own element</h3>
+
+<p>In an HTML document:</p>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;head&gt;</span>
+  <span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"module"</span> <span class="na">src=</span><span class="s">"/path/to/my-element.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+<span class="nt">&lt;/head&gt;</span>
+<span class="nt">&lt;body&gt;</span>
+  <span class="nt">&lt;my-element&gt;&lt;/my-element&gt;</span>
+<span class="nt">&lt;/body&gt;</span>
+</code></pre></div></div>
+
+<p>In another LitElement-based element:</p>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Use relative paths for peer dependencies</span>
+<span class="k">import</span> <span class="s1">'./my-element.js'</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nx">MyOtherElement</span> <span class="kd">extends</span> <span class="nx">LitElement</span><span class="p">{</span>
+  <span class="nx">render</span><span class="p">(){</span>
+    <span class="k">return</span> <span class="nx">html</span><span class="s2">`
+      &lt;my-element&gt;&lt;/my-element&gt;
+    `</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+<span class="nx">customElements</span><span class="p">.</span><span class="nx">define</span><span class="p">(</span><span class="s1">'my-other-element'</span><span class="p">,</span> <span class="nx">MyOtherElement</span><span class="p">);</span>
+</code></pre></div></div>
+
+
+<div class="bottomnav">
+  <span class="prev">
+    
+  </span>
+  <span class="next">
+    
+  </span>
+</div>
+
+
+  
+  </article>
+
+</main>
+
+<script>
+  searchBox.addEventListener('keypress', function(event) {
+    if (event.keyCode === 13) {  // enter
+      // Do the search.
+      const site = 'polymer.github.io/pwa-starter-kit';
+      const query = searchBox.value;
+      window.location = `https://www.google.com/search?q=site%3A${site}+${query}`
+      event.preventDefault();
+    }
+  });
+</script>
+
+
+  <footer>
+    <p>© 2018 Polymer Authors. Code licensed under the
+    <a target="_blank" href="http://polymer.github.io/LICENSE.txt"> BSD License</a>. </p>
+    <ul>
+      <li><a href="https://www.github.com/polymer/pwa-starter-kit" rel="noopener" target="_blank">GitHub</a></li>
+      <li><a href="https://www.twitter.com/polymer" rel="noopener" target="_blank">Twitter</a></li>
+      <li><a href="https://www.youtube.com/watch?v=we3lLo-UFtk" rel="noopener" target="_blank">YouTube</a></li>
+    </ul>
+  </footer>
+</body>
+</html>

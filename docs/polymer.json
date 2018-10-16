@@ -1,0 +1,9 @@
+{
+  "npm": true,
+  "moduleResolution": "node",
+  "entrypoint": "src/index.html",
+  "builds": [{
+    "name": "gh-pages",
+    "bundled": false
+  }]
+}

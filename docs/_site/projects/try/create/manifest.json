@@ -1,0 +1,14 @@
+{
+  "files": [
+    "custom-element.js",
+    "index.html",
+    "index.ts"
+  ],
+  "title": "lit-element code sample",
+  "description": "lit-element code sample",
+  "template": "typescript",
+  "dependencies": {
+    "@polymer/lit-element": "latest",
+    "@webcomponents/webcomponentsjs": "latest"
+  }
+}

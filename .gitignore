@@ -15,3 +15,9 @@ lit-element.d.ts
 /demo/**/*.js.map
 
 !custom_typings/
+
+#Docs
+
+docs/node_modules
+docs/build
+docs/_includes/projects

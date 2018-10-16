@@ -1,0 +1,28 @@
+topics:
+  - title: Create an element
+    url: /docs/create
+    toc: 
+      - title: Create an element
+        url: /docs/create/index
+      - title: Use typescript decorators to create an element class
+        url: /docs/create/typescript
+      - title: Define an element's render root
+        url: /docs/create/renderroot
+      - title: Designing web components
+        url: /docs/create/design
+  - title: Write a template
+    url: /docs/templates
+    toc: 
+      - title: Write a template
+        url: /docs/templates/index
+      - title: Use plain JavaScript expressions in a template
+        url: /docs/templates/expressions
+      - title: Bind data to a child element in a template 
+        url: /docs/templates/annotations
+      - title: Compose and nest lit-element templates 
+        url: /docs/templates/compose
+      - title: Render light DOM children in a template 
+        url: /docs/templates/slots
+      - title: Designing efficient LitElement templates
+        url: /docs/templates/design
+

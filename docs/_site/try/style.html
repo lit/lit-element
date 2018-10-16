@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<head>
+  <title>Style an element template &ndash; lit-element docs</title>
+  
+  <script src="/build/gh-pages/node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
+  <script src="/build/gh-pages/node_modules/@webcomponents/webcomponentsjs/custom-elements-es5-adapter.js"></script>
+
+  <link rel="stylesheet" href= "/css/main.css">
+  <script 
+    type="module" 
+    src="/build/gh-pages/src/index.js">
+  </script>
+</head>
+
+<body>
+  <nav class="main-nav">
+    <a class="logo" href="/">lit-element docs</a>
+    <div class="flex"></div>
+    <ul>
+      <li><a href="https://github.com/polymer/lit-element">GitHub</a></li>
+      <li><a href="/try">Try lit-element</a></li>
+      <li><a href="/api">API</a></li>
+    </ul>
+  </nav>
+
+  <link rel="stylesheet" href="/css/pygments.css">
+<main>
+
+  <nav class="toc">
+    <ul>
+  <li>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+        <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+        <path d="M0 0h24v24H0z" fill="none"/>
+    </svg>
+    <input id="searchBox" type="search" placeholder="Search site">
+  </li>
+  
+  <li>
+    <a href="/try/">Try lit-element</a>
+
+    
+    <ul>
+        
+        <li>
+          <a href="/try/create">Create your first custom element</a>
+        </li>
+        
+        <li>
+          <a href="/try/use">Use your element in a web page</a>
+        </li>
+        
+        <li>
+          <a href="/try/properties">Add a property value to your element template</a>
+        </li>
+        
+        <li>
+          <a href="/try/expressions">Add a loop and an “if” statement to your template</a>
+        </li>
+        
+        <li>
+          <a href="/try/events">Add an event handler to your template</a>
+        </li>
+        
+        <li>
+          <a href="/try/style">Style your element template</a>
+        </li>
+        
+    </ul>
+    
+  </li>
+  
+  <li>
+    <a href="/docs/">API Documentation</a>
+
+    
+  </li>
+  
+  <li>
+    <a href="/tools/">Develop and deploy</a>
+
+    
+  </li>
+  
+  <li>
+    <a href="/about">About lit-element</a>
+
+    
+  </li>
+  
+</ul>
+
+  </nav>
+
+  <article>      
+    
+<div class="breadcrumbs">
+  
+  
+  
+  <span>
+    <a href="/try/">Try lit-element</a>
+  </span>
+  
+
+</div>
+
+
+
+ 
+
+<h1><a href="/try/style.html">Style an element template</a></h1>
+
+<hr/>
+
+
+
+
+
+<p>Style an element by including a <code class="highlighter-rouge">style</code> block in its template:</p>
+
+<p><em>custom-element.js</em></p>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">render</span><span class="p">(){</span>
+  <span class="k">return</span> <span class="nx">html</span><span class="s2">`
+    &lt;style&gt;
+      p { color: blue }
+    &lt;/style&gt;
+    &lt;p&gt;hello world from custom-element&lt;/p&gt;
+  `</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Styles inside custom element templates are encapsulated. These styles will only affect elements inside the template-not the main document.</p>
+
+<p><em>index.html</em></p>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;html&gt;</span>
+  <span class="nt">&lt;head&gt;</span>
+    <span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"module"</span> <span class="na">src=</span><span class="s">"./custom-element.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+  <span class="nt">&lt;/head&gt;</span>
+  <span class="nt">&lt;body&gt;</span>
+    <span class="nt">&lt;custom-element&gt;&lt;/custom-element&gt;</span>  
+    <span class="nt">&lt;p&gt;</span>A paragraph in the main document<span class="nt">&lt;/p&gt;</span>      
+  <span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</code></pre></div></div>
+
+<project-displayer folder="/projects/try/style" openFile="custom-element.js" forceEmbedLayout="" view="editor">
+<stack-blitz slot="embed"></stack-blitz>
+</project-displayer>
+
+
+
+<div class="bottomnav">
+  <span class="prev">
+     
+    <a href="/try/events">&lt;&lt;&nbsp;Use event handlers</a>
+    
+  </span>
+  <span class="next">
+    
+  </span>
+</div>
+
+
+  
+  </article>
+
+</main>
+
+<script>
+  searchBox.addEventListener('keypress', function(event) {
+    if (event.keyCode === 13) {  // enter
+      // Do the search.
+      const site = 'polymer.github.io/pwa-starter-kit';
+      const query = searchBox.value;
+      window.location = `https://www.google.com/search?q=site%3A${site}+${query}`
+      event.preventDefault();
+    }
+  });
+</script>
+
+
+  <footer>
+    <p>© 2018 Polymer Authors. Code licensed under the
+    <a target="_blank" href="http://polymer.github.io/LICENSE.txt"> BSD License</a>. </p>
+    <ul>
+      <li><a href="https://www.github.com/polymer/pwa-starter-kit" rel="noopener" target="_blank">GitHub</a></li>
+      <li><a href="https://www.twitter.com/polymer" rel="noopener" target="_blank">Twitter</a></li>
+      <li><a href="https://www.youtube.com/watch?v=we3lLo-UFtk" rel="noopener" target="_blank">YouTube</a></li>
+    </ul>
+  </footer>
+</body>
+</html>

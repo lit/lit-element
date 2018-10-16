@@ -1,0 +1,26 @@
+{
+  "name": "lit-element-docs",
+  "version": "1.0.0",
+  "description": "lit-element documentation",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/katejeffreys/lit-element-docs.git"
+  },
+  "contributors": [
+    "The Polymer Authors"
+  ],
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/katejeffreys/lit-element-docs/issues"
+  },
+  "homepage": "https://github.com/katejeffreys/lit-element-docs#readme",
+  "dependencies": {
+    "@polymer/lit-element": "^0.6.1",
+    "@stackblitz/sdk": "^1.2.0",
+    "@webcomponents/webcomponentsjs": "^2.1.3"
+  }
+}

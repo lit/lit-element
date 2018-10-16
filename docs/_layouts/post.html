@@ -1,0 +1,28 @@
+---
+layout: default
+---
+
+<link rel="stylesheet" href="{{site.baseurl}}/css/pygments.css">
+<main>
+
+  <nav class="toc">
+    {% include tocnav.html %}
+  </nav>
+
+  <article>      
+    {% include article.html %}  
+  </article>
+
+</main>
+
+<script>
+  searchBox.addEventListener('keypress', function(event) {
+    if (event.keyCode === 13) {  // enter
+      // Do the search.
+      const site = 'polymer.github.io/pwa-starter-kit';
+      const query = searchBox.value;
+      window.location = `https://www.google.com/search?q=site%3A${site}+${query}`
+      event.preventDefault();
+    }
+  });
+</script>

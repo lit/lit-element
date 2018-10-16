@@ -1,0 +1,61 @@
+
+<div class="breadcrumbs">
+  {% assign parent = site.data.toc.toc | where:"url", page.parent %}
+  
+  {% if parent[0].url %}
+  <span>
+    <a href="{{site.baseurl}}{{parent[0].url}}">{{parent[0].title}}</a>
+  </span>
+  {%endif%}
+
+</div>
+
+{% assign topic = site.data.topics.topics | where:"url", page.topic %}
+
+{% if topic[0] %}
+
+<h1><a href="{{site.baseurl}}{{topic[0].url}}">{{topic[0].title}}</a></h1>
+<b>In this topic:</b> 
+<ul>
+  {% for item in topic[0].toc %}
+    {% if item.url == page.url %}
+    <li class="current"><a href="{{item.url}}">{{item.title}}</a></li>
+    {% else %}
+    <li><a href="{{item.url}}">{{item.title}}</a></li>
+    {%endif%}
+    
+  {% endfor %}
+</ul>
+
+<hr />
+
+<h2><a href="{{site.baseurl}}{{page.url}}">{{page.title}}</a></h2>
+
+
+
+{% else %} 
+
+<h1><a href="{{site.baseurl}}{{page.url}}">{{page.title}}</a></h1>
+
+<hr/>
+
+{% endif %}
+
+
+
+{{ content }}
+
+<div class="bottomnav">
+  <span class="prev">
+    {% if page.prev %} 
+    <a href="{{site.baseurl}}{{page.prev}}">&lt;&lt;&nbsp;{{page.prevtitle}}</a>
+    {% endif %}
+  </span>
+  <span class="next">
+    {% if page.next %} 
+    <a href="{{site.baseurl}}{{page.next}}">{{page.nexttitle}}&nbsp;&gt;&gt;</a>
+    {% endif %}
+  </span>
+</div>
+
+

@@ -1,0 +1,7 @@
+name: lit-element docs
+description: lit-element docs
+exclude: [package.json, polymer.json, src, node_modules, package-lock.json]
+markdown: kramdown
+kramdown: 
+  parse_block_html: true
+projects: projects
