@@ -4,32 +4,31 @@ layout: default
 
 <link rel="stylesheet" href="{{site.baseurl}}/css/pygments.css">
 <main>
-  {% assign title = "LitElement Documentation" %}
-  {% assign sections = site.data.site.toc %}
-  {% assign section = sections[page.section] %}
-  {% assign topics = section.toc %}
-  {% assign topic = topics[page.topic] %}
-  {% assign subtopics = topic.toc %}
-  {% assign subtopic = subtopics[page.subtopic] %}
+  {%- assign title = "LitElement Documentation" -%}
+  {%- assign sections = site.data.site.toc -%}
+  {%- assign section = sections[page.section] -%}
+  {%- assign topics = section.toc -%}
+  {%- assign topic = topics[page.topic] -%}
+  {%- assign subtopics = topic.toc -%}
+  {%- assign subtopic = subtopics[page.subtopic] -%}
   
-  {% if subtopic %}
-    {% assign self = subtopic %}
-  {% elsif topic %}
-    {% assign self = topic %}
-  {% elsif section %}
-    {% assign self=section %}
-  {% else %}
-    {% assign self = site.data.site %}
-  {%endif%}
+  {%- if subtopic -%}
+    {%- assign self = subtopic -%}
+  {%- elsif topic -%}
+    {%- assign self = topic -%}
+  {%- elsif section -%}
+    {%- assign self=section -%}
+  {%- else -%}
+    {%- assign self = site.data.site -%}
+  {%- endif -%}
     
   <nav class="toc">
-    {% include tocnav.html %}
+    {%- include tocnav.html -%}
   </nav>
 
   <article>      
-    {% include article.html %}  
+    {%- include article.html -%}  
   </article>
-
 </main>
 
 <script>

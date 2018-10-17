@@ -1,19 +1,15 @@
 <!DOCTYPE html>
 <head>
-  <title>{% if page.title %}{{ page.title }} &ndash;{% endif %} {{ site.name }}</title>
-  
+  <title>{%- if page.title -%}{{ page.title }} &ndash;{%- endif -%} {{ site.name }}</title>
   <script src="{{site.baseurl}}/build/gh-pages/node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
   <script src="{{site.baseurl}}/build/gh-pages/node_modules/@webcomponents/webcomponentsjs/custom-elements-es5-adapter.js"></script>
-
   <link rel="stylesheet" href= "{{site.baseurl}}/css/main.css">
   <script 
     type="module" 
     src="{{site.baseurl}}/build/gh-pages/src/index.js">
   </script>
 </head>
-
 <body>
-  
   <nav class="main-nav">
     <a class="logo" href="{{site.baseurl}}/">lit-element docs</a>
     <div class="flex"></div>
@@ -23,9 +19,7 @@
       <li><a href="{{site.baseurl}}/api">API</a></li>
     </ul>
   </nav>
-  
   {{content}}
-
   <footer>
     <p>© 2018 Polymer Authors. Code licensed under the
     <a target="_blank" href="http://polymer.github.io/LICENSE.txt"> BSD License</a>. </p>

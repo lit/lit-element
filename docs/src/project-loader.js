@@ -1,24 +1,24 @@
 import { LitElement, html } from '@polymer/lit-element';
 
 export class ProjectLoader extends LitElement {
-  static get properties(){
+  static get properties() {
     return {
       folder: { type: String },
       project: { type: Object }
     };
   }
   
-  render(){
+  render() {
     return html``;
   }
 
-  firstUpdated(){
-    this.project={};
+  firstUpdated() {
+    this.project = {};
     this.loadProject();
   }
   
-  loadProject(){
-    if(this.folder=='undefined'){
+  loadProject() {
+    if (this.folder == undefined) {
       console.log("Missing folder property.");
       return;
     } else console.log('loading', this.folder);
@@ -40,7 +40,7 @@ export class ProjectLoader extends LitElement {
       }).catch((error) => {console.log(error)});
     }).catch((error) => {console.log(error)});
   }
-  getFiles(manifest){
+  getFiles(manifest) {
     return Promise.all(manifest.files.map(filename => { return (
       fetch(`${this.folder}/${filename}`)
       .then(result => {
@@ -50,7 +50,7 @@ export class ProjectLoader extends LitElement {
       })
     )})).catch((error) => {console.log(error)});
   }
-  uglyHack(r){
+  uglyHack(r) {
     var regex = /\.\.\//g;
     return (r.replace("../node_modules/", "").replace(regex, ""));
   }

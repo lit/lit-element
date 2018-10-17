@@ -28,7 +28,7 @@ render(){
 }
 ```
 
-**Use simple JavaScript expressions to include properties, logic, and event handlers:**
+**Use JavaScript expressions to include properties, logic, and event handlers:**
 
 ```js
 render(){ 
@@ -50,6 +50,6 @@ render(){
 
 Learn more:
 
-* [Try lit-element](/try/) without intalling anything.
+* [Try lit-element](/try/) without installing anything.
 * [Install lit-element locally](/tools/setup).
 * [See the API documentation.](/api/).

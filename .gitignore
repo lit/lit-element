@@ -19,3 +19,4 @@ lit-element.d.ts
 #Docs
 
 docs/node_modules
+.DS_Store

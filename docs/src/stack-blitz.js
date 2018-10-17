@@ -3,7 +3,7 @@ import sdk from '@stackblitz/sdk';
 import './project-loader';
 
 class StackBlitz extends LitElement {
-  static get properties(){
+  static get properties() {
     return {
       folder: { type: String },
       slot: { type: String},
@@ -18,7 +18,7 @@ class StackBlitz extends LitElement {
       project: { type: Object }
     };
   }
-  render(){
+  render() {
     return html`
       <style>
         iframe {
@@ -36,7 +36,7 @@ class StackBlitz extends LitElement {
     `;
   }
   
-  firstUpdated(){
+  firstUpdated() {
       this.options=Object.assign({}, this.options, {
       'clickToLoad':this.clickToLoad,
       'forceEmbedLayout':this.forceEmbedLayout,
@@ -47,7 +47,7 @@ class StackBlitz extends LitElement {
     this.project={};
   }
 
-  embedProject(project, options){
+  embedProject(project, options) {
     var embedIn = this.shadowRoot.getElementById('stackblitz');
     const vm = sdk.embedProject(embedIn, project, options);
   }
