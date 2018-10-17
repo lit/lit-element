@@ -1,6 +1,7 @@
 ---
 layout: post
 section: try
+permalink: /try/
 ---
 
 Try LitElement! In this tutorial you'll build your first web component, use it in a web page, and add style with CSS.
