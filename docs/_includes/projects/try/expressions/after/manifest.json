@@ -4,8 +4,7 @@
   "files": [
     "my-element.js",
     "index.html",
-    "index.ts",
-    "README.md"
+    "index.ts"
   ],
   "dependencies": {
     "@polymer/lit-element": "latest",

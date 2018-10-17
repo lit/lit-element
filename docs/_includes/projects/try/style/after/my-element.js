@@ -37,7 +37,7 @@ class MyElement extends LitElement {
       <ul>${this.myArray.map(i => html`<li>${i}</li>`)}</ul>
 
       <!-- Style this text --> 
-      <p class="${myBool?'red':'blue'}">style me</p>
+      <p class="${this.myBool?'red':'blue'}">style me</p>
       
       <button @click="${(event) => this.clickHandler(event)}">Click</button>
     `;
