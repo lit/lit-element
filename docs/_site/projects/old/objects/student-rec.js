@@ -1,16 +1,14 @@
-import { LitElement, html } from '@polymer/lit-element';
+import {html, LitElement} from '@polymer/lit-element';
 
-class StudentRec extends LitElement {  
-  static get properties(){
-    return { 
-      student: Object
-    }
+class StudentRec extends LitElement {
+  static get properties() {
+    return { student: Object }
   }
-  constructor(){
+  constructor() {
     super();
     this.student = {};
   }
-  _render({student}){
+  _render({student}) {
     return html`
       <div>
         ${student.id}<br/>

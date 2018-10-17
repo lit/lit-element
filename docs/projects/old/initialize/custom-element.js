@@ -1,16 +1,12 @@
-import { LitElement, html } from '@polymer/lit-element';
+import {html, LitElement} from '@polymer/lit-element';
 
-class CustomElement extends LitElement {  
-  static get properties(){
-    return {
-      myString: String
-    };
-  }
-  constructor(){
+class CustomElement extends LitElement {
+  static get properties() { return {myString : String}; }
+  constructor() {
     super();
-    this.myString='initial value';
+    this.myString = 'initial value';
   }
-  _render({myString}){
+  _render({myString}) {
     return html`
       <h1>${myString}</h1>
     `;

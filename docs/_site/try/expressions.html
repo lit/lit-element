@@ -51,25 +51,24 @@
 
 <p><em>my-element.js</em></p>
 
-<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="p">{</span> <span class="nx">LitElement</span><span class="p">,</span> <span class="nx">html</span> <span class="p">}</span> <span class="k">from</span> <span class="s1">'@polymer/lit-element'</span><span class="p">;</span> 
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="p">{</span><span class="nx">html</span><span class="p">,</span> <span class="nx">LitElement</span><span class="p">}</span> <span class="k">from</span> <span class="s1">'@polymer/lit-element'</span><span class="p">;</span>
 
 <span class="kd">class</span> <span class="nx">MyElement</span> <span class="kd">extends</span> <span class="nx">LitElement</span> <span class="p">{</span>
-  <span class="kr">static</span> <span class="kd">get</span> <span class="nx">properties</span><span class="p">(){</span>
+  <span class="kr">static</span> <span class="kd">get</span> <span class="nx">properties</span><span class="p">()</span> <span class="p">{</span>
     <span class="k">return</span> <span class="p">{</span>
-      <span class="na">message</span><span class="p">:</span> <span class="p">{</span> <span class="na">type</span><span class="p">:</span> <span class="nb">String</span> <span class="p">},</span>
-      <span class="na">myArray</span><span class="p">:</span> <span class="p">{</span> <span class="na">type</span><span class="p">:</span> <span class="nb">Array</span> <span class="p">},</span>
-      <span class="na">myBool</span><span class="p">:</span> <span class="p">{</span> <span class="na">type</span><span class="p">:</span> <span class="nb">Boolean</span> <span class="p">}</span>
+      <span class="na">message</span> <span class="p">:</span> <span class="p">{</span><span class="na">type</span> <span class="p">:</span> <span class="nb">String</span><span class="p">},</span>
+      <span class="na">myArray</span> <span class="p">:</span> <span class="p">{</span><span class="na">type</span> <span class="p">:</span> <span class="nb">Array</span><span class="p">},</span>
+      <span class="na">myBool</span> <span class="p">:</span> <span class="p">{</span><span class="na">type</span> <span class="p">:</span> <span class="nb">Boolean</span><span class="p">}</span>
     <span class="p">};</span>
   <span class="p">}</span>
-  <span class="kd">constructor</span><span class="p">(){</span>
+  <span class="kd">constructor</span><span class="p">()</span> <span class="p">{</span>
     <span class="k">super</span><span class="p">();</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">message</span><span class="o">=</span><span class="s1">'Hello world! From my-element'</span><span class="p">;</span>
-    
+    <span class="k">this</span><span class="p">.</span><span class="nx">message</span> <span class="o">=</span> <span class="s1">'Hello world! From my-element'</span><span class="p">;</span>
+
     <span class="c1">// Initialize myArray and myBool here.</span>
-    
   <span class="p">}</span>
 
-  <span class="nx">render</span><span class="p">(){</span>
+  <span class="nx">render</span><span class="p">()</span> <span class="p">{</span>
     <span class="k">return</span> <span class="nx">html</span><span class="s2">`
       &lt;p&gt;</span><span class="p">${</span><span class="k">this</span><span class="p">.</span><span class="nx">message</span><span class="p">}</span><span class="s2">&lt;/p&gt;
 
@@ -150,27 +149,27 @@
 
 <p><em>my-element.js</em></p>
 
-<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="p">{</span> <span class="nx">LitElement</span><span class="p">,</span> <span class="nx">html</span> <span class="p">}</span> <span class="k">from</span> <span class="s1">'@polymer/lit-element'</span><span class="p">;</span> 
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="p">{</span><span class="nx">html</span><span class="p">,</span> <span class="nx">LitElement</span><span class="p">}</span> <span class="k">from</span> <span class="s1">'@polymer/lit-element'</span><span class="p">;</span>
 
 <span class="kd">class</span> <span class="nx">MyElement</span> <span class="kd">extends</span> <span class="nx">LitElement</span> <span class="p">{</span>
-  <span class="kr">static</span> <span class="kd">get</span> <span class="nx">properties</span><span class="p">(){</span>
+  <span class="kr">static</span> <span class="kd">get</span> <span class="nx">properties</span><span class="p">()</span> <span class="p">{</span>
     <span class="k">return</span> <span class="p">{</span>
-      <span class="na">message</span><span class="p">:</span> <span class="p">{</span> <span class="na">type</span><span class="p">:</span> <span class="nb">String</span> <span class="p">},</span>
-      <span class="na">myArray</span><span class="p">:</span> <span class="p">{</span> <span class="na">type</span><span class="p">:</span> <span class="nb">Array</span> <span class="p">},</span>
-      <span class="na">myBool</span><span class="p">:</span> <span class="p">{</span> <span class="na">type</span><span class="p">:</span> <span class="nb">Boolean</span> <span class="p">}</span>
+      <span class="na">message</span> <span class="p">:</span> <span class="p">{</span><span class="na">type</span> <span class="p">:</span> <span class="nb">String</span><span class="p">},</span>
+      <span class="na">myArray</span> <span class="p">:</span> <span class="p">{</span><span class="na">type</span> <span class="p">:</span> <span class="nb">Array</span><span class="p">},</span>
+      <span class="na">myBool</span> <span class="p">:</span> <span class="p">{</span><span class="na">type</span> <span class="p">:</span> <span class="nb">Boolean</span><span class="p">}</span>
     <span class="p">};</span>
   <span class="p">}</span>
-  <span class="kd">constructor</span><span class="p">(){</span>
+  <span class="kd">constructor</span><span class="p">()</span> <span class="p">{</span>
     <span class="k">super</span><span class="p">();</span>
 
-    <span class="k">this</span><span class="p">.</span><span class="nx">message</span><span class="o">=</span><span class="s1">'Hello world! From my-element'</span><span class="p">;</span>
-    
+    <span class="k">this</span><span class="p">.</span><span class="nx">message</span> <span class="o">=</span> <span class="s1">'Hello world! From my-element'</span><span class="p">;</span>
+
     <span class="c1">// Initialize myArray and myBool here.</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">myArray</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'an'</span><span class="p">,</span><span class="s1">'array'</span><span class="p">,</span><span class="s1">'of'</span><span class="p">,</span><span class="s1">'test'</span><span class="p">,</span><span class="s1">'data'</span><span class="p">];</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">myArray</span> <span class="o">=</span> <span class="p">[</span> <span class="s1">'an'</span><span class="p">,</span> <span class="s1">'array'</span><span class="p">,</span> <span class="s1">'of'</span><span class="p">,</span> <span class="s1">'test'</span><span class="p">,</span> <span class="s1">'data'</span> <span class="p">];</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">myBool</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
   <span class="p">}</span>
 
-  <span class="nx">render</span><span class="p">(){</span>
+  <span class="nx">render</span><span class="p">()</span> <span class="p">{</span>
     <span class="k">return</span> <span class="nx">html</span><span class="s2">`
       &lt;p&gt;</span><span class="p">${</span><span class="k">this</span><span class="p">.</span><span class="nx">message</span><span class="p">}</span><span class="s2">&lt;/p&gt;
 
@@ -178,9 +177,9 @@
       &lt;ul&gt;
         </span><span class="p">${</span><span class="k">this</span><span class="p">.</span><span class="nx">myArray</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nx">i</span> <span class="o">=&gt;</span> <span class="nx">html</span><span class="s2">`&lt;li&gt;</span><span class="p">${</span><span class="nx">i</span><span class="p">}</span><span class="s2">&lt;/li&gt;`</span><span class="p">)}</span><span class="s2">
       &lt;/ul&gt;
-      </span><span class="p">${</span><span class="k">this</span><span class="p">.</span><span class="nx">myBool</span><span class="p">?</span>
-        <span class="nx">html</span><span class="s2">`&lt;p&gt;Render some HTML if myBool is true&lt;/p&gt;`</span><span class="p">:</span>
-        <span class="nx">html</span><span class="s2">`&lt;p&gt;Render some other HTML if myBool is false&lt;/p&gt;`</span><span class="p">}</span><span class="s2">
+      </span><span class="p">${</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">myBool</span> <span class="p">?</span> <span class="nx">html</span><span class="s2">`&lt;p&gt;Render some HTML if myBool is true&lt;/p&gt;`</span>
+                    <span class="p">:</span> <span class="nx">html</span><span class="s2">`&lt;p&gt;Render some other HTML if myBool is false&lt;/p&gt;`</span><span class="p">}</span><span class="s2">
     `</span><span class="p">;</span>
   <span class="p">}</span>
 <span class="p">}</span>

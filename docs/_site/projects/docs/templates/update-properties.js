@@ -1,31 +1,25 @@
-import { LitElement, html } from '@polymer/lit-element';
+import {html, LitElement} from '@polymer/lit-element';
 
 /**
  * Use this pattern instead.
  */
 class UpdateProperties extends LitElement {
-  static get properties(){
-    return {
-      message: String
-    };
-  }
-  constructor(){
+  static get properties() { return {message : String}; }
+  constructor() {
     super();
-    this.message='Loading';
+    this.message = 'Loading';
     this.addEventListener('stuff-loaded', this.doSomething.bind(this));
     this.loadStuff();
   }
-  render(){
+  render() {
     return html`
       <p>${this.message}</p>
     `;
   }
-  doSomething(){
-    this.message='Loading complete.';
-  }
-  loadStuff(){
+  doSomething() { this.message = 'Loading complete.'; }
+  loadStuff() {
     setInterval(() => {
-      var loaded = new CustomEvent('stuff-loaded', { detail: {}});
+      var loaded = new CustomEvent('stuff-loaded', {detail : {}});
       this.dispatchEvent(loaded);
     }, 3000);
   }

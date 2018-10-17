@@ -1,9 +1,9 @@
 // Import LitElement base class and html helper function
-import { } from ''; 
+import {} from '';
 
 // Create your class here
 class MyElement {
-  render(){
+  render() {
     // Define your element template here
   }
 }

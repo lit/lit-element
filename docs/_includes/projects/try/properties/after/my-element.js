@@ -1,19 +1,19 @@
-import { LitElement, html } from '@polymer/lit-element'; 
+import {html, LitElement} from '@polymer/lit-element';
 
 class MyElement extends LitElement {
-  static get properties(){
+  static get properties() {
     return {
       // Declare property here.
-      message: { type: String }
+      message : {type : String}
     };
   }
-  constructor(){
+  constructor() {
     super();
     // Initialize property here.
-    this.message='Hello world! From my-element';
+    this.message = 'Hello world! From my-element';
   }
 
-  render(){
+  render() {
     return html`
       <!-- Add property here. -->
       <p>${this.message}</p>

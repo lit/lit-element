@@ -1,46 +1,47 @@
-import { LitElement, html } from '@polymer/lit-element';
+import {html, LitElement} from '@polymer/lit-element';
 
-class MyApp extends LitElement {  
-  static get properties(){
+class MyApp extends LitElement {
+  static get properties() {
     return {
-      headerText: { type: String },
-      menu: { type: Array },
-      footerText: { type: String }
+      headerText : {type : String},
+      menu : {type : Array},
+      footerText : {type : String}
     };
   }
-  constructor(){
+  constructor() {
     super();
-    this.headerText="My App";
+    this.headerText = "My App";
     this.menu = [
-      { 'url': '/design', title: 'Design'}, 
-      { 'url': '/how', title: 'How-tos'}, 
-      { 'url': '/about', title: 'About'}
+      {'url' : '/design', title : 'Design'},
+      {'url' : '/how', title : 'How-tos'}, {'url' : '/about', title : 'About'}
     ];
-    this.footerText="Copyright (c) Me, 2018";
+    this.footerText = "Copyright (c) Me, 2018";
     this.myBool = true;
   }
 
-  static get headerTemplate(){
+  static get headerTemplate() {
     return html`
       <header>${this.headerText}</header>
     `;
   }
-  static get navTemplate(){
+  static get navTemplate() {
     return html`
       <nav>
-        ${this.menu.map(i => { return html`
+        ${this.menu.map(i => {
+      return html`
           <li><a href="${i.url}">${i.title}</a></li>
-        `;})}
+        `;
+    })}
       </nav>
     `;
   }
-  static get footerTemplate(){
+  static get footerTemplate() {
     return html`
       <footer>${this.footerText}</footer>
     `;
   }
-  
-  render(){
+
+  render() {
     return html`
       ${this.headerTemplate()}
       ${this.navTemplate()}

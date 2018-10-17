@@ -1,16 +1,16 @@
-import { LitElement, html } from '@polymer/lit-element'; 
+import {html, LitElement} from '@polymer/lit-element';
 
 class MyElement extends LitElement {
-  static get properties(){
+  static get properties() {
     return {
-      // Declare property here.
+        // Declare property here.
     };
   }
-  constructor(){
+  constructor() {
     super();
     // Initialize property here.
   }
-  render(){
+  render() {
     return html`
       <!-- Add property here. -->
       <p></p>

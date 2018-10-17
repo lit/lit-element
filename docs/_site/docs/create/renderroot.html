@@ -77,14 +77,14 @@
 
 <p><em>default-root.js</em></p>
 
-<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="p">{</span> <span class="nx">LitElement</span><span class="p">,</span> <span class="nx">html</span> <span class="p">}</span> <span class="k">from</span> <span class="s1">'@polymer/lit-element'</span><span class="p">;</span>
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="p">{</span><span class="nx">html</span><span class="p">,</span> <span class="nx">LitElement</span><span class="p">}</span> <span class="k">from</span> <span class="s1">'@polymer/lit-element'</span><span class="p">;</span>
 
 <span class="cm">/**
  * This element renders its template into the default location:
  * a shadowRoot created by LitElement.
  */</span>
 <span class="kd">class</span> <span class="nx">DefaultRoot</span> <span class="kd">extends</span> <span class="nx">LitElement</span> <span class="p">{</span>
-  <span class="nx">render</span><span class="p">(){</span>
+  <span class="nx">render</span><span class="p">()</span> <span class="p">{</span>
     <span class="k">return</span> <span class="nx">html</span><span class="s2">`
       &lt;p&gt;&lt;b&gt;Default render root.&lt;/b&gt; Template renders in shadow DOM.&lt;/p&gt;
     `</span><span class="p">;</span>
@@ -96,13 +96,13 @@
 
 <p><em>light_dom.js</em></p>
 
-<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="p">{</span> <span class="nx">LitElement</span><span class="p">,</span> <span class="nx">html</span> <span class="p">}</span> <span class="k">from</span> <span class="s1">'@polymer/lit-element'</span><span class="p">;</span>
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="p">{</span><span class="nx">html</span><span class="p">,</span> <span class="nx">LitElement</span><span class="p">}</span> <span class="k">from</span> <span class="s1">'@polymer/lit-element'</span><span class="p">;</span>
 
 <span class="cm">/**
  * This element renders its template as light DOM children.
  */</span>
 <span class="kd">class</span> <span class="nx">LightDom</span> <span class="kd">extends</span> <span class="nx">LitElement</span> <span class="p">{</span>
-  <span class="nx">render</span><span class="p">(){</span>
+  <span class="nx">render</span><span class="p">()</span> <span class="p">{</span>
     <span class="k">return</span> <span class="nx">html</span><span class="s2">`
       &lt;p&gt;&lt;b&gt;Render root overridden.&lt;/b&gt; Template renders in light DOM.&lt;/p&gt;
     `</span><span class="p">;</span>
@@ -110,12 +110,10 @@
   <span class="cm">/**
    * To customize an element's render root, implement createRenderRoot. Return
    * the node into which to render the element's template.
-   * 
+   *
    * This element renders child nodes into its light DOM.
    */</span>
-  <span class="nx">createRenderRoot</span><span class="p">(){</span>
-    <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
-  <span class="p">}</span>
+  <span class="nx">createRenderRoot</span><span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="k">this</span><span class="p">;</span> <span class="p">}</span>
 <span class="p">}</span>
 <span class="nx">customElements</span><span class="p">.</span><span class="nx">define</span><span class="p">(</span><span class="s1">'light-dom'</span><span class="p">,</span> <span class="nx">LightDom</span><span class="p">);</span>
 

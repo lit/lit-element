@@ -51,19 +51,19 @@
 
 <p><em>my-element.js</em></p>
 
-<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="p">{</span> <span class="nx">LitElement</span><span class="p">,</span> <span class="nx">html</span> <span class="p">}</span> <span class="k">from</span> <span class="s1">'@polymer/lit-element'</span><span class="p">;</span> 
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="p">{</span><span class="nx">html</span><span class="p">,</span> <span class="nx">LitElement</span><span class="p">}</span> <span class="k">from</span> <span class="s1">'@polymer/lit-element'</span><span class="p">;</span>
 
 <span class="kd">class</span> <span class="nx">MyElement</span> <span class="kd">extends</span> <span class="nx">LitElement</span> <span class="p">{</span>
-  <span class="kr">static</span> <span class="kd">get</span> <span class="nx">properties</span><span class="p">(){</span>
+  <span class="kr">static</span> <span class="kd">get</span> <span class="nx">properties</span><span class="p">()</span> <span class="p">{</span>
     <span class="k">return</span> <span class="p">{</span>
-      <span class="c1">// Declare property here.</span>
+        <span class="c1">// Declare property here.</span>
     <span class="p">};</span>
   <span class="p">}</span>
-  <span class="kd">constructor</span><span class="p">(){</span>
+  <span class="kd">constructor</span><span class="p">()</span> <span class="p">{</span>
     <span class="k">super</span><span class="p">();</span>
     <span class="c1">// Initialize property here.</span>
   <span class="p">}</span>
-  <span class="nx">render</span><span class="p">(){</span>
+  <span class="nx">render</span><span class="p">()</span> <span class="p">{</span>
     <span class="k">return</span> <span class="nx">html</span><span class="s2">`
       &lt;!-- Add property here. --&gt;
       &lt;p&gt;&lt;/p&gt;
@@ -144,22 +144,22 @@
 
 <p><em>my-element.js</em></p>
 
-<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="p">{</span> <span class="nx">LitElement</span><span class="p">,</span> <span class="nx">html</span> <span class="p">}</span> <span class="k">from</span> <span class="s1">'@polymer/lit-element'</span><span class="p">;</span> 
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="p">{</span><span class="nx">html</span><span class="p">,</span> <span class="nx">LitElement</span><span class="p">}</span> <span class="k">from</span> <span class="s1">'@polymer/lit-element'</span><span class="p">;</span>
 
 <span class="kd">class</span> <span class="nx">MyElement</span> <span class="kd">extends</span> <span class="nx">LitElement</span> <span class="p">{</span>
-  <span class="kr">static</span> <span class="kd">get</span> <span class="nx">properties</span><span class="p">(){</span>
+  <span class="kr">static</span> <span class="kd">get</span> <span class="nx">properties</span><span class="p">()</span> <span class="p">{</span>
     <span class="k">return</span> <span class="p">{</span>
       <span class="c1">// Declare property here.</span>
-      <span class="na">message</span><span class="p">:</span> <span class="p">{</span> <span class="na">type</span><span class="p">:</span> <span class="nb">String</span> <span class="p">}</span>
+      <span class="na">message</span> <span class="p">:</span> <span class="p">{</span><span class="na">type</span> <span class="p">:</span> <span class="nb">String</span><span class="p">}</span>
     <span class="p">};</span>
   <span class="p">}</span>
-  <span class="kd">constructor</span><span class="p">(){</span>
+  <span class="kd">constructor</span><span class="p">()</span> <span class="p">{</span>
     <span class="k">super</span><span class="p">();</span>
     <span class="c1">// Initialize property here.</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">message</span><span class="o">=</span><span class="s1">'Hello world! From my-element'</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">message</span> <span class="o">=</span> <span class="s1">'Hello world! From my-element'</span><span class="p">;</span>
   <span class="p">}</span>
 
-  <span class="nx">render</span><span class="p">(){</span>
+  <span class="nx">render</span><span class="p">()</span> <span class="p">{</span>
     <span class="k">return</span> <span class="nx">html</span><span class="s2">`
       &lt;!-- Add property here. --&gt;
       &lt;p&gt;</span><span class="p">${</span><span class="k">this</span><span class="p">.</span><span class="nx">message</span><span class="p">}</span><span class="s2">&lt;/p&gt;

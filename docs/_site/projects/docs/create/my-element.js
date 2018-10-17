@@ -1,5 +1,5 @@
 // Import the LitElement base class and html helper function
-import { LitElement, html } from '@polymer/lit-element';
+import {html, LitElement} from '@polymer/lit-element';
 
 // Extend the LitElement base class
 class MyElement extends LitElement {
@@ -10,12 +10,12 @@ class MyElement extends LitElement {
    * You must provide an implementation of `render` for any element
    * that uses LitElement as a base class.
    */
-  render(){
-    /** 
-     * `render` must return a lit-html `TemplateResult`. 
+  render() {
+    /**
+     * `render` must return a lit-html `TemplateResult`.
      *
      * To create a `TemplateResult`, tag a JavaScript template literal
-     * with the `html` helper function: 
+     * with the `html` helper function:
      */
     return html`
       <!-- template content -->
