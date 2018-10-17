@@ -80,20 +80,25 @@
 
 <p><em>custom-element.js</em></p>
 
-<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="p">{</span><span class="nx">html</span><span class="p">,</span> <span class="nx">LitElement</span><span class="p">}</span> <span class="k">from</span> <span class="s1">'@polymer/lit-element'</span><span class="p">;</span>
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="p">{</span> <span class="nx">LitElement</span><span class="p">,</span> <span class="nx">html</span> <span class="p">}</span> <span class="k">from</span> <span class="s1">'@polymer/lit-element'</span><span class="p">;</span>
 
-<span class="kd">class</span> <span class="nx">CustomElement</span> <span class="kd">extends</span> <span class="nx">LitElement</span> <span class="p">{</span>
-  <span class="kr">static</span> <span class="kd">get</span> <span class="nx">properties</span><span class="p">()</span> <span class="p">{</span>
-    <span class="k">return</span> <span class="p">{</span><span class="na">prop1</span> <span class="p">:</span> <span class="nb">String</span><span class="p">,</span> <span class="na">prop2</span> <span class="p">:</span> <span class="nb">String</span><span class="p">,</span> <span class="na">prop3</span> <span class="p">:</span> <span class="nb">Boolean</span><span class="p">,</span> <span class="na">prop4</span> <span class="p">:</span> <span class="nb">String</span><span class="p">};</span>
+<span class="kd">class</span> <span class="nx">CustomElement</span> <span class="kd">extends</span> <span class="nx">LitElement</span> <span class="p">{</span>  
+  <span class="kr">static</span> <span class="kd">get</span> <span class="nx">properties</span><span class="p">(){</span>
+    <span class="k">return</span> <span class="p">{</span>
+      <span class="na">prop1</span><span class="p">:</span> <span class="nb">String</span><span class="p">,</span>
+      <span class="na">prop2</span><span class="p">:</span> <span class="nb">String</span><span class="p">,</span>
+      <span class="na">prop3</span><span class="p">:</span> <span class="nb">Boolean</span><span class="p">,</span>
+      <span class="na">prop4</span><span class="p">:</span> <span class="nb">String</span>
+    <span class="p">};</span>
   <span class="p">}</span>
-  <span class="kd">constructor</span><span class="p">()</span> <span class="p">{</span>
+  <span class="kd">constructor</span><span class="p">(){</span>
     <span class="k">super</span><span class="p">();</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">prop1</span> <span class="o">=</span> <span class="s1">'text'</span><span class="p">;</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">prop2</span> <span class="o">=</span> <span class="s1">'attr'</span><span class="p">;</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">prop3</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">prop4</span> <span class="o">=</span> <span class="s1">'fries'</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">prop1</span><span class="o">=</span><span class="s1">'text'</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">prop2</span><span class="o">=</span><span class="s1">'attr'</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">prop3</span><span class="o">=</span><span class="kc">true</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">prop4</span><span class="o">=</span><span class="s1">'fries'</span><span class="p">;</span>
   <span class="p">}</span>
-  <span class="nx">render</span><span class="p">()</span> <span class="p">{</span>
+  <span class="nx">render</span><span class="p">(){</span>
     <span class="k">return</span> <span class="nx">html</span><span class="s2">`
       &lt;div&gt;Bind to a child element's text node. </span><span class="p">${</span><span class="k">this</span><span class="p">.</span><span class="nx">prop1</span><span class="p">}</span><span class="s2">&lt;/div&gt;
 
@@ -112,8 +117,8 @@
       &lt;/button&gt;&lt;/p&gt;
     `</span><span class="p">;</span>
   <span class="p">}</span>
-  <span class="nx">handlePls</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
-    <span class="kd">var</span> <span class="nx">id</span> <span class="o">=</span> <span class="nx">e</span><span class="p">.</span><span class="nx">target</span><span class="p">.</span><span class="nx">id</span><span class="p">;</span>
+  <span class="nx">handlePls</span><span class="p">(</span><span class="nx">e</span><span class="p">){</span>
+    <span class="kd">var</span> <span class="nx">id</span> <span class="o">=</span> <span class="nx">e</span><span class="p">.</span><span class="nx">target</span><span class="p">.</span><span class="nx">id</span><span class="p">;</span> 
     <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">id</span> <span class="o">+</span> <span class="s1">'.'</span><span class="p">);</span>
   <span class="p">}</span>
 <span class="p">}</span>

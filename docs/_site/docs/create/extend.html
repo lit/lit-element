@@ -58,7 +58,7 @@
 <p><em>my-element.js</em></p>
 
 <div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Import the LitElement base class and html helper function</span>
-<span class="k">import</span> <span class="p">{</span><span class="nx">html</span><span class="p">,</span> <span class="nx">LitElement</span><span class="p">}</span> <span class="k">from</span> <span class="s1">'@polymer/lit-element'</span><span class="p">;</span>
+<span class="k">import</span> <span class="p">{</span> <span class="nx">LitElement</span><span class="p">,</span> <span class="nx">html</span> <span class="p">}</span> <span class="k">from</span> <span class="s1">'@polymer/lit-element'</span><span class="p">;</span>
 
 <span class="c1">// Extend the LitElement base class</span>
 <span class="kd">class</span> <span class="nx">MyElement</span> <span class="kd">extends</span> <span class="nx">LitElement</span> <span class="p">{</span>
@@ -69,12 +69,12 @@
    * You must provide an implementation of `render` for any element
    * that uses LitElement as a base class.
    */</span>
-  <span class="nx">render</span><span class="p">()</span> <span class="p">{</span>
-    <span class="cm">/**
-     * `render` must return a lit-html `TemplateResult`.
+  <span class="nx">render</span><span class="p">(){</span>
+    <span class="cm">/** 
+     * `render` must return a lit-html `TemplateResult`. 
      *
      * To create a `TemplateResult`, tag a JavaScript template literal
-     * with the `html` helper function:
+     * with the `html` helper function: 
      */</span>
     <span class="k">return</span> <span class="nx">html</span><span class="s2">`
       &lt;!-- template content --&gt;

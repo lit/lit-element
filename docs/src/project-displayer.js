@@ -1,20 +1,19 @@
+import {LitElement, html} from '@polymer/lit-element';
 import './project-loader.js';
-
-import {html, LitElement} from '@polymer/lit-element';
 
 class ProjectDisplayer extends LitElement {
   static get properties() {
     return {
-      folder : {type : String},
+      folder: { type: String },
 
-      clickToLoad : {type : Boolean},
-      forceEmbedLayout : {type : Boolean},
-      view : {type : String},
-      openFile : {type : String},
-      height : {type : Number},
+      clickToLoad: { type: Boolean },
+      forceEmbedLayout: { type: Boolean },
+      view: { type: String },
+      openFile: { type: String },
+      height: { type: Number },
 
-      options : {type : Object},
-      project : {type : Object}
+      options: { type: Object },
+      project: { type: Object }
     };
   }
 
@@ -40,11 +39,11 @@ class ProjectDisplayer extends LitElement {
   }
   firstUpdated() {
     this.options = Object.assign({}, this.options, {
-      'clickToLoad' : this.clickToLoad,
-      'forceEmbedLayout' : this.forceEmbedLayout,
-      'view' : this.view ? this.view : 'both',
-      'openFile' : this.openFile ? this.openFile : 'index.html',
-      'height' : this.height ? this.height : (window.innerHeight - 10) / 2
+      'clickToLoad': this.clickToLoad,
+      'forceEmbedLayout': this.forceEmbedLayout,
+      'view': this.view ? this.view : 'both',
+      'openFile': this.openFile ? this.openFile : 'index.html',
+      'height': this.height ? this.height : (window.innerHeight-10)/2
     });
   }
   displayProject(project) {
@@ -57,9 +56,7 @@ class ProjectDisplayer extends LitElement {
     var embed = slot.assignedNodes()[0];
     if (embed.tagName == 'STACK-BLITZ') {
       return embed.embedProject(project, this.options);
-    } else
-      console.log(
-          'Put <stack-blitz slot="embed"></stack-blitz> in light DOM to embed a code sample.');
+    } else console.log('Put <stack-blitz slot="embed"></stack-blitz> in light DOM to embed a code sample.');
   }
 }
 

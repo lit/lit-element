@@ -1,13 +1,22 @@
-import {html, LitElement} from '@polymer/lit-element';
+import { LitElement, html } from '@polymer/lit-element';
 
-class CustomElement extends LitElement {
-  static get properties() { return {myArray : Array, myObject : Object}; }
-  constructor() {
-    super();
-    this.myArray = [ 'hello', 'we', 'are', 'test', 'data' ];
-    this.myObject = {prop1 : 'prop 1', prop2 : 'prop 2', prop3 : 'prop 3'};
+class CustomElement extends LitElement {  
+  static get properties(){
+    return {
+      myArray: Array,
+      myObject: Object
+    };
   }
-  _render({myArray, myObject}) {
+  constructor(){
+    super();
+    this.myArray = ['hello', 'we', 'are', 'test', 'data'];
+    this.myObject = {
+      prop1: 'prop 1',
+      prop2: 'prop 2',
+      prop3: 'prop 3'
+    };
+  }
+  _render({myArray, myObject}){
     return html`
       <ul>
         ${myArray.map(i => html`<li>${i}</li>`)}

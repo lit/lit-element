@@ -52,11 +52,11 @@
 <p><em>my-element.js</em></p>
 
 <div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Import LitElement base class and html helper function</span>
-<span class="k">import</span> <span class="p">{}</span> <span class="k">from</span> <span class="s1">''</span><span class="p">;</span>
+<span class="k">import</span> <span class="p">{</span> <span class="p">}</span> <span class="k">from</span> <span class="s1">''</span><span class="p">;</span> 
 
 <span class="c1">// Create your class here</span>
 <span class="kd">class</span> <span class="nx">MyElement</span> <span class="p">{</span>
-  <span class="nx">render</span><span class="p">()</span> <span class="p">{</span>
+  <span class="nx">render</span><span class="p">(){</span>
     <span class="c1">// Define your element template here</span>
   <span class="p">}</span>
 <span class="p">}</span>
@@ -139,11 +139,11 @@
 <p><em>my-element.js</em></p>
 
 <div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Import LitElement base class and html helper function</span>
-<span class="k">import</span> <span class="p">{</span><span class="nx">html</span><span class="p">,</span> <span class="nx">LitElement</span><span class="p">}</span> <span class="k">from</span> <span class="s1">'@polymer/lit-element'</span><span class="p">;</span>
+<span class="k">import</span> <span class="p">{</span> <span class="nx">LitElement</span><span class="p">,</span> <span class="nx">html</span> <span class="p">}</span> <span class="k">from</span> <span class="s1">'@polymer/lit-element'</span><span class="p">;</span> 
 
 <span class="c1">// Create your class here</span>
 <span class="kd">class</span> <span class="nx">MyElement</span> <span class="kd">extends</span> <span class="nx">LitElement</span> <span class="p">{</span>
-  <span class="nx">render</span><span class="p">()</span> <span class="p">{</span>
+  <span class="nx">render</span><span class="p">(){</span>
     <span class="c1">// Define your element template here</span>
     <span class="k">return</span> <span class="nx">html</span><span class="s2">`
       &lt;p&gt;Hello world! From my-element&lt;/p&gt;

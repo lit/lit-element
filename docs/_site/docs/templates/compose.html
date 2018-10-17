@@ -65,50 +65,49 @@
 
 <p><em>my-app.js</em></p>
 
-<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="p">{</span><span class="nx">html</span><span class="p">,</span> <span class="nx">LitElement</span><span class="p">}</span> <span class="k">from</span> <span class="s1">'@polymer/lit-element'</span><span class="p">;</span>
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="p">{</span> <span class="nx">LitElement</span><span class="p">,</span> <span class="nx">html</span> <span class="p">}</span> <span class="k">from</span> <span class="s1">'@polymer/lit-element'</span><span class="p">;</span>
 
-<span class="kd">class</span> <span class="nx">MyApp</span> <span class="kd">extends</span> <span class="nx">LitElement</span> <span class="p">{</span>
-  <span class="kr">static</span> <span class="kd">get</span> <span class="nx">properties</span><span class="p">()</span> <span class="p">{</span>
+<span class="kd">class</span> <span class="nx">MyApp</span> <span class="kd">extends</span> <span class="nx">LitElement</span> <span class="p">{</span>  
+  <span class="kr">static</span> <span class="kd">get</span> <span class="nx">properties</span><span class="p">(){</span>
     <span class="k">return</span> <span class="p">{</span>
-      <span class="na">headerText</span> <span class="p">:</span> <span class="p">{</span><span class="na">type</span> <span class="p">:</span> <span class="nb">String</span><span class="p">},</span>
-      <span class="na">menu</span> <span class="p">:</span> <span class="p">{</span><span class="na">type</span> <span class="p">:</span> <span class="nb">Array</span><span class="p">},</span>
-      <span class="na">footerText</span> <span class="p">:</span> <span class="p">{</span><span class="na">type</span> <span class="p">:</span> <span class="nb">String</span><span class="p">}</span>
+      <span class="na">headerText</span><span class="p">:</span> <span class="p">{</span> <span class="na">type</span><span class="p">:</span> <span class="nb">String</span> <span class="p">},</span>
+      <span class="na">menu</span><span class="p">:</span> <span class="p">{</span> <span class="na">type</span><span class="p">:</span> <span class="nb">Array</span> <span class="p">},</span>
+      <span class="na">footerText</span><span class="p">:</span> <span class="p">{</span> <span class="na">type</span><span class="p">:</span> <span class="nb">String</span> <span class="p">}</span>
     <span class="p">};</span>
   <span class="p">}</span>
-  <span class="kd">constructor</span><span class="p">()</span> <span class="p">{</span>
+  <span class="kd">constructor</span><span class="p">(){</span>
     <span class="k">super</span><span class="p">();</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">headerText</span> <span class="o">=</span> <span class="s2">"My App"</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">headerText</span><span class="o">=</span><span class="s2">"My App"</span><span class="p">;</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">menu</span> <span class="o">=</span> <span class="p">[</span>
-      <span class="p">{</span><span class="s1">'url'</span> <span class="p">:</span> <span class="s1">'/design'</span><span class="p">,</span> <span class="na">title</span> <span class="p">:</span> <span class="s1">'Design'</span><span class="p">},</span>
-      <span class="p">{</span><span class="s1">'url'</span> <span class="p">:</span> <span class="s1">'/how'</span><span class="p">,</span> <span class="na">title</span> <span class="p">:</span> <span class="s1">'How-tos'</span><span class="p">},</span> <span class="p">{</span><span class="s1">'url'</span> <span class="p">:</span> <span class="s1">'/about'</span><span class="p">,</span> <span class="na">title</span> <span class="p">:</span> <span class="s1">'About'</span><span class="p">}</span>
+      <span class="p">{</span> <span class="s1">'url'</span><span class="p">:</span> <span class="s1">'/design'</span><span class="p">,</span> <span class="na">title</span><span class="p">:</span> <span class="s1">'Design'</span><span class="p">},</span> 
+      <span class="p">{</span> <span class="s1">'url'</span><span class="p">:</span> <span class="s1">'/how'</span><span class="p">,</span> <span class="na">title</span><span class="p">:</span> <span class="s1">'How-tos'</span><span class="p">},</span> 
+      <span class="p">{</span> <span class="s1">'url'</span><span class="p">:</span> <span class="s1">'/about'</span><span class="p">,</span> <span class="na">title</span><span class="p">:</span> <span class="s1">'About'</span><span class="p">}</span>
     <span class="p">];</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">footerText</span> <span class="o">=</span> <span class="s2">"Copyright (c) Me, 2018"</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">footerText</span><span class="o">=</span><span class="s2">"Copyright (c) Me, 2018"</span><span class="p">;</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">myBool</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
   <span class="p">}</span>
 
-  <span class="kr">static</span> <span class="kd">get</span> <span class="nx">headerTemplate</span><span class="p">()</span> <span class="p">{</span>
+  <span class="kr">static</span> <span class="kd">get</span> <span class="nx">headerTemplate</span><span class="p">(){</span>
     <span class="k">return</span> <span class="nx">html</span><span class="s2">`
       &lt;header&gt;</span><span class="p">${</span><span class="k">this</span><span class="p">.</span><span class="nx">headerText</span><span class="p">}</span><span class="s2">&lt;/header&gt;
     `</span><span class="p">;</span>
   <span class="p">}</span>
-  <span class="kr">static</span> <span class="kd">get</span> <span class="nx">navTemplate</span><span class="p">()</span> <span class="p">{</span>
+  <span class="kr">static</span> <span class="kd">get</span> <span class="nx">navTemplate</span><span class="p">(){</span>
     <span class="k">return</span> <span class="nx">html</span><span class="s2">`
       &lt;nav&gt;
-        </span><span class="p">${</span><span class="k">this</span><span class="p">.</span><span class="nx">menu</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nx">i</span> <span class="o">=&gt;</span> <span class="p">{</span>
-      <span class="k">return</span> <span class="nx">html</span><span class="s2">`
+        </span><span class="p">${</span><span class="k">this</span><span class="p">.</span><span class="nx">menu</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nx">i</span> <span class="o">=&gt;</span> <span class="p">{</span> <span class="k">return</span> <span class="nx">html</span><span class="s2">`
           &lt;li&gt;&lt;a href="</span><span class="p">${</span><span class="nx">i</span><span class="p">.</span><span class="nx">url</span><span class="p">}</span><span class="s2">"&gt;</span><span class="p">${</span><span class="nx">i</span><span class="p">.</span><span class="nx">title</span><span class="p">}</span><span class="s2">&lt;/a&gt;&lt;/li&gt;
-        `</span><span class="p">;</span>
-    <span class="p">})}</span>
+        `</span><span class="p">;})}</span>
       <span class="o">&lt;</span><span class="sr">/nav</span><span class="err">&gt;
 </span>    <span class="s2">`;
   }
-  static get footerTemplate() {
+  static get footerTemplate(){
     return html`</span>
       <span class="o">&lt;</span><span class="nx">footer</span><span class="o">&gt;</span><span class="nx">$</span><span class="p">{</span><span class="k">this</span><span class="p">.</span><span class="nx">footerText</span><span class="p">}</span><span class="s2">&lt;/footer&gt;
     `</span><span class="p">;</span>
   <span class="p">}</span>
-
-  <span class="nx">render</span><span class="p">()</span> <span class="p">{</span>
+  
+  <span class="nx">render</span><span class="p">(){</span>
     <span class="k">return</span> <span class="nx">html</span><span class="s2">`
       </span><span class="p">${</span><span class="k">this</span><span class="p">.</span><span class="nx">headerTemplate</span><span class="p">()}</span><span class="s2">
       </span><span class="p">${</span><span class="k">this</span><span class="p">.</span><span class="nx">navTemplate</span><span class="p">()}</span><span class="s2">

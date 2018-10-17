@@ -1,21 +1,21 @@
-import {html, LitElement} from '@polymer/lit-element';
+import { LitElement, html } from '@polymer/lit-element'; 
 
 class MyElement extends LitElement {
-  static get properties() {
+  static get properties(){
     return {
-      message : {type : String},
-      myArray : {type : Array},
-      myBool : {type : Boolean}
+      message: { type: String },
+      myArray: { type: Array },
+      myBool: { type: Boolean }
     };
   }
-  constructor() {
+  constructor(){
     super();
-    this.message = 'Hello world! From my-element';
-    this.myArray = [ 'an', 'array', 'of', 'test', 'data' ];
+    this.message='Hello world! From my-element';
+    this.myArray = ['an','array','of','test','data'];
     this.myBool = true;
   }
 
-  render() {
+  render(){
     return html`
       <!-- Add a style block here -->
 
@@ -29,7 +29,7 @@ class MyElement extends LitElement {
       <button @click="${(event) => this.clickHandler(event)}">Click</button>
     `;
   }
-  clickHandler(event) {
+  clickHandler(event){
     console.log(event.target);
     this.myBool = !this.myBool;
   }

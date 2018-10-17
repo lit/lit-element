@@ -1,25 +1,25 @@
-import {html, LitElement} from '@polymer/lit-element';
+import { LitElement, html } from '@polymer/lit-element';
 
 /**
  * Anti-pattern. Avoid manipulating DOM.
  */
 class DomManip extends LitElement {
-  constructor() {
+  constructor(){
     super();
     this.addEventListener('stuff-loaded', this.doSomething.bind(this));
     this.loadStuff();
   }
-  render() {
+  render(){
     return html`
       <p id="message">Loading</p>
     `;
   }
-  doSomething() {
-    this.shadowRoot.getElementById('message').innerHTML = 'Loading complete.';
+  doSomething(){
+    this.shadowRoot.getElementById('message').innerHTML='Loading complete.';
   }
-  loadStuff() {
+  loadStuff(){
     setInterval(() => {
-      var loaded = new CustomEvent('stuff-loaded', {detail : {}});
+      var loaded = new CustomEvent('stuff-loaded', { detail: {}});
       this.dispatchEvent(loaded);
     }, 3000);
   }

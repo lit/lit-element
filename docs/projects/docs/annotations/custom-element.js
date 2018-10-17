@@ -1,17 +1,22 @@
-import {html, LitElement} from '@polymer/lit-element';
+import { LitElement, html } from '@polymer/lit-element';
 
-class CustomElement extends LitElement {
-  static get properties() {
-    return {prop1 : String, prop2 : String, prop3 : Boolean, prop4 : String};
+class CustomElement extends LitElement {  
+  static get properties(){
+    return {
+      prop1: String,
+      prop2: String,
+      prop3: Boolean,
+      prop4: String
+    };
   }
-  constructor() {
+  constructor(){
     super();
-    this.prop1 = 'text';
-    this.prop2 = 'attr';
-    this.prop3 = true;
-    this.prop4 = 'fries';
+    this.prop1='text';
+    this.prop2='attr';
+    this.prop3=true;
+    this.prop4='fries';
   }
-  render() {
+  render(){
     return html`
       <div>Bind to a child element's text node. ${this.prop1}</div>
 
@@ -30,8 +35,8 @@ class CustomElement extends LitElement {
       </button></p>
     `;
   }
-  handlePls(e) {
-    var id = e.target.id;
+  handlePls(e){
+    var id = e.target.id; 
     console.log(id + '.');
   }
 }

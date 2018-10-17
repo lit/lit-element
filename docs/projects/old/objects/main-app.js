@@ -1,16 +1,18 @@
+import { LitElement, html } from '@polymer/lit-element';
 import './student-rec.js';
 
-import {html, LitElement} from '@polymer/lit-element';
-
-class MainApp extends LitElement {
-  _render({}) {
+class MainApp extends LitElement {  
+  _render({}){
     return html`
       <student-rec></student-rec>
     `;
   }
-  _firstRendered() {
+  _firstRendered(){
     const studentRec = this.shadowRoot.querySelector('student-rec');
-    studentRec.student = {id : '12345', name : 'Yasmeen'};
+    studentRec.student={
+      id: '12345',
+      name: 'Yasmeen'
+    };
   }
 }
 
