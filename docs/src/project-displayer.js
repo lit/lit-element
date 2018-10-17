@@ -56,7 +56,7 @@ class ProjectDisplayer extends LitElement {
     var embed = slot.assignedNodes()[0];
     if (embed.tagName == 'STACK-BLITZ') {
       return embed.embedProject(project, this.options);
-    } else console.log('Put <stack-blitz slot="embed"></stack-blitz> in light DOM to embed a code sample.')
+    } else console.log('Put <stack-blitz slot="embed"></stack-blitz> in light DOM to embed a code sample.');
   }
 }
 

@@ -37,8 +37,8 @@ export class ProjectLoader extends LitElement {
         return projectLoadedEvent;
       }).then((projectLoadedEvent) => { 
         this.dispatchEvent(projectLoadedEvent); 
-      }).catch((error) => {console.log(error)});
-    }).catch((error) => {console.log(error)});
+      }).catch((error) => { console.log(error) });
+    }).catch((error) => { console.log(error) });
   }
   getFiles(manifest) {
     return Promise.all(manifest.files.map(filename => { return (
@@ -54,6 +54,5 @@ export class ProjectLoader extends LitElement {
     var regex = /\.\.\//g;
     return (r.replace("../node_modules/", "").replace(regex, ""));
   }
-};
-
+}
 customElements.define('project-loader', ProjectLoader);
