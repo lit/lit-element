@@ -1,0 +1,132 @@
+import {LitElement, html} from '@polymer/lit-element';
+import './project-loader.js';
+
+class ProjectDisplayer extends LitElement {
+  static get properties(){
+    return {
+      folder: { type: String },
+
+      clickToLoad: { type: Boolean },
+      forceEmbedLayout: { type: Boolean },
+      view: { type: String },
+      openFile: { type: String },
+      height: { type: Number },
+
+      options: { type: Object },
+      project: { type: Object }
+    };
+  }
+  updateSelectedFile(i){ 
+    var filenames = this.shadowRoot.getElementById('filenames').getElementsByClassName('filename');
+    for (var el = 0; el < filenames.length; el++) {
+      console.log(filenames[el]);
+      filenames[el].className = 'filename';
+    };
+    var filecontents = this.shadowRoot.getElementById('filecontents').getElementsByClassName('filecontents'); 
+    for (var el = 0; el < filecontents.length; el++) {
+      filecontents[el].className = 'filecontents';
+      filecontents[el].style.display = 'none';
+    };
+
+    this.shadowRoot.getElementById('filename-' + i).className += ' selected';
+    this.shadowRoot.getElementById('contents-' + i).className += ' selected';
+    this.shadowRoot.getElementById('contents-' + i).style.display = 'block';
+  }
+
+  constructor(){
+    super();
+    this.project={};
+  }
+  render(){
+    var filenames=[];
+    if(this.project.files) var filenames=Object.keys(this.project.files);
+    return html`
+      <style>
+        :host, #staticsample { 
+          min-height:50vh; 
+        }
+        #filenames {
+          display: flex;
+          flex-direction: row;
+          justify-content: space-between;
+        }
+        .filename, .toggle {
+          font-family: inherit;
+          vertical-align: middle;
+          font-size: 14px;
+          padding: 12px;
+        } 
+        .toggle {
+          border-radius: 3px;
+          border: none;
+        }
+        span.selected {
+          border-bottom: solid 2px;
+        }
+        
+      </style>
+      <project-loader id="loader"
+        @project-loaded="${(e) => this.displayProject(e.detail.project)}"
+        folder="${this.folder}">
+      </project-loader>
+      <div id="staticsample">
+        <div id="filenames">${filenames.map(i => html`
+          <span id="filename-${i}"
+            class="filename${i==this.options.openFile?' selected':''}" 
+            @click="${() => this.updateSelectedFile(i)}">${i}
+          </span>`)}
+          <button id="toggle" class="toggle" disabled 
+          @click="${() => this.toggle()}">Edit and preview</button>
+        </div>
+        <div id="filecontents">${filenames.map(i => html`
+          <div id="contents-${i}" 
+            style="${i==this.options.openFile?'':'display:none'}"
+            class="highlighter-rouge filecontents${i==this.options.openFile?' selected':''}">
+            <pre class="highlight"><code class="${
+              i.endsWith('.js')?'language-js':
+              i.endsWith('.ts')?'language-ts':
+              i.endsWith('.html')?'language-html':
+              i.endsWith('.md')?'language-markdown':''
+            }">${this.project.files[i]}</code></pre>
+          </div>`)}
+        </div>
+      </div>
+      <div id="dynamicsample" style="display:none">
+        <button class="toggle" @click="${() => this.toggle()}">Hide embed</button> 
+        <slot id="slot" name="embed"></slot>
+      </div>
+    `;
+  }
+  firstUpdated(){
+    this.options=Object.assign({}, this.options, {
+      'clickToLoad':this.clickToLoad,
+      'forceEmbedLayout':this.forceEmbedLayout,
+      'view':this.view?this.view:'both',
+      'openFile':this.openFile?this.openFile:'index.html',
+      'height':this.height?this.height:(window.innerHeight-10)/2
+    });
+  }
+
+  toggle(){
+    var dynamicsample = this.shadowRoot.getElementById("dynamicsample").style.display;
+    this.shadowRoot.getElementById("dynamicsample").style.display =
+      this.shadowRoot.getElementById("staticsample").style.display;
+    this.shadowRoot.getElementById("staticsample").style.display = dynamicsample;
+
+  }
+  displayProject(project){
+    this.project = Object.assign({}, project);
+    this.requestUpdate();
+    this.embedProject(project);
+    this.shadowRoot.getElementById('toggle').disabled = false;
+  }
+  async embedProject(project){
+    var slot = this.shadowRoot.getElementById("slot");
+    var embed = slot.assignedNodes()[0];
+    if(embed.tagName=='STACK-BLITZ'){
+      return embed.embedProject(project, this.options);
+    } else console.log('Put <stack-blitz slot="embed"></stack-blitz> in light DOM to embed a code sample.')
+  }
+}
+
+customElements.define('project-displayer', ProjectDisplayer);
