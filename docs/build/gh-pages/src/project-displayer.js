@@ -1,33 +1,21 @@
 import './project-loader.js';
-import { html, LitElement } from "../node_modules/@polymer/lit-element/lit-element.js";
+
+import {
+  html,
+  LitElement
+} from "../node_modules/@polymer/lit-element/lit-element.js";
 
 class ProjectDisplayer extends LitElement {
   static get properties() {
     return {
-      folder: {
-        type: String
-      },
-      clickToLoad: {
-        type: Boolean
-      },
-      forceEmbedLayout: {
-        type: Boolean
-      },
-      view: {
-        type: String
-      },
-      openFile: {
-        type: String
-      },
-      height: {
-        type: Number
-      },
-      options: {
-        type: Object
-      },
-      project: {
-        type: Object
-      }
+      folder : {type : String},
+      clickToLoad : {type : Boolean},
+      forceEmbedLayout : {type : Boolean},
+      view : {type : String},
+      openFile : {type : String},
+      height : {type : Number},
+      options : {type : Object},
+      project : {type : Object}
     };
   }
 
@@ -40,7 +28,7 @@ class ProjectDisplayer extends LitElement {
     return html`
       <style>
         :host { 
-          min-height: 50vh; 
+          min-height:50vh; 
         }
       </style>
       <project-loader id="loader"
@@ -55,11 +43,11 @@ class ProjectDisplayer extends LitElement {
 
   firstUpdated() {
     this.options = Object.assign({}, this.options, {
-      'clickToLoad': this.clickToLoad,
-      'forceEmbedLayout': this.forceEmbedLayout,
-      'view': this.view ? this.view : 'both',
-      'openFile': this.openFile ? this.openFile : 'index.html',
-      'height': this.height ? this.height : (window.innerHeight - 10) / 2
+      'clickToLoad' : this.clickToLoad,
+      'forceEmbedLayout' : this.forceEmbedLayout,
+      'view' : this.view ? this.view : 'both',
+      'openFile' : this.openFile ? this.openFile : 'index.html',
+      'height' : this.height ? this.height : (window.innerHeight - 10) / 2
     });
   }
 
@@ -75,9 +63,10 @@ class ProjectDisplayer extends LitElement {
 
     if (embed.tagName == 'STACK-BLITZ') {
       return embed.embedProject(project, this.options);
-    } else console.log('Put <stack-blitz slot="embed"></stack-blitz> in light DOM to embed a code sample.');
+    } else
+      console.log(
+          'Put <stack-blitz slot="embed"></stack-blitz> in light DOM to embed a code sample.');
   }
-
 }
 
 customElements.define('project-displayer', ProjectDisplayer);

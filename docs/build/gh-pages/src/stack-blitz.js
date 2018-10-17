@@ -1,37 +1,23 @@
 import "./project-loader.js";
-import { html, LitElement } from "../node_modules/@polymer/lit-element/lit-element.js";
+
+import {
+  html,
+  LitElement
+} from "../node_modules/@polymer/lit-element/lit-element.js";
 import sdk from "../node_modules/@stackblitz/sdk/bundles/sdk.m.js";
 
 class StackBlitz extends LitElement {
   static get properties() {
     return {
-      folder: {
-        type: String
-      },
-      slot: {
-        type: String
-      },
-      clickToLoad: {
-        type: Boolean
-      },
-      forceEmbedLayout: {
-        type: Boolean
-      },
-      view: {
-        type: String
-      },
-      openFile: {
-        type: String
-      },
-      height: {
-        type: Number
-      },
-      options: {
-        type: Object
-      },
-      project: {
-        type: Object
-      }
+      folder : {type : String},
+      slot : {type : String},
+      clickToLoad : {type : Boolean},
+      forceEmbedLayout : {type : Boolean},
+      view : {type : String},
+      openFile : {type : String},
+      height : {type : Number},
+      options : {type : Object},
+      project : {type : Object}
     };
   }
 
@@ -43,10 +29,14 @@ class StackBlitz extends LitElement {
           background-color: #333333
         }
       </style>
-      ${this.slot == "embed" ? html`` : html`
+      ${
+        this.slot == "embed" ? html``
+                             : html
+            `
         <project-loader 
           id="loader"
-          @project-loaded="${e => this.embedProject(e.detail.project, this.options)}"
+          @project-loaded="${
+                e => this.embedProject(e.detail.project, this.options)}"
           folder="${this.folder}">
         </project-loader>`}
       <div id="stackblitz"></div>
@@ -55,11 +45,11 @@ class StackBlitz extends LitElement {
 
   firstUpdated() {
     this.options = Object.assign({}, this.options, {
-      'clickToLoad': this.clickToLoad,
-      'forceEmbedLayout': this.forceEmbedLayout,
-      'view': this.view ? this.view : 'both',
-      'openFile': this.openFile ? this.openFile : 'index.html',
-      'height': this.height ? this.height : (window.innerHeight - 10) / 2
+      'clickToLoad' : this.clickToLoad,
+      'forceEmbedLayout' : this.forceEmbedLayout,
+      'view' : this.view ? this.view : 'both',
+      'openFile' : this.openFile ? this.openFile : 'index.html',
+      'height' : this.height ? this.height : (window.innerHeight - 10) / 2
     });
     this.project = {};
   }
@@ -68,7 +58,7 @@ class StackBlitz extends LitElement {
     var embedIn = this.shadowRoot.getElementById('stackblitz');
     const vm = sdk.embedProject(embedIn, project, options);
   }
-
 }
 
+;
 customElements.define('stack-blitz', StackBlitz);
