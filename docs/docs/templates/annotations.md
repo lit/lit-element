@@ -1,10 +1,8 @@
 ---
 layout: post
-title: Bind data to a child element in a template
-parent: /docs/
-type: task
-topic: /docs/templates
-permalink: /docs/templates/annotations
+section: docs
+topic: templates
+subtopic: annotations
 ---
 
 Use lit-element annotations with JavaScript expressions to bind data from an element's properties to a child element in its template.

@@ -6,19 +6,16 @@
     </svg>
     <input id="searchBox" type="search" placeholder="Search site">
   </li>
-  {% for item in site.data.toc.toc %}
+  {% for item in sections %}
   <li>
-    <a href="{{site.baseurl}}{{ item.url }}">{{ item.title }}</a>
-
-    {% if page.url == item.url or page.parent == item.url %}
-    <ul>
-        {% for thing in item.toc %}
-        <li>
-          <a href="{{site.baseurl}}{{ thing.url }}">{{ thing.title }}</a>
-        </li>
-        {% endfor %}
-    </ul>
-    {% endif %}
+    <a href="{{site.baseurl}}{{item[1].url}}">{{item[1].title}}</a>
+    {% if page.section == item[0] %}
+      <ul>
+        {% for item in topics %}
+        <li><a href="{{site.baseurl}}{{item[1].url}}">{{item[1].title}}</a></li>
+        {%endfor%}
+      </ul> 
+    {%endif%}
   </li>
-  {% endfor %}
+  {%endfor%}      
 </ul>

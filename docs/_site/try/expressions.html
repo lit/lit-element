@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <head>
-  <title>Write loops and conditionals with simple JavaScript expressions &ndash; lit-element docs</title>
+  <title> lit-element docs</title>
   
   <script src="/build/gh-pages/node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
   <script src="/build/gh-pages/node_modules/@webcomponents/webcomponentsjs/custom-elements-es5-adapter.js"></script>
@@ -13,6 +13,7 @@
 </head>
 
 <body>
+  
   <nav class="main-nav">
     <a class="logo" href="/">lit-element docs</a>
     <div class="flex"></div>
@@ -22,10 +23,19 @@
       <li><a href="/api">API</a></li>
     </ul>
   </nav>
-
+  
   <link rel="stylesheet" href="/css/pygments.css">
 <main>
-
+  
+  
+  
+  
+  
+  
+  
+  
+  
+    
   <nav class="toc">
     <ul>
   <li>
@@ -37,118 +47,225 @@
   </li>
   
   <li>
-    <a href="/try/">Try lit-element</a>
-
+    <a href="/try/">Try LitElement</a>
     
-    <ul>
+      <ul>
         
-        <li>
-          <a href="/try/create">Create your first custom element</a>
-        </li>
+        <li><a href="/try/create">Create your first custom element</a></li>
         
-        <li>
-          <a href="/try/use">Use your element in a web page</a>
-        </li>
+        <li><a href="/try/use">Use your element in a web page</a></li>
         
-        <li>
-          <a href="/try/properties">Add a property value to your element template</a>
-        </li>
+        <li><a href="/try/properties">Declare and use properties</a></li>
         
-        <li>
-          <a href="/try/expressions">Add a loop and an “if” statement to your template</a>
-        </li>
+        <li><a href="/try/expressions">Add a loop and an “if” statement</a></li>
         
-        <li>
-          <a href="/try/events">Add an event handler to your template</a>
-        </li>
+        <li><a href="/try/events">Add an event handler</a></li>
         
-        <li>
-          <a href="/try/style">Style your element template</a>
-        </li>
+        <li><a href="/try/style">Style your element template</a></li>
         
-    </ul>
+      </ul> 
     
   </li>
   
   <li>
     <a href="/docs/">API Documentation</a>
-
     
   </li>
   
   <li>
-    <a href="/tools/">Develop and deploy</a>
-
+    <a href="/tools/">Tools</a>
     
   </li>
   
   <li>
-    <a href="/about">About lit-element</a>
-
+    <a href="/about">About LitElement</a>
     
   </li>
-  
+        
 </ul>
 
   </nav>
 
   <article>      
     
-<div class="breadcrumbs">
+<div><a href="/try/">Try LitElement</a></div>
+
+<h1><a href="/try/expressions">Add a loop and an “if” statement</a></h1>
+
+
+
+
+<p>Handling conditionals and loops in your LitElement templates is easy. No special annotations, just plain JavaScript expressions.</p>
+
+<ul>
+  <li><a href="#start">Starting code</a></li>
+  <li><a href="#edit">Editing steps</a></li>
+  <li><a href="#completed">Completed code</a></li>
+</ul>
+
+<p><a name="start"></a></p>
+
+<h3 id="starting-code">Starting code</h3>
+
+<p><em>my-element.js</em></p>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="p">{</span> <span class="nx">LitElement</span><span class="p">,</span> <span class="nx">html</span> <span class="p">}</span> <span class="k">from</span> <span class="s1">'@polymer/lit-element'</span><span class="p">;</span> 
+
+<span class="kd">class</span> <span class="nx">MyElement</span> <span class="kd">extends</span> <span class="nx">LitElement</span> <span class="p">{</span>
+  <span class="kr">static</span> <span class="kd">get</span> <span class="nx">properties</span><span class="p">(){</span>
+    <span class="k">return</span> <span class="p">{</span>
+      <span class="na">message</span><span class="p">:</span> <span class="p">{</span> <span class="na">type</span><span class="p">:</span> <span class="nb">String</span> <span class="p">},</span>
+      <span class="na">myArray</span><span class="p">:</span> <span class="p">{</span> <span class="na">type</span><span class="p">:</span> <span class="nb">Array</span> <span class="p">},</span>
+      <span class="na">myBool</span><span class="p">:</span> <span class="p">{</span> <span class="na">type</span><span class="p">:</span> <span class="nb">Boolean</span> <span class="p">}</span>
+    <span class="p">};</span>
+  <span class="p">}</span>
+  <span class="kd">constructor</span><span class="p">(){</span>
+    <span class="k">super</span><span class="p">();</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">message</span><span class="o">=</span><span class="s1">'Hello world! From my-element'</span><span class="p">;</span>
+    
+    <span class="c1">// Initialize myArray and myBool here.</span>
+    
+  <span class="p">}</span>
+
+  <span class="nx">render</span><span class="p">(){</span>
+    <span class="k">return</span> <span class="nx">html</span><span class="s2">`
+      &lt;p&gt;</span><span class="p">${</span><span class="k">this</span><span class="p">.</span><span class="nx">message</span><span class="p">}</span><span class="s2">&lt;/p&gt;
+
+      &lt;!-- Add a loop and a conditional here. --&gt;
+    `</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+<span class="nx">customElements</span><span class="p">.</span><span class="nx">define</span><span class="p">(</span><span class="s1">'my-element'</span><span class="p">,</span> <span class="nx">MyElement</span><span class="p">);</span>
+
+</code></pre></div></div>
+
+<project-displayer folder="/projects/try/expressions/before" openFile="my-element.js" forceEmbedLayout="" view="editor">
+<stack-blitz slot="embed"></stack-blitz>
+</project-displayer>
+
+<p><a name="edit"></a></p>
+
+<h3 id="editing-steps">Editing steps</h3>
+
+<p>In this step, you’ll modify the element template to add:</p>
+
+<ul>
+  <li>A loop using an array property.</li>
+  <li>An “if” statement using a boolean property.</li>
+</ul>
+
+<p>We’ve decleared the properties; all you need to do is initialize them and use them in markup.</p>
+
+<p>In <em>my-element.js</em>, add the initialization code to the constructor.</p>
+
+<p><em>my-element.js</em></p>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">constructor</span><span class="p">(){</span>
+  <span class="k">super</span><span class="p">();</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">message</span><span class="o">=</span><span class="s1">'Hello world! From my-element'</span><span class="p">;</span>
   
-  
-  
-  <span>
-    <a href="/try/">Try lit-element</a>
-  </span>
-  
+  <span class="c1">// Initialize myArray and myBool here.</span>
 
-</div>
+<span class="p">}</span>
+</code></pre></div></div>
 
+<p><em>Initialization code</em></p>
 
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">this</span><span class="p">.</span><span class="nx">myArray</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'an'</span><span class="p">,</span><span class="s1">'array'</span><span class="p">,</span><span class="s1">'of'</span><span class="p">,</span><span class="s1">'test'</span><span class="p">,</span><span class="s1">'data'</span><span class="p">];</span>
+<span class="k">this</span><span class="p">.</span><span class="nx">myBool</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+</code></pre></div></div>
 
- 
+<p>In <em>my-element.js</em>, add a loop and a conditional to the element template in <code class="highlighter-rouge">render</code>.</p>
 
-<h1><a href="/try/expressions.html">Write loops and conditionals with simple JavaScript expressions</a></h1>
-
-<hr/>
-
-
-
-
-
-<p>Handling conditionals and loops in your lit-element templates is easy. No special annotations, just plain JavaScript expressions:</p>
+<p><em>my-element.js</em></p>
 
 <div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">render</span><span class="p">(){</span>
   <span class="k">return</span> <span class="nx">html</span><span class="s2">`
-    &lt;ul&gt;
-      </span><span class="p">${</span><span class="k">this</span><span class="p">.</span><span class="nx">myArray</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nx">i</span> <span class="o">=&gt;</span> <span class="nx">html</span><span class="s2">`&lt;li&gt;</span><span class="p">${</span><span class="nx">i</span><span class="p">}</span><span class="s2">&lt;/li&gt;`</span><span class="p">)}</span><span class="s2">
-    &lt;/ul&gt;
-    </span><span class="p">${</span><span class="k">this</span><span class="p">.</span><span class="nx">myBool</span><span class="p">?</span>
-      <span class="nx">html</span><span class="s2">`&lt;p&gt;Render some HTML if myBool is true&lt;/p&gt;`</span><span class="p">:</span>
-      <span class="nx">html</span><span class="s2">`&lt;p&gt;Render some other HTML if myBool is false&lt;/p&gt;`</span><span class="p">}</span><span class="s2">
+    &lt;p&gt;</span><span class="p">${</span><span class="k">this</span><span class="p">.</span><span class="nx">message</span><span class="p">}</span><span class="s2">&lt;/p&gt;
+
+    &lt;!-- Add a loop and a conditional here. --&gt;
   `</span><span class="p">;</span>
 <span class="p">}</span>
 </code></pre></div></div>
 
-<project-displayer folder="/projects/try/expressions" openFile="custom-element.js" forceEmbedLayout="" view="editor">
+<p><em>Code for loop</em></p>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&lt;</span><span class="nx">ul</span><span class="o">&gt;</span>
+  <span class="nx">$</span><span class="p">{</span><span class="k">this</span><span class="p">.</span><span class="nx">myArray</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nx">i</span> <span class="o">=&gt;</span> <span class="nx">html</span><span class="s2">`&lt;li&gt;</span><span class="p">${</span><span class="nx">i</span><span class="p">}</span><span class="s2">&lt;/li&gt;`</span><span class="p">)}</span>
+<span class="o">&lt;</span><span class="sr">/ul</span><span class="err">&gt;
+</span></code></pre></div></div>
+
+<p><em>Code for conditional</em></p>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">$</span><span class="p">{</span><span class="k">this</span><span class="p">.</span><span class="nx">myBool</span><span class="p">?</span>
+  <span class="nx">html</span><span class="s2">`&lt;p&gt;Render some HTML if myBool is true&lt;/p&gt;`</span><span class="p">:</span>
+  <span class="nx">html</span><span class="s2">`&lt;p&gt;Render some other HTML if myBool is false&lt;/p&gt;`</span><span class="p">}</span>
+</code></pre></div></div>
+
+<p><a name="completed"></a></p>
+
+<h3 id="completed-code">Completed code</h3>
+
+<p><em>my-element.js</em></p>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="p">{</span> <span class="nx">LitElement</span><span class="p">,</span> <span class="nx">html</span> <span class="p">}</span> <span class="k">from</span> <span class="s1">'@polymer/lit-element'</span><span class="p">;</span> 
+
+<span class="kd">class</span> <span class="nx">MyElement</span> <span class="kd">extends</span> <span class="nx">LitElement</span> <span class="p">{</span>
+  <span class="kr">static</span> <span class="kd">get</span> <span class="nx">properties</span><span class="p">(){</span>
+    <span class="k">return</span> <span class="p">{</span>
+      <span class="na">message</span><span class="p">:</span> <span class="p">{</span> <span class="na">type</span><span class="p">:</span> <span class="nb">String</span> <span class="p">},</span>
+      <span class="na">myArray</span><span class="p">:</span> <span class="p">{</span> <span class="na">type</span><span class="p">:</span> <span class="nb">Array</span> <span class="p">},</span>
+      <span class="na">myBool</span><span class="p">:</span> <span class="p">{</span> <span class="na">type</span><span class="p">:</span> <span class="nb">Boolean</span> <span class="p">}</span>
+    <span class="p">};</span>
+  <span class="p">}</span>
+  <span class="kd">constructor</span><span class="p">(){</span>
+    <span class="k">super</span><span class="p">();</span>
+
+    <span class="k">this</span><span class="p">.</span><span class="nx">message</span><span class="o">=</span><span class="s1">'Hello world! From my-element'</span><span class="p">;</span>
+    
+    <span class="c1">// Initialize myArray and myBool here.</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">myArray</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'an'</span><span class="p">,</span><span class="s1">'array'</span><span class="p">,</span><span class="s1">'of'</span><span class="p">,</span><span class="s1">'test'</span><span class="p">,</span><span class="s1">'data'</span><span class="p">];</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">myBool</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="nx">render</span><span class="p">(){</span>
+    <span class="k">return</span> <span class="nx">html</span><span class="s2">`
+      &lt;p&gt;</span><span class="p">${</span><span class="k">this</span><span class="p">.</span><span class="nx">message</span><span class="p">}</span><span class="s2">&lt;/p&gt;
+
+      &lt;!-- Add a loop and a conditional here. --&gt;
+      &lt;ul&gt;
+        </span><span class="p">${</span><span class="k">this</span><span class="p">.</span><span class="nx">myArray</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nx">i</span> <span class="o">=&gt;</span> <span class="nx">html</span><span class="s2">`&lt;li&gt;</span><span class="p">${</span><span class="nx">i</span><span class="p">}</span><span class="s2">&lt;/li&gt;`</span><span class="p">)}</span><span class="s2">
+      &lt;/ul&gt;
+      </span><span class="p">${</span><span class="k">this</span><span class="p">.</span><span class="nx">myBool</span><span class="p">?</span>
+        <span class="nx">html</span><span class="s2">`&lt;p&gt;Render some HTML if myBool is true&lt;/p&gt;`</span><span class="p">:</span>
+        <span class="nx">html</span><span class="s2">`&lt;p&gt;Render some other HTML if myBool is false&lt;/p&gt;`</span><span class="p">}</span><span class="s2">
+    `</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+<span class="nx">customElements</span><span class="p">.</span><span class="nx">define</span><span class="p">(</span><span class="s1">'my-element'</span><span class="p">,</span> <span class="nx">MyElement</span><span class="p">);</span>
+
+</code></pre></div></div>
+
+<project-displayer folder="/projects/try/expressions/after" openFile="my-element.js" forceEmbedLayout="" view="editor">
 <stack-blitz slot="embed"></stack-blitz>
 </project-displayer>
 
+<div class="prevnext">
 
+  <div class="next">
 
-<div class="bottomnav">
-  <span class="prev">
-     
-    <a href="/try/props">&lt;&lt;&nbsp;Use properties</a>
-    
-  </span>
-  <span class="next">
-     
-    <a href="/try/events">Use event handlers&nbsp;&gt;&gt;</a>
-    
-  </span>
+    <p><a href="events">Next: Add an event handler &gt;&gt;</a></p>
+
+  </div>
+
+  <div class="prev">
+
+    <p><a href="properties">&lt;&lt; Previous: Declare properties</a></p>
+
+  </div>
+
 </div>
+
 
 
   

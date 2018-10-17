@@ -1,10 +1,8 @@
 ---
 layout: post
-title: Compose and nest lit-element templates
-parent: /docs/
-type: task
-topic: /docs/templates
-permalink: /docs/templates/compose
+section: docs
+topic: templates
+subtopic: compose
 ---
 
 You can compose LitElement templates from other LitElement templates:

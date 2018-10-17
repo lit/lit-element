@@ -1,0 +1,96 @@
+title: LitElement Documentation
+toc:
+  try: 
+    title: Try LitElement
+    url: /try/
+    toc: 
+      create:
+        title: Create your first custom element
+        url: /try/create
+      use:
+        title: Use your element in a web page
+        url: /try/use
+      properties:
+        title: Declare and use properties
+        url: /try/properties
+      expressions: 
+        title: Add a loop and an “if” statement
+        url: /try/expressions
+      events:
+        title: Add an event handler
+        url: /try/events
+      style: 
+        title: Style your element template
+        url: /try/style
+  docs:
+    title: API Documentation
+    url: /docs/
+    toc: 
+      create:
+        title: Create an element
+        url: /docs/create
+        toc: 
+          index:
+            title: Overview
+            url: /docs/create/index
+          extend:
+            title: Extend the LitElement base class
+            url: /docs/create/extend
+          typescript:
+            title: Use TypeScript decorators to create a custom element
+            url: /docs/create/typescript
+          renderroot:
+            title: Customize an element's render root
+            url: /docs/create/renderroot
+          design:
+            title: Designing an element
+            url: /docs/create/design
+      import: 
+        title: Import an existing element    
+        url: /docs/import
+      templates: 
+        title: Write a template
+        url: /docs/templates
+        toc: 
+          index: 
+            title: Write a template
+            url: /docs/templates/index
+          expressions:
+            title: Use plain JavaScript expressions in a template
+            url: /docs/templates/expressions
+          annotations:
+            title: Bind data to a child element in a template 
+            url: /docs/templates/annotations
+          compose:
+            title: Compose and nest lit-element templates 
+            url: /docs/templates/compose
+          slots:
+            title: Render light DOM children in a template 
+            url: /docs/templates/slots
+          design:
+            title: Designing efficient LitElement templates
+            url: /docs/templates/design
+      properties: 
+        title: Work with properties
+        url: /docs/properties
+      lifecycle: 
+        title: Work with the element lifecycle
+        url: /docs/lifecycle
+      events: 
+        title: Work with events
+        url: /docs/events
+      reuse: 
+        title: Create reusable features
+        url: /docs/reuse
+      style: 
+        title: Style elements with CSS
+        url: /docs/style
+      api:
+        title: API reference
+        url: /docs/api
+  tools:
+    title: Tools
+    url: /tools/
+  about:
+    title: About LitElement
+    url: /about

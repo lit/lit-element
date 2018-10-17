@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <head>
-  <title>Use event handlers in templates &ndash; lit-element docs</title>
+  <title> lit-element docs</title>
   
   <script src="/build/gh-pages/node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
   <script src="/build/gh-pages/node_modules/@webcomponents/webcomponentsjs/custom-elements-es5-adapter.js"></script>
@@ -13,6 +13,7 @@
 </head>
 
 <body>
+  
   <nav class="main-nav">
     <a class="logo" href="/">lit-element docs</a>
     <div class="flex"></div>
@@ -22,10 +23,19 @@
       <li><a href="/api">API</a></li>
     </ul>
   </nav>
-
+  
   <link rel="stylesheet" href="/css/pygments.css">
 <main>
-
+  
+  
+  
+  
+  
+  
+  
+  
+  
+    
   <nav class="toc">
     <ul>
   <li>
@@ -37,149 +47,226 @@
   </li>
   
   <li>
-    <a href="/try/">Try lit-element</a>
-
+    <a href="/try/">Try LitElement</a>
     
-    <ul>
+      <ul>
         
-        <li>
-          <a href="/try/create">Create your first custom element</a>
-        </li>
+        <li><a href="/try/create">Create your first custom element</a></li>
         
-        <li>
-          <a href="/try/use">Use your element in a web page</a>
-        </li>
+        <li><a href="/try/use">Use your element in a web page</a></li>
         
-        <li>
-          <a href="/try/properties">Add a property value to your element template</a>
-        </li>
+        <li><a href="/try/properties">Declare and use properties</a></li>
         
-        <li>
-          <a href="/try/expressions">Add a loop and an “if” statement to your template</a>
-        </li>
+        <li><a href="/try/expressions">Add a loop and an “if” statement</a></li>
         
-        <li>
-          <a href="/try/events">Add an event handler to your template</a>
-        </li>
+        <li><a href="/try/events">Add an event handler</a></li>
         
-        <li>
-          <a href="/try/style">Style your element template</a>
-        </li>
+        <li><a href="/try/style">Style your element template</a></li>
         
-    </ul>
+      </ul> 
     
   </li>
   
   <li>
     <a href="/docs/">API Documentation</a>
-
     
   </li>
   
   <li>
-    <a href="/tools/">Develop and deploy</a>
-
+    <a href="/tools/">Tools</a>
     
   </li>
   
   <li>
-    <a href="/about">About lit-element</a>
-
+    <a href="/about">About LitElement</a>
     
   </li>
-  
+        
 </ul>
 
   </nav>
 
   <article>      
     
-<div class="breadcrumbs">
-  
-  
-  
-  <span>
-    <a href="/try/">Try lit-element</a>
-  </span>
-  
+<div><a href="/try/">Try LitElement</a></div>
 
-</div>
-
-
-
- 
-
-<h1><a href="/try/events.html">Use event handlers in templates</a></h1>
-
-<hr/>
+<h1><a href="/try/events">Add an event handler</a></h1>
 
 
 
 
+<p>Use lit-html’s <code class="highlighter-rouge">@event</code> annotation to add an event listener to an element inside a template.</p>
 
-<p>Use lit-html’s <code class="highlighter-rouge">@event</code> notation to add an event handler to an element inside a template. For example:</p>
+<ul>
+  <li><a href="#start">Starting code</a></li>
+  <li><a href="#edit">Editing steps</a></li>
+  <li><a href="#completed">Completed code</a></li>
+</ul>
 
-<p>Print <code class="highlighter-rouge">click</code> events for a button to the console:</p>
+<p><a name="start"></a></p>
 
-<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">render</span><span class="p">(){</span>
-  <span class="k">return</span> <span class="nx">html</span><span class="s2">`
-    &lt;button @click="</span><span class="p">${(</span><span class="nx">e</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">e</span><span class="p">)}</span><span class="s2">"&gt;click me&lt;/button&gt;
-  `</span><span class="p">;</span>
-<span class="p">}</span>
-</code></pre></div></div>
+<h3 id="starting-code">Starting code</h3>
 
-<p>Send <code class="highlighter-rouge">click</code> events for a button to a method on your element:</p>
+<p><em>my-element.js</em></p>
 
-<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">doStuff</span><span class="p">(</span><span class="nx">e</span><span class="p">){</span>
-  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">e</span><span class="p">);</span>
-  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">detail</span><span class="p">);</span>
-  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">target</span><span class="p">.</span><span class="nx">id</span><span class="p">);</span>
-<span class="p">}</span>
-<span class="nx">render</span><span class="p">(){</span>
-  <span class="k">return</span> <span class="nx">html</span><span class="s2">`
-    &lt;button @click="</span><span class="p">${(</span><span class="nx">e</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="k">this</span><span class="p">.</span><span class="nx">doStuff</span><span class="p">(</span><span class="nx">e</span><span class="p">)}</span><span class="s2">"&gt;click me&lt;/button&gt;
-  `</span><span class="p">;</span>
-<span class="p">}</span>
-</code></pre></div></div>
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="p">{</span> <span class="nx">LitElement</span><span class="p">,</span> <span class="nx">html</span> <span class="p">}</span> <span class="k">from</span> <span class="s1">'@polymer/lit-element'</span><span class="p">;</span> 
 
-<p><em>custom-element.js</em></p>
-<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="p">{</span> <span class="nx">LitElement</span><span class="p">,</span> <span class="nx">html</span> <span class="p">}</span> <span class="k">from</span> <span class="s1">'@polymer/lit-element'</span><span class="p">;</span>
+<span class="kd">class</span> <span class="nx">MyElement</span> <span class="kd">extends</span> <span class="nx">LitElement</span> <span class="p">{</span>
+  <span class="kr">static</span> <span class="kd">get</span> <span class="nx">properties</span><span class="p">(){</span>
+    <span class="k">return</span> <span class="p">{</span>
+      <span class="na">message</span><span class="p">:</span> <span class="p">{</span> <span class="na">type</span><span class="p">:</span> <span class="nb">String</span> <span class="p">},</span>
+      <span class="na">myArray</span><span class="p">:</span> <span class="p">{</span> <span class="na">type</span><span class="p">:</span> <span class="nb">Array</span> <span class="p">},</span>
+      <span class="na">myBool</span><span class="p">:</span> <span class="p">{</span> <span class="na">type</span><span class="p">:</span> <span class="nb">Boolean</span> <span class="p">}</span>
+    <span class="p">};</span>
+  <span class="p">}</span>
+  <span class="kd">constructor</span><span class="p">(){</span>
+    <span class="k">super</span><span class="p">();</span>
 
-<span class="kd">class</span> <span class="nx">CustomElement</span> <span class="kd">extends</span> <span class="nx">LitElement</span> <span class="p">{</span>  
+    <span class="k">this</span><span class="p">.</span><span class="nx">message</span><span class="o">=</span><span class="s1">'Hello world! From my-element'</span><span class="p">;</span>
+    
+    <span class="k">this</span><span class="p">.</span><span class="nx">myArray</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'an'</span><span class="p">,</span><span class="s1">'array'</span><span class="p">,</span><span class="s1">'of'</span><span class="p">,</span><span class="s1">'test'</span><span class="p">,</span><span class="s1">'data'</span><span class="p">];</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">myBool</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+  <span class="p">}</span>
+
   <span class="nx">render</span><span class="p">(){</span>
     <span class="k">return</span> <span class="nx">html</span><span class="s2">`
-      &lt;p&gt;check the console&lt;/p&gt;
-      &lt;button 
-        id="mybutton" 
-        @click="</span><span class="p">${(</span><span class="nx">event</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="k">this</span><span class="p">.</span><span class="nx">clickHandler</span><span class="p">(</span><span class="nx">event</span><span class="p">)}</span><span class="s2">"&gt;click&lt;/button&gt;
+      &lt;p&gt;</span><span class="p">${</span><span class="k">this</span><span class="p">.</span><span class="nx">message</span><span class="p">}</span><span class="s2">&lt;/p&gt;
+
+      &lt;ul&gt;
+        </span><span class="p">${</span><span class="k">this</span><span class="p">.</span><span class="nx">myArray</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nx">i</span> <span class="o">=&gt;</span> <span class="nx">html</span><span class="s2">`&lt;li&gt;</span><span class="p">${</span><span class="nx">i</span><span class="p">}</span><span class="s2">&lt;/li&gt;`</span><span class="p">)}</span><span class="s2">
+      &lt;/ul&gt;
+      </span><span class="p">${</span><span class="k">this</span><span class="p">.</span><span class="nx">myBool</span><span class="p">?</span>
+        <span class="nx">html</span><span class="s2">`&lt;p&gt;Render some HTML if myBool is true&lt;/p&gt;`</span><span class="p">:</span>
+        <span class="nx">html</span><span class="s2">`&lt;p&gt;Render some other HTML if myBool is false&lt;/p&gt;`</span><span class="p">}</span><span class="s2">
+
+      &lt;!-- Annotate the button to add an event listener. --&gt; 
+      &lt;button&gt;Click&lt;/button&gt;
     `</span><span class="p">;</span>
   <span class="p">}</span>
-  <span class="nx">clickHandler</span><span class="p">(</span><span class="nx">event</span><span class="p">){</span>
-    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">target</span><span class="p">.</span><span class="nx">id</span> <span class="o">+</span> <span class="s1">' was clicked.'</span><span class="p">);</span>
-  <span class="p">}</span>
+  <span class="c1">// Add an event handler here.</span>
 <span class="p">}</span>
+<span class="nx">customElements</span><span class="p">.</span><span class="nx">define</span><span class="p">(</span><span class="s1">'my-element'</span><span class="p">,</span> <span class="nx">MyElement</span><span class="p">);</span>
 
-<span class="nx">customElements</span><span class="p">.</span><span class="nx">define</span><span class="p">(</span><span class="s1">'custom-element'</span><span class="p">,</span> <span class="nx">CustomElement</span><span class="p">);</span>
 </code></pre></div></div>
 
-<project-displayer folder="/projects/try/events" openFile="custom-element.js" forceEmbedLayout="" view="editor">
+<project-displayer folder="/projects/try/events/before" openFile="my-element.js" forceEmbedLayout="" view="editor">
 <stack-blitz slot="embed"></stack-blitz>
 </project-displayer>
 
+<p><a name="edit"></a></p>
 
+<h3 id="editing-steps">Editing steps</h3>
 
-<div class="bottomnav">
-  <span class="prev">
-     
-    <a href="/try/expressions">&lt;&lt;&nbsp;Write loops and conditionals</a>
+<p>In the element template in <code class="highlighter-rouge">render</code>, annotate a <code class="highlighter-rouge">&lt;button&gt;</code> to add an event listener:</p>
+
+<p><em>my-element.js</em></p>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">render</span><span class="p">(){</span>
+  <span class="k">return</span> <span class="nx">html</span><span class="s2">`
+    ...
     
-  </span>
-  <span class="next">
-     
-    <a href="/try/style">Style&nbsp;&gt;&gt;</a>
+    &lt;!-- Annotate the button to add an event listener. --&gt; 
+    &lt;button&gt;&lt;/button&gt;
+  `</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><em>Annotated button</em></p>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;button</span> <span class="err">@</span><span class="na">click=</span><span class="s">"${(event) =&gt; this.clickHandler(event)}"</span><span class="nt">&gt;</span>Click<span class="nt">&lt;/button&gt;</span>
+</code></pre></div></div>
+
+<p>To handle the event, add an event handler method to the MyElement class.</p>
+
+<p><em>my-element.js</em></p>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nx">MyElement</span> <span class="nx">extend</span> <span class="nx">LitElement</span> <span class="p">{</span> 
+  <span class="p">...</span>
+  <span class="nx">render</span><span class="p">(){</span>
+    <span class="p">...</span>
+  <span class="p">}</span>
+  <span class="c1">// Add an event handler here.</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><em>Event handler code</em></p>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">clickHandler</span><span class="p">(</span><span class="nx">event</span><span class="p">){</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">target</span><span class="p">);</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">myBool</span> <span class="o">=</span> <span class="o">!</span><span class="k">this</span><span class="p">.</span><span class="nx">myBool</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><a name="completed"></a></p>
+
+<h3 id="completed-code">Completed code</h3>
+
+<p><em>my-element.js</em></p>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="p">{</span> <span class="nx">LitElement</span><span class="p">,</span> <span class="nx">html</span> <span class="p">}</span> <span class="k">from</span> <span class="s1">'@polymer/lit-element'</span><span class="p">;</span> 
+
+<span class="kd">class</span> <span class="nx">MyElement</span> <span class="kd">extends</span> <span class="nx">LitElement</span> <span class="p">{</span>
+  <span class="kr">static</span> <span class="kd">get</span> <span class="nx">properties</span><span class="p">(){</span>
+    <span class="k">return</span> <span class="p">{</span>
+      <span class="na">message</span><span class="p">:</span> <span class="p">{</span> <span class="na">type</span><span class="p">:</span> <span class="nb">String</span> <span class="p">},</span>
+      <span class="na">myArray</span><span class="p">:</span> <span class="p">{</span> <span class="na">type</span><span class="p">:</span> <span class="nb">Array</span> <span class="p">},</span>
+      <span class="na">myBool</span><span class="p">:</span> <span class="p">{</span> <span class="na">type</span><span class="p">:</span> <span class="nb">Boolean</span> <span class="p">}</span>
+    <span class="p">};</span>
+  <span class="p">}</span>
+  <span class="kd">constructor</span><span class="p">(){</span>
+    <span class="k">super</span><span class="p">();</span>
+
+    <span class="k">this</span><span class="p">.</span><span class="nx">message</span><span class="o">=</span><span class="s1">'Hello world! From my-element'</span><span class="p">;</span>
     
-  </span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">myArray</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'an'</span><span class="p">,</span><span class="s1">'array'</span><span class="p">,</span><span class="s1">'of'</span><span class="p">,</span><span class="s1">'test'</span><span class="p">,</span><span class="s1">'data'</span><span class="p">];</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">myBool</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="nx">render</span><span class="p">(){</span>
+    <span class="k">return</span> <span class="nx">html</span><span class="s2">`
+      &lt;p&gt;</span><span class="p">${</span><span class="k">this</span><span class="p">.</span><span class="nx">message</span><span class="p">}</span><span class="s2">&lt;/p&gt;
+
+      &lt;ul&gt;
+        </span><span class="p">${</span><span class="k">this</span><span class="p">.</span><span class="nx">myArray</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nx">i</span> <span class="o">=&gt;</span> <span class="nx">html</span><span class="s2">`&lt;li&gt;</span><span class="p">${</span><span class="nx">i</span><span class="p">}</span><span class="s2">&lt;/li&gt;`</span><span class="p">)}</span><span class="s2">
+      &lt;/ul&gt;
+      </span><span class="p">${</span><span class="k">this</span><span class="p">.</span><span class="nx">myBool</span><span class="p">?</span>
+        <span class="nx">html</span><span class="s2">`&lt;p&gt;Render some HTML if myBool is true&lt;/p&gt;`</span><span class="p">:</span>
+        <span class="nx">html</span><span class="s2">`&lt;p&gt;Render some other HTML if myBool is false&lt;/p&gt;`</span><span class="p">}</span><span class="s2">
+      
+      &lt;!-- Annotate the button to add an event listener. --&gt; 
+      &lt;button @click="</span><span class="p">${(</span><span class="nx">event</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="k">this</span><span class="p">.</span><span class="nx">clickHandler</span><span class="p">(</span><span class="nx">event</span><span class="p">)}</span><span class="s2">"&gt;Click&lt;/button&gt;
+    `</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="c1">// Add an event handler here.</span>
+  <span class="nx">clickHandler</span><span class="p">(</span><span class="nx">event</span><span class="p">){</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">target</span><span class="p">);</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">myBool</span> <span class="o">=</span> <span class="o">!</span><span class="k">this</span><span class="p">.</span><span class="nx">myBool</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+<span class="nx">customElements</span><span class="p">.</span><span class="nx">define</span><span class="p">(</span><span class="s1">'my-element'</span><span class="p">,</span> <span class="nx">MyElement</span><span class="p">);</span>
+
+</code></pre></div></div>
+
+<project-displayer folder="/projects/try/events/after" openFile="my-element.js" forceEmbedLayout="" view="editor">
+<stack-blitz slot="embed"></stack-blitz>
+</project-displayer>
+
+<div class="prevnext">
+
+  <div class="next">
+
+    <p><a href="style">Next: Style your element &gt;&gt;</a></p>
+
+  </div>
+
+  <div class="prev">
+
+    <p><a href="expressions">&lt;&lt; Previous: Loops and conditionals</a></p>
+
+  </div>
+
 </div>
+
 
 
   

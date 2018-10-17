@@ -1,7 +1,6 @@
 ---
 layout: post
-title: API Documentation
-type: contents
+section: docs
 ---
 
-TODO: Draft this page
+Docs section index

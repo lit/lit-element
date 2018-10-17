@@ -1,45 +1,99 @@
 ---
 layout: post
-title: Use properties in templates
-parent: /try/
-next: /try/expressions
-nexttitle: Write loops and conditionals
-prev: /try/create
-prevtitle: Create an element
-type: task
+section: try
+topic: properties
+next: expressions
 ---
 
-To render property values in your element templates: 
+You can use your element's properties in its template. LitElement automatically updates your element when its properties change.
 
-* Declare your properties, for example, in a static getter. 
-* Add properties to your template with JavaScript expressions.
-* You can initialize properties in the element constructor.
+* [Starting code](#start)
+* [Editing steps](#edit)
+* [Completed code](#completed)
 
-**custom-element.js**
+<a name="start">
+
+### Starting code
+
+_my-element.js_
+
 ```js
-class CustomElement extends LitElement {  
-  // Declare properties.
-  static get properties(){
-    return {
-      headingtext: { type: String }
-    };
-  }
-  constructor(){
-    // Always call superconstructor when you override the constructor.
-    super();
-
-    // You can initialize properties in the element constructor.
-    this.headingtext='Hello World!';
-  }
-  render(){
-    return html`
-      <!-- Add properties to a template with JavaScript expressions. -->
-      <h1>${this.headingtext}</h1>
-    `;
-  }
-}
+{% include projects/try/properties/before/my-element.js %}
 ```
 
-lit-element automatically observes and renders property changes.
+{% include project.html folder="try/properties/before" openFile="my-element.js" %}
 
-{% include project.html folder="try/properties" openFile="custom-element.js" %}
+<a name="edit">
+
+### Editing steps
+
+To create properties and use them in an element template: 
+
+*   Declare your properties. 
+
+    _my-element.js_
+
+    ```js
+    static get properties(){
+      return {
+        // Declare property here.
+      };
+    }
+    ```
+
+    _Declare a property_
+
+    ```js
+    message: { type: String }
+    ```
+
+*   Initialize property values in the element constructor.
+
+    _my-element.js_
+
+    ```js
+    constructor(){
+      super();
+      // Initialize property here.
+    }
+    ```
+
+    _Initialize the property_
+
+    ```js
+    message: { type: String }
+    ```
+
+*   Add properties to your template with JavaScript expressions.
+
+    _my-element.js_
+
+    ```js
+    render(){
+      return html`
+        <!-- Add property here. -->
+        <p></p>
+      `;
+    }
+    ``` 
+
+    _Use the property_
+
+    ```js
+    <p>${this.message}</p>
+    ```
+
+<a name="completed">
+
+### Completed code
+
+_my-element.js_
+
+```js
+{% include projects/try/properties/after/my-element.js %}
+```
+
+{% include project.html folder="try/properties/after" openFile="my-element.js" %}
+
+
+{% include prevnext.html prevurl="use" prevtitle="Use your element in a web page" nexturl="expressions" nexttitle="Loops and conditionals" %}

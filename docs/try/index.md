@@ -1,12 +1,17 @@
 ---
 layout: post
-title: Try lit-element
-type: task
+section: try
 ---
 
-Build your first web component and use it in a web page.
+Try LitElement! In this tutorial you'll build your first web component, use it in a web page, and add style with CSS.
 
-Try lit-element in live code samples without installing anything:
+The tutorial pages contain live code samples that you can edit, like this:
+
+{% include project.html folder="try/create/after" openFile="my-element.js" %}
+
+Click **Preview** at any time to see your code in action. 
+
+Follow the steps below to get started with LitElement:
 
 *  [Create your first custom element](create).
 *  [Use your custom element in a web page](use).
@@ -15,4 +20,6 @@ Try lit-element in live code samples without installing anything:
 *  [Add an event handler to your template](events).
 *  [Style your element template](style).
 
-If you're ready to dive in, [Set up lit-element locally](/tools/setup) to get started with your own development environment.
+When you're ready to dive in, follow this guide to [Set up LitElement locally](/tools/setup). 
+
+{% include prevnext.html nexturl="create" nexttitle="Create your first custom element" %}

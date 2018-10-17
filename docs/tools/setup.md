@@ -1,7 +1,8 @@
 ---
 layout: post
-title: Set up lit-element locally
-parent: /tools/
+section: tools
+topic: setup
+pageid: setup
 ---
 
 * [Install pre-requisites](#install)

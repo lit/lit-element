@@ -1,10 +1,8 @@
 ---
 layout: post
-title: Define an element's render root
-parent: /docs/
-type: task
-topic: /docs/create
-permalink: /docs/create/renderroot
+section: docs
+topic: create
+subtopic: renderroot
 ---
 
 <a name="about">

@@ -1,60 +1,86 @@
 ---
 layout: post
-title: Use event handlers in templates
-parent: /try/
-next: /try/style
-nexttitle: Style
-prev: /try/expressions
-prevtitle: Write loops and conditionals
-type: task
+section: try
+topic: events
+next: style
 ---
 
-Use lit-html's `@event` notation to add an event handler to an element inside a template. For example:
+Use lit-html's `@event` annotation to add an event listener to an element inside a template. 
 
-Print `click` events for a button to the console:
+* [Starting code](#start)
+* [Editing steps](#edit)
+* [Completed code](#completed)
+
+<a name="start">
+
+### Starting code
+
+_my-element.js_
+
+```js
+{% include projects/try/events/before/my-element.js %}
+```
+
+{% include project.html folder="try/events/before" openFile="my-element.js" %}
+
+<a name="edit">
+
+### Editing steps
+
+In the element template in `render`, annotate a `<button>` to add an event listener:
+
+_my-element.js_
 
 ```js
 render(){
   return html`
-    <button @click="${(e) => console.log(e)}">click me</button>
+    ...
+    
+    <!-- Annotate the button to add an event listener. --> 
+    <button></button>
   `;
 }
 ```
 
-Send `click` events for a button to a method on your element:
+_Annotated button_
 
-```js
-doStuff(e){
-  console.log(e);
-  console.log(e.detail);
-  console.log(e.target.id);
-}
-render(){
-  return html`
-    <button @click="${(e) => this.doStuff(e)}">click me</button>
-  `;
-}
+```html
+<button @click="${(event) => this.clickHandler(event)}">Click</button>
 ```
 
-_custom-element.js_
-```js
-import { LitElement, html } from '@polymer/lit-element';
+To handle the event, add an event handler method to the MyElement class.
 
-class CustomElement extends LitElement {  
+_my-element.js_
+
+```js
+class MyElement extend LitElement { 
+  ...
   render(){
-    return html`
-      <p>check the console</p>
-      <button 
-        id="mybutton" 
-        @click="${(event) => this.clickHandler(event)}">click</button>
-    `;
+    ...
   }
-  clickHandler(event){
-    console.log(event.target.id + ' was clicked.');
-  }
+  // Add an event handler here.
 }
-
-customElements.define('custom-element', CustomElement);
 ```
 
-{% include project.html folder="try/events" openFile="custom-element.js" %}
+_Event handler code_
+
+```js
+clickHandler(event){
+  console.log(event.target);
+  this.myBool = !this.myBool;
+}
+```
+
+<a name="completed">
+
+### Completed code
+
+_my-element.js_
+
+```js
+{% include projects/try/events/after/my-element.js %}
+```
+
+{% include project.html folder="try/events/after" openFile="my-element.js" %}
+
+{% include prevnext.html prevurl="expressions" prevtitle="Loops and conditionals" nexturl="style" nexttitle="Style your element" %}

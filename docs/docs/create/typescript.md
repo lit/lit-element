@@ -1,11 +1,14 @@
 ---
 layout: post
-title: Use typescript decorators to create an element class
-parent: /docs/
-type: task
-topic: /docs/create
-permalink: /docs/create/typescript
+section: docs
+topic: create
+subtopic: typescript
 ---
 
-TODO: Draft this page
+Use the `@customElement` TypeScript decorator to define your class as a custom element:
 
+```ts
+{% include projects/docs/typescript/my-element.ts %}
+```
+
+{% include project.html folder="docs/typescript" %}

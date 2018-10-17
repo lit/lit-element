@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <head>
-  <title>Create your first custom element &ndash; lit-element docs</title>
+  <title> lit-element docs</title>
   
   <script src="/build/gh-pages/node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
   <script src="/build/gh-pages/node_modules/@webcomponents/webcomponentsjs/custom-elements-es5-adapter.js"></script>
@@ -13,6 +13,7 @@
 </head>
 
 <body>
+  
   <nav class="main-nav">
     <a class="logo" href="/">lit-element docs</a>
     <div class="flex"></div>
@@ -22,10 +23,19 @@
       <li><a href="/api">API</a></li>
     </ul>
   </nav>
-
+  
   <link rel="stylesheet" href="/css/pygments.css">
 <main>
-
+  
+  
+  
+  
+  
+  
+  
+  
+  
+    
   <nav class="toc">
     <ul>
   <li>
@@ -37,150 +47,192 @@
   </li>
   
   <li>
-    <a href="/try/">Try lit-element</a>
-
+    <a href="/try/">Try LitElement</a>
     
-    <ul>
+      <ul>
         
-        <li>
-          <a href="/try/create">Create your first custom element</a>
-        </li>
+        <li><a href="/try/create">Create your first custom element</a></li>
         
-        <li>
-          <a href="/try/use">Use your element in a web page</a>
-        </li>
+        <li><a href="/try/use">Use your element in a web page</a></li>
         
-        <li>
-          <a href="/try/properties">Add a property value to your element template</a>
-        </li>
+        <li><a href="/try/properties">Declare and use properties</a></li>
         
-        <li>
-          <a href="/try/expressions">Add a loop and an “if” statement to your template</a>
-        </li>
+        <li><a href="/try/expressions">Add a loop and an “if” statement</a></li>
         
-        <li>
-          <a href="/try/events">Add an event handler to your template</a>
-        </li>
+        <li><a href="/try/events">Add an event handler</a></li>
         
-        <li>
-          <a href="/try/style">Style your element template</a>
-        </li>
+        <li><a href="/try/style">Style your element template</a></li>
         
-    </ul>
+      </ul> 
     
   </li>
   
   <li>
     <a href="/docs/">API Documentation</a>
-
     
   </li>
   
   <li>
-    <a href="/tools/">Develop and deploy</a>
-
+    <a href="/tools/">Tools</a>
     
   </li>
   
   <li>
-    <a href="/about">About lit-element</a>
-
+    <a href="/about">About LitElement</a>
     
   </li>
-  
+        
 </ul>
 
   </nav>
 
   <article>      
     
-<div class="breadcrumbs">
-  
-  
-  
-  <span>
-    <a href="/try/">Try lit-element</a>
-  </span>
-  
+<div><a href="/try/">Try LitElement</a></div>
 
-</div>
-
-
-
- 
-
-<h1><a href="/try/create.html">Create your first custom element</a></h1>
-
-<hr/>
+<h1><a href="/try/create">Create your first custom element</a></h1>
 
 
 
 
-
-<p>To create a new custom element with lit-element:</p>
+<p>In this step, you’ll fill in the gaps in the starting code to create an element class with a basic HTML template.</p>
 
 <ul>
-  <li>Import and extend the <code class="highlighter-rouge">LitElement</code> base class.</li>
-  <li>Define your element template inside lit-element’s <code class="highlighter-rouge">render</code> function.</li>
-  <li>Register the new element with the browser.</li>
+  <li><a href="#start">Starting code</a></li>
+  <li><a href="#edit">Editing steps</a></li>
+  <li><a href="#completed">Completed code</a></li>
 </ul>
 
-<p>You can now import your element as a JavaScript module, and use it in markup.</p>
+<p><a name="start"></a></p>
 
-<p><em>custom-element.js</em></p>
+<h3 id="starting-code">Starting code</h3>
 
-<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Import and extend the LitElement base class.</span>
-<span class="k">import</span> <span class="p">{</span> <span class="nx">LitElement</span><span class="p">,</span> <span class="nx">html</span> <span class="p">}</span> <span class="k">from</span> <span class="s1">'@polymer/lit-element'</span><span class="p">;</span> 
+<p><em>my-element.js</em></p>
 
-<span class="kd">class</span> <span class="nx">CustomElement</span> <span class="kd">extends</span> <span class="nx">LitElement</span> <span class="p">{</span>
-  <span class="c1">// Return your template from lit-element's `render` function.</span>
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Import LitElement base class and html helper function</span>
+<span class="k">import</span> <span class="p">{</span> <span class="p">}</span> <span class="k">from</span> <span class="s1">''</span><span class="p">;</span> 
+
+<span class="c1">// Create your class here</span>
+<span class="kd">class</span> <span class="nx">MyElement</span> <span class="p">{</span>
   <span class="nx">render</span><span class="p">(){</span>
-    <span class="k">return</span> <span class="nx">html</span><span class="s2">`
-      &lt;!-- Write your element template in plain HTML. --&gt;
-      &lt;p&gt;hello world from custom-element&lt;/p&gt;
-    `</span><span class="p">;</span>
+    <span class="c1">// Define your element template here</span>
   <span class="p">}</span>
 <span class="p">}</span>
-<span class="c1">// Register the new element with the browser.</span>
-<span class="nx">customElements</span><span class="p">.</span><span class="nx">define</span><span class="p">(</span><span class="s1">'custom-element'</span><span class="p">,</span> <span class="nx">CustomElement</span><span class="p">);</span>
+
+<span class="c1">// Register the element with the browser</span>
+<span class="nx">customElements</span><span class="p">.</span><span class="nx">define</span><span class="p">();</span>
 
 </code></pre></div></div>
 
-<p><em>index.html</em></p>
+<p>Click inside the following live sample to start editing. When you’re ready to see your code in action, click the <strong>Preview</strong> button.</p>
 
-<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;!DOCTYPE html&gt;</span>
-<span class="nt">&lt;html</span> <span class="na">lang=</span><span class="s">"en"</span><span class="nt">&gt;</span>
-<span class="nt">&lt;head&gt;</span>
-  <span class="nt">&lt;meta</span> <span class="na">charset=</span><span class="s">"UTF-8"</span><span class="nt">&gt;</span>
-  <span class="nt">&lt;meta</span> <span class="na">name=</span><span class="s">"viewport"</span> <span class="na">content=</span><span class="s">"width=device-width, initial-scale=1.0"</span><span class="nt">&gt;</span>
-  <span class="nt">&lt;meta</span> <span class="na">http-equiv=</span><span class="s">"X-UA-Compatible"</span> <span class="na">content=</span><span class="s">"ie=edge"</span><span class="nt">&gt;</span>
-  <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"/node_modules/@webcomponents/webcomponentsjs/custom-elements-es5-adapter.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
-  <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"/node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
-  <span class="nt">&lt;title&gt;</span>lit-element code sample<span class="nt">&lt;/title&gt;</span>
-<span class="nt">&lt;/head&gt;</span>
-  <span class="nt">&lt;body&gt;</span>
-    <span class="nt">&lt;custom-element&gt;&lt;/custom-element&gt;</span>
-  <span class="nt">&lt;/body&gt;</span>
-<span class="nt">&lt;/html&gt;</span>
-
-</code></pre></div></div>
-
-<project-displayer folder="/projects/try/create" openFile="" forceEmbedLayout="" view="editor">
+<project-displayer folder="/projects/try/create/before" openFile="my-element.js" forceEmbedLayout="" view="editor">
 <stack-blitz slot="embed"></stack-blitz>
 </project-displayer>
 
+<p><a name="edit"></a></p>
 
+<h3 id="editing-steps">Editing steps</h3>
 
-<div class="bottomnav">
-  <span class="prev">
-    
-  </span>
-  <span class="next">
-     
-    <a href="/try/properties">Add a property value to your template&nbsp;&gt;&gt;</a>
-    
-  </span>
+<ol>
+  <li>
+    <p>Import the <code class="highlighter-rouge">LitElement</code> base class and <code class="highlighter-rouge">html</code> helper function.</p>
+
+    <p><em>my-element.js</em></p>
+
+    <div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Import LitElement base class and html helper function</span>
+<span class="k">import</span> <span class="p">{</span> <span class="p">}</span> <span class="k">from</span> <span class="s1">''</span><span class="p">;</span> 
+</code></pre></div>    </div>
+
+    <p><em>Import statements</em></p>
+
+    <div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="p">{</span> <span class="nx">LitElement</span><span class="p">,</span> <span class="nx">html</span> <span class="p">}</span> <span class="k">from</span> <span class="s1">'@polymer/lit-element'</span><span class="p">;</span> 
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>Create a class for your element that extends the LitElement base class, and define an element template inside the <code class="highlighter-rouge">render</code> function.</p>
+
+    <p><em>my-element.js</em></p>
+
+    <div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Create your class here</span>
+<span class="kd">class</span> <span class="nx">MyElement</span> <span class="p">{</span>
+  <span class="nx">render</span><span class="p">(){</span>
+    <span class="c1">// Define your element template here</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>    </div>
+
+    <p><em>MyElement class</em></p>
+
+    <div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nx">MyElement</span> <span class="kd">extends</span> <span class="nx">LitElement</span> <span class="p">{</span>
+  <span class="nx">render</span><span class="p">(){</span>
+    <span class="k">return</span> <span class="nx">html</span><span class="s2">`
+      &lt;p&gt;Hello world! From my-element&lt;/p&gt;
+    `</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>    
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>Register the new element with the browser.</p>
+
+    <p><em>my-element.js</em></p>
+
+    <div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Register the element with the browser</span>
+<span class="nx">customElements</span><span class="p">.</span><span class="nx">define</span><span class="p">();</span>
+</code></pre></div>    </div>
+
+    <p><em>Register element with the browser</em></p>
+
+    <div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Register the element with the browser</span>
+<span class="nx">customElements</span><span class="p">.</span><span class="nx">define</span><span class="p">(</span><span class="s1">'my-element'</span><span class="p">,</span> <span class="nx">MyElement</span><span class="p">);</span>
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<p><a name="completed"></a></p>
+
+<h3 id="completed-code">Completed code</h3>
+
+<p><em>my-element.js</em></p>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Import LitElement base class and html helper function</span>
+<span class="k">import</span> <span class="p">{</span> <span class="nx">LitElement</span><span class="p">,</span> <span class="nx">html</span> <span class="p">}</span> <span class="k">from</span> <span class="s1">'@polymer/lit-element'</span><span class="p">;</span> 
+
+<span class="c1">// Create your class here</span>
+<span class="kd">class</span> <span class="nx">MyElement</span> <span class="kd">extends</span> <span class="nx">LitElement</span> <span class="p">{</span>
+  <span class="nx">render</span><span class="p">(){</span>
+    <span class="c1">// Define your element template here</span>
+    <span class="k">return</span> <span class="nx">html</span><span class="s2">`
+      &lt;p&gt;Hello world! From my-element&lt;/p&gt;
+    `</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+<span class="c1">// Register the element with the browser</span>
+<span class="nx">customElements</span><span class="p">.</span><span class="nx">define</span><span class="p">(</span><span class="s1">'my-element'</span><span class="p">,</span> <span class="nx">MyElement</span><span class="p">);</span>
+
+</code></pre></div></div>
+
+<project-displayer folder="/projects/try/create/after" openFile="my-element.js" forceEmbedLayout="" view="editor">
+<stack-blitz slot="embed"></stack-blitz>
+</project-displayer>
+
+<div class="prevnext">
+
+  <div class="next">
+
+    <p><a href="use">Next: Use your element in a web page &gt;&gt;</a></p>
+
+  </div>
+
+  <div class="prev">
+
+    <p><a href="index">&lt;&lt; Previous: Try LitElement</a></p>
+
+  </div>
+
 </div>
+
 
 
   

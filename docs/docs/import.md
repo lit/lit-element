@@ -1,16 +1,44 @@
 ---
 layout: post
-title: Import an existing element
-parent: /docs/
-type: task
+section: docs
+topic: import
 ---
 
-Import and use a LitElement-based element in an HTML document or another element.
+Import and use a LitElement-based element in an HTML document, or in another element.
 
 **On this page:**
 
-* [Import and use a third-party element](#thirdparty)
 * [Import and use your own element](#own)
+* [Import and use a third-party element](#thirdparty)
+
+### Import and use your own element
+
+In an HTML document:
+
+```html
+<head>
+  <script type="module" src="/path/to/my-element.js"></script>
+</head>
+<body>
+  <my-element></my-element>
+</body>
+```
+
+In another LitElement-based element:
+
+```js
+// Use relative paths for peer dependencies
+import './my-element.js';
+
+class MyOtherElement extends LitElement{
+  render(){
+    return html`
+      <my-element></my-element>
+    `;
+  }
+}
+customElements.define('my-other-element', MyOtherElement);
+```
 
 <a name="thirdparty">
 
@@ -58,32 +86,3 @@ customElements.define('existing-element', MyElement);
 </div>
 
 <a name="own">
-
-### Import and use your own element
-
-In an HTML document:
-
-```html
-<head>
-  <script type="module" src="/path/to/my-element.js"></script>
-</head>
-<body>
-  <my-element></my-element>
-</body>
-```
-
-In another LitElement-based element:
-
-```js
-// Use relative paths for peer dependencies
-import './my-element.js';
-
-class MyOtherElement extends LitElement{
-  render(){
-    return html`
-      <my-element></my-element>
-    `;
-  }
-}
-customElements.define('my-other-element', MyOtherElement);
-```

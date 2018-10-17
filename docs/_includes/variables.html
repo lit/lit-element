@@ -1,0 +1,28 @@
+{% assign title = "LitElement Documentation" %}
+{% assign sections = site.data.site.toc %}
+{% assign section = sections[page.section] %}
+{% assign topics = section.toc %}
+{% assign topic = topics[page.topic] %}
+{% assign subtopics = topic.toc %}
+{% assign subtopic = subtopics[page.subtopic] %}
+
+{% if subtopic %}
+  {% assign self = subtopic %}
+{% elsif topic %}
+  {% assign self = topic %}
+{% elsif section %}
+  {% assign self=section %}
+{% else %}
+  {% assign self = site.data.site %}
+{%endif%}
+
+<ul>
+{% for item in sections %}
+  {% if self.url == item[1].url %}
+    <li class="current"><a href="{{item[1].url}}">{{item[1].title}}</a></li>
+  {% else %}
+    <li><a href="{{item[1].url}}">{{item[1].title}}</a></li>
+  {%endif%}
+  {% include topicnav.html %}
+{%endfor%}
+</ul>

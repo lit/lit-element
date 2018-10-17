@@ -1,7 +1,8 @@
 ---
 layout: post
-title: Tools
-parent: /tools/
+section: tools
+topic: index
+pageid: index
 ---
 
 See [Set up locally](setup) for detailed installation instructions.

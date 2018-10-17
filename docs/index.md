@@ -1,7 +1,7 @@
 ---
 layout: post
-title: lit-element
 ---
+
 DONE: Create skeleton
 
 TODO: Needs product manager input

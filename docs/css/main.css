@@ -18,6 +18,19 @@ body {
   letter-spacing: 0.03em;
 }
 
+.prevnext {
+  display: flex;
+  justify-content: space-between;
+}
+.next {
+  text-align: right;
+  order: 2
+}
+
+.prev {
+  order: 1
+}
+
 hr {
   border: 0;
   height: 0;

@@ -1,41 +1,102 @@
 ---
 layout: post
-title: Style an element template
-parent: /try/
-prev: /try/events
-prevtitle: Use event handlers
-type: task
+section: try
+topic: style
 ---
 
-Style an element by including a `style` block in its template:
+Style your element with CSS by including a `style` block in its template. 
 
-_custom-element.js_
+* [Starting code](#start)
+* [Editing steps](#edit)
+* [Completed code](#completed)
+
+<a name="start">
+
+### Starting code
+
+_my-element.js_
+
+```js
+{% include projects/try/style/before/my-element.js %}
+```
+
+{% include project.html folder="try/style/before" openFile="my-element.js" %}
+
+<a name="edit">
+
+### Editing steps
+
+Add a style block to the element template in `render`:
+
+_my-element.js_
 
 ```js
 render(){
   return html`
-    <style>
-      p { color: blue }
-    </style>
-    <p>hello world from custom-element</p>
+    <!-- Add a style block here -->
+    <p>${this.message}</p>
+    ...
+    ...
   `;
 }
 ```
 
-Styles inside custom element templates are encapsulated. These styles will only affect elements inside the template-not the main document.
-
-_index.html_
+_Style block_
 
 ```html
-<html>
-  <head>
-    <script type="module" src="./custom-element.js"></script>
-  </head>
-  <body>
-    <custom-element></custom-element>  
-    <p>A paragraph in the main document</p>      
-  </body>
-</html>
+<style>
+  p {
+    font-family: Roboto;
+    font-size: 24px;
+    font-weight: 500;
+  }
+  .red {
+    color: red;
+  }
+  .blue {
+    color: blue;
+  }
+</style>
 ```
 
-{% include project.html folder="try/style" openFile="custom-element.js" %}
+Apply the class styles to a paragraph in the element template. Use `myBool` to apply the styles conditionally.
+
+_my-element.js_
+
+```js
+render(){
+  return html`
+    ...
+    <!-- Style this text --> 
+    <p>style me</p>
+    ...
+  `;
+}
+```
+
+_Apply the styles conditionally_
+
+```html
+<p class="${this.myBool?'red':'blue'}">style me</p>
+```
+
+<a name="completed">
+
+### Completed code
+
+_my-element.js_
+
+```js
+{% include projects/try/style/after/my-element.js %}
+```
+
+{% include project.html folder="try/style/after" openFile="my-element.js" %}
+
+Congratulations - you've made your first element with LitElement.
+
+Next steps
+
+* [Set up LitElement locally](/tools/setup)
+* [View API documentation](/docs/index)
+
+{% include prevnext.html prevurl="events" prevtitle="Add an event handler" %}

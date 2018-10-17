@@ -1,10 +1,8 @@
 ---
 layout: post
-title: Designing efficient LitElement templates
-parent: /docs/
-type: concept
-topic: /docs/templates
-permalink: /docs/templates/design
+section: docs
+topic: templates
+subtopic: design
 ---
 
 <div class="summary">

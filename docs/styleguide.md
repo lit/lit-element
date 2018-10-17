@@ -1,6 +1,6 @@
 ---
 layout: post
-title: lit-element style guide
+section: styleguide
 ---
 
 ```text

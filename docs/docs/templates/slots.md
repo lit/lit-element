@@ -1,10 +1,8 @@
 ---
 layout: post
-title: Render light DOM children in a template
-parent: /docs/
-type: task
-topic: /docs/templates
-permalink: /docs/templates/slots
+section: docs
+topic: templates
+subtopic: slots
 ---
 
 On this page:
