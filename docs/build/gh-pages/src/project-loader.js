@@ -21,7 +21,7 @@ export class ProjectLoader extends LitElement {
   }
 
   loadProject() {
-    if (this.folder == 'undefined') {
+    if (this.folder == undefined) {
       console.log("Missing folder property.");
       return;
     } else console.log('loading', this.folder);
@@ -75,5 +75,4 @@ export class ProjectLoader extends LitElement {
   }
 
 }
-;
 customElements.define('project-loader', ProjectLoader);

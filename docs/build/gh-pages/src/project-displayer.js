@@ -40,7 +40,7 @@ class ProjectDisplayer extends LitElement {
     return html`
       <style>
         :host { 
-          min-height:50vh; 
+          min-height: 50vh; 
         }
       </style>
       <project-loader id="loader"

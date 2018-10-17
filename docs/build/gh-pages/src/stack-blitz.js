@@ -71,5 +71,4 @@ class StackBlitz extends LitElement {
 
 }
 
-;
 customElements.define('stack-blitz', StackBlitz);
