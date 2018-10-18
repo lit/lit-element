@@ -2,7 +2,7 @@
 layout: post
 section: try
 topic: events
-next: style
+status: reviewing
 ---
 
 Use lit-html's `@event` annotation to add an event listener to an element inside a template. 

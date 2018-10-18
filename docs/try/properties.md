@@ -2,7 +2,7 @@
 layout: post
 section: try
 topic: properties
-next: expressions
+status: reviewing
 ---
 
 You can use your element's properties in its template. LitElement automatically updates your element when its properties change.

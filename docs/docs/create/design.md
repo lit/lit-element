@@ -1,8 +1,10 @@
 ---
 layout: post
+type: concept
 section: docs
 topic: create
 subtopic: design
+status: reviewing
 ---
 
 These are some brief guidelines for designing extensible, performant, accessible elements. For more information, see the [Gold Standard Checklist for Web Components](https://github.com/webcomponents/gold-standard/wiki).

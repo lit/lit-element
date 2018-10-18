@@ -1,8 +1,7 @@
 ---
 layout: post
+todo: true
 ---
-
-DONE: Create skeleton
 
 TODO: Needs product manager input
 

@@ -1,9 +1,14 @@
 ---
 layout: post
+type: task concept
 section: docs
 topic: create
 subtopic: renderroot
+status: reviewing
 ---
+
+* [About the render root](#about)
+* [Customize the render root](#customize)
 
 <a name="about">
 

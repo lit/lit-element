@@ -2,7 +2,7 @@
 layout: post
 section: try
 topic: use
-next: properties
+status: reviewing
 ---
 
 You can now import your new element as a JavaScript module, and use it in markup. 

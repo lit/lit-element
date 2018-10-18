@@ -1,8 +1,10 @@
 ---
 layout: post
+type: task
 section: docs
 topic: create
 subtopic: extend
+status: reviewing
 ---
 
 To add LitElement to your project, install it with npm:
@@ -26,4 +28,4 @@ _my-element.js_
 {% include projects/docs/create/my-element.js %}
 ```
 
-{% include project.html folder="docs/create" openFile="my-element.js" forceEmbedLayout="true" view="editor" %}
+{% include project.html folder="docs/create" openFile="my-element.js" %}

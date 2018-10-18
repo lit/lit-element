@@ -10,10 +10,12 @@
       <li class="current"><a href="{{site.baseurl}}{{item[1].url}}">{{item[1].title}}</a></li>  
     {%- else -%}
       <li><a href="{{site.baseurl}}{{item[1].url}}">{{item[1].title}}</a></li>  
-    {%-endif-%}
-  {%-endfor-%}
+    {%- endif -%}
+  {%- endfor -%}
 </ul>
 <hr />
 <h2><a href="{{site.baseurl}}{{subtopic.url}}">{{subtopic.title}}</a></h2>
-{%-endif-%}
+
+{%- endif -%}
+
 {{ content }}

@@ -50,7 +50,7 @@ toc:
         url: /docs/import
       templates: 
         title: Write a template
-        url: /docs/templates
+        url: /docs/templates/
         toc: 
           index: 
             title: Write a template
@@ -75,7 +75,20 @@ toc:
         url: /docs/properties
       lifecycle: 
         title: Work with the element lifecycle
-        url: /docs/lifecycle
+        url: /docs/lifecycle/
+        toc:
+          index:
+            title: The LitElement update lifecycle
+            url: /docs/lifecycle/index
+          tasks: 
+            title: Perform tasks during the element update lifecycle
+            url: /docs/lifecycle/tasks
+          examples:
+            title: Example use cases
+            url: /docs/lifecycle/examples
+          methods:
+            title: Update lifecycle methods and Promises
+            url: /docs/lifecycle/methods
       events: 
         title: Work with events
         url: /docs/events
