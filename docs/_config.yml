@@ -4,7 +4,7 @@ exclude: [package.json, polymer.json, src, node_modules, package-lock.json]
 markdown: kramdown
 kramdown: 
   parse_block_html: true
-projects: projects
+projects: includes/projects
 collections:
   includes:
     output: true
