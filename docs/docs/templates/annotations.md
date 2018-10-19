@@ -44,9 +44,9 @@ Bind to a child element's:
 _custom-element.js_
 
 ```js
-{% include projects/docs/annotations/custom-element.js %}
+{% include_relative annotations/custom-element.js %}
 ```
 
-{% include project.html folder="docs/annotations" openFile="custom-element.js" %}
+{% include project.html folder="./annotations" openFile="custom-element.js" %}
 
 To share data from child elements to parent elements, use events. See [...]() for more information.
