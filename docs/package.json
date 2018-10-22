@@ -19,7 +19,7 @@
   },
   "homepage": "https://github.com/katejeffreys/lit-element-docs#readme",
   "dependencies": {
-    "@polymer/lit-element": "^0.6.1",
+    "@polymer/lit-element": "^0.6.2",
     "@stackblitz/sdk": "^1.2.0",
     "@webcomponents/webcomponentsjs": "^2.1.3"
   }

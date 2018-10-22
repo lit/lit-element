@@ -1,53 +1,85 @@
 import { LitElement, html } from '@polymer/lit-element';
-import sdk from '@stackblitz/sdk';
-import './project-loader';
+import StackBlitzSDK from '@stackblitz/sdk';
 
 class StackBlitz extends LitElement {
   static get properties() {
     return {
       folder: { type: String },
-      slot: { type: String},
-
-      clickToLoad: { type: Boolean },
-      forceEmbedLayout: { type: Boolean },
-      view: { type: String },
       openFile: { type: String },
-      height: { type: Number },
-
-      options: { type: Object },
-      project: { type: Object }
     };
   }
+
+  constructor() {
+    super();
+    this.openFile = 'index.html';
+  }
+
   render() {
     return html`
       <style>
+        .pretty-button {
+          display: inline-block;
+          box-sizing: border-box;
+          margin: 0 4px;
+          padding: 8px 44px;
+          border: 2px solid #000;
+          background-color: transparent;
+          font-size: 14px;
+          font-weight: 500;
+          color: inherit;
+          text-align: center;
+          text-decoration: none;
+          text-transform: uppercase;
+          border-radius: 0;
+          -webkit-appearance: none;
+          appearance: none;
+        }
+
+        .pretty-button:active {
+          background-color: #333;
+          color: #FFF;
+        }
+
+        .pretty-button:hover {
+          text-decoration: none !important;
+          background-color: #333;
+          color: #FFF;
+        }
+
+        /* iframe#container will replace div#container once StackBlitz loads. */
         iframe {
           border: none;
-          background-color: #333333
+          min-height: 50vh;
         }
       </style>
-      ${this.slot == "embed" ? html`` : html`
-        <project-loader 
-          id="loader"
-          @project-loaded="${(e) => this.embedProject(e.detail.project, this.options)}"
-          folder="${this.folder}">
-        </project-loader>`}
-      <div id="stackblitz"></div>
-    `;
+      <div id="container">
+        <button class="pretty-button" @click="${this.loadProject}">
+          Launch Code Editor
+        </button>
+      </div>`;
   }
-  firstUpdated() {
-      this.options = Object.assign({}, this.options, {
-      'clickToLoad' : this.clickToLoad,
-      'forceEmbedLayout' : this.forceEmbedLayout,
-      'view': this.view ? this.view : 'both',
-      'openFile': this.openFile ? this.openFile : 'index.html',
-      'height': this.height ? this.height : (window.innerHeight-10)/2
-    });
-    this.project = {};
-  }
-  embedProject(project, options) {
-    var embedIn = this.shadowRoot.getElementById('stackblitz');
-    const vm = sdk.embedProject(embedIn, project, options);
+  
+  async loadProject() {
+    const folder = this.folder;
+    if (folder) {
+      const response = await fetch(`${folder}/manifest.json`);
+      const manifest = await response.json();
+      const files = manifest.files.map(async (filename) => {
+        const response = await fetch(`${folder}/${filename}`);
+        return { [filename]: await response.text() };
+      });
+      const project = Object.assign({}, manifest, {
+        files: (await Promise.all(files)).reduce(
+          (acc, file) => Object.assign(acc, file), {})
+      });
+      const container = this.shadowRoot.getElementById('container');
+      return StackBlitzSDK.embedProject(container, project, {
+        forceEmbedLayout: true,
+        view: 'editor',
+        openFile: this.openFile
+      });
+    }
   }
 }
+
 customElements.define('stack-blitz', StackBlitz);
