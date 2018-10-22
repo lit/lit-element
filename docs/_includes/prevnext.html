@@ -1,12 +1,13 @@
+{%- comment -%} Note: No HTML indentation to prevent markdown processing. {%- endcomment -%}
 <div class="prevnext">
-  <div class="next">
-    {%- if include.nexturl -%}
-    <a href="{{include.nexturl}}">Next: {{include.nexttitle}} &gt;&gt;</a>
-    {%- endif -%}
-  </div>
-  <div class="prev">
-    {%- if include.prevurl -%}
-    <a href="{{include.prevurl}}">&lt;&lt; Previous: {{include.prevtitle}}</a>
-    {%- endif -%}
-  </div>
+<div class="next">
+{% if include.nexturl %}
+<a href="{{include.nexturl}}">Next: {{include.nexttitle}} &gt;&gt;</a>
+{% endif %}
+</div>
+<div class="prev">
+{% if include.prevurl %}
+<a href="{{include.prevurl}}">&lt;&lt; Previous: {{include.prevtitle}}</a>
+{% endif %}
+</div>
 </div>
