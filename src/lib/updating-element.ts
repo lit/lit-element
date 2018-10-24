@@ -114,7 +114,7 @@ const defaultPropertyDeclaration: PropertyDeclaration = {
   hasChanged : notEqual
 };
 
-const microtaskPromise = new Promise((resolve) => resolve(true));
+const microtaskPromise = Promise.resolve(true);
 
 const STATE_HAS_UPDATED = 1;
 const STATE_UPDATE_REQUESTED = 1 << 2;
@@ -301,7 +301,7 @@ export abstract class UpdatingElement extends HTMLElement {
 
   private _updateState: UpdateState = 0;
   private _instanceProperties: PropertyValues|undefined = undefined;
-  private _updatePromise: Promise<unknown> = microtaskPromise;
+  private _updatePromise: Promise<boolean> = microtaskPromise;
 
   /**
    * Map with keys for any properties that have changed since the last
@@ -505,6 +505,23 @@ export abstract class UpdatingElement extends HTMLElement {
   }
 
   /**
+   * Returns a Promise that is awaited on before updating.
+   *
+   * The default implementation returns a resolved Promise, so that awaiting
+   * it means that an update is scheduled on the microtask queue.
+   *
+   * You can override this method to change the timing of updates. For instance,
+   * to schedule updates to occur just before the next frame, do:
+   *
+   * ```
+   * protected _scheduleUpdate(): Promise<unknown> {
+   *   return new Promise((resolve) => requestAnimationFrame(() => resolve());
+   * }
+   * ```
+   */
+  protected _scheduleUpdate(): Promise<unknown> { return microtaskPromise; }
+
+  /**
    * Invalidates the element causing it to asynchronously update regardless
    * of whether or not any property changes are pending. This method is
    * automatically called when any registered property changes.
@@ -513,12 +530,11 @@ export abstract class UpdatingElement extends HTMLElement {
     if (!this._hasRequestedUpdate) {
       // mark state updating...
       this._updateState = this._updateState | STATE_UPDATE_REQUESTED;
-      let resolver: any;
-      const previousValidatePromise = this._updatePromise;
-      this._updatePromise = new Promise((r) => resolver = r);
-      await previousValidatePromise;
+      let resolve: (r: boolean) => void;
+      this._updatePromise = new Promise((res) => resolve = res);
+      await this._scheduleUpdate();
       this._validate();
-      resolver!(!this._hasRequestedUpdate);
+      resolve!(!this._hasRequestedUpdate);
     }
     return this.updateComplete;
   }

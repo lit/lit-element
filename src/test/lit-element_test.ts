@@ -1378,7 +1378,8 @@ suite('LitElement', () => {
 
       get updateComplete() {
         return (async () => {
-          return await super.updateComplete && await new Promise((resolve) => {
+          return await super.updateComplete &&
+                 await new Promise<boolean>((resolve) => {
                    setTimeout(() => {
                      this.promiseFulfilled = true;
                      resolve(true);
@@ -1406,7 +1407,8 @@ suite('LitElement', () => {
 
       get updateComplete() {
         return (async () => {
-          return await super.updateComplete && await new Promise((resolve) => {
+          return await super.updateComplete &&
+                 await new Promise<boolean>((resolve) => {
                    setTimeout(() => {
                      this.promiseFulfilled = true;
                      resolve(true);
@@ -1438,10 +1440,10 @@ suite('LitElement', () => {
 
       get updateComplete() {
         return super.updateComplete.then(
-            () => new Promise((resolve) => setTimeout(() => {
-                                this.promiseFulfilled = true;
-                                resolve(true);
-                              }, 1)));
+            () => new Promise<boolean>((resolve) => setTimeout(() => {
+                                         this.promiseFulfilled = true;
+                                         resolve(true);
+                                       }, 1)));
       }
     }
     customElements.define('x-1224', E);
