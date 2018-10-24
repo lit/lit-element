@@ -6,12 +6,15 @@ class StackBlitz extends LitElement {
     return {
       folder: { type: String },
       openFile: { type: String },
+      _loading: { type: Boolean },
     };
   }
 
   constructor() {
     super();
     this.openFile = 'index.html';
+    this._loading = false;
+    this._vm = null;
   }
 
   render() {
@@ -35,15 +38,16 @@ class StackBlitz extends LitElement {
           appearance: none;
         }
 
+        .pretty-button:hover,
         .pretty-button:active {
           background-color: #333;
           color: #FFF;
         }
 
-        .pretty-button:hover {
-          text-decoration: none !important;
-          background-color: #333;
-          color: #FFF;
+        .pretty-button:disabled {
+          background-color: transparent;
+          border-color: #999;
+          color: #999;
         }
 
         /* iframe#container will replace div#container once StackBlitz loads. */
@@ -53,31 +57,37 @@ class StackBlitz extends LitElement {
         }
       </style>
       <div id="container">
-        <button class="pretty-button" @click="${this.loadProject}">
-          Launch Code Editor
+        <button class="pretty-button" @click="${this.loadProject}"
+            .disabled="${this._loading}">
+          ${this._loading ? 'Loading Code Editor...' : 'Launch Code Editor'}
         </button>
       </div>`;
   }
   
   async loadProject() {
     const folder = this.folder;
-    if (folder) {
-      const response = await fetch(`${folder}/manifest.json`);
-      const manifest = await response.json();
-      const files = manifest.files.map(async (filename) => {
-        const response = await fetch(`${folder}/${filename}`);
-        return { [filename]: await response.text() };
-      });
-      const project = Object.assign({}, manifest, {
-        files: (await Promise.all(files)).reduce(
-          (acc, file) => Object.assign(acc, file), {})
-      });
-      const container = this.shadowRoot.getElementById('container');
-      return StackBlitzSDK.embedProject(container, project, {
-        forceEmbedLayout: true,
-        view: 'editor',
-        openFile: this.openFile
-      });
+    if (folder && !this._loading) {
+      try {
+        this._loading = true;
+        const response = await fetch(`${folder}/manifest.json`);
+        const manifest = await response.json();
+        const files = manifest.files.map(async (filename) => {
+          const response = await fetch(`${folder}/${filename}`);
+          return { [filename]: await response.text() };
+        });
+        const project = Object.assign({}, manifest, {
+          files: (await Promise.all(files)).reduce(
+            (acc, file) => Object.assign(acc, file), {})
+        });
+        const container = this.shadowRoot.getElementById('container');
+        this._vm = await StackBlitzSDK.embedProject(container, project, {
+          forceEmbedLayout: true,
+          view: 'editor',
+          openFile: this.openFile
+        });
+      } finally {
+        this._loading = false;
+      }
     }
   }
 }
