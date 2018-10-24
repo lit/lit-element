@@ -1,16 +1,24 @@
-<!DOCTYPE html>
+<!doctype html>
+<html lang="en">
 <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="description" content="{{ site.description }}">
   <title>{%- if page.title -%}{{ page.title }} &ndash;{%- endif -%} {{ site.name }}</title>
+  <link rel="shortcut icon" sizes="32x32" href="{{site.baseurl}}/images/icon-32.png">
+  <meta name="theme-color" content="#000">
+  <link rel="stylesheet" href="{{site.baseurl}}/css/main.css">
+  <link rel="stylesheet" href="{{site.baseurl}}/css/pygments.css">
+  <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
+  {% if site.google_analytics and jekyll.environment == 'production' %}
+  {% include analytics.html %}
+  {% endif %}
   <script src="{{site.baseurl}}/build/gh-pages/node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
-  <link rel="stylesheet" href= "{{site.baseurl}}/css/main.css">
-  <script 
-    type="module" 
-    src="{{site.baseurl}}/build/gh-pages/src/index.js">
-  </script>
+  <script type="module" src="{{site.baseurl}}/build/gh-pages/src/index.js"></script>
 </head>
 <body>
   <nav class="main-nav">
-    <a class="logo" href="{{site.baseurl}}/">lit-element docs</a>
+    <a class="logo" href="{{site.baseurl}}/">LitElement</a>
     <div class="flex"></div>
     <ul>
       <li><a href="https://github.com/polymer/lit-element">GitHub</a></li>
@@ -20,14 +28,14 @@
   </nav>
 
   {{content}}
-  
+
   <footer>
     <p>© 2018 Polymer Authors. Code licensed under the
     <a target="_blank" href="http://polymer.github.io/LICENSE.txt"> BSD License</a>. </p>
     <ul>
-      <li><a href="https://www.github.com/polymer/pwa-starter-kit" rel="noopener" target="_blank">GitHub</a></li>
+      <li><a href="https://www.github.com/polymer/lit-element" rel="noopener" target="_blank">GitHub</a></li>
       <li><a href="https://www.twitter.com/polymer" rel="noopener" target="_blank">Twitter</a></li>
-      <li><a href="https://www.youtube.com/watch?v=we3lLo-UFtk" rel="noopener" target="_blank">YouTube</a></li>
+      <li><a href="https://www.youtube.com/watch?v=ruql541T7gc" rel="noopener" target="_blank">YouTube</a></li>
     </ul>
   </footer>
 </body>

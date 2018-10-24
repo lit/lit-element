@@ -1,5 +1,5 @@
-name: lit-element docs
-description: lit-element docs
+name: LitElement docs
+description: A lightweight library for creating custom elements
 exclude: [package.json, polymer.json, src, node_modules, package-lock.json]
 markdown: kramdown
 kramdown: 

@@ -1,27 +1,40 @@
-html {
-  font-family: 'Roboto', 'Noto', sans-serif;
-  color: #333333;
-  font-size: 16px;
+/* from "https://fonts.googleapis.com/css?family=Poppins:500,200" to control font loading */
+/* latin */
+@font-face {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 200;
+  src: local('Poppins ExtraLight'), local('Poppins-ExtraLight'), url(https://fonts.gstatic.com/s/poppins/v5/pxiByp8kv8JHgFVrLFj_Z1xlFd2JQEk.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  font-display: optional;
+}
+/* latin */
+@font-face {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 500;
+  src: local('Poppins Medium'), local('Poppins-Medium'), url(https://fonts.gstatic.com/s/poppins/v5/pxiByp8kv8JHgFVrLGT9Z1xlFd2JQEk.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  font-display: optional;
 }
 
 body {
   min-height: 101vh;
   margin: 0;
-  color: #333333;
   background-color: #FFF;
+  color: #383838;
+  font-family: 'Roboto', 'Noto', sans-serif;
+  font-size: 16px;
   line-height: 1.5;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   text-rendering: optimizeLegibility;
-}
-
-.breadcrumbs {
-  letter-spacing: 0.03em;
 }
 
 .prevnext {
   display: flex;
   justify-content: space-between;
 }
+
 .next {
   text-align: right;
   order: 2
@@ -38,28 +51,25 @@ hr {
 }
 
 h1 {
-  margin-top: 16px;
-  margin-bottom: 16px;
-  font-weight: 400;
-  font-size: 24px;
-  letter-spacing: 0.03em;
-  color: #333333;
+  font-family: 'Poppins', 'Roboto', 'Noto', sans-serif;
+  font-size: 32px;
+  letter-spacing: 0.04em;
 }
+
 h2 {
-  margin-top: 16px;
-  margin-bottom: 16px;
-  font-weight: 500;
-  font-size: 20px;
-  letter-spacing: 0.03em;
-  color: #333333;
+  font-family: 'Poppins', 'Roboto', 'Noto', sans-serif;
+  font-size: 24px;
+  line-height: 1.3;
 }
+
 h3 {
-  margin-top: 32px;
-  margin-bottom: 16px;
-  font-weight: 400;
-  font-size: 18px;
-  letter-spacing: 0.03em;
-  color: #333333;
+  font-family: 'Poppins', 'Roboto', 'Noto', sans-serif;
+  font-size: 20px;
+}
+
+h4 {
+  font-family: 'Poppins', 'Roboto', 'Noto', sans-serif;
+  font-size: 16px;
 }
 
 a {
@@ -67,13 +77,22 @@ a {
   color: inherit;
 }
 
+.row {
+  display: flex;
+}
+
 .flex {
   flex: 1;
+}
+
+.text-center {
+  text-align: center;
 }
 
 /* top nav */
 .main-nav {
   position: relative;
+  font-family: 'Poppins', 'Roboto', 'Noto', sans-serif;
   display: flex;
   align-items: center;
   padding: 0 48px;
@@ -81,7 +100,7 @@ a {
   font-size: 16px;
   letter-spacing: 1px;
   border-bottom: 1px solid #EEEBF3;
-  background: #333333;
+  background: #212124;
   color: white;
 }
 
@@ -109,7 +128,7 @@ a {
   font-size: inherit;
   color: black;
   margin: 0 10px;
-  border-bottom: 1px solid 333333;
+  border-bottom: 1px solid black;
   -webkit-appearance: textfield;
 }
 
@@ -117,9 +136,50 @@ a {
   -webkit-appearance: none;
 }
 
+/* home page */
+.pretty-button {
+  display: inline-block;
+  box-sizing: border-box;
+  margin: 0 4px;
+  padding: 8px 44px;
+  border: 2px solid #000;
+  background-color: transparent;
+  font-size: 14px;
+  font-weight: 500;
+  color: inherit;
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
+  border-radius: 0;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.pretty-button:active {
+  background-color: #333;
+  color: #FFF;
+}
+
+.pretty-button:hover {
+  text-decoration: none !important;
+  background-color: #333;
+  color: #FFF;
+}
+
 section {
   padding: 60px 24px;
-  text-align: center;
+}
+
+.hero {
+  background-color: transparent;
+  background-size: cover;
+}
+
+.hero p {
+  font-size: 20px;
+  max-width: 600px;
+  line-height: 1.5;
+  margin: 24px auto 32px;
 }
 
 .devices {
@@ -129,6 +189,36 @@ section {
   background-repeat: no-repeat;
   background-size: contain;
   background-position: center center;
+}
+
+.hero-buttons {
+  padding-top: 16px;
+}
+
+.features {
+  display: flex;
+  justify-content: center;
+  background-color: #ECEFEF;
+  color: black;
+}
+
+.feature {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 300px;
+  padding: 0 16px;
+  box-sizing: border-box;
+}
+
+.feature > .icon {
+  width: 76px;
+  height: 76px;
+}
+
+.feature > p {
+  /* IE11 flexbox bug: https://github.com/philipwalton/flexbugs#2-column-flex-items-set-to-align-itemscenter-overflow-their-container */
+  max-width: 100%;
 }
 
 .main {
@@ -151,6 +241,10 @@ section {
   padding-right: 32px;
 }
 
+.main-item h2 {
+  margin-top: 0;
+}
+
 .compatibility {
   background-color: #F2F2F2;
 }
@@ -167,7 +261,7 @@ footer {
   justify-content: center;
   padding: 0 14px;
   background: #F2F3F4;
-  color: 333333;
+  color: rgba(0,0,0,.4);
   border-top: 1px solid #dadce0;
 }
 
@@ -182,15 +276,16 @@ footer ul li {
 footer ul li::before {
   padding: 0 14px;
   content: '/';
-  color: #333333;
+  color: rgba(0,0,0,.4);
 }
 footer a {
-  color: #333333;
+  color: #202124;
   font-size: 14px;
 }
 
 /* doc page */
 .toc {
+  font-family: 'Poppins', 'Roboto', 'Noto', sans-serif;
   /* position: sticky works in Chrome, Firefox, Safari and Edge;
   fallback to position: static for which the nav will just be part
   of the scrolling content. */
@@ -198,10 +293,14 @@ footer a {
   position: sticky;
   top: 0;
   left: 0;
-  width: 340px;
+  width: 320px;
   height: 300px;
   box-sizing: border-box;
   padding: 24px;
+}
+
+.toc > #toggleNavButton {
+  display: none;
 }
 
 .toc a:hover {
@@ -211,22 +310,18 @@ footer a {
   transition: transform .3s ease;
 }
 
-.toc {
-  list-style-type: none;
-}
-.toc ul {
-  padding: 0 0 0 16px;
+.toc > ul {
+  padding: 0;
 }
 
-.toc ul ul {
-  padding: 8px 0 0 40px;
+.toc > ul ul {
+  margin-left: 1em;
 }
 
 .toc li {
   padding: 6px 0;
   list-style-type: none;
   font-size: 16px;
-  font-weight: 400;
   line-height: 1.5;
   -webkit-transition: -webkit-transform .3s ease;
   -webkit-transition: transform .3s ease;
@@ -252,26 +347,43 @@ footer a {
   font-weight: bold;
 }
 
-
-
 article {
   max-width: 860px;
   padding: 40px;
-  margin: -300px 0 0 340px;
+  margin: -300px 0 0 320px;
   border-left: 1px solid #dadce0;
-  min-height: 70vh;
+}
+
+article h1 {
+  font-size: 30px;
+  font-weight: 600;
+  letter-spacing: normal;
+  line-height: 1.1;
+  margin: 0 0 24px 0;
+  padding-bottom: 8px;
+}
+article h1:after {
+  display: block;
+  width: 60px;
+  height: 5px;
+  content: ' ';
+  background: #FADE4B;
+  margin: 20px 0;
+}
+
+article h2 {
+  font-weight: 600;
+  margin: 64px 0 24px;
+  padding-bottom: 8px;
+}
+
+article h3 {
+  font-weight: 600;
+  margin: 32px 0 16px;
 }
 
 article a {
   color: #1e88e5;
-}
-
-article h1 a {
-  color: #333333;
-}
-
-article h2 a {
-  color: #333333;
 }
 
 article a:hover {
@@ -281,21 +393,20 @@ article a:hover {
 article img {
   max-width: 100%;
   box-sizing: border-box;
-  box-shadow: 0 1px 4px 0 333333;
+  box-shadow: 0 1px 4px 0 rgba(0,0,0,0.14);
   margin: 20px auto;
   display: block;
-}
-
-article .bottomnav {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
 }
 
 .inline img {
   display: inline-block;
   margin: 0;
   vertical-align: middle;
+}
+
+h2 img {
+ display: inline-block;
+ vertical-align: middle;
 }
 
 p.caption, b {
@@ -308,15 +419,14 @@ p.caption, b {
   padding: 0;
 }
 code, pre {
-  font-family: 'Roboto Mono', Consolas, monospace !important;
+  font-family: 'Source Code Pro', 'Roboto Mono', Consolas, Menlo, monospace !important;
 }
 
 code {
   background: #F4F4F6;
-  color: 333333;
+  color: black;
   font-size: inherit;
   padding: 2px 4px;
-  white-space: nowrap;
 }
 
 pre code {
@@ -395,7 +505,7 @@ th, td {
   .main {
     display: block;
   }
-  
+
   .main-item {
     display: block;
     padding: 16px 0;
@@ -406,6 +516,10 @@ th, td {
     width: 48px;
     height: auto;
     padding: 0 0 4px 0;
+  }
+
+  .main-item h2 {
+    margin: 0 0 10px;
   }
 
   .main-item p {
@@ -424,17 +538,43 @@ th, td {
     width: auto;
     height: auto;
     padding: 16px 24px;
+    border-bottom: 1px solid #dadce0;
+  }
+
+  .toc > ul {
+    display: none;
+  }
+
+  .toc.open > ul {
+    display: block;
+  }
+
+  .toc > #toggleNavButton {
+    display: block;
+    width: 100%;
+    height: 40px;
+    text-align: left;
+    background: none;
+    border: none;
+    font-size: 16px;
+    font-weight: bold;
+    color: inherit;
+    -webkit-appearance: none;
+  }
+
+  .toc > #toggleNavButton::before {
+    content: '\25b6  ';
+  }
+
+  .toc.open > #toggleNavButton::before {
+    content: '\25bc  ';
   }
 
   article {
-    padding: 0 24px;
+    padding: 24px;
     margin-top: 0;
     margin-left: 0;
-  }
-
-  .toc ul {
-    margin: 0;
-    padding: 0;
+    border-left: none;
   }
 
   footer {
@@ -453,7 +593,7 @@ th, td {
   footer ul li::after {
     padding: 0 14px;
     content: '/';
-    color: 333333;
+    color: rgba(0,0,0,.4);
   }
 
   .main-nav {
