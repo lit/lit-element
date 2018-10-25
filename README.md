@@ -23,7 +23,9 @@ for additional information on how to create templates for lit-element.
     * With a static `properties` getter.
     * By manually writing getters and setters. This can be useful if tasks should
     be performed when a property is set, for example validation. Call `requestUpdate(name, oldValue)`
-    in the setter to trigger an update and use any configured property options.
+    in the setter to trigger an update and use any configured property options. If you want to perform 
+    validation of the data before it is set, see how to use `hasChanged` as described in the property 
+    options below.
 
     Properties can be given an `options` argument which is an object that describes how to
     process the property. This can be done either in the `@property({...})` decorator or in the
@@ -50,7 +52,9 @@ for additional information on how to create templates for lit-element.
     in the absence of the attribute.
     * `hasChanged`: A function that indicates whether a property should be considered
     changed when it is set and thus result in an update. The function should take the
-    `newValue` and `oldValue` and return `true` if an update should be requested.
+    `newValue` and `oldValue` and return `true` if an update should be requested. This 
+    is mostly useful to perform validation before setting the value. To perform an action
+    when after a property has changed, use a setter as described above.
 
   * **React to changes:** LitElement reacts to changes in properties and attributes by
   asynchronously rendering, ensuring changes are batched. This reduces overhead
