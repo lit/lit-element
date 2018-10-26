@@ -87,6 +87,7 @@ a:hover {
 main {
   margin-top: 60px;
   display: flex;
+  align-items: flex-start;
 }
 footer .wrapper,
 main {
@@ -101,9 +102,9 @@ main {
   of the scrolling content. */
   position: -webkit-sticky;
   position: sticky;
-  top: 100px;
+  top: 60px;
+  padding: 40px 0;
   width: 240px;
-  height: 100px;
   font-size: 14px;
   font-weight: 500;
 }
@@ -145,8 +146,7 @@ main {
 /* Article area */
 article {
   flex: 1;
-  margin: 0 40px;
-  padding-top: 40px;
+  margin: 40px;
 }
 
 .prevnext {
@@ -455,7 +455,7 @@ th, td {
     display: none;
   }
   .toc {
-    top: 92px;
+    padding: 32px 0;
   }
   footer .wrapper,
   main {
@@ -468,9 +468,7 @@ th, td {
     padding-left: 32px;
   }
   article {
-    margin-right: 0px;
-    margin-left: 24px;
-    padding-top: 32px;
+    margin: 32px 0 32px 24px;
   }
   .row {
     display: block;
@@ -496,6 +494,7 @@ th, td {
     top: 56px;
     left: 0;
     right: 0;
+    padding: 0;
     width: auto;
     height: auto;
     background: #FFF;
@@ -549,9 +548,8 @@ th, td {
     display: none;
   }
   article {
-    margin-left: 0px;
-    margin-right: 0px;
-    padding-top: 20px;
+    margin: 0;
+    padding: 20px 0;
   }
   main {
     margin-top: 112px;
