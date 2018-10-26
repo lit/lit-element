@@ -31,15 +31,6 @@ layout: default
 </main>
 
 <script>
-  searchBox.addEventListener('keypress', function(event) {
-    if (event.keyCode === 13) {  // enter
-      // Do the search.
-      const site = window.location.hostname;
-      const query = searchBox.value;
-      window.location = `https://www.google.com/search?q=site%3A${site}+${query}`
-      event.preventDefault();
-    }
-  });
   toggleNavButton.addEventListener('click', function(event) {
     const nav = event.target.parentElement;
     nav.classList.toggle('open');
