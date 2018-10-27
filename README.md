@@ -64,10 +64,10 @@ for additional information on how to create templates for lit-element.
 
     * static elements: ``` html`<div>Hi</div>` ```
     * expression: ``` html`<div>${this.disabled ? 'Off' : 'On'}</div>` ```
-    * property: ``` html`<x-foo .bar="${this.bar}"></x-foo>` ```
+    * property: ``` html`<x-foo .bar=${this.bar}></x-foo>` ```
     * attribute: ``` html`<div class="${this.color} special"></div>` ```
     * boolean attribute: ``` html`<input type="checkbox" ?checked=${checked}>` ```
-    * event handler: ``` html`<button @click="${this._clickHandler}"></button>` ```
+    * event handler: ``` html`<button @click=${this._clickHandler}></button>` ```
 
 ## Getting started
 
