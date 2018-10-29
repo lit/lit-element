@@ -68,6 +68,7 @@ main {
   display: flex;
   align-items: flex-start;
 }
+
 footer .wrapper,
 main {
   max-width: 1280px;
@@ -97,15 +98,12 @@ main {
 }
 
 .toc > ul ul {
-  padding: 0 0 8px 24px;
+  padding-left: 24px;
 }
 
 .toc li {
   list-style-type: none;
-  line-height: 32px;
-  -webkit-transition: -webkit-transform .3s ease;
-  -webkit-transition: transform .3s ease;
-  transition: transform .3s ease;
+  margin: 10px 0;
 }
 
 .toc svg {
@@ -125,6 +123,9 @@ main {
 article {
   flex: 1;
   margin: 40px;
+  /* Set min-width so article width will shrink
+  (and code snippets will horizontally scroll). */
+  min-width: 1px;
 }
 
 .prevnext {
