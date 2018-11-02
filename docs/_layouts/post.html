@@ -14,15 +14,30 @@ layout: default
 {%- elsif topic -%}
   {%- assign self = topic -%}
 {%- elsif section -%}
-  {%- assign self=section -%}
+  {%- assign self = section -%}
 {%- else -%}
   {%- assign self = site.data.site -%}
 {%- endif -%}
 
-<main>
+{% include topnav.html %}
+
+<main class="wrapper">
   <nav class="toc">
     <button id="toggleNavButton">Menu</button>
-    {%- include tocnav.html -%}
+    <ul>
+      {%- for item in sections -%}
+      <li>
+        <a href="{{site.baseurl}}{{item[1].url}}">{{item[1].title}}</a>
+        {%- if page.section == item[0] -%}
+          <ul>
+            {%- for item in topics -%}
+            <li><a href="{{site.baseurl}}{{item[1].url}}">{{item[1].title}}</a></li>
+            {%-endfor-%}
+          </ul> 
+        {%- endif -%}
+      </li>
+      {%- endfor -%}      
+    </ul>    
   </nav>
 
   <article>

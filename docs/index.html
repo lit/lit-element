@@ -1,0 +1,86 @@
+---
+layout: default
+todo: true
+---
+<header class="hero gradient-bg">
+  {% include topnav.html %}
+  <div class="wrapper">
+    <h1 class="hero-title">{{ site.name }}</h1>
+    <p class="hero-caption">{{ site.description }}</p>
+    <a class="hero-link" href="{{ site.baseurl }}/try">Get Started</a>
+  </div>
+</header>
+
+<section>
+  <div class="wrapper">
+    <p>lit-element is a lightweight library for creating custom elements.</p>
+
+    <h2>Create fast, lightweight, reusable web components that work in any web page:</h2>
+
+    <div class="responsive-row">
+      <div style="flex: 1; margin-right: 20px">
+        <div class="language-js highlighter-rouge">
+          <div class="highlight">
+<pre class="highlight"><code><span class="kd">class</span> <span class="nx">MyElement</span> <span class="kd">extends</span> <span class="nx">LitElement</span><span class="p">{</span>
+  <span class="c1">// implement MyElement</span>
+<span class="p">}</span>
+</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <div style="flex: 1; margin-right: 20px">
+        <div class="language-html highlighter-rouge">
+          <div class="highlight">
+<pre class="highlight"><code><span class="nt">&lt;body&gt;</span>
+  <span class="nt">&lt;my-element&gt;&lt;/my-element&gt;</span>
+<span class="nt">&lt;/body&gt;</span>
+</code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h2>Write templates in plain HTML:</h2>
+
+    <div class="language-js highlighter-rouge">
+      <div class="highlight">
+<pre class="highlight"><code><span class="nx">render</span><span class="p">(){</span> 
+  <span class="k">return</span> <span class="nx">html</span><span class="s2">`&lt;p&gt;My element&lt;/p&gt;`</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre>
+      </div>
+    </div>
+
+    <h2>Use JavaScript expressions to include properties, logic, and event handlers:</h2>
+
+    <div class="language-js highlighter-rouge">
+      <div class="highlight">
+<pre class="highlight"><code><span class="nx">render</span><span class="p">(){</span> 
+  <span class="k">return</span> <span class="nx">html</span><span class="s2">`
+    &lt;!-- element property --&gt;
+    &lt;p&gt;</span><span class="p">${</span><span class="k">this</span><span class="p">.</span><span class="nx">myProp</span><span class="p">}</span><span class="s2">&lt;/p&gt;
+
+    &lt;!-- loop --&gt;
+    &lt;ul&gt;</span><span class="p">${</span><span class="nx">myArray</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nx">i</span> <span class="o">=&gt;</span> <span class="nx">html</span><span class="s2">`&lt;li&gt;</span><span class="p">${</span><span class="nx">i</span><span class="p">}</span><span class="s2">&lt;/li&gt;`</span><span class="p">)}</span><span class="s2">&lt;/ul&gt;
+
+    &lt;!-- conditional --&gt;
+    &lt;div&gt;</span><span class="p">${</span><span class="nx">myBool</span> <span class="p">?</span> <span class="nx">html</span><span class="s2">`&lt;p&gt;true&lt;/p&gt;`</span> <span class="p">:</span> <span class="nx">html</span><span class="s2">`&lt;p&gt;false&lt;/p&gt;`</span><span class="p">}</span><span class="s2">&lt;/div&gt;
+
+    &lt;!-- event handler --&gt;
+    &lt;button @click="</span><span class="p">${(</span><span class="nx">e</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="k">this</span><span class="p">.</span><span class="nx">doStuff</span><span class="p">(</span><span class="nx">e</span><span class="p">)}</span><span class="s2">"&gt;&lt;/button&gt;
+  `</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre>
+      </div>
+    </div>
+
+    <h2>Learn more:</h2>
+
+    <ul>
+      <li><a href="/try/">Try lit-element</a> without installing anything.</li>
+      <li><a href="/tools/">Install lit-element locally</a>.</li>
+      <li><a href="/api/">See the API documentation</a>.</li>
+    </ul>
+  </div>
+</section>
