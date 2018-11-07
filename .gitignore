@@ -17,6 +17,8 @@ lit-element.d.ts
 !custom_typings/
 
 #Docs
+/docs/node_modules/
+/docs/_site/
+*.pyc
 
-docs/node_modules
 .DS_Store
