@@ -17,6 +17,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- ### Removed -->
 <!-- ### Fixed -->
 
+## [0.6.3] - 2018-11-08
+### Changed
+* Update lit-html dependency to ^0.13.0 ([#298](https://github.com/Polymer/lit-element/pull/298)).
+
 ## [0.6.2] - 2018-10-05
 
 ### Changed
