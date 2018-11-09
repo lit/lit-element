@@ -25,12 +25,6 @@ import {
   nextFrame
 } from './test-helpers.js';
 
-declare global {
-  interface Window {
-    ShadyDOM: any; // tslint:disable-line
-  }
-}
-
 const assert = chai.assert;
 
 suite('Styling', () => {
