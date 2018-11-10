@@ -17,6 +17,9 @@ handlers:
 - url: /css
   static_dir: css
   secure: always
+- url: /images
+  static_dir: images
+  secure: always
 - url: /includes
   static_dir: includes
   secure: always
