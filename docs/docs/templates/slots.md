@@ -5,19 +5,33 @@ topic: templates
 subtopic: slots
 ---
 
-On this page:
+**On this page:**
 
+* [Shadow DOM vs light DOM](#intro)
 * [Render light DOM children with the `slot` element](#slot)
-* [Named slots](#named)
-* [Use `name`, not `id`, to select slots](#namenotid)
+* [Assign a light DOM child to a specific slot](#named)
+
+<a id="intro">
+
+### [Shadow DOM vs light DOM](#intro)
+
+Since the introduction of shadow DOM, we use the term "light DOM" to refer to nodes that appear in the main DOM tree.
+
+By default, if a custom element has light DOM children in HTML, they do not render at all:
+
+```html
+<my-element>
+  <p>I won't render</p>
+</my-element>
+```
+
+You can make them render using the [`<slot>` element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/slot). 
 
 <a id="slot">
 
-### Render light DOM children with the `slot` element
+### [Render light DOM children with the `slot` element](#slot)
 
-To render an element's light DOM children in shadow DOM, use the [`<slot>` element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/slot):
-
-_my-element.js_
+To render an element's light DOM children, create a `<slot>` for them in the element's template. For example:
 
 ```js
 render(){
@@ -29,27 +43,36 @@ render(){
 }
 ```
 
-_index.html_
+Light DOM children will now render in the `<slot>`:
 
 ```html
 <my-element>
-  <p>Pls include me</p>
+  <p>Render me</p>
 </my-element>
 ```
+
+Arbitrarily many light DOM children can populate a single slot:
+
+```html
+<my-element>
+  <p>Render me</p>
+  <p>Me too</p>
+  <p>Me three</p>
+</my-element>
+```
+
+{% include project.html folder="docs/templates/slots" openFile="my-element.js" %}
 
 <a id="named">
 
-### Named slots
+### [Assign a light DOM child to a specific slot](#named)
 
-You can render light DOM children in a specific slot by ensuring that the slot's `name` attribute matches the light DOM child's `slot` attribute:
-
-_my-element.js_
+To assign a light DOM child to a specific slot, ensure that the child's `slot` attribute matches the slot's `name` attribute:
 
 ```js
 render(){
   return html`
     <div>
-      <slot></slot>
       <slot name="one"></slot>
     </div>
   `;
@@ -60,44 +83,35 @@ _index.html_
 
 ```html
 <my-element>
-  <p slot="one">Pls include me in slot "one"</p>
+  <p slot="one">Include me in slot "one".</p>
 </my-element>
 ```
 
-* Named slots will only match light DOM children whose `slot` attribute matches their `name` attribute.
+* **Named slots only accept light DOM children with a matching `slot` attribute.**
 
-* Light DOM children with a specified `slot` attribute will only match slots with a matching `name` attribute.
+  For example, `<slot name="one"></slot>` only accepts children with the attribute `slot="one"`.
 
-* An un-named slot is called the "default" slot. Any number of light DOM children without a `slot` attribute may populate it. 
+* **Light DOM children with a `slot` attribute will only be placed in a slot with a matching `name` attribute.**
+
+  For example, `<p slot="one">...</p>` will only be placed in `<slot name="one"></slot>`.
+
+**Examples**
 
 _my-element.js_
 
 ```js
-render(){
-  return html`
-    <div>
-      <slot name="one"></slot>
-      <slot name="two"></slot>
-      <slot></slot>
-    </div>
-  `;
-}
+{% include project.html folder="projects/docs/templates/namedslots/my-element.js" %}
 ```
 
 _index.html_
 
 ```html
-<my-element>
-  <p slot="one">Pls include me in slot "one"</p>
-  <p slot="three">I will not be in any slot.</p>
-  <p>I will be in the default slot.</p>
-  <p>So will I.</p>
-</my-element>
+{% include project.html folder="projects/docs/templates/namedslots/index.html" %}
 ```
 
-<a id="namenotid">
+{% include project.html folder="docs/templates/namedslots" openFile="my-element.js" %}
 
-### Use `name`, not `id`, to select slots
+**Use `name`, not `id`, to select slots.**
 
 Note that a `slot`'s `id` attribute has no effect!
 
@@ -117,7 +131,11 @@ _index.html_
 
 ```html
 <my-element>
-  <p slot="one">nope</p>
+  <p slot="one">nope.</p>
+  <p>ohai..</p>
 </my-element>
 ```
 
+{% include project.html folder="docs/templates/slotid" openFile="my-element.js" %}
+
+</aside>

@@ -49,27 +49,44 @@ toc:
         title: Import an existing element    
         url: /docs/import
       templates: 
-        title: Write a template
+        title: Templates
         url: /docs/templates/
         toc: 
-          index: 
-            title: Write a template
-            url: /docs/templates/index
+          create: 
+            title: Create a template
+            desc: Define a template and specify where it should render.
+            type: task
+            url: /docs/templates/create
           expressions:
-            title: Use plain JavaScript expressions in a template
+            title: Use properties and logic
+            desc: Use JavaScript expressions to add properties, loops, and conditionals to your templates.
+            type: task
             url: /docs/templates/expressions
-          annotations:
-            title: Bind data to a child element in a template 
-            url: /docs/templates/annotations
+          databinding:
+            title: Bind data to a child element 
+            desc: Bind to the text content, properties, attributes, and event handlers of a child element.
+            type: task
+            url: /docs/templates/databinding
           compose:
-            title: Compose and nest lit-element templates 
+            title: Compose and nest templates 
+            desc: Compose LitElement templates from other templates. 
+            type: task
             url: /docs/templates/compose
           slots:
-            title: Render light DOM children in a template 
+            title: Render light DOM children
+            desc: Use slots to include light DOM children in shadow DOM templates.
+            type: task
             url: /docs/templates/slots
           design:
-            title: Designing efficient LitElement templates
+            title: Template design concepts
+            desc: Concepts for designing templates that render and update efficiently.
+            type: concept
             url: /docs/templates/design
+          syntax:
+            title: Template syntax
+            desc: A quick reference to LitElement template syntax.
+            type: reference
+            url: /docs/templates/syntax
       properties: 
         title: Work with properties
         url: /docs/properties
