@@ -74,20 +74,24 @@ toc:
         title: Work with properties
         url: /docs/properties
       lifecycle: 
-        title: Work with the element lifecycle
+        title: Element update lifecycle
+        desc: Specify when an element should update. Respond to updates, or wait for an update to complete.
         url: /docs/lifecycle/
         toc:
-          index:
-            title: The LitElement update lifecycle
-            url: /docs/lifecycle/index
-          tasks: 
-            title: Perform tasks during the element update lifecycle
-            url: /docs/lifecycle/tasks
-          examples:
-            title: Example use cases
-            url: /docs/lifecycle/examples
+          about:
+            title: About the element update lifecycle
+            desc: Concepts for working with LitElement's asynchronous update lifecycle.
+            type: concept
+            url: /docs/lifecycle/about
+          customize:
+            title: Customize lifecycle behavior
+            desc: Customize how and when an element should update, and perform additional tasks during any stage of the update lifecycle.
+            type: task
+            url: /docs/lifecycle/customize
           methods:
-            title: Update lifecycle methods and Promises
+            title: Methods and Promises reference
+            desc: A reference to the methods and Promises in the LitElement update lifecycle.
+            type: reference
             url: /docs/lifecycle/methods
       events: 
         title: Work with events
