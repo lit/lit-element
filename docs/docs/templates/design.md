@@ -5,61 +5,56 @@ topic: templates
 subtopic: design
 ---
 
-<div class="summary">
+LitElement renders and re-renders asynchronously, updating in response to batched property changes (see [Element update lifecycle](#lifecycle) for more information).
 
-### Summary
+During an update, only the parts of the DOM that change are re-rendered. To get the performance benefits of this model, you should **design your element's template as a pure function of its properties**.
 
-LitElement-based elements render and re-render asynchronously, updating in response to batched property changes. To maximize performance, design your element templates as a function of element properties.
+To do this, make sure the `render` function:
 
-</div>
+* Does not change the element's state.
+* Does not have any side effects.
+* Only depends on the element's properties.
+* Returns the same result when given the same property values.
 
-### Efficient rendering
+Also, avoid making DOM updates outside of `render`. Instead, express the element's template as a function of its state, and capture its state in properties. 
 
-LitElement templates react to property changes. By default, all of an element's properties are observed, and a change to any one of them will trigger an update. 
-
-Updates are processed asynchronously, so that an element re-renders in response to a batch of property changes. Using lit-html to render and re-render templates, only the DOM nodes that change are re-drawn. 
-
-This improves performance and ensures consistent state between and during property changes.
-
-The element below updates whenever either of its properties changes. Only the parts of the DOM that change are re-rendered.
-
-_my-element.js_
-
-```js
-{% include projects/docs/templates1/my-element.js %}
-```
-
-{% include project.html folder="docs/templates1" openFile="my-element.js" %}
-
-### Design templates as a function of properties
-
-To maximize the benefits of using the LitElement library, we recommend that you design your element's template as a pure function of its properties.
-
-This means that an element's `render` function
-
-* should not change the element's state.
-* should not have side effects.
-* should not depend on anything except the element's properties. 
-* should return the same result when given the same inputs; that is, with the same set of property values, you should get the same template.
-
-We also recommend that you avoid manipulating DOM. Instead, express the element's template as a function of its state, and capture element state in properties.
-
-### Example
-
-The following element uses inefficient DOM manipulation:
+The following code uses inefficient DOM manipulation:
 
 _dom-manip.js_
 
 ```text
-{% include projects/docs/templates/dom-manip.js %}
+// Anti-pattern. Avoid!
+
+constructor() {
+  super();
+  this.addEventListener('stuff-loaded', (e) => {
+    this.shadowRoot.getElementById('message').innerHTML=e.detail;
+  });
+  this.loadStuff();
+}
+render() {
+  return html`
+    <p id="message">Loading</p>
+  `;
+}
 ```
 
-Rewrite the element's template as a function of its properties by capturing the load message as a property, and setting the property in response to the event:
+We can improve the template by capturing the load message as a property, and setting the property in response to the event:
 
 _update-properties.js_
 
 ```js
-{% include projects/docs/templates/update-properties.js %}
+constructor() {
+  super();
+  this.message = 'Loading';
+  this.addEventListener('stuff-loaded', (e) => { this.message = e.detail } );
+  this.loadStuff();
+}
+render() {
+  return html`
+    <p>${this.message}</p>
+  `;
+}
 ```
 
-{% include project.html folder="docs/templates" openFile="index.html" %}
+{% include project.html folder="docs/templates/design" openFile="update-properties.js" %}

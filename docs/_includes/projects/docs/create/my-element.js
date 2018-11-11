@@ -6,7 +6,7 @@ class MyElement extends LitElement {
 
   /**
    * Implement `render` to define a template for your element.
-   *
+   * 
    * You must provide an implementation of `render` for any element
    * that uses LitElement as a base class.
    */

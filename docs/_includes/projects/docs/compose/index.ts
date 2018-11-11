@@ -1,1 +1,0 @@
-import './my-app.js';

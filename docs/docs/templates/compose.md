@@ -5,55 +5,47 @@ topic: templates
 subtopic: compose
 ---
 
-You can compose LitElement templates from other LitElement templates:
+You can compose LitElement templates from other LitElement templates. In the following example, we compose a template for an element called `<my-page>` from smaller templates for the standard HTML elements `<header>`, `<article>`, and `<footer>`:
 
 ```js
-class MyApp extends LitElement {
-  render(){
+class MyPage extends LitElement {
+  render() {
     return html`
-      ${this.headerTemplate()}
-      ${this.navTemplate()}
-      ${this.footerTemplate()}
+      ${this.headerTemplate}
+      ${this.articleTemplate}
+      ${this.footerTemplate}
     `;
   }
-  static get headerTemplate(){
-    return html`...`;
+  static get headerTemplate() {
+    return html`<header>header</header>`;
   }
-  static get navTemplate(){
-    return html`...`;
+  static get articleTemplate() {
+    return html`<article>article</article>`;
   }
-  static get footerTemplate(){
-    return html`...`;
+  static get footerTemplate() {
+    return html`<footer>footer</footer>`;
   }
 }
 ```
 
-### Example
+{% include project.html folder="docs/templates/compose" openFile="my-page.js" %}
 
-_my-app.js_
-
-```js
-{% include projects/docs/compose/my-app.js %}
-```
-
-{% include project.html folder="docs/compose" openFile="my-app.js" %}
-
-You can also compose templates by importing other elements and using them in a template:
-
-_my-app.js_
+You can also compose templates by importing other elements and using them in your template:
 
 ```js
-import './header-element.js';
-import './nav-element.js';
-import './footer-element.js';
+import './my-header.js';
+import './my-article.js';
+import './my-footer.js';
 
-class MyApp extends LitElement {
-  render(){
+class MyPage extends LitElement {
+  render() {
     return html`
-      <header-element></header-element>
-      <nav-element></nav-element>
-      <footer-element></footer-element>
+      <my-header></my-header>
+      <my-article></my-article>
+      <my-footer></my-footer>
     `;
   }
 }
 ```
+
+{% include project.html folder="docs/templates/composeimports" openFile="my-page.js" %}
