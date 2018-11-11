@@ -75,7 +75,7 @@ toc:
         url: /docs/properties
       lifecycle: 
         title: Element update lifecycle
-        desc: Understand LitElement's update lifecycle. Specify how and when an element should update, and perform tasks during an update.
+        desc: Specify when an element should update. Respond to updates, or wait for an update to complete.
         url: /docs/lifecycle/
         toc:
           about:
@@ -93,11 +93,6 @@ toc:
             desc: A reference to the methods and Promises in the LitElement update lifecycle.
             type: reference
             url: /docs/lifecycle/methods
-          examples:
-            title: Examples
-            desc: Example use cases for lifecycle methods and Promises.
-            type: reference
-            url: /docs/lifecycle/examples
       events: 
         title: Work with events
         url: /docs/events
