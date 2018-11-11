@@ -1,7 +1,7 @@
 ---
 layout: default
-todo: true
 ---
+
 <header class="hero">
 {% include topnav.html %}
 <div class="wrapper">
@@ -16,9 +16,11 @@ todo: true
 <div class="responsive-row center">
 <div style="max-width: 600px">
 
-LitElement is a simple base class for creating fast, lightweight [web components](https://developer.mozilla.org/en-US/docs/Web/Web_Components) that work in any page with your favorite libraries and frameworks.
+## Fast, lightweight web components
 
-With LitElement, you can quickly build and share a single component with [fast HTML templates](https://polymer.github.io/lit-html/), or assemble a [full-featured web app](https://polymer.github.io/pwa-starter-kit/) with many components.
+LitElement is a simple base class for creating fast, lightweight web components that work in any web page with any framework.
+
+For rendering, LitElement uses [lit-html](https://lit-html.polymer-project.org/)–a fast HTML templating library. To build an app out of LitElement components, check out [PWA Starter Kit](https://pwa-starter-kit.polymer-project.org/).
 
 </div>
 </div>
@@ -28,38 +30,23 @@ With LitElement, you can quickly build and share a single component with [fast H
 <section>
 <div class="wrapper">
 
-## Define a component in JavaScript:
+Define a component in JavaScript:
+
+_custom-greeting.js_
 
 ```js
-import { LitElement, html } from 'lit-element';
-
-// Create your custom component
-class CustomGreeting extends LitElement {
-  // Declare properties
-  static get properties() {
-    return {
-      name: { type: String }
-    };
-  }
-  // Initialize properties
-  constructor() {
-    super();
-    this.name = 'World';
-  }
-  // Define an HTML template with lit-html
-  render() {
-    return html`<p>Hello, ${this.name}!</p>`;
-  }
-}
-// Register the element with the browser
-customElements.define('custom-greeting', CustomGreeting);
+{% include projects/index/custom-greeting.js %}
 ```
 
-## Include the custom element in your web page:
+Include the component in your web page:
+
+_index.html_
 
 ```html
 <custom-greeting></custom-greeting>
 ```
+
+{% include project.html folder="index" openFile="custom-greeting.js" %}
 
 </div>
 </section>
@@ -81,14 +68,18 @@ Web components built with LitElement are made to share with the world and with o
 
 ### Interoperable
 
-LitElement follows the web platform standards, so your components are interoperable. LitElement uses custom elements for easy inclusion in web pages, and shadow DOM for encapsulation. There’s no new abstraction to learn.
+LitElement follows the [web components standards](https://developer.mozilla.org/en-US/docs/Web/Web_Components), so your components will work with any framework.
+
+LitElement uses custom elements for easy inclusion in web pages, and shadow DOM for encapsulation. There’s no new abstraction on top of the web platform.
 
 </div>
 <div style="flex: 1">
 
 ### Fast and light
 
-Whether your end users are in emerging markets or Silicon Valley, they’ll appreciate that LitElement is extremely fast. LitElement uses [lit-html](https://github.com/Polymer/lit-html) to define and render HTML templates. DOM updates are lightning fast, because the browser only re-renders the data that changes.
+Whether your end users are in emerging markets or Silicon Valley, they’ll appreciate that LitElement is extremely fast.
+
+LitElement uses [lit-html](https://github.com/Polymer/lit-html) to define and render HTML templates. DOM updates are lightning-fast, because lit-html only re-renders the data that changes.
 
 </div>
 </div>
@@ -100,7 +91,7 @@ Whether your end users are in emerging markets or Silicon Valley, they’ll appr
 <div class="responsive-row center">
 <div style="max-width: 600px">
 
-LitElement is brought to you by developers on the Google Chrome team that helped define the Web Component standards with the input of web developers at organizations big and small around the world. 
+LitElement is brought to you by developers on the Google Chrome team with the input of web developers at organizations big and small around the world. 
 
 </div>
 </div>
@@ -110,10 +101,13 @@ LitElement is brought to you by developers on the Google Chrome team that helped
 <section class="grey-bg">
 <div class="wrapper">
 
+<section class="grey-bg">
+<div class="wrapper">
+
 ## Next steps
 
 - [Try LitElement]({{ site.baseurl }}/try) in our live tutorial. You don’t need to install anything.
-- When you’re ready to dive in, [setup LitElement locally]({{ site.baseurl }}/tools) and start building components!
+- When you’re ready to dive in, [set up LitElement locally]({{ site.baseurl }}/tools) and start building components!
 
 </div>
 </section>
