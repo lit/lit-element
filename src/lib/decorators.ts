@@ -63,6 +63,17 @@ export const property = (options?: PropertyDeclaration) => (proto: Object,
 /**
  * A property decorator that converts a class property into a getter that
  * executes a querySelector on the element's renderRoot.
+ *
+ * __Usage__
+ * ``` ts
+ * @query(selector: string, memoize = false)
+ *
+ * @query('#child')
+ * child!: Element;
+ *
+ * @query('#child', true)
+ * child!: Element;
+ * ```
  */
 export const query = _query((target: NodeSelector, selector: string) =>
                                 target.querySelector(selector));
@@ -70,6 +81,17 @@ export const query = _query((target: NodeSelector, selector: string) =>
 /**
  * A property decorator that converts a class property into a getter
  * that executes a querySelectorAll on the element's renderRoot.
+ *
+ * __Usage__
+ * ``` ts
+ * @queryAll(selector: string, memoize = false)
+ *
+ * @queryAll('.item')
+ * items!: NodeListOf<Element>;
+ *
+ * @queryAll('.item', true)
+ * items!: NodeListOf<Element>;
+ * ```
  */
 export const queryAll = _query((target: NodeSelector, selector: string) =>
                                    target.querySelectorAll(selector));
@@ -81,9 +103,18 @@ export const queryAll = _query((target: NodeSelector, selector: string) =>
  * against `target`.
  */
 function _query<T>(queryFn: (target: NodeSelector, selector: string) => T) {
-  return (selector: string) => (proto: any, propName: string) => {
+  return (selector: string, memoize = false) => (proto: any, propName: string) => {
     Object.defineProperty(proto, propName, {
-      get(this: LitElement) { return queryFn(this.renderRoot!, selector); },
+      get(this: LitElement) {
+        const e = queryFn(this.renderRoot!, selector);
+        if (memoize) {
+          Object.defineProperty(this, propName, {
+            value: e,
+            enumerable: true,
+          });
+        }
+        return e;
+      },
       enumerable : true,
       configurable : true,
     });
