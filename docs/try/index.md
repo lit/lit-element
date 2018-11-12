@@ -1,8 +1,6 @@
 ---
 layout: post
 section: try
-topic: index
-status: reviewing
 ---
 
 Try LitElement! In this tutorial you'll build your first web component, use it in a web page, and add style with CSS.
@@ -15,12 +13,12 @@ Click **Preview** at any time to see your code in action.
 
 Follow the steps below to get started with LitElement:
 
-*  [Create your first custom element](create).
-*  [Use your custom element in a web page](use).
-*  [Add a property value to your element template](properties).
-*  [Add a loop and an “if” statement to your template](expressions).
-*  [Add an event handler to your template](events).
-*  [Style your element template](style).
+*  [Create your first custom element](/try/create).
+*  [Use your custom element in a web page](/try/use).
+*  [Add a property value to your element template](/try/properties).
+*  [Add a loop and an “if” statement to your template](/try/expressions).
+*  [Add an event handler to your template](/try/events).
+*  [Style your element template](/try/style).
 
 When you're ready to dive in, follow this guide to [Set up LitElement locally](/tools/setup). 
 
