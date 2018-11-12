@@ -1,5 +1,6 @@
 ---
 layout: post
-section: tools
+section: docs
 addsectiontoc: true
 ---
+

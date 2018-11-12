@@ -5,15 +5,16 @@ topic: setup
 pageid: setup
 ---
 
+**On this page:**
+
 * [Install pre-requisites](#install)
-* [Serve a sample project](#serve)
-* [Build the sample project](#build)
+* [Create a new LitElement project](#new)
+* [Serve your project locally](#serve)
+* [Build your project for production](#build)
 
-<hr/>
+<a id="install">
 
-<a id="install"></a>
-
-## Install pre-requisites 
+### [Install pre-requisites](#install)
 
 To work locally with lit-element, you'll first need to install Git, npm and Node.js, and the Polymer CLI. 
 
@@ -33,60 +34,58 @@ To work locally with lit-element, you'll first need to install Git, npm and Node
     npm install -g polymer-cli@latest
     ```
 
-<hr/>
+<a id="new">
 
-<a id="serve"></a>
+### [Create a new LitElement project](#new)
 
-## Serve a sample project
+```bash 
+mkdir myproject
+cd myproject
+npm init -y
+npm install --save @polymer/lit-element
+npm install --save @webcomponents/webcomponentsjs
+```
 
-1.  Use Git to copy a sample lit-element project:
+<a id="serve">
 
-    ```bash
-    git clone https://github.com/polymerlabs/start-lit.git
-    ```
+### [Serve](#serve)
 
-2.  Go to the `start-lit` folder:
+Create a polymer.json config file, and serve your project:
 
-    ```bash
-    cd start-lit
-    ```
+```bash
+cd myproject
+npm install
+echo '{
+  "npm": true,
+  "moduleResolution": "node",
+  "entrypoint": "src/index.html",
+  "shell": "src/my-project.js",
+  "extraDependencies": [
+    "node_modules/@webcomponents/webcomponentsjs/**"
+  ],
+  "builds": [{
+    "name": "mybuild",
+    "bundle": true,
+    "js": {
+      "minify": true
+    }
+  }]
+}' >polymer.json
+polymer serve
+```
 
-3.  Install the project's dependencies: 
+See the docs for more information on working with [Polymer CLI](develop#cli).
 
-    ```bash
-    npm install
-    ```
+<a id="build">
 
-4.  Serve the project locally:
+## [Build](#build)
 
-    ```bash
-    polymer serve
-    ```
+Build your project, and serve the build locally:
 
-<hr/>
+```bash
+cd myproject
+polymer build
+polymer serve build/mybuild
+```
 
-<a id="build"></a>
-
-## Build the sample project
-
-lit-element code needs a few changes for web browsers to load it. During developent, the Polymer CLI development server (`polymer serve`) handles this for you.
-
-To deploy a lit-element project to the web, you need to build it. Configure build options in `polymer.json`, then run `polymer build`.
-
-We've included a [sample polymer.json file in the start-lit project](https://github.com/polymerlabs/start-lit/link-to/polymer.json) to get you up and running.
-
-See the [Polymr CLI documentation](https://www.polymer-project.org/3.0/docs/tools/polymer-cli) for instructions on configuring your build.
-
-**To build the start-lit sample project:**
-
-1.  Go to your root project folder:
-
-    ```bash
-    cd start-lit
-    ```
-
-2.  Use Polymer CLI to build your project:
-
-    ```bash
-    polymer build    
-    ```
+For more information on building LitElement projects see [Build for production](build).
