@@ -23,31 +23,29 @@ toc:
         title: Style your element template
         url: /try/style
   docs:
-    title: API Documentation
+    title: Documentation
     url: /docs/
     toc: 
       create:
-        title: Create an element
+        title: Create a component
+        desc: Create a new web component with LitElement. Import and use LitElement components in HTML and JavaScript.
         url: /docs/create
-        toc: 
-          index:
-            title: Overview
-            url: /docs/create/index
-          extend:
+        toc:
+          install: 
+            title: Add LitElement to an npm project
+            url: /docs/create#install
+          class:
             title: Extend the LitElement base class
-            url: /docs/create/extend
+            desc: Create a new class for your web component by extending the LitElement base class.
+            url: /docs/create#class
           typescript:
-            title: Use TypeScript decorators to create a custom element
-            url: /docs/create/typescript
-          renderroot:
-            title: Customize an element's render root
-            url: /docs/create/renderroot
-          design:
-            title: Designing an element
-            url: /docs/create/design
-      import: 
-        title: Import an existing element    
-        url: /docs/import
+            title: Use TypeScript to create a new class
+            desc: Use LitElement TypeScript decorators to create a new class for a LitElement-based component.
+            url: /docs/create#typescript
+          import: 
+            title: Import an element
+            desc: Import your own or third-party LitElement components in HTML or JavaScript.
+            url: /docs/create#import
       templates: 
         title: Templates
         url: /docs/templates/
@@ -132,3 +130,20 @@ toc:
   tools:
     title: Tools
     url: /tools/
+    toc: 
+      setup:
+        title: Set up LitElement locally
+        desc: Set up LitElement for the first time.
+        url: /tools/setup
+      develop:
+        title: Develop
+        desc: Tools for developing and working locally with LitElement projects.
+        url: /tools/develop
+      build: 
+        title: Build for production
+        desc: Get your project ready for deployment to the web.
+        url: /tools/build
+      sample: 
+        title: Sample project
+        desc: Clone, serve, and build a sample LitElement project.
+        url: /tools/sample
