@@ -77,7 +77,12 @@ class StackBlitz extends LitElement {
         });
         const project = Object.assign({}, manifest, {
           files: (await Promise.all(files)).reduce(
-            (acc, file) => Object.assign(acc, file), {})
+            (acc, file) => Object.assign(acc, file), {}),
+          settings: {
+            compile: {
+              action: 'refresh'
+            }
+          }
         });
         const container = this.shadowRoot.getElementById('container');
         this._vm = await StackBlitzSDK.embedProject(container, project, {
