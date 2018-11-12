@@ -88,8 +88,27 @@ toc:
             type: reference
             url: /docs/templates/syntax
       properties: 
-        title: Work with properties
+        title: Properties
         url: /docs/properties
+        toc:
+          declare: 
+            title: Declare properties
+            url: /docs/properties#declare
+          init: 
+            title: Initialize property values
+            url: /docs/properties#init
+          type:
+            title: Configure a property type
+            url: /docs/properties#type
+          attribute:
+            title: Configure observed attributes
+            url: /docs/properties#attribute
+          reflect:
+            title: Configure reflection to attributes
+            url: /docs/properties#reflect
+          haschanged:
+            title: Evaluate property changes
+            url: /docs/properties#haschanged
       lifecycle: 
         title: Element update lifecycle
         desc: Specify when an element should update. Respond to updates, or wait for an update to complete.
