@@ -98,8 +98,20 @@ LitElement is brought to you by developers on the Google Chrome team with the in
 </div>
 </section>
 
-<section class="grey-bg">
-<div class="wrapper">
+<section>
+  <div class="wrapper" style="text-align: center">
+    <h2>Browser Compatibility</h2>
+    <p>Polymer products work in all major browsers (Chrome, Firefox, IE, Edge, Safari, and Opera). </p>
+    <div>
+      <img width="70" height="70" src="/images/browsers/chrome_128x128.png" alt="chrome logo">
+      <img width="70" height="70" src="/images/browsers/firefox_128x128.png" alt="firefox logo">
+      <img width="70" height="70" src="/images/browsers/internet-explorer_128x128.png" alt="internet explorer logo">
+      <img width="70" height="70" src="/images/browsers/edge_128x128.png" alt="edge logo">
+      <img width="70" height="70" src="/images/browsers/safari_128x128.png" alt="safari logo">
+      <img width="70" height="70" src="/images/browsers/opera_128x128.png" alt="opera logo">
+    </div>
+  </div>
+</section>
 
 <section class="grey-bg">
 <div class="wrapper">
