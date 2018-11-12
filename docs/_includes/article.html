@@ -3,6 +3,10 @@
 
 <h1><a href="{{site.baseurl}}{{topic.url}}">{{topic.title}}</a></h1>
 
+{% if page.addsectiontoc %}
+{% include sectiontoc.html %}
+{% endif %}
+
 {%- if topic.toc -%}
 <ul>
   {%- for item in topic.toc -%}
@@ -13,7 +17,7 @@
     {%- endif -%}
   {%- endfor -%}
 </ul>
-<hr />
+
 <h2><a href="{{site.baseurl}}{{subtopic.url}}">{{subtopic.title}}</a></h2>
 
 {%- endif -%}

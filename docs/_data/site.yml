@@ -2,6 +2,7 @@ title: LitElement Documentation
 toc:
   try: 
     title: Try LitElement
+    desc: A quick tutorial with interactive code samples.
     url: /try/
     toc: 
       create:
@@ -24,6 +25,7 @@ toc:
         url: /try/style
   docs:
     title: Documentation
+    desc: LitElement is a simple base class for creating fast, lightweight web components that work in any web page with any framework.
     url: /docs/
     toc: 
       create:
@@ -32,14 +34,14 @@ toc:
         url: /docs/create
         toc:
           install: 
-            title: Add LitElement to an npm project
+            title: Install LitElement
             url: /docs/create#install
           class:
-            title: Extend the LitElement base class
+            title: Create a new component
             desc: Create a new class for your web component by extending the LitElement base class.
             url: /docs/create#class
           typescript:
-            title: Use TypeScript to create a new class
+            title: Use TypeScript to create a component
             desc: Use LitElement TypeScript decorators to create a new class for a LitElement-based component.
             url: /docs/create#typescript
           import: 
@@ -48,6 +50,7 @@ toc:
             url: /docs/create#import
       templates: 
         title: Templates
+        desc: Create and render LitElement templates. Use JavaScript expressions to add properties and logic.      
         url: /docs/templates/
         toc: 
           create: 
@@ -86,7 +89,8 @@ toc:
             type: reference
             url: /docs/templates/syntax
       properties: 
-        title: Properties
+        title: Properties and attributes
+        desc: Declare and configure a component's properties and attributes.
         url: /docs/properties
         toc:
           declare: 
@@ -129,6 +133,7 @@ toc:
             url: /docs/lifecycle/methods
   tools:
     title: Tools
+    desc: Tools for developing and deploying LitElement projects.
     url: /tools/
     toc: 
       setup:
@@ -136,7 +141,7 @@ toc:
         desc: Set up LitElement for the first time.
         url: /tools/setup
       develop:
-        title: Develop
+        title: Developer tools
         desc: Tools for developing and working locally with LitElement projects.
         url: /tools/develop
       build: 

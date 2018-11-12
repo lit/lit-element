@@ -4,15 +4,6 @@ section: docs
 topic: properties
 ---
 
-**On this page:**
-
-* [Declare properties](#declare)
-* [Initialize property values](#init)
-* [Configure a property type](#type)
-* [Configure observed attributes](#attribute)
-* [Configure reflection to attributes](#reflect)
-* [Specify how to evaluate property changes](#haschanged)
-
 <a id="declare">
 
 ### [Declare properties](#declare)

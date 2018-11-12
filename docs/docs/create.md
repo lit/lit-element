@@ -4,13 +4,6 @@ section: docs
 topic: create
 ---
 
-**On this page:**
-
-* [Install LitElement](#install)
-* [Create a new component based on LitElement](#class)
-* [Use TypeScript decorators to create a component](#typescript)
-* [Import a LitElement-based component](#import)
-
 <a id="install">
 
 ### [Install LitElement](#install)
@@ -44,7 +37,7 @@ _my-element.js_
 
 <a id="typescript">
 
-## [Use TypeScript decorators to create a component](#typescript)
+### [Use TypeScript to create a component](#typescript)
 
 You can use the `@customElement` TypeScript decorator to define your class as a custom element:
 
@@ -56,9 +49,9 @@ You can use the `@customElement` TypeScript decorator to define your class as a 
 
 <a name="import">
 
-## [Import a LitElement-based component](#import)
+### [Import a LitElement component](#import)
 
-### Import your own component
+#### Import your own component
 
 In an HTML document:
 
@@ -87,7 +80,7 @@ class MyOtherElement extends LitElement{
 customElements.define('my-other-element', MyOtherElement);
 ```
 
-### Import a third-party component
+#### Import a third-party component
 
 **Refer to third-party component documentation first.** To work with any existing component made by a third party, see its documentation. This guide should work for most LitElement-based components if they are published on npm.
 
