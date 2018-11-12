@@ -7,7 +7,7 @@
 [![Published on webcomponents.org](https://img.shields.io/badge/webcomponents.org-published-blue.svg)](https://www.webcomponents.org/element/@polymer/lit-element)
 [![Mentioned in Awesome lit-html](https://awesome.re/mentioned-badge.svg)](https://github.com/web-padawan/awesome-lit-html)
 
-## A simple base class for creating custom elements rendered with lit-html.
+## A simple base class for creating fast, lightweight web components
 
 LitElement uses [lit-html](https://github.com/Polymer/lit-html) to render into the
 element's [Shadow DOM](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_shadow_DOM)
