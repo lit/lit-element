@@ -1,0 +1,1 @@
+import './main-app.js';
