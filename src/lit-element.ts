@@ -28,6 +28,7 @@ export class LitElement extends UpdatingElement {
    * @param {TemplateResult} Template to render.
    * @param {Element|DocumentFragment} Node into which to render.
    * @param {String} Element name.
+   * @nocollapse
    */
   static render = render;
 
