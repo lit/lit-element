@@ -76,4 +76,4 @@ npm install -g polymer-cli
 
 You will need a text editor that does HTML syntax highlighting inside JavaScript template literals. 
 
-* [VSCode](https://code.visualstudio.com/#alt-downloads) with [https://marketplace.visualstudio.com/items?itemName=bierner.lit-html#qna](Matt Bierner's lit-html plugin)
+* [VS Code](https://code.visualstudio.com/) with [Matt Bierner's lit-html plugin](https://marketplace.visualstudio.com/items?itemName=bierner.lit-html)
