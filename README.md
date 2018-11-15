@@ -7,12 +7,13 @@
 [![Published on webcomponents.org](https://img.shields.io/badge/webcomponents.org-published-blue.svg)](https://www.webcomponents.org/element/@polymer/lit-element)
 [![Mentioned in Awesome lit-html](https://awesome.re/mentioned-badge.svg)](https://github.com/web-padawan/awesome-lit-html)
 
-## A simple base class for creating custom elements rendered with lit-html.
+## A simple base class for creating fast, lightweight web components
 
 LitElement uses [lit-html](https://github.com/Polymer/lit-html) to render into the
 element's [Shadow DOM](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_shadow_DOM)
 and adds API to help manage element properties and attributes. LitElement reacts to changes in properties
-and renders declaratively using `lit-html`.
+and renders declaratively using `lit-html`. See the [lit-html guide](https://polymer.github.io/lit-html/guide)
+for additional information on how to create templates for lit-element.
 
   * **Setup properties:** LitElement supports observable properties that cause the element to update.
   These properties can be declared in a few ways:
@@ -45,8 +46,8 @@ and renders declaratively using `lit-html`.
     according to the rules for the `attribute` property option, will be set to the
     value of the property serialized using the rules from the `type` property option.
     Note, `type: Boolean` has special handling by default which means that truthy
-    values result in the presense of the attribute, where as falsy values result
-    in the absense of the attribute.
+    values result in the presence of the attribute, whereas falsy values result
+    in the absence of the attribute.
     * `hasChanged`: A function that indicates whether a property should be considered
     changed when it is set and thus result in an update. The function should take the
     `newValue` and `oldValue` and return `true` if an update should be requested.
@@ -65,6 +66,7 @@ and renders declaratively using `lit-html`.
     * expression: ``` html`<div>${this.disabled ? 'Off' : 'On'}</div>` ```
     * property: ``` html`<x-foo .bar="${this.bar}"></x-foo>` ```
     * attribute: ``` html`<div class="${this.color} special"></div>` ```
+    * boolean attribute: ``` html`<input type="checkbox" ?checked=${checked}>` ```
     * event handler: ``` html`<button @click="${this._clickHandler}"></button>` ```
 
 ## Getting started

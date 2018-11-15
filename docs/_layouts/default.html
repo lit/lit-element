@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="description" content="{{ site.description }}">
+  <title>{%- if page.title -%}{{ page.title }} &ndash;{%- endif -%} {{ site.name }}</title>
+  <meta name="theme-color" content="#00A3E6">
+  <link rel="shortcut icon" href="{{site.baseurl}}/images/favicon.png">
+  <link rel="stylesheet" href="{{site.baseurl}}/css/main.css">
+  <link rel="stylesheet" href="{{site.baseurl}}/css/pygments.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Google+Sans:400,500">
+  {% if site.google_analytics and jekyll.environment == 'production' %}
+  {% include analytics.html %}
+  {% endif %}
+  <script src="{{site.baseurl}}/build/gh-pages/node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
+  <script type="module" src="{{site.baseurl}}/build/gh-pages/src/index.js"></script>
+</head>
+<body>
+  {{content}}
+
+  <footer>
+    <div class="wrapper">
+      <div class="attribution">
+        Brought to you by <a href="https://www.polymer-project.org">The Polymer Project</a>.<br>
+        Copyright 2018 The Polymer Project Authors. Code licensed under the
+        <a target="_blank" href="http://polymer.github.io/LICENSE.txt">BSD License</a>. 
+        Documentation licensed under CC BY 3.0.
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

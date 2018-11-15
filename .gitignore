@@ -15,3 +15,10 @@ lit-element.d.ts
 /demo/**/*.js.map
 
 !custom_typings/
+
+#Docs
+/docs/node_modules/
+/docs/_site/
+*.pyc
+
+.DS_Store
