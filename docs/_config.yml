@@ -4,6 +4,7 @@ exclude: [package.json, polymer.json, src, node_modules, package-lock.json]
 markdown: kramdown
 kramdown: 
   parse_block_html: true
+google_analytics: UA-39334307-23
 projects: includes/projects
 collections:
   includes:
