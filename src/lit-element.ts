@@ -53,5 +53,5 @@ export class LitElement extends UpdatingElement {
    * trigger the element to update.
    * @returns {TemplateResult} Must return a lit-html TemplateResult.
    */
-  protected render() {}
+  protected render(): TemplateResult|void {}
 }
