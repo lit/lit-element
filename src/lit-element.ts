@@ -51,7 +51,6 @@ export class LitElement extends UpdatingElement {
    * Invoked on each update to perform rendering tasks. This method must return
    * a lit-html TemplateResult. Setting properties inside this method will *not*
    * trigger the element to update.
-   * @returns {TemplateResult} Must return a lit-html TemplateResult.
    */
   protected render(): TemplateResult|void {}
 }
