@@ -21,6 +21,10 @@ export type Constructor<T> = {
   new (...args: any[]): T
 };
 
+
+type CustomElementDecorator<N> = (tagName: keyof N) =>
+(clazz: Constructor<HTMLElement>) => any;
+
 /**
  * Class decorator factory that defines the decorated class as a custom element.
  *
@@ -40,8 +44,9 @@ export type Constructor<T> = {
  *     }
  *
  */
-export const customElement = (tagName: keyof HTMLElementTagNameMap) =>
-    (clazz: Constructor<HTMLElement>) => {
+
+export const customElement: CustomElementDecorator<HTMLElementTagNameMap> = (tagName) =>
+    (clazz) => {
       window.customElements.define(tagName, clazz);
       // Cast as any because TS doesn't recognize the return type as being a
       // subtype of the decorated class when clazz is typed as
