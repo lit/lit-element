@@ -147,5 +147,30 @@ suite('decorators', () => {
       button.click();
       assert.equal(c.eventPhase, Event.CAPTURING_PHASE);
     });
+
+    test('allows passive listeners', async () => {
+      @customElement(generateElementName() as keyof HTMLElementTagNameMap)
+      class C extends LitElement {
+        eventPhase?: number;
+
+        render() {
+          return html`
+            <div @click=${this.onClick}><button></button></div>
+          `;
+        }
+
+        @eventOptions({passive : true})
+        onClick(e: Event) {
+          this.eventPhase = e.eventPhase;
+        }
+      }
+
+      const c = new C();
+      container.appendChild(c);
+      await c.updateComplete;
+      const button = c.shadowRoot!.querySelector('button')!;
+      button.click();
+      assert.equal(c.eventPhase, Event.BUBBLING_PHASE);
+    });
   });
 });
