@@ -61,7 +61,7 @@ To create properties and use them in an element template:
     _Initialize the property_
 
     ```js
-    message: { type: String }
+    this.message='Hello world! From my-element';
     ```
 
 *   Add properties to your template with JavaScript expressions.
