@@ -218,6 +218,8 @@ Setting properties inside this method will trigger the element to update.
 * `updateComplete` Promise is resolved with a boolean that is `true` if the
 element is not pending another update, and any code awaiting the element's
 `updateComplete` Promise runs and observes the element in the updated state.
+* `invalidate()`: Called whenever a property is changed.
+* `validate()`: Manages validating the element by updating it.
 
 ## Bigger Example
 

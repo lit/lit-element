@@ -474,7 +474,7 @@ export abstract class UpdatingElement extends HTMLElement {
                       defaultPropertyDeclaration;
       return this._requestPropertyUpdate(name, oldValue, options);
     }
-    return this._invalidate();
+    return this.invalidate();
   }
 
   /**
@@ -501,7 +501,7 @@ export abstract class UpdatingElement extends HTMLElement {
       }
       this._reflectingProperties.set(name, options);
     }
-    return this._invalidate();
+    return this.invalidate();
   }
 
   /**
@@ -509,7 +509,7 @@ export abstract class UpdatingElement extends HTMLElement {
    * of whether or not any property changes are pending. This method is
    * automatically called when any registered property changes.
    */
-  private async _invalidate() {
+  protected async invalidate() {
     if (!this._hasRequestedUpdate) {
       // mark state updating...
       this._updateState = this._updateState | STATE_UPDATE_REQUESTED;
@@ -517,7 +517,7 @@ export abstract class UpdatingElement extends HTMLElement {
       const previousValidatePromise = this._updatePromise;
       this._updatePromise = new Promise((r) => resolver = r);
       await previousValidatePromise;
-      this._validate();
+      this.validate();
       resolver!(!this._hasRequestedUpdate);
     }
     return this.updateComplete;
@@ -530,7 +530,7 @@ export abstract class UpdatingElement extends HTMLElement {
   /**
    * Validates the element by updating it.
    */
-  private _validate() {
+  protected validate() {
     // Mixin instance properties once, if they exist.
     if (this._instanceProperties) {
       this._applyInstanceProperties();
