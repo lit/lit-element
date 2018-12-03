@@ -2,18 +2,11 @@
 layout: post
 section: try
 topic: events
-status: reviewing
 ---
 
 Use lit-html's `@event` annotation to add an event listener to an element inside a template. 
 
-* [Starting code](#start)
-* [Editing steps](#edit)
-* [Completed code](#completed)
-
-<a name="start">
-
-### Starting code
+**Starting code**
 
 _my-element.js_
 
@@ -23,63 +16,28 @@ _my-element.js_
 
 {% include project.html folder="try/events/before" openFile="my-element.js" %}
 
-<a name="edit">
+1. **Add an event listener.**
 
-### Editing steps
+    In my-element.js, in your template, replace the existing HTML `button` element with the following code:
 
-In the element template in `render`, annotate a `<button>` to add an event listener:
+    ```html
+    <button @click="${(event) => this.clickHandler(event)}">Click</button>
+    ```
 
-_my-element.js_
+    The annotation above adds a listener for the `click` event.
 
-```js
-render(){
-  return html`
-    ...
-    
-    <!-- Annotate the button to add an event listener. --> 
-    <button></button>
-  `;
-}
-```
+2. **Implement an event handler.** 
 
-_Annotated button_
+    To handle the `click` event, define the following method on your `MyElement` class:
 
-```html
-<button @click="${(event) => this.clickHandler(event)}">Click</button>
-```
+    ```js
+    clickHandler(event){
+      console.log(event.target);
+      this.myBool = !this.myBool;
+    }
+    ```
 
-To handle the event, add an event handler method to the MyElement class.
-
-_my-element.js_
-
-```js
-class MyElement extend LitElement { 
-  ...
-  render(){
-    ...
-  }
-  // Add an event handler here.
-}
-```
-
-_Event handler code_
-
-```js
-clickHandler(event){
-  console.log(event.target);
-  this.myBool = !this.myBool;
-}
-```
-
-<a name="completed">
-
-### Completed code
-
-_my-element.js_
-
-```js
-{% include projects/try/events/after/my-element.js %}
-```
+If you're stuck, click **Launch Code Editor** below to see the completed code at work.
 
 {% include project.html folder="try/events/after" openFile="my-element.js" %}
 
