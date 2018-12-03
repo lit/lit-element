@@ -6,12 +6,7 @@ topic: properties
 
 Declare a property for your component, and use the value in the component's template. LitElement components update automatically when their properties change.
 
-* [Starting code](#start)
-* [Steps](#edit)
-
-<a name="start">
-
-### Starting code
+**Starting code**
 
 _my-element.js_
 
@@ -20,10 +15,6 @@ _my-element.js_
 ```
 
 {% include project.html folder="try/properties/before" openFile="my-element.js" %}
-
-<a name="edit">
-
-### Steps
 
 1. **Declare a property.**
 

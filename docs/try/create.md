@@ -6,12 +6,7 @@ topic: create
 
 In this step, you'll fill in the gaps in the starting code to create an element class with a basic HTML template.
 
-* [Starting code](#start)
-* [Steps](#edit)
-
-<a name="start">
-
-### Starting code
+**Starting code**
 
 _my-element.js_
 
@@ -22,10 +17,6 @@ _my-element.js_
 Click **Launch Code Editor** to edit the starting code. When you're ready to see your code in action, click **Preview**.
 
 {% include project.html folder="try/create/before" openFile="my-element.js" %}
-
-<a name="edit">
-
-### Steps
 
 1.  **Import the `LitElement` base class and `html` helper function.**
 

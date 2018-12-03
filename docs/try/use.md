@@ -6,12 +6,7 @@ topic: use
 
 Import your new component as a JavaScript module and use it in a web page.
 
-* [Starting code](#start)
-* [Editing steps](#edit)
-
-<a name="start">
-
-### Starting code
+**Starting code**
 
 _index.html_
 
@@ -20,10 +15,6 @@ _index.html_
 ```
 
 {% include project.html folder="try/use/before" openFile="index.html" %}
-
-<a name="edit">
-
-### Steps
 
 1. **Import your component module.** 
 
