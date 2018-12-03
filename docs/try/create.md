@@ -49,6 +49,8 @@ Click **Launch Code Editor** to edit the starting code. When you're ready to see
     }    
     ```
 
+    The `render` function defines your component's template. You must implement `render` for every LitElement component.  
+
 3.  **Register the new element with the browser.**
 
     In my-element.js, replace the existing call to `customElements.define()` with the following code:

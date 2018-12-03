@@ -1,18 +1,32 @@
+/**
+ * Try LitElement https://lit-element.polymer-project.org/try
+ * Starting code for 3. Declare and use properties
+ */
+
 import { LitElement, html } from '@polymer/lit-element'; 
 
 class MyElement extends LitElement {
-  static get properties(){
-    return {
-      // Declare property here.
-    };
+  
+  /**
+   * TODO: Declare a property.
+   */
+  static get properties() {
+    return { };
   }
-  constructor(){
-    super();
-    // Initialize property here.
+
+  /**
+   * TODO: Initialize the property.
+   */
+  constructor() {
+    // Always call superconstructor first
+    super(); 
   }
-  render(){
+
+  /**
+   * TODO: Add a property to your template with a JavaScript expression.
+   */
+  render() {
     return html`
-      <!-- Add property here. -->
       <p></p>
     `;
   }

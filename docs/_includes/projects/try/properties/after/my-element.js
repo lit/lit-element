@@ -1,21 +1,38 @@
+/**
+ * Try LitElement https://lit-element.polymer-project.org/try
+ * Completed code for 3. Declare and use properties
+ */
+
 import { LitElement, html } from '@polymer/lit-element'; 
 
 class MyElement extends LitElement {
-  static get properties(){
-    return {
-      // Declare property here.
+  
+  /**
+   * DONE: Declare a property.
+   */
+  static get properties() {
+    return { 
+      // Property declaration
       message: { type: String }
     };
   }
-  constructor(){
-    super();
-    // Initialize property here.
+
+  /**
+   * DONE: Initialize the property.
+   */
+  constructor() {
+    // Always call superconstructor first
+    super(); 
+
+    // Initialize property
     this.message='Hello world! From my-element';
   }
 
-  render(){
+  /**
+   * DONE: Add a property to your template with a JavaScript expression.
+   */
+  render() {
     return html`
-      <!-- Add property here. -->
       <p>${this.message}</p>
     `;
   }
