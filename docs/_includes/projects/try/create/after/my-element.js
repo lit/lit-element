@@ -1,6 +1,6 @@
 /**
  * Try LitElement https://lit-element.polymer-project.org/try
- * Completed code for 1. Create your first custom element
+ * Completed code for 1. Create
  */
 
 /**

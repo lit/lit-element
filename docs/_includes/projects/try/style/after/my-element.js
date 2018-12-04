@@ -1,6 +1,6 @@
 /**
  * Try LitElement https://lit-element.polymer-project.org/try
- * Completed code for 6. Style your element
+ * Completed code for 6. Style
  */
 
 import { LitElement, html } from '@polymer/lit-element'; 
@@ -27,7 +27,7 @@ class MyElement extends LitElement {
       <style>
         p {
           font-family: Roboto;
-          font-size: 24px;
+          font-size: 16px;
           font-weight: 500;
         }
         .red {

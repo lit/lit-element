@@ -54,4 +54,4 @@ If you're stuck, click **Launch Code Editor** below to see the completed code at
 
 {% include project.html folder="try/create/after" openFile="my-element.js" %}
 
-{% include prevnext.html prevurl="/try" prevtitle="Try LitElement" nexturl="use" nexttitle="2. Use your element in a web page" %}
+{% include prevnext.html prevurl="/try" prevtitle="Try LitElement" nexturl="import" nexttitle="2. Import" %}

@@ -24,7 +24,7 @@ _my-element.js_
     <style>
       p {
         font-family: Roboto;
-        font-size: 24px;
+        font-size: 16px;
         font-weight: 500;
       }
       .red {
@@ -55,4 +55,4 @@ Next steps
 * [Set up LitElement locally](/tools/setup)
 * [View API documentation](/docs/index)
 
-{% include prevnext.html prevurl="events" prevtitle="5. Add an event handler" %}
+{% include prevnext.html prevurl="events" prevtitle="5. Events" %}

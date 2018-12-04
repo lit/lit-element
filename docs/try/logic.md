@@ -1,10 +1,10 @@
 ---
 layout: post
 section: try
-topic: expressions
+topic: logic
 ---
 
-Handling conditionals and loops in your LitElement templates is easy. No special annotations, just plain JavaScript expressions. 
+Handling logic (for example, loops and conditionals) in your LitElement templates is easy. No special annotations, just plain JavaScript expressions. 
 
 Modify your template to add a loop and a conditional.
 
@@ -13,10 +13,10 @@ Modify your template to add a loop and a conditional.
 _my-element.js_
 
 ```js
-{% include projects/try/expressions/before/my-element.js %}
+{% include projects/try/logic/before/my-element.js %}
 ```
 
-{% include project.html folder="try/expressions/before" openFile="my-element.js" %}
+{% include project.html folder="try/logic/before" openFile="my-element.js" %}
 
 1. **Add a loop to your template.**
 
@@ -40,6 +40,6 @@ _my-element.js_
 
 If you're stuck, click **Launch Code Editor** below to see the completed code at work.
 
-{% include project.html folder="try/expressions/after" openFile="my-element.js" %}
+{% include project.html folder="try/logic/after" openFile="my-element.js" %}
 
-{% include prevnext.html prevurl="properties" prevtitle="3. Declare and use properties" nexturl="events" nexttitle="5. Add an event handler" %}
+{% include prevnext.html prevurl="properties" prevtitle="3. Properties" nexturl="events" nexttitle="5. Events" %}

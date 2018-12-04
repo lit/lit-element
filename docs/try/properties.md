@@ -61,4 +61,4 @@ If you're stuck, click **Launch Code Editor** below to see the completed code at
 
 {% include project.html folder="try/properties/after" openFile="my-element.js" %}
 
-{% include prevnext.html prevurl="use" prevtitle="2. Use your element in a web page" nexturl="expressions" nexttitle="4. Add a loop and an 'if' statement" %}
+{% include prevnext.html prevurl="import" prevtitle="2. Import" nexturl="logic" nexttitle="4. Logic" %}

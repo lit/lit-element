@@ -31,7 +31,7 @@ _my-element.js_
     To handle the `click` event, define the following method on your `MyElement` class:
 
     ```js
-    clickHandler(event){
+    clickHandler(event) {
       console.log(event.target);
       this.myBool = !this.myBool;
     }
@@ -41,4 +41,4 @@ If you're stuck, click **Launch Code Editor** below to see the completed code at
 
 {% include project.html folder="try/events/after" openFile="my-element.js" %}
 
-{% include prevnext.html prevurl="expressions" prevtitle="4. Add a loop and an 'if' statement" nexturl="style" nexttitle="6. Style your element template" %}
+{% include prevnext.html prevurl="logic" prevtitle="4. Logic" nexturl="style" nexttitle="6. Style" %}
