@@ -55,4 +55,4 @@ Next steps
 * [Set up LitElement locally](/tools/setup)
 * [View API documentation](/docs/index)
 
-{% include prevnext.html prevurl="events" prevtitle="5. Add an event handler" %}
+{% include prevnext.html prevurl="events" prevtitle="5. Events" %}
