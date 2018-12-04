@@ -18,7 +18,7 @@ To define a template for a LitElement component, write a `render` function for y
 
 ```js
 class MyElement extends LitElement {
-  render(){
+  render() {
     return html`<p>template content</p>`;
   }
 }
@@ -38,7 +38,7 @@ Example
 
 You can use JavaScript expressions to [add properties, loops, and conditionals](expressions), [compose templates from other templates](compose), and [bind data to child elements](databinding).
 
-Many text editors can highlight HTML syntax inside JavaScript template literals. See the section on [HTML syntax highlighting](tools/develop#highlighting) in the Tools documentation.
+Many text editors can highlight HTML syntax inside JavaScript template literals. See the section on [HTML syntax highlighting](/tools/develop#highlighting) in the Tools documentation.
 
 <a id="renderroot">
 

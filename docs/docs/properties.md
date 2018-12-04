@@ -10,7 +10,7 @@ topic: properties
 
 Declare your element's properties by implementing the `properties` getter, or with TypeScript decorators.
 
-LitElement automatically observes declared properties. When a property changes, LitElement updates your element in the [element update lifecycle](../lifecycle).
+LitElement automatically observes declared properties. When a property changes, LitElement updates your element in the [element update lifecycle](/docs/lifecycle/).
 
 To declare properties in the `properties` getter:
 
@@ -206,7 +206,7 @@ The property's `type` option determines how the property will be serialized. See
 
 All declared properties have a function, `hasChanged`, which is called whenever the property is set. 
 
-`hasChanged` compares the property's old and new values, and evaluates whether or not the property has changed. If `hasChanged` returns true, LitElement starts an element update. See the [Element update lifecycle documentation](../lifecycle) for more information on how updates work.
+`hasChanged` compares the property's old and new values, and evaluates whether or not the property has changed. If `hasChanged` returns true, LitElement starts an element update. See the [Element update lifecycle documentation](/docs/lifecycle/) for more information on how updates work.
 
 By default:
 
