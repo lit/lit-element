@@ -12,7 +12,7 @@
 LitElement uses [lit-html](https://github.com/Polymer/lit-html) to render into the
 element's [Shadow DOM](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_shadow_DOM)
 and adds API to help manage element properties and attributes. LitElement reacts to changes in properties
-and renders declaratively using `lit-html`. See the [lit-html guide](https://polymer.github.io/lit-html/guide)
+and renders declaratively using `lit-html`. See the [lit-html guide](https://lit-html.polymer-project.org/guide)
 for additional information on how to create templates for lit-element.
 
   * **Setup properties:** LitElement supports observable properties that cause the element to update.
