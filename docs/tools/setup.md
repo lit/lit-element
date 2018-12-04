@@ -74,7 +74,7 @@ echo '{
 polymer serve
 ```
 
-See the docs for more information on working with [Polymer CLI](develop#cli).
+See the [Developer tools documentation](develop) for more information.
 
 <a id="build">
 
