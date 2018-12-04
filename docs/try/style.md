@@ -2,18 +2,11 @@
 layout: post
 section: try
 topic: style
-status: reviewing
 ---
 
-Style your element with CSS by including a `style` block in its template. 
+Style your element with CSS by including a `style` block in its template. These styles are encapsulated, meaning they will only apply to your component's template. 
 
-* [Starting code](#start)
-* [Editing steps](#edit)
-* [Completed code](#completed)
-
-<a name="start">
-
-### Starting code
+**Starting code**
 
 _my-element.js_
 
@@ -23,73 +16,35 @@ _my-element.js_
 
 {% include project.html folder="try/style/before" openFile="my-element.js" %}
 
-<a name="edit">
+1.  **Define your styles.**
 
-### Editing steps
+    To define your styles, add the following code to your template:
 
-Add a style block to the element template in `render`:
+    ```html
+    <style>
+      p {
+        font-family: Roboto;
+        font-size: 24px;
+        font-weight: 500;
+      }
+      .red {
+        color: red;
+      }
+      .blue {
+        color: blue;
+      }
+    </style>
+    ```
 
-_my-element.js_
+2. **Apply your styles.**
 
-```js
-render(){
-  return html`
-    <!-- Add a style block here -->
-    <p>${this.message}</p>
-    ...
-    ...
-  `;
-}
-```
+    Use `myBool` to apply the styles conditionally. Add the following paragraph to your template:
 
-_Style block_
+    ```html
+    <p class="${this.myBool?'red':'blue'}">styled paragraph</p>
+    ```
 
-```html
-<style>
-  p {
-    font-family: Roboto;
-    font-size: 24px;
-    font-weight: 500;
-  }
-  .red {
-    color: red;
-  }
-  .blue {
-    color: blue;
-  }
-</style>
-```
-
-Apply the class styles to a paragraph in the element template. Use `myBool` to apply the styles conditionally.
-
-_my-element.js_
-
-```js
-render(){
-  return html`
-    ...
-    <!-- Style this text --> 
-    <p>style me</p>
-    ...
-  `;
-}
-```
-
-_Apply the styles conditionally_
-
-```html
-<p class="${this.myBool?'red':'blue'}">style me</p>
-```
-
-<a name="completed">
-
-### Completed code
-
-_my-element.js_
-
-```js
-{% include projects/try/style/after/my-element.js %}
-```
+If you're stuck, click **Launch Code Editor** below to see the completed code at work.
 
 {% include project.html folder="try/style/after" openFile="my-element.js" %}
 
