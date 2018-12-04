@@ -6,22 +6,22 @@ toc:
     url: /try/
     toc: 
       create:
-        title: Create your first custom element
+        title: 1. Create your first custom element
         url: /try/create
       use:
-        title: Use your element in a web page
+        title: 2. Use your element in a web page
         url: /try/use
       properties:
-        title: Declare and use properties
+        title: 3. Declare and use properties
         url: /try/properties
       expressions: 
-        title: Add a loop and an “if” statement
+        title: 4. Add a loop and an 'if' statement
         url: /try/expressions
       events:
-        title: Add an event handler
+        title: 5. Add an event handler
         url: /try/events
       style: 
-        title: Style your element template
+        title: 6. Style your element template
         url: /try/style
   docs:
     title: Documentation

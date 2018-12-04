@@ -22,4 +22,4 @@ Follow the steps below to get started with LitElement:
 
 When you're ready to dive in, follow this guide to [Set up LitElement locally](/tools/setup). 
 
-{% include prevnext.html nexturl="create" nexttitle="Create your first custom element" %}
+{% include prevnext.html nexturl="/try/create" nexttitle="1. Create your first custom element" %}

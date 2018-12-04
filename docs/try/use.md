@@ -42,4 +42,4 @@ If you're stuck, click **Launch Code Editor** below to see the completed code at
 
 {% include project.html folder="try/use/after" openFile="index.html" %}
 
-{% include prevnext.html prevurl="create" prevtitle="Create an element" nexturl="properties" nexttitle="Declare properties" %}
+{% include prevnext.html prevurl="create" prevtitle="1. Create your first custom element" nexturl="properties" nexttitle="3. Declare and use properties" %}

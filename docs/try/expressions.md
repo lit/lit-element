@@ -42,4 +42,4 @@ If you're stuck, click **Launch Code Editor** below to see the completed code at
 
 {% include project.html folder="try/expressions/after" openFile="my-element.js" %}
 
-{% include prevnext.html prevurl="properties" prevtitle="Declare properties" nexturl="events" nexttitle="Add an event handler" %}
+{% include prevnext.html prevurl="properties" prevtitle="3. Declare and use properties" nexturl="events" nexttitle="5. Add an event handler" %}
