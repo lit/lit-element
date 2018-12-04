@@ -1,6 +1,6 @@
 /**
  * Try LitElement https://lit-element.polymer-project.org/try
- * Starting code for 5. Add an event handler
+ * Starting code for 5. Events
  */
 
 import { LitElement, html } from '@polymer/lit-element'; 

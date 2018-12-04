@@ -1,6 +1,6 @@
 /**
  * Try LitElement https://lit-element.polymer-project.org/try
- * Starting code for 4. Add a loop and an “if” statement
+ * Starting code for 4. Logic
  */
 
 import { LitElement, html } from '@polymer/lit-element'; 

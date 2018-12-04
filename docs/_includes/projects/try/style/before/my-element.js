@@ -1,6 +1,6 @@
 /**
  * Try LitElement https://lit-element.polymer-project.org/try
- * Starting code for 6. Style your element
+ * Starting code for 6. Style
  */
 
 import { LitElement, html } from '@polymer/lit-element'; 

@@ -1,12 +1,11 @@
 /**
  * Try LitElement https://lit-element.polymer-project.org/try
- * Starting code for 3. Declare and use properties
+ * Starting code for 3. Properties
  */
 
 import { LitElement, html } from '@polymer/lit-element'; 
 
 class MyElement extends LitElement {
-  
   /**
    * TODO: Declare a property.
    */

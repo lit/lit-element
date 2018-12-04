@@ -31,7 +31,7 @@ _my-element.js_
     To handle the `click` event, define the following method on your `MyElement` class:
 
     ```js
-    clickHandler(event){
+    clickHandler(event) {
       console.log(event.target);
       this.myBool = !this.myBool;
     }

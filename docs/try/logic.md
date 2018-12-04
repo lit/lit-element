@@ -4,7 +4,7 @@ section: try
 topic: logic
 ---
 
-Handling conditionals and loops in your LitElement templates is easy. No special annotations, just plain JavaScript expressions. 
+Handling logic (for example, loops and conditionals) in your LitElement templates is easy. No special annotations, just plain JavaScript expressions. 
 
 Modify your template to add a loop and a conditional.
 
