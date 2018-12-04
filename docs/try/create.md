@@ -2,18 +2,11 @@
 layout: post
 section: try
 topic: create
-status: reviewing
 ---
 
 In this step, you'll fill in the gaps in the starting code to create an element class with a basic HTML template.
 
-* [Starting code](#start)
-* [Editing steps](#edit)
-* [Completed code](#completed)
-
-<a name="start">
-
-### Starting code
+**Starting code**
 
 _my-element.js_
 
@@ -21,47 +14,25 @@ _my-element.js_
 {% include projects/try/create/before/my-element.js %}
 ```
 
-Click inside the following live sample to start editing. When you're ready to see your code in action, click the **Preview** button.
+Click **Launch Code Editor** to edit the starting code. When you're ready to see your code in action, click **Preview**.
 
 {% include project.html folder="try/create/before" openFile="my-element.js" %}
 
-<a name="edit">
+1.  **Import the `LitElement` base class and `html` helper function.**
 
-### Editing steps
-
-1.  Import the `LitElement` base class and `html` helper function. 
-
-    _my-element.js_
-
-    ```js
-    // Import LitElement base class and html helper function
-    import { } from ''; 
-    ```
-
-    _Import statements_
+    In my-element.js, replace the existing `import` statement with the following code:
 
     ```js
     import { LitElement, html } from '@polymer/lit-element'; 
     ```
     
-2.  Create a class for your element that extends the LitElement base class, and define an element template inside the `render` function.
+2.  **Create a class for your element that extends the LitElement base class.**
 
-    _my-element.js_
-
-    ```js
-    // Create your class here
-    class MyElement {
-      render(){
-        // Define your element template here
-      }
-    }
-    ```
-
-    _MyElement class_
+    In my-element.js, replace the existing class definition with the following code:
 
     ```js
     class MyElement extends LitElement {
-      render(){
+      render() {
         return html`
           <p>Hello world! From my-element</p>
         `;
@@ -69,32 +40,18 @@ Click inside the following live sample to start editing. When you're ready to se
     }    
     ```
 
-3.  Register the new element with the browser.
+    The `render` function defines your component's template. You must implement `render` for every LitElement component.  
 
-    _my-element.js_
+3.  **Register the new element with the browser.**
 
-    ```js
-    // Register the element with the browser
-    customElements.define();
-    ```
-
-    _Register element with the browser_
+    In my-element.js, replace the existing call to `customElements.define()` with the following code:
 
     ```js
-    // Register the element with the browser
     customElements.define('my-element', MyElement);
     ```
 
-<a name="completed">
-
-### Completed code
-
-_my-element.js_
-
-```js
-{% include projects/try/create/after/my-element.js %}
-```
+If you're stuck, click **Launch Code Editor** below to see the completed code at work.
 
 {% include project.html folder="try/create/after" openFile="my-element.js" %}
 
-{% include prevnext.html prevurl="index" prevtitle="Try LitElement" nexturl="use" nexttitle="Use your element in a web page" %}
+{% include prevnext.html prevurl="/try" prevtitle="Try LitElement" nexturl="use" nexttitle="2. Use your element in a web page" %}

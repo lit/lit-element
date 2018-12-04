@@ -2,63 +2,44 @@
 layout: post
 section: try
 topic: use
-status: reviewing
 ---
 
-You can now import your new element as a JavaScript module, and use it in markup. 
+Import your new component as a JavaScript module and use it in a web page.
 
-* [Starting code](#start)
-* [Editing steps](#edit)
-* [Completed code](#completed)
+**Starting code**
 
-<a name="start">
+_index.html_
 
-### Starting code
-
-_my-element.js_
-
-```js
+```html
 {% include projects/try/use/before/index.html %}
 ```
 
 {% include project.html folder="try/use/before" openFile="index.html" %}
 
-<a name="edit">
+1. **Import your component module.** 
 
-### Editing steps
+    LitElement components are imported as JavaScript modules. **You don't need to change anything in this step if you're following the tutorial in StackBlitz**. In StackBlitz, index.ts runs automatically.
 
-If you're working locally, here's the syntax you'll need to use:
+    _index.ts_
 
-```html
-<head>
-  <script type="module" src="./my-element.js"></script>
-</head>
-<body>
-  <my-element></my-element>
-</body>
-```
+    ```js
+    {% include projects/try/use/after/index.ts %}
+    ```
 
-**In StackBlitz, scripts are managed slightly differently.** In our live-editable code samples, a main script runs automatically and loads the module containing the custom element, so you won't need a `<script>` tag for it in `index.html`.
+    If you're working locally, see [Import a LitElement component](/docs/create/#import).
 
-Add `<my-element>` tags to _index.html_:
+2. **Add your new component to the page.** 
 
-```html
-  <body>
-    <!-- Add your element tags here -->
-    <my-element></my-element>
-  </body>
-```
+    In index.html, replace the existing `body` block with the following code:
 
-<a name="completed">
+    ```html
+      <body>
+        <my-element></my-element>
+      </body>
+    ```
 
-### Completed code
-
-_index.html_
-
-```js
-{% include projects/try/use/after/index.html %}
-```
+If you're stuck, click **Launch Code Editor** below to see the completed code at work. 
 
 {% include project.html folder="try/use/after" openFile="index.html" %}
 
-{% include prevnext.html prevurl="create" prevtitle="Create an element" nexturl="properties" nexttitle="Declare properties" %}
+{% include prevnext.html prevurl="create" prevtitle="1. Create your first custom element" nexturl="properties" nexttitle="3. Declare and use properties" %}

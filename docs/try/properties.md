@@ -2,18 +2,11 @@
 layout: post
 section: try
 topic: properties
-status: reviewing
 ---
 
-You can use your element's properties in its template. LitElement automatically updates your element when its properties change.
+Declare a property for your component, and use the value in the component's template. LitElement components update automatically when their properties change.
 
-* [Starting code](#start)
-* [Editing steps](#edit)
-* [Completed code](#completed)
-
-<a name="start">
-
-### Starting code
+**Starting code**
 
 _my-element.js_
 
@@ -23,77 +16,49 @@ _my-element.js_
 
 {% include project.html folder="try/properties/before" openFile="my-element.js" %}
 
-<a name="edit">
+1. **Declare a property.**
 
-### Editing steps
-
-To create properties and use them in an element template: 
-
-*   Declare your properties. 
-
-    _my-element.js_
-
+    In my-element.js, replace the existing `properties` getter with the following code: 
+    
     ```js
-    static get properties(){
+    static get properties() {
       return {
-        // Declare property here.
+        // Property declaration
+        message: { type: String }
       };
     }
     ```
 
-    _Declare a property_
+2. **Initialize the property.**
 
+    You should initialize property values in a component's constructor. 
+    
+    In my-element.js, replace the existing constructor with the following code:
+    
     ```js
-    message: { type: String }
-    ```
-
-*   Initialize property values in the element constructor.
-
-    _my-element.js_
-
-    ```js
-    constructor(){
+    constructor() {
+      // Always call superconstructor first
       super();
-      // Initialize property here.
+
+      // Initialize property
+      this.message='Hello world! From my-element';
     }
     ```
 
-    _Initialize the property_
+3. **Add the property to your template with a JavaScript expression.**
+
+    In my-element.js, replace the existing `render` function with the following code:
 
     ```js
-    this.message='Hello world! From my-element';
-    ```
-
-*   Add properties to your template with JavaScript expressions.
-
-    _my-element.js_
-
-    ```js
-    render(){
+    render() {
       return html`
-        <!-- Add property here. -->
-        <p></p>
+        <p>${this.message}</p>
       `;
     }
     ``` 
 
-    _Use the property_
-
-    ```js
-    <p>${this.message}</p>
-    ```
-
-<a name="completed">
-
-### Completed code
-
-_my-element.js_
-
-```js
-{% include projects/try/properties/after/my-element.js %}
-```
+If you're stuck, click **Launch Code Editor** below to see the completed code at work.
 
 {% include project.html folder="try/properties/after" openFile="my-element.js" %}
 
-
-{% include prevnext.html prevurl="use" prevtitle="Use your element in a web page" nexturl="expressions" nexttitle="Loops and conditionals" %}
+{% include prevnext.html prevurl="use" prevtitle="2. Use your element in a web page" nexturl="expressions" nexttitle="4. Add a loop and an 'if' statement" %}

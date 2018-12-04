@@ -1,23 +1,29 @@
+/**
+ * Try LitElement https://lit-element.polymer-project.org/try
+ * Completed code for 6. Style your element
+ */
+
 import { LitElement, html } from '@polymer/lit-element'; 
 
 class MyElement extends LitElement {
-  static get properties(){
+  static get properties() {
     return {
       message: { type: String },
       myArray: { type: Array },
       myBool: { type: Boolean }
     };
   }
-  constructor(){
+
+  constructor() {
     super();
     this.message='Hello world! From my-element';
     this.myArray = ['an','array','of','test','data'];
     this.myBool = true;
   }
 
-  render(){
+  render() {
     return html`
-      <!-- Add a style block here -->
+      <!-- DONE: Add a style block. -->
       <style>
         p {
           font-family: Roboto;
@@ -32,17 +38,21 @@ class MyElement extends LitElement {
         }
       </style>
 
-      <p>${this.message}</p>
-
-      <ul>${this.myArray.map(i => html`<li>${i}</li>`)}</ul>
-
-      <!-- Style this text --> 
-      <p class="${this.myBool?'red':'blue'}">style me</p>
+      <!-- DONE: Add a styled paragraph. -->
+      <p class="${this.myBool?'red':'blue'}">styled paragraph</p>
       
+      <p>${this.message}</p>
+      <ul>
+        ${this.myArray.map(i => html`<li>${i}</li>`)}
+      </ul>
+      ${this.myBool?
+        html`<p>Render some HTML if myBool is true</p>`:
+        html`<p>Render some other HTML if myBool is false</p>`}
       <button @click="${(event) => this.clickHandler(event)}">Click</button>
     `;
   }
-  clickHandler(event){
+
+  clickHandler(event) {
     console.log(event.target);
     this.myBool = !this.myBool;
   }
