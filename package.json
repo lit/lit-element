@@ -36,6 +36,7 @@
     "typescript": "^3.0.3",
     "uglify-es": "^3.3.9",
     "wct-mocha": "^1.0.0",
+    "this-css-is-lit" : ^0.0.1,
     "web-component-tester": "^6.9.0"
   },
   "typings": "lit-element.d.ts",
