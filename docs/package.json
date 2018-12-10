@@ -1,23 +1,10 @@
 {
-  "name": "lit-element-docs",
-  "version": "1.0.0",
-  "description": "lit-element documentation",
-  "main": "index.js",
+  "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "polymer build && jekyll build",
+    "serve": "dev_appserver.py _site/app.yaml",
+    "deploy": "npm run build && gcloud app deploy _site/app.yaml --project polymer-lit-element --no-promote"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/katejeffreys/lit-element-docs.git"
-  },
-  "contributors": [
-    "The Polymer Authors"
-  ],
-  "license": "BSD-3-Clause",
-  "bugs": {
-    "url": "https://github.com/katejeffreys/lit-element-docs/issues"
-  },
-  "homepage": "https://github.com/katejeffreys/lit-element-docs#readme",
   "dependencies": {
     "@polymer/lit-element": "^0.6.2",
     "@stackblitz/sdk": "^1.2.0",
