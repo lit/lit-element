@@ -1,8 +1,7 @@
 ---
 layout: post
-section: docs
-topic: templates
-subtopic: databinding
+section: templates
+topic: databinding
 ---
 
 **On this page:**

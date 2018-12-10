@@ -1,57 +1,10 @@
 ---
 layout: post
-section: docs
-topic: create
+section: components
+topic: import
 ---
 
-<a id="install">
-
-### [Install LitElement](#install)
-
-To add LitElement to your project, install the `@polymer/lit-element` package with npm:
-
-```
-npm install @polymer/lit-element --save
-```
-
-<a id="class">
-
-### [Create a new component based on LitElement](#class)
-
-To create a new class based on LitElement: 
-
-* Import the `LitElement` base class and the `html` helper function.
-* Create a new class that extends the `LitElement` base class.
-* Implement `render` to define a template for your web component.
-* Register your component's HTML tag with the browser.
-
-For example:
-
-_my-element.js_
-
-```js
-{% include projects/docs/create/my-element.js %}
-```
-
-{% include project.html folder="docs/create" openFile="my-element.js" %}
-
-<a id="typescript">
-
-### [Use TypeScript to create a component](#typescript)
-
-You can use the `@customElement` TypeScript decorator to define your class as a custom element:
-
-```ts
-{% include projects/docs/typescript/my-element.ts %}
-```
-
-{% include project.html folder="docs/typescript" openFile="my-element.ts" %}
-
-<a name="import">
-
-### [Import a LitElement component](#import)
-
-#### Import your own component
+### Import your own LitElement component
 
 In an HTML document:
 
@@ -80,7 +33,7 @@ class MyOtherElement extends LitElement{
 customElements.define('my-other-element', MyOtherElement);
 ```
 
-#### Import a third-party component
+### Import a third-party component
 
 **Refer to third-party component documentation first.** To work with any existing component made by a third party, see its documentation. This guide should work for most LitElement-based components if they are published on npm.
 

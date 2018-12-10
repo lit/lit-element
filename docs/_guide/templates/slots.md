@@ -1,8 +1,7 @@
 ---
 layout: post
-section: docs
-topic: templates
-subtopic: slots
+section: templates
+topic: slots
 ---
 
 **On this page:**

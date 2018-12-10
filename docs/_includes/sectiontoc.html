@@ -1,17 +1,10 @@
-{%- if self.url == section.url -%}
-  <p>{{self.desc}}</p>
-  <p><b>In this section:</b></p>
-  <ul class="sectiontoc">
-    {%- for item in section.toc -%}
-      <li>
-        <span>
-          <b><a href="{{site.baseurl}}{{item[1].url}}">{{item[1].title}}</a></b>
-        </span>
-        <span>
-          {{item[1].desc}}
-        </span>
-      </li>
-    {%- endfor -%}
-  </ul>
-{%- endif -%}
-<hr />
+<ul class="sectiontoc">
+  {%- for item in site.data.site.toc -%}
+  <p><div>
+    <b><a href="{{site.baseurl}}{{item[1].url}}">{{item[1].title}}</a></b>
+  </div>
+  <div>
+    {{item[1].desc}}
+  </div></p>
+  {%- endfor -%}
+</ul>

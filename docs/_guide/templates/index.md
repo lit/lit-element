@@ -1,0 +1,4 @@
+---
+layout: post
+section: templates
+---

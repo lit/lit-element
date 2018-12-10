@@ -1,7 +1,6 @@
 
-<div><a href="{{site.baseurl}}{{section.url}}">{{section.title}}</a></div>
-
-<h1><a href="{{site.baseurl}}{{topic.url}}">{{topic.title}}</a></h1>
+<h1><a href="{{site.baseurl}}{{section.url}}">{{section.title}}</a></h1>
+<h2><a href="{{site.baseurl}}{{topic.url}}">{{topic.title}}</a></h2>
 
 <div class="alert alert-info">
   <p>
@@ -9,23 +8,6 @@
   </p>
 </div>
 
-{% if page.addsectiontoc %}
-{% include sectiontoc.html %}
-{% endif %}
-
-{%- if topic.toc -%}
-<ul>
-  {%- for item in topic.toc -%}
-    {%- if item[1].url == self.url -%}
-      <li class="current"><a href="{{site.baseurl}}{{item[1].url}}">{{item[1].title}}</a></li>  
-    {%- else -%}
-      <li><a href="{{site.baseurl}}{{item[1].url}}">{{item[1].title}}</a></li>  
-    {%- endif -%}
-  {%- endfor -%}
-</ul>
-
-<h2><a href="{{site.baseurl}}{{subtopic.url}}">{{subtopic.title}}</a></h2>
-
-{%- endif -%}
-
 {{ content }}
+
+{%- if page.url== "/guide/" -%} {% include sectiontoc.html %} {%- endif -%}

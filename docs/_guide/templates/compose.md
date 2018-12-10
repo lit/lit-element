@@ -1,8 +1,7 @@
 ---
 layout: post
-section: docs
-topic: templates
-subtopic: compose
+section: templates
+topic: compose
 ---
 
 You can compose LitElement templates from other LitElement templates. In the following example, we compose a template for an element called `<my-page>` from smaller templates for the standard HTML elements `<header>`, `<article>`, and `<footer>`:

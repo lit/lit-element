@@ -13,13 +13,13 @@ Click **Preview** at any time to see your code in action.
 
 Follow the steps below to get started with LitElement:
 
-*  [1. Create a component](/try/create).
-*  [2. Import your component](/try/import).
-*  [3. Add a property to your template](/try/properties).
-*  [4. Add loops and conditionals to your template](/try/logic).
-*  [5. Add an event handler to your template](/try/events).
-*  [6. Style your template](/try/style).
+*  [1. Create a component](/guide/try/create).
+*  [2. Import your component](/guide/try/import).
+*  [3. Add a property to your template](/guide/try/properties).
+*  [4. Add loops and conditionals to your template](/guide/try/logic).
+*  [5. Add an event handler to your template](/guide/try/events).
+*  [6. Style your template](/guide/try/style).
 
 When you're ready to dive in, follow this guide to [Set up LitElement locally](/tools/setup). 
 
-{% include prevnext.html nexturl="/try/create" nexttitle="1. Create" %}
+{% include prevnext.html nexturl="/guide/try/create" nexttitle="1. Create" %}

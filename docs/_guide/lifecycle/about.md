@@ -1,8 +1,7 @@
 ---
 layout: post
-section: docs
-topic: lifecycle
-subtopic: index
+section: lifecycle
+topic: index
 ---
 
 **On this page:**

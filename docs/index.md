@@ -7,7 +7,7 @@ layout: default
 <div class="wrapper">
 <div class="hero-title">{{ site.name }}</div>
 <p class="hero-caption">{{ site.description }}</p>
-<a class="hero-link link-with-arrow" href="{{ site.baseurl }}/try">Get Started</a>
+<a class="hero-link link-with-arrow" href="{{ site.baseurl }}/guide/try">Get Started</a>
 </div>
 </header>
 
@@ -122,8 +122,8 @@ Polymer products work in all major browsers (Chrome, Firefox, IE, Edge, Safari, 
 
 ## Next steps
 
-- [Try LitElement]({{ site.baseurl }}/try) in our live tutorial. You don’t need to install anything.
-- When you’re ready to dive in, [set up LitElement locally]({{ site.baseurl }}/tools) and start building components!
+- [Try LitElement]({{ site.baseurl }}/guide/try) in our live tutorial. You don’t need to install anything.
+- When you’re ready to dive in, [set up LitElement locally]({{ site.baseurl }}/guide/tools) and start building components!
 
 </div>
 </section>

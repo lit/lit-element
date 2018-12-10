@@ -1,8 +1,7 @@
 ---
 layout: post
-section: docs
-topic: templates
-subtopic: expressions
+section: templates
+topic: expressions
 ---
 
 **On this page:**

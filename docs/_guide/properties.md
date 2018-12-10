@@ -1,7 +1,6 @@
 ---
 layout: post
-section: docs
-topic: properties
+section: properties
 ---
 
 <a id="declare">

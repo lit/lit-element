@@ -1,8 +1,7 @@
 ---
 layout: post
-section: docs
-topic: templates
-subtopic: create
+section: templates
+topic: create
 ---
 
 **On this page:**

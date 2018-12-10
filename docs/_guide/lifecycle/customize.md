@@ -1,8 +1,7 @@
 ---
 layout: post
-section: docs
-topic: lifecycle
-subtopic: customize
+section: lifecycle
+topic: customize
 ---
 
 **On this page:**

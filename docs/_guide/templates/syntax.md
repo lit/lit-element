@@ -1,8 +1,7 @@
 ---
 layout: post
-section: docs
-topic: templates
-subtopic: syntax
+section: templates
+topic: syntax
 ---
 
 **Render**

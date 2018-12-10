@@ -1,8 +1,7 @@
 ---
 layout: post
-section: docs
-topic: lifecycle
-subtopic: methods
+section: lifecycle
+topic: methods
 ---
 
 In call order, the methods in the update lifecycle are: 
