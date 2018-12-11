@@ -355,7 +355,7 @@ export abstract class UpdatingElement extends HTMLElement {
     const type = options && options.type;
     let serializer = options && options.serializer;
 
-    if (type !== undefined) {
+    if (serializer === undefined && type !== undefined) {
       serializer = getDefaultSerializer(type);
     }
 
@@ -385,7 +385,7 @@ export abstract class UpdatingElement extends HTMLElement {
     const type = options && options.type;
     let serializer = options && options.serializer;
 
-    if (type !== undefined) {
+    if (serializer === undefined && type !== undefined) {
       serializer = getDefaultSerializer(type);
     }
 
