@@ -7,7 +7,7 @@ layout: default
 <div class="wrapper">
 <div class="hero-title">{{ site.name }}</div>
 <p class="hero-caption">{{ site.description }}</p>
-<a class="hero-link link-with-arrow" href="{{ site.baseurl }}/try">Get Started</a>
+<a class="hero-link link-with-arrow" href="{{ site.baseurl }}/guide/try">Get Started</a>
 </div>
 </header>
 

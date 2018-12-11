@@ -1,23 +1,6 @@
 ---
 layout: default
 ---
-{%- assign title = "LitElement Documentation" -%}
-{%- assign sections = site.data.site.toc -%}
-{%- assign section = sections[page.section] -%}
-{%- assign topics = section.toc -%}
-{%- assign topic = topics[page.topic] -%}
-{%- assign subtopics = topic.toc -%}
-{%- assign subtopic = subtopics[page.subtopic] -%}
-
-{%- if subtopic -%}
-  {%- assign self = subtopic -%}
-{%- elsif topic -%}
-  {%- assign self = topic -%}
-{%- elsif section -%}
-  {%- assign self = section -%}
-{%- else -%}
-  {%- assign self = site.data.site -%}
-{%- endif -%}
 
 {% include topnav.html %}
 
@@ -25,24 +8,24 @@ layout: default
   <nav class="side-nav">
     <button id="toggleNavButton">Menu</button>
     <ul>
-      {%- for item in sections -%}
+      {%- for item in site.data.site.toc -%}
       <li>
         <a href="{{site.baseurl}}{{item[1].url}}">{{item[1].title}}</a>
-        {%- if page.section == item[0] -%}
-          <ul>
-            {%- for item in topics -%}
-            <li><a href="{{site.baseurl}}{{item[1].url}}">{{item[1].title}}</a></li>
-            {%-endfor-%}
-          </ul> 
-        {%- endif -%}
       </li>
       {%- endfor -%}      
     </ul>    
   </nav>
 
   <article>
-    {%- include article.html -%}
+    <h1>{{page.title}}</h1>
+    <div class="alert alert-info">
+      <p>
+        This documentation is a work in progress. It describes prerelease software, and is subject to change.
+      </p>
+    </div>
+    {{ content }}
   </article>
+  
 </main>
 
 <script>
