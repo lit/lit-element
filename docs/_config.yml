@@ -9,3 +9,5 @@ projects: includes/projects
 collections:
   includes:
     output: true
+  guide:
+    output: true

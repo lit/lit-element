@@ -1,16 +1,20 @@
 ---
 layout: post
-section: docs
-topic: properties
+title: Properties
+slug: properties
 ---
 
-<a id="declare">
+{::options toc_levels="1..3" /}
+* ToC
+{:toc}
 
-### [Declare properties](#declare)
+## Declare properties
 
 Declare your element's properties by implementing the `properties` getter, or with TypeScript decorators.
 
-LitElement automatically observes declared properties. When a property changes, LitElement updates your element in the [element update lifecycle](/docs/lifecycle/).
+LitElement automatically observes declared properties. When a property changes, LitElement updates your element in the [element update lifecycle](lifecycle).
+
+### Implement a properties getter
 
 To declare properties in the `properties` getter:
 
@@ -26,6 +30,8 @@ static get properties() {
 
 {% include project.html folder="docs/properties/declare" openFile="my-element.js" %}
 
+### Use TypeScript decorators
+
 You can also declare properties with TypeScript decorators:
 
 ```js
@@ -40,15 +46,37 @@ export class MyElement extends LitElement {
 }
 ```
 
-You can specify any of the property options in this section with TypeScript decorators, or in the `properties` getter.
+### Configure property options
+
+When you set up your properties, you can specify a property declaration for each one. Within a property declaration, you can configure options for the property.
+
+* Configure corresponding attributes and their behavior with the `type`, `attribute` and `reflect` options.
+* Specify the `hasChanged` function to control what constitutes a change for this property.
+
+Property declarations can be specified in the `properties` getter or with TypeScript decorators.
+
+```js
+/**
+ * An example property declaration
+ */
+{ 
+  // Specifies how to convert between property and attribute.
+  type: String,
+
+  // Specifies corresponding observed attribute.
+  attribute: 'my-prop', 
+
+  // Specifies whether to reflect property to attribute on changes.
+  reflect: true,
+
+  // Specifies how to evaluate whether the property has changed.
+  hasChanged(newValue, oldValue) { ... },
+}
+```
 
 {% include project.html folder="docs/properties/declaretypescript" openFile="my-element.js" %}
 
-[Back to top](properties)
-
-<a id="init">
-
-### [Initialize property values](#init)
+## Initialize property values
 
 Initialize default property values in the element constructor:
 
@@ -72,15 +100,19 @@ You can also initialize a property from an attribute in markup:
 
 Values supplied in markup will override the default values in your constructor.
 
-LitElement deserializes a property from an attribute in markup according to its type, so make sure you [configure your property type](#type) correctly.
+LitElement deserializes a property from an attribute in markup according to its type, so make sure you configure your property type correctly.
 
-[Back to top](properties)
+## Configure corresponding attributes
 
-<a id="type">
+Configure a property's corresponding attributes and attribute behavior with the `type`, `attribute` and `reflect` options.
 
-### [Configure a property type](#type)
+### Configure a property type
 
-While element properties can be of any type, attributes are always strings. A property must be serialized and deserialized to and from its corresponding [observed attribute](#attribute). 
+While element properties can be of any type, attributes are always strings. A property must be serialized and deserialized to and from its corresponding observed attribute. This is specified with the `type` option in a property declaration. For example:
+
+```js
+myProp { type: Boolean }
+```
 
 By default, LitElement uses the `String` constructor to serialize and deserialize properties and attributes. To make sure a non-string property is handled correctly, configure the property's `type` option.
 
@@ -96,12 +128,12 @@ By default, LitElement uses the `String` constructor to serialize and deserializ
 
   ```js
   propName: { type: {
-    toAttribute: someFunction,
-    fromAttribute: someFunction
+    toAttribute: serializerFunction,
+    fromAttribute: deserializerFunction
   }}
   ```
 
-By default, `type`, `fromAttribute` and `toAttribute` default to the `String` constructor. 
+By default, `type`, `fromAttribute` and `toAttribute` are the `String` constructor. 
 
 To handle deserialization of strings, numbers, and booleans, you can use the corresponding constructor:
 
@@ -115,11 +147,7 @@ return {
 
 Note that when a property of type `Boolean` is deserialized, if it is truthy, the corresponding attribute is created. If the property is falsy, the attribute is removed.
 
-[Back to top](properties)
-
-<a id="objects">
-
-#### [Serialize and deserialize object properties](#objects)
+#### Serialize and deserialize object properties
 
 **Objects (including arrays) must be handled differently.** LitElement has no default handling for converting between object properties and string attributes. If you need to serialize and deserialize complex properties, you must implement a `type` for them.
 
@@ -139,13 +167,9 @@ return {
 }
 ```
 
-[Back to top](properties)
+### Configure observed attributes
 
-<a id="attribute">
-
-### [Configure observed attributes](#attribute)
-
-Changes to observed attributes trigger [`attributeChangedCallback`](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements#Using_the_lifecycle_callbacks). When set, observed attributes also update their corresponding property. The property's `type` option determines how the attribute value (a string) is deserialized to the property. See [Configure a property type](#type) for more information.
+Changes to observed attributes trigger [`attributeChangedCallback`](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements#Using_the_lifecycle_callbacks). When set, observed attributes also update their corresponding property. The property's `type` option determines how the attribute value (a string) is deserialized to the property. 
 
 By default, all declared properties get a corresponding observed attribute. The name of the observed attribute is the property name, lowercased:
 
@@ -178,19 +202,15 @@ myProp: { attribute: false }
 {% include projects/docs/properties/attribute/my-element.js %}
 ```
 
-[Back to top](properties)
+### Configure reflection to attributes
 
-<a id="reflect">
-
-### [Configure reflection to attributes](#reflect)
-
-You can configure a property so that whenever it changes, its value is reflected to its [observed attribute](#attribute). For example:
+You can configure a property so that whenever it changes, its value is reflected to its observed attribute. For example:
 
 ```js
 myProp: { type: String, attribute: 'my-prop', reflect: true }
 ```
 
-The property's `type` option determines how the property will be serialized. See [Configuring a property type](#type) for more information.
+The property's `type` option determines how the property will be serialized.
 
 **Example: Configuring reflection to attributes**
 
@@ -198,15 +218,11 @@ The property's `type` option determines how the property will be serialized. See
 {% include projects/docs/properties/attribute/my-element.js %}
 ```
 
-[Back to top](properties)
-
-<a id="haschanged">
-
-### [Specify how to evaluate property changes](#haschanged)
+## Evaluate property changes
 
 All declared properties have a function, `hasChanged`, which is called whenever the property is set. 
 
-`hasChanged` compares the property's old and new values, and evaluates whether or not the property has changed. If `hasChanged` returns true, LitElement starts an element update. See the [Element update lifecycle documentation](/docs/lifecycle/) for more information on how updates work.
+`hasChanged` compares the property's old and new values, and evaluates whether or not the property has changed. If `hasChanged` returns true, LitElement starts an element update. See the [Element update lifecycle documentation](lifecycle) for more information on how updates work.
 
 By default:
 

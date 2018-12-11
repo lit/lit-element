@@ -1,20 +1,16 @@
 ---
 layout: post
-section: tools
-topic: setup
-pageid: setup
+title: Tools
+slug: tools
 ---
 
-**On this page:**
+{::options toc_levels="1..3" /}
+* ToC
+{:toc}
 
-* [Install pre-requisites](#install)
-* [Create a new LitElement project](#new)
-* [Serve your project locally](#serve)
-* [Build your project for production](#build)
+## Set up LitElement locally
 
-<a id="install">
-
-### [Install pre-requisites](#install)
+### Install pre-requisites
 
 To work locally with lit-element, you'll first need to install Git, npm and Node.js, and the Polymer CLI. 
 
@@ -34,9 +30,9 @@ To work locally with lit-element, you'll first need to install Git, npm and Node
     npm install -g polymer-cli@latest
     ```
 
-<a id="new">
+Read on to create a new LitElement project from scratch, or if you prefer, you can [download a sample LitElement project](https://github.com/PolymerLabs/start-lit-element).
 
-### [Create a new LitElement project](#new)
+### Create a new LitElement project
 
 ```bash 
 mkdir myproject
@@ -46,9 +42,7 @@ npm install --save @polymer/lit-element
 npm install --save @webcomponents/webcomponentsjs
 ```
 
-<a id="serve">
-
-### [Serve](#serve)
+### Serve your project locally
 
 Create a polymer.json config file, and serve your project:
 
@@ -74,11 +68,7 @@ echo '{
 polymer serve
 ```
 
-See the [Developer tools documentation](develop) for more information.
-
-<a id="build">
-
-## [Build](#build)
+### Build your project for production
 
 Build your project, and serve the build locally:
 
@@ -87,5 +77,3 @@ cd myproject
 polymer build
 polymer serve build/mybuild
 ```
-
-For more information on building LitElement projects see [Build for production](build).

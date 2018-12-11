@@ -1,5 +1,5 @@
 /**
- * Try LitElement https://lit-element.polymer-project.org/try
+ * Try LitElement https://lit-element.polymer-project.org/guide/try
  * Completed code for 3. Properties
  */
 

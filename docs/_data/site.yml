@@ -2,153 +2,24 @@ title: LitElement Documentation
 toc:
   try: 
     title: Try LitElement
-    desc: A quick tutorial with interactive code samples.
-    url: /try/
-    toc: 
-      create:
-        title: 1. Create
-        url: /try/create
-      import:
-        title: 2. Import
-        url: /try/import
-      properties:
-        title: 3. Properties
-        url: /try/properties
-      logic: 
-        title: 4. Logic
-        url: /try/logic
-      events:
-        title: 5. Events
-        url: /try/events
-      style: 
-        title: 6. Style
-        url: /try/style
-  docs:
-    title: Documentation
-    desc: LitElement is a simple base class for creating fast, lightweight web components that work in any web page with any framework.
-    url: /docs/
-    toc: 
-      create:
-        title: Create a component
-        desc: Create a new web component with LitElement. Import and use LitElement components in HTML and JavaScript.
-        url: /docs/create
-        toc:
-          install: 
-            title: Install LitElement
-            url: /docs/create#install
-          class:
-            title: Create a new component
-            desc: Create a new class for your web component by extending the LitElement base class.
-            url: /docs/create#class
-          typescript:
-            title: Use TypeScript to create a component
-            desc: Use LitElement TypeScript decorators to create a new class for a LitElement-based component.
-            url: /docs/create#typescript
-          import: 
-            title: Import an element
-            desc: Import your own or third-party LitElement components in HTML or JavaScript.
-            url: /docs/create#import
-      templates: 
-        title: Templates
-        desc: Create and render LitElement templates. Use JavaScript expressions to add properties and logic.      
-        url: /docs/templates/
-        toc: 
-          create: 
-            title: Create a template
-            desc: Define a template and specify where it should render.
-            type: task
-            url: /docs/templates/create
-          expressions:
-            title: Use properties and logic
-            desc: Use JavaScript expressions to add properties, loops, and conditionals to your templates.
-            type: task
-            url: /docs/templates/expressions
-          databinding:
-            title: Bind data to a child element 
-            desc: Bind to the text content, properties, attributes, and event handlers of a child element.
-            type: task
-            url: /docs/templates/databinding
-          compose:
-            title: Compose and nest templates 
-            desc: Compose LitElement templates from other templates. 
-            type: task
-            url: /docs/templates/compose
-          slots:
-            title: Render light DOM children
-            desc: Use slots to include light DOM children in shadow DOM templates.
-            type: task
-            url: /docs/templates/slots
-          design:
-            title: Template design concepts
-            desc: Concepts for designing templates that render and update efficiently.
-            type: concept
-            url: /docs/templates/design
-          syntax:
-            title: Template syntax
-            desc: A quick reference to LitElement template syntax.
-            type: reference
-            url: /docs/templates/syntax
-      properties: 
-        title: Properties and attributes
-        desc: Declare and configure a component's properties and attributes.
-        url: /docs/properties
-        toc:
-          declare: 
-            title: Declare properties
-            url: /docs/properties#declare
-          init: 
-            title: Initialize property values
-            url: /docs/properties#init
-          type:
-            title: Configure a property type
-            url: /docs/properties#type
-          attribute:
-            title: Configure observed attributes
-            url: /docs/properties#attribute
-          reflect:
-            title: Configure reflection to attributes
-            url: /docs/properties#reflect
-          haschanged:
-            title: Evaluate property changes
-            url: /docs/properties#haschanged
-      lifecycle: 
-        title: Element update lifecycle
-        desc: Specify when an element should update. Respond to updates, or wait for an update to complete.
-        url: /docs/lifecycle/
-        toc:
-          about:
-            title: About the element update lifecycle
-            desc: Concepts for working with LitElement's asynchronous update lifecycle.
-            type: concept
-            url: /docs/lifecycle/about
-          customize:
-            title: Customize lifecycle behavior
-            desc: Customize how and when an element should update, and perform additional tasks during any stage of the update lifecycle.
-            type: task
-            url: /docs/lifecycle/customize
-          methods:
-            title: Methods and Promises reference
-            desc: A reference to the methods and Promises in the LitElement update lifecycle.
-            type: reference
-            url: /docs/lifecycle/methods
+    desc: Try LitElement with interactive code samples.
+    url: /guide/try
+  introduction: 
+    title: Introduction
+    url: /guide
+  templates: 
+    title: Templates
+    desc: Create and render LitElement templates. Use JavaScript expressions to add properties and logic.      
+    url: /guide/templates
+  properties: 
+    title: Properties
+    desc: Declare and configure a component's properties and attributes.
+    url: /guide/properties
+  lifecycle: 
+    title: Lifecycle
+    desc: Specify when an element should update. Respond to updates, or wait for an update to complete.
+    url: /guide/lifecycle
   tools:
     title: Tools
     desc: Tools for developing and deploying LitElement projects.
-    url: /tools/
-    toc: 
-      setup:
-        title: Set up LitElement locally
-        desc: Set up LitElement for the first time.
-        url: /tools/setup
-      develop:
-        title: Developer tools
-        desc: Tools for developing and working locally with LitElement projects.
-        url: /tools/develop
-      build: 
-        title: Build for production
-        desc: Get your project ready for deployment to the web.
-        url: /tools/build
-      sample: 
-        title: Sample project
-        desc: Clone, serve, and build a sample LitElement project.
-        url: /tools/sample
+    url: /guide/tools
