@@ -4,7 +4,10 @@ class TSElement extends LitElement {
 
   @property() message = 'Hi';
 
-  @property({attribute : 'more-info', type: (value: string) => `[${value}]`})
+  @property({
+    attribute : 'more-info',
+    serializer: (value: string) => `[${value}]`
+  })
   extra = '';
 
   render() {

@@ -161,12 +161,12 @@ suite('LitElement', () => {
           atTr : {attribute : true},
           customAttr : {attribute : 'custom', reflect : true},
           hasChanged : {hasChanged},
-          fromAttribute : {type : fromAttribute},
-          toAttribute : {reflect : true, type : {toAttribute}},
+          fromAttribute : {serializer : fromAttribute},
+          toAttribute : {reflect : true, serializer : {toAttribute}},
           all : {
             attribute : 'all-attr',
             hasChanged,
-            type : {fromAttribute, toAttribute},
+            serializer : {fromAttribute, toAttribute},
             reflect : true
           },
         };
@@ -258,12 +258,12 @@ suite('LitElement', () => {
       @property({attribute : 'custom', reflect: true})
       customAttr = 'customAttr';
       @property({hasChanged}) hasChanged = 10;
-      @property({type : fromAttribute}) fromAttribute = 1;
-      @property({reflect : true, type: {toAttribute}}) toAttribute = 1;
+      @property({serializer : fromAttribute}) fromAttribute = 1;
+      @property({reflect : true, serializer: {toAttribute}}) toAttribute = 1;
       @property({
         attribute : 'all-attr',
         hasChanged,
-        type: {fromAttribute, toAttribute},
+        serializer: {fromAttribute, toAttribute},
         reflect: true
       })
       all = 10;
@@ -342,12 +342,12 @@ suite('LitElement', () => {
     class E extends LitElement {
 
       @property({hasChanged}) hasChanged = 10;
-      @property({type : fromAttribute}) fromAttribute = 1;
-      @property({reflect : true, type: {toAttribute}}) toAttribute = 1;
+      @property({serializer : fromAttribute}) fromAttribute = 1;
+      @property({reflect : true, serializer: {toAttribute}}) toAttribute = 1;
       @property({
         attribute : 'all-attr',
         hasChanged,
-        type: {fromAttribute, toAttribute},
+        serializer: {fromAttribute, toAttribute},
         reflect: true
       })
       all = 10;
@@ -450,12 +450,12 @@ suite('LitElement', () => {
           noAttr : {attribute : false},
           atTr : {attribute : true},
           customAttr : {attribute : 'custom', reflect : true},
-          fromAttribute : {type : fromAttribute},
+          fromAttribute : {serializer : fromAttribute},
           toAttribute :
-              {reflect : true, type : {toAttribute : toAttributeOnly}},
+              {reflect : true, serializer : {toAttribute : toAttributeOnly}},
           all : {
             attribute : 'all-attr',
-            type : {fromAttribute, toAttribute},
+            serializer : {fromAttribute, toAttribute},
             reflect : true
           },
         };
@@ -540,7 +540,7 @@ suite('LitElement', () => {
             [zug] : {
               attribute : 'zug',
               reflect : true,
-              type : (value: string) => Number(value) + 100
+              serializer : (value: string) => Number(value) + 100
             }
           };
         }
@@ -618,12 +618,12 @@ suite('LitElement', () => {
     class G extends F {
       static get properties(): PropertyDeclarations {
         return {
-          fromAttribute : {type : fromAttribute},
-          toAttribute : {reflect : true, type : {toAttribute}},
+          fromAttribute : {serializer : fromAttribute},
+          toAttribute : {reflect : true, serializer : {toAttribute}},
           all : {
             attribute : 'all-attr',
             hasChanged,
-            type : {fromAttribute, toAttribute},
+            serializer : {fromAttribute, toAttribute},
             reflect : true
           },
         };
@@ -746,7 +746,7 @@ suite('LitElement', () => {
         return {
           foo : {
             reflect : true,
-            type : {toAttribute : (value: any) => `${value}${suffix}`}
+            serializer : {toAttribute : (value: any) => `${value}${suffix}`}
           }
         };
       }
@@ -763,6 +763,63 @@ suite('LitElement', () => {
     el.foo = 5;
     await el.updateComplete;
     assert.equal(el.getAttribute('foo'), `5${suffix}`);
+  });
+
+  test('Attributes serialize correctly with primitive types', async () => {
+    class E extends LitElement {
+      static get properties() {
+        return {
+          numberProp: { type: Number, reflect: true },
+          stringProp: { type: String, reflect: true },
+          boolProp: { type: Boolean, reflect: true },
+          objectProp: { type: Object, reflect: true },
+          arrayProp: { type: Array, reflect: true }
+        };
+      }
+
+      numberProp = 5;
+      stringProp = 'foo';
+      boolProp = true;
+      objectProp: unknown = { a: 1, b: 9 };
+      arrayProp: unknown[] = [3, 5, 9];
+
+      render() { return html``; }
+    }
+
+    customElements.define(generateElementName(), E);
+
+    const el = new E();
+    container.appendChild(el);
+
+    await el.updateComplete;
+
+    assert.equal(el.getAttribute('numberprop'), '5');
+    assert.equal(el.getAttribute('stringprop'), 'foo');
+    assert.isTrue(el.hasAttribute('boolprop'));
+    assert.equal(el.getAttribute('objectprop'), '{"a":1,"b":9}');
+    assert.equal(el.getAttribute('arrayprop'), '[3,5,9]');
+
+    el.setAttribute('numberprop', '6');
+    el.setAttribute('stringprop', 'bar');
+    el.removeAttribute('boolprop');
+    el.setAttribute('objectprop', '{"z":13}');
+    el.setAttribute('arrayprop', '[true, false]');
+
+    await el.updateComplete;
+
+    assert.equal(el.numberProp, 6);
+    assert.equal(el.stringProp, 'bar');
+    assert.equal(el.boolProp, false);
+    assert.deepEqual(el.objectProp, { z: 13 });
+    assert.deepEqual(el.arrayProp, [true, false]);
+
+    el.setAttribute('objectprop', 'invalid json');
+    el.setAttribute('arrayprop', 'invalid json');
+
+    await el.updateComplete;
+
+    assert.equal(el.objectProp, 'invalid json');
+    assert.equal(el.arrayProp, null);
   });
 
   test('Attributes reflect with type: Boolean', async () => {
@@ -919,7 +976,7 @@ suite('LitElement', () => {
                bar : {
                  attribute : 'attr-bar',
                  reflect : true,
-                 type : {fromAttribute, toAttribute},
+                 serializer : {fromAttribute, toAttribute},
                  hasChanged
                }
              };

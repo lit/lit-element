@@ -11,6 +11,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 -->
 
 <!-- ## Unreleased -->
+* Introduced primitive serialization support (Object, String, Boolean, Number
+and Array) as the `type` option when configuring a property, while
+allowing custom serializers through use of the `serializer` option
 
 <!-- ### Changed -->
 <!-- ### Added -->

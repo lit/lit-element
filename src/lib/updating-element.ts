@@ -15,7 +15,7 @@
 /**
  * Converts property values to and from attribute values.
  */
-export interface AttributeSerializer<T = any> {
+export interface ComplexAttributeSerializer<T = any> {
 
   /**
    * Deserializing function called to convert an attribute value to a property
@@ -30,7 +30,15 @@ export interface AttributeSerializer<T = any> {
   toAttribute?(value: T): string|null;
 }
 
-type AttributeType<T = any> = AttributeSerializer<T>|((value: string) => T);
+type AttributeSerializer<T = any> =
+  ComplexAttributeSerializer<T>|((value: string) => T);
+
+type AttributeType =
+  typeof Boolean |
+  typeof String |
+  typeof Number |
+  typeof Object |
+  typeof Array;
 
 /**
  * Defines options for a property accessor.
@@ -56,7 +64,17 @@ export interface PropertyDeclaration<T = any> {
    * `reflect` is set to `true`, the property value is set directly to the
    * attribute.
    */
-  type?: AttributeType<T>;
+  serializer?: AttributeSerializer<T>;
+
+  /**
+   * Indicates which primitive type this property is of, such that
+   * the serialization and deserialization between attributes and
+   * properties is handled appropriately.
+   *
+   * This can be one of the basic primitives: Number, Array, Object,
+   * String and Boolean.
+   */
+  type?: AttributeType;
 
   /**
    * Indicates if the property should reflect to an attribute.
@@ -90,9 +108,78 @@ type AttributeMap = Map<string, PropertyKey>;
 
 export type PropertyValues = Map<PropertyKey, unknown>;
 
-// serializer/deserializers for boolean attribute
-const fromBooleanAttribute = (value: string) => value !== null;
-const toBooleanAttribute = (value: string) => value ? '' : null;
+// Default set of type serializers
+const defaultBooleanSerializer: AttributeSerializer<boolean> = {
+  toAttribute(val) {
+    return val ? '' : null;
+  },
+  fromAttribute(val) {
+    return val !== null;
+  }
+};
+const defaultStringSerializer: AttributeSerializer<string> = {
+  toAttribute(val) {
+    return val != null ? val.toString() : '';
+  },
+  fromAttribute(val) {
+    return val;
+  }
+};
+const defaultNumberSerializer: AttributeSerializer<number> = Number;
+const defaultObjectSerializer: AttributeSerializer = {
+  fromAttribute(val) {
+    try {
+      return JSON.parse(val);
+    } catch (err) {
+      return val;
+    }
+  },
+  toAttribute(val) {
+    try {
+      return JSON.stringify(val);
+    } catch (err) {
+      return '';
+    }
+  }
+};
+const defaultArraySerializer: AttributeSerializer<unknown[]> = {
+  fromAttribute(val) {
+    try {
+      return JSON.parse(val);
+    } catch (err) {
+      return null;
+    }
+  },
+  toAttribute(val) {
+    try {
+      return JSON.stringify(val);
+    } catch (err) {
+      return '';
+    }
+  }
+};
+
+/**
+ * Helper function which returns the default serializer for a given
+ * primitive type, if any is available.
+ */
+const getDefaultSerializer =
+  (type: AttributeType): AttributeSerializer|undefined => {
+    switch (type) {
+      case Boolean:
+        return defaultBooleanSerializer;
+      case String:
+        return defaultStringSerializer;
+      case Object:
+        return defaultObjectSerializer;
+      case Number:
+        return defaultNumberSerializer;
+      case Array:
+        return defaultArraySerializer;
+    }
+
+    return undefined;
+  };
 
 export interface HasChanged {
   (value: unknown, old: unknown): boolean;
@@ -266,14 +353,19 @@ export abstract class UpdatingElement extends HTMLElement {
   private static _propertyValueFromAttribute(value: string,
                                              options?: PropertyDeclaration) {
     const type = options && options.type;
-    if (type === undefined) {
+    let serializer = options && options.serializer;
+
+    if (type !== undefined) {
+      serializer = getDefaultSerializer(type);
+    }
+
+    if (serializer === undefined) {
       return value;
     }
-    // Note: special case `Boolean` so users can use it as a `type`.
+
     const fromAttribute =
-        type === Boolean
-            ? fromBooleanAttribute
-            : (typeof type === 'function' ? type : type.fromAttribute);
+      (typeof serializer === 'function' ?
+        serializer : serializer.fromAttribute);
     return fromAttribute ? fromAttribute(value) : value;
   }
 
@@ -289,13 +381,20 @@ export abstract class UpdatingElement extends HTMLElement {
     if (options === undefined || options.reflect === undefined) {
       return;
     }
-    // Note: special case `Boolean` so users can use it as a `type`.
+
+    const type = options && options.type;
+    let serializer = options && options.serializer;
+
+    if (type !== undefined) {
+      serializer = getDefaultSerializer(type);
+    }
+
     const toAttribute =
-        options.type === Boolean
-            ? toBooleanAttribute
-            : (options.type &&
-                   (options.type as AttributeSerializer).toAttribute ||
-               String);
+      (serializer === undefined ||
+        (typeof serializer === 'function') ||
+        serializer.toAttribute === undefined) ?
+          String : serializer.toAttribute;
+
     return toAttribute(value);
   }
 
