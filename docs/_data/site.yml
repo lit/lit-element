@@ -11,6 +11,10 @@ toc:
     title: Templates
     desc: Create and render LitElement templates. Use JavaScript expressions to add properties and logic.      
     url: /guide/templates
+  styles:
+    title: CSS Styles
+    desc: Style your elements with CSS.
+    url: /guide/styles
   properties: 
     title: Properties
     desc: Declare and configure a component's properties and attributes.
