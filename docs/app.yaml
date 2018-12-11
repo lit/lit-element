@@ -11,6 +11,9 @@ libraries:
 default_expiration: "1m"
 
 handlers:
+- url: /api
+  static_dir: api
+  secure: always
 - url: /build
   static_dir: build
   secure: always
