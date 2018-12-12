@@ -11,36 +11,46 @@ layout: default
 </div>
 </header>
 
-<section class="grey-bg">
+<section>
 <div class="wrapper">
-<div class="responsive-row center">
-<div style="max-width: 600px">
+<h1 class="title">
+Fast and lightweight web components
+</h1>
 
-## Fast, lightweight web components
+<h3 style="flex: 1; margin-bottom: 12px; max-width: 560px;">
+LitElement is a simple base class for creating fast and lightweight web components that work in any web page with any framework.
+</h3>
+<h3 style="flex: 1; margin-bottom: 12px; max-width: 560px;">
+For rendering, LitElement uses [lit-html](https://lit-html.polymer-project.org/) – a fast HTML templating library. To build an app out of LitElement components, check out [PWA Starter Kit](https://pwa-starter-kit.polymer-project.org/).
+</h3>
 
-LitElement is a simple base class for creating fast, lightweight web components that work in any web page with any framework.
-
-For rendering, LitElement uses [lit-html](https://lit-html.polymer-project.org/)–a fast HTML templating library. To build an app out of LitElement components, check out [PWA Starter Kit](https://pwa-starter-kit.polymer-project.org/).
-
-</div>
-</div>
 </div>
 </section>
 
 <section>
 <div class="wrapper">
 
-Define a component in JavaScript:
+<h1 class="title">
+Get started
+</h1>
 
-_custom-greeting.js_
+<h2>
+Define a component in JavaScript:
+</h2>
+
+<h3 style="margin: 12px 0 0 0;">
+custom-greeting.js
+</h3>
 
 ```js
 {% include projects/index/custom-greeting.js %}
 ```
 
-Include the component in your web page:
+<h2 style="margin-top: 40px;">Include the component in your web page:</h2>
 
-_index.html_
+<h3 style="margin: 12px 0 0 0;">
+index.html
+</h3>
 
 ```html
 <custom-greeting></custom-greeting>
@@ -51,22 +61,22 @@ _index.html_
 </div>
 </section>
 
-<section class="grey-bg">
+<section>
 <div class="wrapper">
 
-## Why use LitElement?
+<h1 class="title">Why use LitElement?</h1>
 
 <div class="responsive-row">
 <div style="flex: 1">
 
-### Made to share
+<h2 class="caption">Made to share</h2>
 
-Web components built with LitElement are made to share with the world and with others across your organization, no matter what libraries or frameworks they use. 
+Web components built with LitElement are made to share with the world and with others across your organization, no matter what libraries or frameworks they use.
 
 </div>
 <div style="flex: 1">
 
-### Interoperable
+<h2 class="caption">Interoperable</h2>
 
 LitElement follows the [web components standards](https://developer.mozilla.org/en-US/docs/Web/Web_Components), so your components will work with any framework.
 
@@ -75,7 +85,7 @@ LitElement uses custom elements for easy inclusion in web pages, and shadow DOM 
 </div>
 <div style="flex: 1">
 
-### Fast and light
+<h2 class="caption">Fast and light</h2>
 
 Whether your end users are in emerging markets or Silicon Valley, they’ll appreciate that LitElement is extremely fast.
 
@@ -88,42 +98,36 @@ LitElement uses [lit-html](https://github.com/Polymer/lit-html) to define and re
 
 <section>
 <div class="wrapper">
-<div class="responsive-row center">
-<div style="max-width: 600px">
-
-LitElement is brought to you by developers on the Google Chrome team with the input of web developers at organizations big and small around the world. 
-
-</div>
-</div>
+<h1 class="title">Who are we?</h1>
+<h2 style="max-width: 600px;">
+LitElement is brought to you by developers on the Google Chrome team with the input of web developers at organizations big and small around the world.
+</h2>
 </div>
 </section>
 
 <section>
-<div class="wrapper" style="text-align: center">
+<div class="wrapper">
 
-## Browser Compatibility
-
-Polymer products work in all major browsers (Chrome, Firefox, IE, Edge, Safari, and Opera).
-
-<div>
-<img width="70" height="70" src="/images/browsers/chrome_128x128.png" alt="chrome logo">
-<img width="70" height="70" src="/images/browsers/firefox_128x128.png" alt="firefox logo">
-<img width="70" height="70" src="/images/browsers/internet-explorer_128x128.png" alt="internet explorer logo">
-<img width="70" height="70" src="/images/browsers/edge_128x128.png" alt="edge logo">
-<img width="70" height="70" src="/images/browsers/safari_128x128.png" alt="safari logo">
-<img width="70" height="70" src="/images/browsers/opera_128x128.png" alt="opera logo">
+<h1 class="title">Browser Compatibility</h1>
+<h2 class="description">PWA Starter Kit works in all major browsers (Chrome, Firefox, IE, Edge, Safari, and Opera). </h2>
+<div id="browser-thumbnails" style="margin-bottom: 60px;">
+<img width="56" width="56" src="{{ site.baseurl }}/images/browsers/chrome_128x128.png" alt="chrome logo">
+<img width="56" width="56" src="{{ site.baseurl }}/images/browsers/firefox_128x128.png" alt="firefox logo">
+<img width="56" width="56" src="{{ site.baseurl }}/images/browsers/internet-explorer_128x128.png" alt="internet explorer logo">
+<img width="56" width="56" src="{{ site.baseurl }}/images/browsers/edge_128x128.png" alt="edge logo">
+<img width="56" width="56" src="{{ site.baseurl }}/images/browsers/safari_128x128.png" alt="safari logo">
+<img width="56" width="56" src="{{ site.baseurl }}/images/browsers/opera_128x128.png" alt="opera logo">
 </div>
 
 </div>
 </section>
 
-<section class="grey-bg">
+<section style="margin-bottom: 60px;">
 <div class="wrapper">
+<h1 class="title">Next Steps</h1>
 
-## Next steps
-
-- [Try LitElement]({{ site.baseurl }}/try) in our live tutorial. You don’t need to install anything.
-- When you’re ready to dive in, [set up LitElement locally]({{ site.baseurl }}/tools) and start building components!
+<h3 style="margin-bottom: 0px;">Step 1: [Try LitElement]({{ site.baseurl }}/try) in our live tutorial. You don’t need to install anything.</h3>
+<h3 style="margin-top: 4px;">Step 2: When you’re ready to dive in, [set up LitElement locally]({{ site.baseurl }}/tools) and start building components!</h3>
 
 </div>
 </section>
