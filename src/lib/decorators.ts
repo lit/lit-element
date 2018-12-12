@@ -26,7 +26,7 @@ export type Constructor<T> = {
  *
  * @param tagName the name of the custom element to define
  *
- * In TypeScript, the `tagName` passed to `customElement` must be a key of the
+ * In TypeScript, the `tagName` passed to `customElement` should be a key of the
  * `HTMLElementTagNameMap` interface. To add your element to the interface,
  * declare the interface in this module:
  *
@@ -40,7 +40,7 @@ export type Constructor<T> = {
  *     }
  *
  */
-export const customElement = (tagName: keyof HTMLElementTagNameMap) =>
+export const customElement = (tagName: string) =>
     (clazz: Constructor<HTMLElement>) => {
       window.customElements.define(tagName, clazz);
       // Cast as any because TS doesn't recognize the return type as being a
@@ -56,7 +56,7 @@ export const customElement = (tagName: keyof HTMLElementTagNameMap) =>
  * supplied to configure property features.
  */
 export const property = (options?: PropertyDeclaration) => (proto: Object,
-                                                            name: string) => {
+                                                            name: PropertyKey) => {
   (proto.constructor as typeof UpdatingElement).createProperty(name, options);
 };
 
