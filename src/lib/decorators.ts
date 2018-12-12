@@ -55,8 +55,8 @@ export const customElement = (tagName: string) =>
  * corresponding attribute value. A `PropertyDeclaration` may optionally be
  * supplied to configure property features.
  */
-export const property = (options?: PropertyDeclaration) => (proto: Object,
-                                                            name: PropertyKey) => {
+export const property = (options?: PropertyDeclaration) => (
+    proto: Object, name: PropertyKey) => {
   (proto.constructor as typeof UpdatingElement).createProperty(name, options);
 };
 
@@ -91,7 +91,8 @@ function _query<T>(queryFn: (target: NodeSelector, selector: string) => T) {
 }
 
 // TODO(sorvell): augment TypeScript's EventListenerOptions which does
-// not include these options despite https://github.com/Microsoft/TypeScript/issues/9548
+// not include these options despite
+// https://github.com/Microsoft/TypeScript/issues/9548
 declare global {
   interface EventListenerOptions {
     passive?: boolean;
