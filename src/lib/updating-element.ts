@@ -475,8 +475,10 @@ export abstract class UpdatingElement extends HTMLElement {
   requestUpdate(name?: PropertyKey, oldValue?: any) {
     if (name !== undefined) {
       const ctor = this.constructor as typeof UpdatingElement;
-      const options = ctor._classProperties.get(name) || defaultPropertyDeclaration;
-      if (!ctor._valueHasChanged(this[name as keyof this], oldValue, options.hasChanged)) {
+      const options =
+          ctor._classProperties.get(name) || defaultPropertyDeclaration;
+      if (!ctor._valueHasChanged(this[name as keyof this], oldValue,
+                                 options.hasChanged)) {
         return this.updateComplete;
       }
       // track old value when changing.

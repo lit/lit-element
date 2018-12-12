@@ -13,6 +13,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## Unreleased
 * Types for the `property` and `customElement` decorators updated ([#288](https://github.com/Polymer/lit-element/issues/288) and [#291](https://github.com/Polymer/lit-element/issues/291)).
 
+### Fixed
+* User defined accessors are no longer re-written when a property is declared on a subclass ([#286](https://github.com/Polymer/lit-element/issues/286))
+
 <!-- ### Changed -->
 <!-- ### Added -->
 <!-- ### Removed -->
