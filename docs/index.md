@@ -14,16 +14,39 @@ layout: default
 <section>
 <div class="wrapper">
 <h1 class="title">
-Fast and lightweight web components
+About
 </h1>
 
-<h3 style="flex: 1; margin-bottom: 12px; max-width: 560px;">
-LitElement is a simple base class for creating fast and lightweight web components that work in any web page with any framework.
-</h3>
-<h3 style="flex: 1; margin-bottom: 12px; max-width: 560px;">
-For rendering, LitElement uses [lit-html](https://lit-html.polymer-project.org/) – a fast HTML templating library. To build an app out of LitElement components, check out [PWA Starter Kit](https://pwa-starter-kit.polymer-project.org/).
-</h3>
+<div class="responsive-row">
 
+<div style="flex:1;">
+<h2>
+Fast, lightweight web components
+</h2>
+<p>
+LitElement is a simple base class for creating fast and lightweight web components that work in any web page with any framework.
+</p>
+</div>
+
+<div style="flex:1;">
+<h2>
+Using lit-html
+</h2>
+<p>
+For rendering, LitElement uses [lit-html](https://lit-html.polymer-project.org/) – a fast HTML templating library. To build an app out of LitElement components, check out [PWA Starter Kit](https://pwa-starter-kit.polymer-project.org/).
+</p>
+</div>
+
+<div style="flex:1;">
+<h2>
+Who are we?
+</h2>
+<p>
+LitElement is brought to you by developers on the Google Chrome team with the input of web developers at organizations big and small around the world.
+</p>
+</div>
+
+</div>
 </div>
 </section>
 
@@ -96,21 +119,13 @@ LitElement uses [lit-html](https://github.com/Polymer/lit-html) to define and re
 </div>
 </section>
 
-<section>
-<div class="wrapper">
-<h1 class="title">Who are we?</h1>
-<h2 style="max-width: 600px;">
-LitElement is brought to you by developers on the Google Chrome team with the input of web developers at organizations big and small around the world.
-</h2>
-</div>
-</section>
 
 <section>
 <div class="wrapper">
 
 <h1 class="title">Browser Compatibility</h1>
 <h2 class="description">PWA Starter Kit works in all major browsers (Chrome, Firefox, IE, Edge, Safari, and Opera). </h2>
-<div id="browser-thumbnails" style="margin-bottom: 60px;">
+<div id="browser-thumbnails" style="margin-bottom: 20px;">
 <img width="56" width="56" src="{{ site.baseurl }}/images/browsers/chrome_128x128.png" alt="chrome logo">
 <img width="56" width="56" src="{{ site.baseurl }}/images/browsers/firefox_128x128.png" alt="firefox logo">
 <img width="56" width="56" src="{{ site.baseurl }}/images/browsers/internet-explorer_128x128.png" alt="internet explorer logo">
@@ -126,8 +141,21 @@ LitElement is brought to you by developers on the Google Chrome team with the in
 <div class="wrapper">
 <h1 class="title">Next Steps</h1>
 
-<h3 style="margin-bottom: 0px;">Step 1: [Try LitElement]({{ site.baseurl }}/try) in our live tutorial. You don’t need to install anything.</h3>
-<h3 style="margin-top: 4px;">Step 2: When you’re ready to dive in, [set up LitElement locally]({{ site.baseurl }}/tools) and start building components!</h3>
+<div class="responsive-row">
 
+<div style="flex:1">
+<h2 class="caption">One.</h2>
+<p>[Try LitElement]({{ site.baseurl }}/try) in our live tutorial. You don’t need to install anything.</p>
+</div>
+
+<div style="flex:1">
+<h2 class="caption">Two.</h2>
+<p>When you’re ready to dive in, [set up LitElement locally]({{ site.baseurl }}/tools) and start building components!</p>
+</div>
+
+<div style="flex:1">
+</div>
+
+</div>
 </div>
 </section>
