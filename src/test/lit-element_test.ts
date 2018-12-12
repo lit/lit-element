@@ -969,6 +969,70 @@ suite('LitElement', () => {
          assert.equal(el.getAttribute('attr-bar'), `3`);
        });
 
+  test('User defined accessor not overwritten by subclass, but subclass property options respected', async () => {
+    class E extends LitElement {
+      __foo?: number;
+
+      static get properties(): PropertyDeclarations { return {bar: {hasChanged: () => false}, foo : {}}; }
+
+      get foo() { return this.__foo; }
+
+      set foo(value) {
+        const old = this.foo;
+        this.__foo = Number(value);
+        this.requestUpdate('foo', old);
+      }
+
+      render() {
+        return html``;
+      }
+    }
+    class F extends E {
+      __bar?: string;
+
+      static get properties(): PropertyDeclarations { return {bar: {}, foo: {reflect: true}}; }
+
+      get bar() { return this.__bar; }
+
+      set bar(value) {
+        const old = this.foo;
+        this.__bar = value;
+        this.requestUpdate('bar', old);
+      }
+
+    }
+
+    let changed = 0;
+
+    const hasChanged = () => {
+      changed++;
+      return true;
+    };
+
+    class G extends F {
+
+      static get properties(): PropertyDeclarations { return {bar: {hasChanged, reflect: true}, foo: {hasChanged}}; }
+
+    }
+
+
+    customElements.define(generateElementName(), G);
+    const el = new G();
+    container.appendChild(el);
+    el.foo = 20;
+    await el.updateComplete;
+    assert.equal(changed, 1);
+    assert.equal(el.foo, 20);
+    assert.equal(el.__foo, 20);
+    assert.isFalse(el.hasAttribute('foo'));
+    el.bar = 'hi';
+    await el.updateComplete;
+    assert.equal(changed, 2);
+    assert.equal(el.bar, 'hi');
+    assert.equal(el.__bar, 'hi');
+    assert.isTrue(el.hasAttribute('bar'));
+  });
+
   test(
       'updates/renders attributes, properties, and event listeners via `lit-html`',
       async () => {

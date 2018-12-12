@@ -184,9 +184,9 @@ export abstract class UpdatingElement extends HTMLElement {
       }
     }
     this._classProperties.set(name, options);
-    // Allow user defined accessors by not replacing an existing own-property
-    // accessor.
-    if (this.prototype.hasOwnProperty(name)) {
+    // Allow user defined accessors by not replacing an existing accessor
+    // anywhere in the prototype chain.
+    if (name in this.prototype) {
       return;
     }
     const key = typeof name === 'symbol' ? Symbol() : `__${name}`;
@@ -195,7 +195,7 @@ export abstract class UpdatingElement extends HTMLElement {
       set(value) {
         const oldValue = this[name];
         this[key] = value;
-        this._requestPropertyUpdate(name, oldValue, options);
+        this.requestUpdate(name, oldValue);
       },
       configurable : true,
       enumerable : true
@@ -219,18 +219,23 @@ export abstract class UpdatingElement extends HTMLElement {
     // initialize Map populated in observedAttributes
     this._attributeToPropertyMap = new Map();
     // make any properties
-    const props = this.properties;
-    // support symbols in properties (IE11 does not support this)
-    const propKeys = [
-      ...Object.getOwnPropertyNames(props),
-      ...(typeof Object.getOwnPropertySymbols === 'function')
-          ? Object.getOwnPropertySymbols(props)
-          : []
-    ];
-    for (const p of propKeys) {
-      // note, use of `any` is due to TypeSript lack of support for symbol in
-      // index types
-      this.createProperty(p, (props as any)[p]);
+    // Note, only process "own" properties since this element will inherit
+    // any properties defined on the superClass, and finalization ensures
+    // the entire prototype chain is finalized.
+    if (this.hasOwnProperty('properties')) {
+      const props = this.properties;
+      // support symbols in properties (IE11 does not support this)
+      const propKeys = [
+        ...Object.getOwnPropertyNames(props),
+        ...(typeof Object.getOwnPropertySymbols === 'function')
+            ? Object.getOwnPropertySymbols(props)
+            : []
+      ];
+      for (const p of propKeys) {
+        // note, use of `any` is due to TypeSript lack of support for symbol in
+        // index types
+        this.createProperty(p, (props as any)[p]);
+      }
     }
   }
 
@@ -469,37 +474,22 @@ export abstract class UpdatingElement extends HTMLElement {
    */
   requestUpdate(name?: PropertyKey, oldValue?: any) {
     if (name !== undefined) {
-      const options = (this.constructor as typeof UpdatingElement)
-                          ._classProperties.get(name) ||
-                      defaultPropertyDeclaration;
-      return this._requestPropertyUpdate(name, oldValue, options);
-    }
-    return this._invalidate();
-  }
-
-  /**
-   * Requests an update for a specific property and records change information.
-   * @param name {PropertyKey} name of requesting property
-   * @param oldValue {any} old value of requesting property
-   * @param options {PropertyDeclaration}
-   */
-  private _requestPropertyUpdate(name: PropertyKey, oldValue: any,
-                                 options: PropertyDeclaration) {
-    if (!(this.constructor as typeof UpdatingElement)
-             ._valueHasChanged(this[name as keyof this], oldValue,
-                               options.hasChanged)) {
-      return this.updateComplete;
-    }
-    // track old value when changing.
-    if (!this._changedProperties.has(name)) {
-      this._changedProperties.set(name, oldValue);
-    }
-    // add to reflecting properties set
-    if (options.reflect === true) {
-      if (this._reflectingProperties === undefined) {
-        this._reflectingProperties = new Map();
+      const ctor = this.constructor as typeof UpdatingElement;
+      const options = ctor._classProperties.get(name) || defaultPropertyDeclaration;
+      if (!ctor._valueHasChanged(this[name as keyof this], oldValue, options.hasChanged)) {
+        return this.updateComplete;
       }
-      this._reflectingProperties.set(name, options);
+      // track old value when changing.
+      if (!this._changedProperties.has(name)) {
+        this._changedProperties.set(name, oldValue);
+      }
+      // add to reflecting properties set
+      if (options.reflect === true) {
+        if (this._reflectingProperties === undefined) {
+          this._reflectingProperties = new Map();
+        }
+        this._reflectingProperties.set(name, options);
+      }
     }
     return this._invalidate();
   }
