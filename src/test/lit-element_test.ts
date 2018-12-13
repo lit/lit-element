@@ -161,12 +161,12 @@ suite('LitElement', () => {
           atTr : {attribute : true},
           customAttr : {attribute : 'custom', reflect : true},
           hasChanged : {hasChanged},
-          fromAttribute : {type : fromAttribute},
-          toAttribute : {reflect : true, type : {toAttribute}},
+          fromAttribute : {converter : fromAttribute},
+          toAttribute : {reflect : true, converter : {toAttribute}},
           all : {
             attribute : 'all-attr',
             hasChanged,
-            type : {fromAttribute, toAttribute},
+            converter : {fromAttribute, toAttribute},
             reflect : true
           },
         };
@@ -246,6 +246,179 @@ suite('LitElement', () => {
     assert.equal(el.updateCount, 6);
   });
 
+  test('property option `converter` can use `type` info', async() => {
+    const FooType = {name: 'FooType'};
+    const converter = {
+      fromAttribute: (value: any, type: any) => {
+        return `fromAttribute: ${String(type.name)}`;
+      },
+      toAttribute: (value: any, type: any) => {
+        return `toAttribute: ${String(type.name)}`;
+      }
+    };
+
+    class E extends LitElement {
+      static get properties() {
+        return {
+          num: {type: Number, converter, reflect: true},
+          str: {type: String, converter, reflect: true},
+          foo: {type: FooType, converter, reflect: true}
+        };
+      }
+
+      num?: any;
+      str?: any;
+      foo?: any;
+
+      render() { return html``; }
+    }
+    customElements.define(generateElementName(), E);
+    const el = new E();
+    container.appendChild(el);
+    await el.updateComplete;
+    el.num = 5;
+    el.str = 'hi';
+    el.foo = 'zoink';
+    await el.updateComplete;
+    assert.equal(el.getAttribute('num'), 'toAttribute: Number');
+    assert.equal(el.getAttribute('str'), 'toAttribute: String');
+    assert.equal(el.getAttribute('foo'), 'toAttribute: FooType');
+    el.removeAttribute('num');
+    el.removeAttribute('str');
+    el.removeAttribute('foo');
+    await el.updateComplete;
+    assert.equal(el.num, 'fromAttribute: Number');
+    assert.equal(el.str, 'fromAttribute: String');
+    assert.equal(el.foo, 'fromAttribute: FooType');
+    assert.equal(el.getAttribute('num'), 'toAttribute: Number');
+    assert.equal(el.getAttribute('str'), 'toAttribute: String');
+    assert.equal(el.getAttribute('foo'), 'toAttribute: FooType');
+  });
+
+  test('property/attribute values when attributes removed', async () => {
+    class E extends LitElement {
+      static get properties() {
+        return {
+          bool: {type: Boolean},
+          num: {type: Number},
+          str: {type: String},
+          obj: {type: Object},
+          arr: {type: Array},
+          reflectBool: {type: Boolean, reflect: true},
+          reflectNum: {type: Number, reflect: true},
+          reflectStr: {type: String, reflect: true},
+          reflectObj: {type: Object, reflect: true},
+          reflectArr: {type: Array, reflect: true},
+          defaultBool: {type: Boolean},
+          defaultNum: {type: Number},
+          defaultStr: {type: String},
+          defaultObj: {type: Object},
+          defaultArr: {type: Array},
+          defaultReflectBool: {type: Boolean, reflect: true},
+          defaultReflectNum: {type: Number, reflect: true},
+          defaultReflectStr: {type: String, reflect: true},
+          defaultReflectObj: {type: Object, reflect: true},
+          defaultReflectArr: {type: Array, reflect: true},
+        };
+      }
+
+      bool?: any;
+      num?: any;
+      str?: any;
+      obj?: any;
+      arr?: any;
+      reflectBool?: any;
+      reflectNum?: any;
+      reflectStr?: any;
+      reflectObj?: any;
+      reflectArr?: any;
+      defaultBool = false;
+      defaultNum = 0;
+      defaultStr = '';
+      defaultObj = {defaultObj: false};
+      defaultArr = [1];
+      defaultReflectBool = false;
+      defaultReflectNum = 0;
+      defaultReflectStr = 'defaultReflectStr';
+      defaultReflectObj = {defaultReflectObj: true};
+      defaultReflectArr = [1, 2];
+
+
+      render() { return html``; }
+    }
+    const name = generateElementName();
+    customElements.define(name, E);
+    container.innerHTML = `<${name} bool num="2" str="str" obj='{"obj": true}'
+      arr='[1]' reflectBool reflectNum="3" reflectStr="reflectStr"
+      reflectObj ='{"reflectObj": true}' reflectArr="[1, 2]"
+      defaultBool defaultNum="4" defaultStr="defaultStr"
+      defaultObj='{"defaultObj": true}' defaultArr="[1, 2, 3]">
+      </${name}>`;
+    const el = container.firstChild as E;
+    await el.updateComplete;
+    assert.equal(el.bool, true);
+    assert.equal(el.num, 2);
+    assert.equal(el.str, 'str');
+    assert.deepEqual(el.obj, {obj: true});
+    assert.deepEqual(el.arr, [1]);
+    assert.equal(el.reflectBool, true);
+    assert.equal(el.reflectNum, 3);
+    assert.equal(el.reflectStr, 'reflectStr');
+    assert.deepEqual(el.reflectObj, {reflectObj: true});
+    assert.deepEqual(el.reflectArr, [1, 2]);
+    assert.equal(el.defaultBool, true);
+    assert.equal(el.defaultNum, 4);
+    assert.equal(el.defaultStr, 'defaultStr');
+    assert.deepEqual(el.defaultObj, {defaultObj: true});
+    assert.deepEqual(el.defaultArr, [1, 2, 3]);
+    assert.equal(el.defaultReflectBool, false);
+    assert.equal(el.defaultReflectNum, 0);
+    assert.equal(el.defaultReflectStr, 'defaultReflectStr');
+    assert.deepEqual(el.defaultReflectObj, {defaultReflectObj: true});
+    assert.deepEqual(el.defaultReflectArr, [1, 2]);
+    el.removeAttribute('bool');
+    el.removeAttribute('num');
+    el.removeAttribute('str');
+    el.removeAttribute('obj');
+    el.removeAttribute('arr');
+    el.removeAttribute('reflectBool');
+    el.removeAttribute('reflectNum');
+    el.removeAttribute('reflectStr');
+    el.removeAttribute('reflectObj');
+    el.removeAttribute('reflectArr');
+    el.removeAttribute('defaultBool');
+    el.removeAttribute('defaultNum');
+    el.removeAttribute('defaultStr');
+    el.removeAttribute('defaultObj');
+    el.removeAttribute('defaultArr');
+    el.removeAttribute('defaultReflectBool');
+    el.removeAttribute('defaultReflectNum');
+    el.removeAttribute('defaultReflectStr');
+    el.removeAttribute('defaultReflectObj');
+    el.removeAttribute('defaultReflectArr');
+    await el.updateComplete;
+    assert.equal(el.bool, false);
+    assert.equal(el.num, null);
+    assert.equal(el.str, null);
+    assert.deepEqual(el.obj, null);
+    assert.deepEqual(el.arr, null);
+    assert.equal(el.reflectBool, false);
+    assert.equal(el.reflectNum, null);
+    assert.equal(el.reflectStr, null);
+    assert.deepEqual(el.reflectObj, null);
+    assert.deepEqual(el.reflectArr, null);
+    assert.equal(el.defaultBool, false);
+    assert.equal(el.defaultNum, null);
+    assert.equal(el.defaultStr, null);
+    assert.deepEqual(el.defaultObj, null);
+    assert.deepEqual(el.defaultArr, null);
+    assert.equal(el.defaultReflectBool, false);
+    assert.equal(el.defaultReflectNum, null);
+    assert.equal(el.defaultReflectStr, null);
+    assert.deepEqual(el.defaultReflectObj, null);
+    assert.deepEqual(el.defaultReflectArr, null);
+  });
+
   test('property options via decorator', async () => {
     const hasChanged = (value: any, old: any) =>
         old === undefined || value > old;
@@ -258,12 +431,12 @@ suite('LitElement', () => {
       @property({attribute : 'custom', reflect: true})
       customAttr = 'customAttr';
       @property({hasChanged}) hasChanged = 10;
-      @property({type : fromAttribute}) fromAttribute = 1;
-      @property({reflect : true, type: {toAttribute}}) toAttribute = 1;
+      @property({converter : fromAttribute}) fromAttribute = 1;
+      @property({reflect : true, converter: {toAttribute}}) toAttribute = 1;
       @property({
         attribute : 'all-attr',
         hasChanged,
-        type: {fromAttribute, toAttribute},
+        converter: {fromAttribute, toAttribute},
         reflect: true
       })
       all = 10;
@@ -342,12 +515,12 @@ suite('LitElement', () => {
     class E extends LitElement {
 
       @property({hasChanged}) hasChanged = 10;
-      @property({type : fromAttribute}) fromAttribute = 1;
-      @property({reflect : true, type: {toAttribute}}) toAttribute = 1;
+      @property({converter : fromAttribute}) fromAttribute = 1;
+      @property({reflect : true, converter: {toAttribute}}) toAttribute = 1;
       @property({
         attribute : 'all-attr',
         hasChanged,
-        type: {fromAttribute, toAttribute},
+        converter: {fromAttribute, toAttribute},
         reflect: true
       })
       all = 10;
@@ -450,14 +623,16 @@ suite('LitElement', () => {
           noAttr : {attribute : false},
           atTr : {attribute : true},
           customAttr : {attribute : 'custom', reflect : true},
-          fromAttribute : {type : fromAttribute},
+          fromAttribute : {converter : fromAttribute},
           toAttribute :
-              {reflect : true, type : {toAttribute : toAttributeOnly}},
+              {reflect : true, converter : {toAttribute : toAttributeOnly}},
           all : {
             attribute : 'all-attr',
-            type : {fromAttribute, toAttribute},
+            converter : {fromAttribute, toAttribute},
             reflect : true
           },
+          obj: {type: Object},
+          arr: {type: Array}
         };
       }
 
@@ -467,6 +642,8 @@ suite('LitElement', () => {
       fromAttribute = 1;
       toAttribute: string|number = 1;
       all = 10;
+      obj?: any;
+      arr?: any;
 
       render() { return html``; }
     }
@@ -478,7 +655,9 @@ suite('LitElement', () => {
       custom="3"
       fromAttribute="6-attr"
       toAttribute="7"
-      all-attr="11-attr"></${name}>`;
+      all-attr="11-attr"
+      obj='{"foo": true, "bar": 5, "baz": "hi"}'
+      arr="[1, 2, 3, 4]"></${name}>`;
     const el = container.firstChild as E;
     await el.updateComplete;
     assert.equal(el.noAttr, 'noAttr');
@@ -491,6 +670,8 @@ suite('LitElement', () => {
     assert.equal(el.getAttribute('toattribute'), '7-attr');
     assert.equal(el.all, 11);
     assert.equal(el.getAttribute('all-attr'), '11-attr');
+    assert.deepEqual(el.obj, {foo: true, bar: 5, baz: 'hi'});
+    assert.deepEqual(el.arr, [1, 2, 3, 4]);
   });
 
   if (Object.getOwnPropertySymbols) {
@@ -540,7 +721,7 @@ suite('LitElement', () => {
             [zug] : {
               attribute : 'zug',
               reflect : true,
-              type : (value: string) => Number(value) + 100
+              converter : (value: string) => Number(value) + 100
             }
           };
         }
@@ -618,12 +799,12 @@ suite('LitElement', () => {
     class G extends F {
       static get properties(): PropertyDeclarations {
         return {
-          fromAttribute : {type : fromAttribute},
-          toAttribute : {reflect : true, type : {toAttribute}},
+          fromAttribute : {converter : fromAttribute},
+          toAttribute : {reflect : true, converter : {toAttribute}},
           all : {
             attribute : 'all-attr',
             hasChanged,
-            type : {fromAttribute, toAttribute},
+            converter : {fromAttribute, toAttribute},
             reflect : true
           },
         };
@@ -746,7 +927,7 @@ suite('LitElement', () => {
         return {
           foo : {
             reflect : true,
-            type : {toAttribute : (value: any) => `${value}${suffix}`}
+            converter : {toAttribute : (value: any) => `${value}${suffix}`}
           }
         };
       }
@@ -919,7 +1100,7 @@ suite('LitElement', () => {
                bar : {
                  attribute : 'attr-bar',
                  reflect : true,
-                 type : {fromAttribute, toAttribute},
+                 converter : {fromAttribute, toAttribute},
                  hasChanged
                }
              };

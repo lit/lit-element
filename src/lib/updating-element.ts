@@ -15,22 +15,22 @@
 /**
  * Converts property values to and from attribute values.
  */
-export interface AttributeSerializer<T = any> {
+export interface ComplexAttributeConverter<T = any> {
 
   /**
    * Deserializing function called to convert an attribute value to a property
    * value.
    */
-  fromAttribute?(value: string): T;
+  fromAttribute?(value: string, type?: any): T;
 
   /**
    * Serializing function called to convert a property value to an attribute
    * value.
    */
-  toAttribute?(value: T): string|null;
+  toAttribute?(value: T, type?: any): string|null;
 }
 
-type AttributeType<T = any> = AttributeSerializer<T>|((value: string) => T);
+type AttributeConverter<T = any> = ComplexAttributeConverter<T>|((value: string, type?: any) => T);
 
 /**
  * Defines options for a property accessor.
@@ -47,6 +47,13 @@ export interface PropertyDeclaration<T = any> {
   attribute?: boolean|string;
 
   /**
+   * Indicates the type of the property. This is used only as a hint for the
+   * converter to determine how to serialize and deserialize the attribute
+   * to/from a property.
+   */
+  type?: T;
+
+  /**
    * Indicates how to serialize and deserialize the attribute to/from a
    * property. If this value is a function, it is used to deserialize the
    * attribute value a the property value. If it's an object, it can have keys
@@ -56,14 +63,14 @@ export interface PropertyDeclaration<T = any> {
    * `reflect` is set to `true`, the property value is set directly to the
    * attribute.
    */
-  type?: AttributeType<T>;
+  converter?: AttributeConverter<T>;
 
   /**
    * Indicates if the property should reflect to an attribute.
    * If `true`, when the property is set, the attribute is set using the
    * attribute name determined according to the rules for the `attribute`
    * property option and the value of the property serialized using the rules
-   * from the `type` property option.
+   * from the `converter` property option.
    */
   reflect?: boolean;
 
@@ -90,9 +97,33 @@ type AttributeMap = Map<string, PropertyKey>;
 
 export type PropertyValues = Map<PropertyKey, unknown>;
 
-// serializer/deserializers for boolean attribute
-const fromBooleanAttribute = (value: string) => value !== null;
-const toBooleanAttribute = (value: string) => value ? '' : null;
+export const defaultConverter: ComplexAttributeConverter = {
+
+  toAttribute(value: any, type?: any) {
+    switch (type) {
+      case Boolean:
+        return value ? '' : null;
+      case Object:
+      case Array:
+        return JSON.stringify(value);
+    }
+    return value;
+  },
+
+  fromAttribute(value: any, type?: any) {
+    switch (type) {
+      case Boolean:
+        return value !== null;
+      case Number:
+        return value === null ? null : Number(value);
+      case Object:
+      case Array:
+        return JSON.parse(value);
+    }
+    return value;
+  }
+
+};
 
 export interface HasChanged {
   (value: unknown, old: unknown): boolean;
@@ -110,6 +141,7 @@ export const notEqual: HasChanged = (value: unknown, old: unknown): boolean => {
 const defaultPropertyDeclaration: PropertyDeclaration = {
   attribute : true,
   type : String,
+  converter: defaultConverter,
   reflect : false,
   hasChanged : notEqual
 };
@@ -260,21 +292,15 @@ export abstract class UpdatingElement extends HTMLElement {
 
   /**
    * Returns the property value for the given attribute value.
-   * Called via the `attributeChangedCallback` and uses the property's `type`
-   * or `type.fromAttribute` property option.
+   * Called via the `attributeChangedCallback` and uses the property's `converter`
+   * or `converter.fromAttribute` property option.
    */
   private static _propertyValueFromAttribute(value: string,
                                              options?: PropertyDeclaration) {
     const type = options && options.type;
-    if (type === undefined) {
-      return value;
-    }
-    // Note: special case `Boolean` so users can use it as a `type`.
-    const fromAttribute =
-        type === Boolean
-            ? fromBooleanAttribute
-            : (typeof type === 'function' ? type : type.fromAttribute);
-    return fromAttribute ? fromAttribute(value) : value;
+    const converter = options && options.converter || defaultConverter;
+    const fromAttribute = (typeof converter === 'function' ? converter : converter.fromAttribute);
+    return fromAttribute ? fromAttribute(value, type) : value;
   }
 
   /**
@@ -289,14 +315,10 @@ export abstract class UpdatingElement extends HTMLElement {
     if (options === undefined || options.reflect === undefined) {
       return;
     }
-    // Note: special case `Boolean` so users can use it as a `type`.
-    const toAttribute =
-        options.type === Boolean
-            ? toBooleanAttribute
-            : (options.type &&
-                   (options.type as AttributeSerializer).toAttribute ||
-               String);
-    return toAttribute(value);
+    const type = options && options.type;
+    const converter = options && options.converter;
+    const toAttribute = converter && (converter as ComplexAttributeConverter).toAttribute || defaultConverter.toAttribute;
+    return toAttribute!(value, type);
   }
 
   private _updateState: UpdateState = 0;
@@ -416,27 +438,25 @@ export abstract class UpdatingElement extends HTMLElement {
       name: PropertyKey, value: unknown,
       options: PropertyDeclaration = defaultPropertyDeclaration) {
     const ctor = (this.constructor as typeof UpdatingElement);
-    const attrValue = ctor._propertyValueToAttribute(value, options);
-    if (attrValue !== undefined) {
-      const attr = ctor._attributeNameForProperty(name, options);
-      if (attr !== undefined) {
-        // Track if the property is being reflected to avoid
-        // setting the property again via `attributeChangedCallback`. Note:
-        // 1. this takes advantage of the fact that the callback is synchronous.
-        // 2. will behave incorrectly if multiple attributes are in the reaction
-        // stack at time of calling. However, since we process attributes
-        // in `update` this should not be possible (or an extreme corner case
-        // that we'd like to discover).
-        // mark state reflecting
-        this._updateState = this._updateState | STATE_IS_REFLECTING;
-        if (attrValue === null) {
-          this.removeAttribute(attr);
-        } else {
-          this.setAttribute(attr, attrValue);
-        }
-        // mark state not reflecting
-        this._updateState = this._updateState & ~STATE_IS_REFLECTING;
+    const attr = ctor._attributeNameForProperty(name, options);
+    if (attr !== undefined) {
+      const attrValue = ctor._propertyValueToAttribute(value, options);
+      // Track if the property is being reflected to avoid
+      // setting the property again via `attributeChangedCallback`. Note:
+      // 1. this takes advantage of the fact that the callback is synchronous.
+      // 2. will behave incorrectly if multiple attributes are in the reaction
+      // stack at time of calling. However, since we process attributes
+      // in `update` this should not be possible (or an extreme corner case
+      // that we'd like to discover).
+      // mark state reflecting
+      this._updateState = this._updateState | STATE_IS_REFLECTING;
+      if (attrValue == null) {
+        this.removeAttribute(attr);
+      } else {
+        this.setAttribute(attr, attrValue);
       }
+      // mark state not reflecting
+      this._updateState = this._updateState & ~STATE_IS_REFLECTING;
     }
   }
 

@@ -35,11 +35,12 @@ for additional information on how to create templates for lit-element.
     If the value is `false`, the property is not added to the static `observedAttributes` getter.
     If `true` or absent, the lowercased property name is observed (e.g. `fooBar` becomes `foobar`).
     If a string, the string value is observed (e.g `attribute: 'foo-bar'`).
-    * `type`: Indicates how to serialize and deserialize the attribute to/from a property.
+    * `converter`: Indicates how to serialize and deserialize the attribute to/from a property.
     The value can be a function used for both serialization and deserialization, or it can
     be an object with individual functions via the optional keys, `fromAttribute` and `toAttribute`.
-    `type` defaults to the `String` constructor, and so does the `toAttribute` and `fromAttribute`
-    keys.
+    * `type`: Indicates the type of the property. This is used only as a hint for the
+    `converter` to determine how to serialize and deserialize the attribute
+    to/from a property.
     * `reflect`: Indicates whether the property should reflect to its associated
     attribute (as determined by the attribute option).
     If `true`, when the property is set, the attribute which name is determined
