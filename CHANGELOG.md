@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 -->
 
 ## Unreleased
+### Changed
+* Use lit-html 1.0 release candidate.
+
+### Fixed
 * Types for the `property` and `customElement` decorators updated ([#288](https://github.com/Polymer/lit-element/issues/288) and [#291](https://github.com/Polymer/lit-element/issues/291)).
 
 <!-- ### Changed -->
