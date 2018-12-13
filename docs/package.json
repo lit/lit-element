@@ -2,6 +2,7 @@
   "private": true,
   "scripts": {
     "build": "polymer build && jekyll build",
+    "build-all": "(cd .. && npm run gen-docs) && npm run build",
     "serve": "dev_appserver.py _site/app.yaml",
     "deploy": "npm run build && gcloud app deploy _site/app.yaml --project polymer-lit-element --no-promote"
   },
