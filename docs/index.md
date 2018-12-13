@@ -24,7 +24,7 @@ About
 Fast, lightweight web components
 </h2>
 <p>
-LitElement is a simple base class for creating fast and lightweight web components that work in any web page with any framework.
+LitElement is a simple base class for creating fast, lightweight web components that work in any web page with any framework.
 </p>
 </div>
 
@@ -33,7 +33,7 @@ LitElement is a simple base class for creating fast and lightweight web componen
 Using lit-html
 </h2>
 <p>
-For rendering, LitElement uses [lit-html](https://lit-html.polymer-project.org/) – a fast HTML templating library. To build an app out of LitElement components, check out [PWA Starter Kit](https://pwa-starter-kit.polymer-project.org/).
+For rendering, LitElement uses [lit-html](https://lit-html.polymer-project.org/)—a fast HTML templating library. To build an app out of LitElement components, check out [PWA Starter Kit](https://pwa-starter-kit.polymer-project.org/).
 </p>
 </div>
 
@@ -124,7 +124,7 @@ LitElement uses [lit-html](https://github.com/Polymer/lit-html) to define and re
 <div class="wrapper">
 
 <h1 class="title">Browser Compatibility</h1>
-<h2 class="description">PWA Starter Kit works in all major browsers (Chrome, Firefox, IE, Edge, Safari, and Opera). </h2>
+<h2 class="description">LitElement works in all major browsers (Chrome, Firefox, IE, Edge, Safari, and Opera). </h2>
 <div id="browser-thumbnails" style="margin-bottom: 20px;">
 <img width="56" width="56" src="{{ site.baseurl }}/images/browsers/chrome_128x128.png" alt="chrome logo">
 <img width="56" width="56" src="{{ site.baseurl }}/images/browsers/firefox_128x128.png" alt="firefox logo">
