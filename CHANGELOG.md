@@ -10,9 +10,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
    Unreleased section, uncommenting the header as necessary.
 -->
 
-## Unreleased
-* Types for the `property` and `customElement` decorators updated ([#288](https://github.com/Polymer/lit-element/issues/288) and [#291](https://github.com/Polymer/lit-element/issues/291)).
-
 <!-- ### Changed -->
 ### Added
 * Added the `performUpdate` method to allow control of update timing ([#290](https://github.com/Polymer/lit-element/issues/290)).
@@ -20,6 +17,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 <!-- ### Removed -->
 <!-- ### Fixed -->
+
+## [0.6.5] - 2018-12-13
+### Changed:
+* Use lit-html 1.0 release candidate.
+
+### Fixed
+* Types for the `property` and `customElement` decorators updated ([#288](https://github.com/Polymer/lit-element/issues/288) and [#291](https://github.com/Polymer/lit-element/issues/291)).
+* Docs updated.
 
 ## [0.6.4] - 2018-11-30
 ### Changed
