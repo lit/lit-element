@@ -402,7 +402,8 @@ export abstract class UpdatingElement extends HTMLElement {
     }
     // Note, first update/render handles styleElement so we only call this if
     // connected after first update.
-    if ((this._updateState & STATE_HAS_UPDATED) && window.ShadyCSS !== undefined) {
+    if ((this._updateState & STATE_HAS_UPDATED) &&
+        window.ShadyCSS !== undefined) {
       window.ShadyCSS.styleElement(this);
     }
   }
@@ -482,8 +483,9 @@ export abstract class UpdatingElement extends HTMLElement {
     let shouldRequestUpdate = true;
     // if we have a property key, perform property update steps.
     if (name !== undefined) {
-        const ctor = this.constructor as typeof UpdatingElement;
-        const options = ctor._classProperties.get(name) || defaultPropertyDeclaration;
+      const ctor = this.constructor as typeof UpdatingElement;
+      const options =
+          ctor._classProperties.get(name) || defaultPropertyDeclaration;
       if (ctor._valueHasChanged(this[name as keyof this], oldValue,
                                 options.hasChanged)) {
         // track old value when changing.
@@ -526,7 +528,8 @@ export abstract class UpdatingElement extends HTMLElement {
     }
     // Allow `performUpdate` to be asynchronous to enable scheduling of updates.
     const result = this.performUpdate();
-    if (result != null && typeof (result as PromiseLike<unknown>).then === 'function') {
+    if (result != null &&
+        typeof (result as PromiseLike<unknown>).then === 'function') {
       await result;
     }
     resolve!(!this._hasRequestedUpdate);

@@ -12,10 +12,9 @@
  * http://polymer.github.io/PATENTS.txt
  */
 
+import {property} from '../../lib/decorators.js';
 import {UpdatingElement} from '../../lib/updating-element.js';
-
 import {generateElementName} from '../test-helpers.js';
-import { property } from '../../lib/decorators.js';
 
 const assert = chai.assert;
 
@@ -113,8 +112,7 @@ suite('UpdatingElement', () => {
 
       updatedCalledCount = 0;
 
-      @property()
-      foo = 5;
+      @property() foo = 5;
 
       constructor() {
         super();
