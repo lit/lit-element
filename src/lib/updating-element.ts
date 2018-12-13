@@ -30,7 +30,8 @@ export interface ComplexAttributeConverter<T = any> {
   toAttribute?(value: T, type?: any): string|null;
 }
 
-type AttributeConverter<T = any> = ComplexAttributeConverter<T>|((value: string, type?: any) => T);
+type AttributeConverter<T = any> =
+    ComplexAttributeConverter<T>|((value: string, type?: any) => T);
 
 /**
  * Defines options for a property accessor.
@@ -101,24 +102,24 @@ export const defaultConverter: ComplexAttributeConverter = {
 
   toAttribute(value: any, type?: any) {
     switch (type) {
-      case Boolean:
-        return value ? '' : null;
-      case Object:
-      case Array:
-        return JSON.stringify(value);
+    case Boolean:
+      return value ? '' : null;
+    case Object:
+    case Array:
+      return JSON.stringify(value);
     }
     return value;
   },
 
   fromAttribute(value: any, type?: any) {
     switch (type) {
-      case Boolean:
-        return value !== null;
-      case Number:
-        return value === null ? null : Number(value);
-      case Object:
-      case Array:
-        return JSON.parse(value);
+    case Boolean:
+      return value !== null;
+    case Number:
+      return value === null ? null : Number(value);
+    case Object:
+    case Array:
+      return JSON.parse(value);
     }
     return value;
   }
@@ -141,7 +142,7 @@ export const notEqual: HasChanged = (value: unknown, old: unknown): boolean => {
 const defaultPropertyDeclaration: PropertyDeclaration = {
   attribute : true,
   type : String,
-  converter: defaultConverter,
+  converter : defaultConverter,
   reflect : false,
   hasChanged : notEqual
 };
@@ -292,14 +293,15 @@ export abstract class UpdatingElement extends HTMLElement {
 
   /**
    * Returns the property value for the given attribute value.
-   * Called via the `attributeChangedCallback` and uses the property's `converter`
-   * or `converter.fromAttribute` property option.
+   * Called via the `attributeChangedCallback` and uses the property's
+   * `converter` or `converter.fromAttribute` property option.
    */
   private static _propertyValueFromAttribute(value: string,
                                              options?: PropertyDeclaration) {
     const type = options && options.type;
     const converter = options && options.converter || defaultConverter;
-    const fromAttribute = (typeof converter === 'function' ? converter : converter.fromAttribute);
+    const fromAttribute =
+        (typeof converter === 'function' ? converter : converter.fromAttribute);
     return fromAttribute ? fromAttribute(value, type) : value;
   }
 
@@ -317,7 +319,9 @@ export abstract class UpdatingElement extends HTMLElement {
     }
     const type = options && options.type;
     const converter = options && options.converter;
-    const toAttribute = converter && (converter as ComplexAttributeConverter).toAttribute || defaultConverter.toAttribute;
+    const toAttribute =
+        converter && (converter as ComplexAttributeConverter).toAttribute ||
+        defaultConverter.toAttribute;
     return toAttribute!(value, type);
   }
 

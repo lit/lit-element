@@ -55,8 +55,8 @@ export const customElement = (tagName: string) =>
  * corresponding attribute value. A `PropertyDeclaration` may optionally be
  * supplied to configure property features.
  */
-export const property = (options?: PropertyDeclaration) => (proto: Object,
-                                                            name: PropertyKey) => {
+export const property = (options?: PropertyDeclaration) => (
+    proto: Object, name: PropertyKey) => {
   (proto.constructor as typeof UpdatingElement).createProperty(name, options);
 };
 

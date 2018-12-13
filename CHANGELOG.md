@@ -16,7 +16,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 * Changes property options to add `converter`. This option works the same as the previous `type` option except that the `converter` methods now also get `type` as the second argument. This effectively changes `type` to be a hint for the `converter`. A default `converter` is used if none is provided and it now supports `Boolean`, `String`, `Number`, `Object`, and `Array`. In addition, numbers and strings now become null if their reflected attribute is removed. ([#264](https://github.com/Polymer/lit-element/issues/264)).
 
-
 <!-- ### Added -->
 <!-- ### Removed -->
 <!-- ### Fixed -->

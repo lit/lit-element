@@ -246,23 +246,23 @@ suite('LitElement', () => {
     assert.equal(el.updateCount, 6);
   });
 
-  test('property option `converter` can use `type` info', async() => {
-    const FooType = {name: 'FooType'};
+  test('property option `converter` can use `type` info', async () => {
+    const FooType = {name : 'FooType'};
     const converter = {
-      fromAttribute: (value: any, type: any) => {
-        return `fromAttribute: ${String(type.name)}`;
-      },
-      toAttribute: (value: any, type: any) => {
-        return `toAttribute: ${String(type.name)}`;
-      }
+      fromAttribute :
+          (value: any,
+           type: any) => { return `fromAttribute: ${String(type.name)}`; },
+      toAttribute :
+          (value: any,
+           type: any) => { return `toAttribute: ${String(type.name)}`; }
     };
 
     class E extends LitElement {
       static get properties() {
         return {
-          num: {type: Number, converter, reflect: true},
-          str: {type: String, converter, reflect: true},
-          foo: {type: FooType, converter, reflect: true}
+          num : {type : Number, converter, reflect : true},
+          str : {type : String, converter, reflect : true},
+          foo : {type : FooType, converter, reflect : true}
         };
       }
 
@@ -299,26 +299,26 @@ suite('LitElement', () => {
     class E extends LitElement {
       static get properties() {
         return {
-          bool: {type: Boolean},
-          num: {type: Number},
-          str: {type: String},
-          obj: {type: Object},
-          arr: {type: Array},
-          reflectBool: {type: Boolean, reflect: true},
-          reflectNum: {type: Number, reflect: true},
-          reflectStr: {type: String, reflect: true},
-          reflectObj: {type: Object, reflect: true},
-          reflectArr: {type: Array, reflect: true},
-          defaultBool: {type: Boolean},
-          defaultNum: {type: Number},
-          defaultStr: {type: String},
-          defaultObj: {type: Object},
-          defaultArr: {type: Array},
-          defaultReflectBool: {type: Boolean, reflect: true},
-          defaultReflectNum: {type: Number, reflect: true},
-          defaultReflectStr: {type: String, reflect: true},
-          defaultReflectObj: {type: Object, reflect: true},
-          defaultReflectArr: {type: Array, reflect: true},
+          bool : {type : Boolean},
+          num : {type : Number},
+          str : {type : String},
+          obj : {type : Object},
+          arr : {type : Array},
+          reflectBool : {type : Boolean, reflect : true},
+          reflectNum : {type : Number, reflect : true},
+          reflectStr : {type : String, reflect : true},
+          reflectObj : {type : Object, reflect : true},
+          reflectArr : {type : Array, reflect : true},
+          defaultBool : {type : Boolean},
+          defaultNum : {type : Number},
+          defaultStr : {type : String},
+          defaultObj : {type : Object},
+          defaultArr : {type : Array},
+          defaultReflectBool : {type : Boolean, reflect : true},
+          defaultReflectNum : {type : Number, reflect : true},
+          defaultReflectStr : {type : String, reflect : true},
+          defaultReflectObj : {type : Object, reflect : true},
+          defaultReflectArr : {type : Array, reflect : true},
         };
       }
 
@@ -335,14 +335,13 @@ suite('LitElement', () => {
       defaultBool = false;
       defaultNum = 0;
       defaultStr = '';
-      defaultObj = {defaultObj: false};
-      defaultArr = [1];
+      defaultObj = {defaultObj : false};
+      defaultArr = [ 1 ];
       defaultReflectBool = false;
       defaultReflectNum = 0;
       defaultReflectStr = 'defaultReflectStr';
-      defaultReflectObj = {defaultReflectObj: true};
-      defaultReflectArr = [1, 2];
-
+      defaultReflectObj = {defaultReflectObj : true};
+      defaultReflectArr = [ 1, 2 ];
 
       render() { return html``; }
     }
@@ -359,23 +358,23 @@ suite('LitElement', () => {
     assert.equal(el.bool, true);
     assert.equal(el.num, 2);
     assert.equal(el.str, 'str');
-    assert.deepEqual(el.obj, {obj: true});
-    assert.deepEqual(el.arr, [1]);
+    assert.deepEqual(el.obj, {obj : true});
+    assert.deepEqual(el.arr, [ 1 ]);
     assert.equal(el.reflectBool, true);
     assert.equal(el.reflectNum, 3);
     assert.equal(el.reflectStr, 'reflectStr');
-    assert.deepEqual(el.reflectObj, {reflectObj: true});
-    assert.deepEqual(el.reflectArr, [1, 2]);
+    assert.deepEqual(el.reflectObj, {reflectObj : true});
+    assert.deepEqual(el.reflectArr, [ 1, 2 ]);
     assert.equal(el.defaultBool, true);
     assert.equal(el.defaultNum, 4);
     assert.equal(el.defaultStr, 'defaultStr');
-    assert.deepEqual(el.defaultObj, {defaultObj: true});
-    assert.deepEqual(el.defaultArr, [1, 2, 3]);
+    assert.deepEqual(el.defaultObj, {defaultObj : true});
+    assert.deepEqual(el.defaultArr, [ 1, 2, 3 ]);
     assert.equal(el.defaultReflectBool, false);
     assert.equal(el.defaultReflectNum, 0);
     assert.equal(el.defaultReflectStr, 'defaultReflectStr');
-    assert.deepEqual(el.defaultReflectObj, {defaultReflectObj: true});
-    assert.deepEqual(el.defaultReflectArr, [1, 2]);
+    assert.deepEqual(el.defaultReflectObj, {defaultReflectObj : true});
+    assert.deepEqual(el.defaultReflectArr, [ 1, 2 ]);
     el.removeAttribute('bool');
     el.removeAttribute('num');
     el.removeAttribute('str');
@@ -631,8 +630,8 @@ suite('LitElement', () => {
             converter : {fromAttribute, toAttribute},
             reflect : true
           },
-          obj: {type: Object},
-          arr: {type: Array}
+          obj : {type : Object},
+          arr : {type : Array}
         };
       }
 
@@ -670,8 +669,8 @@ suite('LitElement', () => {
     assert.equal(el.getAttribute('toattribute'), '7-attr');
     assert.equal(el.all, 11);
     assert.equal(el.getAttribute('all-attr'), '11-attr');
-    assert.deepEqual(el.obj, {foo: true, bar: 5, baz: 'hi'});
-    assert.deepEqual(el.arr, [1, 2, 3, 4]);
+    assert.deepEqual(el.obj, {foo : true, bar : 5, baz : 'hi'});
+    assert.deepEqual(el.arr, [ 1, 2, 3, 4 ]);
   });
 
   if (Object.getOwnPropertySymbols) {
