@@ -119,8 +119,9 @@ const microtaskPromise = new Promise((resolve) => resolve(true));
 const STATE_HAS_UPDATED = 1;
 const STATE_UPDATE_REQUESTED = 1 << 2;
 const STATE_IS_REFLECTING = 1 << 3;
+const STATE_HAS_CONNECTED = 1 << 4;
 type UpdateState = typeof STATE_HAS_UPDATED|typeof STATE_UPDATE_REQUESTED|
-    typeof STATE_IS_REFLECTING;
+    typeof STATE_IS_REFLECTING|typeof STATE_HAS_CONNECTED;
 
 /**
  * Base element class which manages element properties and attributes. When
@@ -195,7 +196,7 @@ export abstract class UpdatingElement extends HTMLElement {
       set(value) {
         const oldValue = this[name];
         this[key] = value;
-        this._requestPropertyUpdate(name, oldValue, options);
+        this.requestUpdate(name, oldValue);
       },
       configurable : true,
       enumerable : true
@@ -302,6 +303,7 @@ export abstract class UpdatingElement extends HTMLElement {
   private _updateState: UpdateState = 0;
   private _instanceProperties: PropertyValues|undefined = undefined;
   private _updatePromise: Promise<unknown> = microtaskPromise;
+  private _hasConnectedResolver: (() => void)|undefined = undefined;
 
   /**
    * Map with keys for any properties that have changed since the last
@@ -387,12 +389,21 @@ export abstract class UpdatingElement extends HTMLElement {
    * Uses ShadyCSS to keep element DOM updated.
    */
   connectedCallback() {
-    if ((this._updateState & STATE_HAS_UPDATED)) {
-      if (window.ShadyCSS !== undefined) {
-        window.ShadyCSS.styleElement(this);
-      }
+    this._updateState = this._updateState | STATE_HAS_CONNECTED;
+    // Ensure connection triggers an update. Updates cannot complete before
+    // connection and if one is pending connection the `_hasConnectionResolver`
+    // will exist. If so, resolve it to complete the update, otherwise
+    // requestUpdate.
+    if (this._hasConnectedResolver) {
+      this._hasConnectedResolver();
+      this._hasConnectedResolver = undefined;
     } else {
       this.requestUpdate();
+    }
+    // Note, first update/render handles styleElement so we only call this if
+    // connected after first update.
+    if ((this._updateState & STATE_HAS_UPDATED) && window.ShadyCSS !== undefined) {
+      window.ShadyCSS.styleElement(this);
     }
   }
 
@@ -468,59 +479,61 @@ export abstract class UpdatingElement extends HTMLElement {
    * @returns {Promise} A Promise that is resolved when the update completes.
    */
   requestUpdate(name?: PropertyKey, oldValue?: any) {
+    let shouldRequestUpdate = true;
+    // if we have a property key, perform property update steps.
     if (name !== undefined) {
-      const options = (this.constructor as typeof UpdatingElement)
-                          ._classProperties.get(name) ||
-                      defaultPropertyDeclaration;
-      return this._requestPropertyUpdate(name, oldValue, options);
-    }
-    return this._invalidate();
-  }
-
-  /**
-   * Requests an update for a specific property and records change information.
-   * @param name {PropertyKey} name of requesting property
-   * @param oldValue {any} old value of requesting property
-   * @param options {PropertyDeclaration}
-   */
-  private _requestPropertyUpdate(name: PropertyKey, oldValue: any,
-                                 options: PropertyDeclaration) {
-    if (!(this.constructor as typeof UpdatingElement)
-             ._valueHasChanged(this[name as keyof this], oldValue,
-                               options.hasChanged)) {
-      return this.updateComplete;
-    }
-    // track old value when changing.
-    if (!this._changedProperties.has(name)) {
-      this._changedProperties.set(name, oldValue);
-    }
-    // add to reflecting properties set
-    if (options.reflect === true) {
-      if (this._reflectingProperties === undefined) {
-        this._reflectingProperties = new Map();
+        const ctor = this.constructor as typeof UpdatingElement;
+        const options = ctor._classProperties.get(name) || defaultPropertyDeclaration;
+      if (ctor._valueHasChanged(this[name as keyof this], oldValue,
+                                options.hasChanged)) {
+        // track old value when changing.
+        if (!this._changedProperties.has(name)) {
+          this._changedProperties.set(name, oldValue);
+        }
+        // add to reflecting properties set
+        if (options.reflect === true) {
+          if (this._reflectingProperties === undefined) {
+            this._reflectingProperties = new Map();
+          }
+          this._reflectingProperties.set(name, options);
+        }
+        // abort the request if the property should not be considered changed.
+      } else {
+        shouldRequestUpdate = false;
       }
-      this._reflectingProperties.set(name, options);
     }
-    return this._invalidate();
-  }
-
-  /**
-   * Invalidates the element causing it to asynchronously update regardless
-   * of whether or not any property changes are pending. This method is
-   * automatically called when any registered property changes.
-   */
-  private async _invalidate() {
-    if (!this._hasRequestedUpdate) {
-      // mark state updating...
-      this._updateState = this._updateState | STATE_UPDATE_REQUESTED;
-      let resolver: any;
-      const previousValidatePromise = this._updatePromise;
-      this._updatePromise = new Promise((r) => resolver = r);
-      await previousValidatePromise;
-      this._validate();
-      resolver!(!this._hasRequestedUpdate);
+    if (!this._hasRequestedUpdate && shouldRequestUpdate) {
+      this._setupUpdate();
     }
     return this.updateComplete;
+  }
+
+  /**
+   * Sets up the element to asynchronously update.
+   */
+  private async _setupUpdate() {
+    // Mark state updating...
+    this._updateState = this._updateState | STATE_UPDATE_REQUESTED;
+    let resolve: (r: boolean) => void;
+    const previousUpdatePromise = this._updatePromise;
+    this._updatePromise = new Promise((res) => resolve = res);
+    // Ensure any previous update has resolved before updating.
+    // This `await` also ensures that property changes are batched.
+    await previousUpdatePromise;
+    // Make sure the element has connected before updating.
+    if (!this._hasConnected) {
+      await new Promise((res) => this._hasConnectedResolver = res);
+    }
+    // Allow `performUpdate` to be asynchronous to enable scheduling of updates.
+    const result = this.performUpdate();
+    if (result != null && typeof (result as PromiseLike<unknown>).then === 'function') {
+      await result;
+    }
+    resolve!(!this._hasRequestedUpdate);
+  }
+
+  private get _hasConnected() {
+    return (this._updateState & STATE_HAS_CONNECTED);
   }
 
   private get _hasRequestedUpdate() {
@@ -528,9 +541,19 @@ export abstract class UpdatingElement extends HTMLElement {
   }
 
   /**
-   * Validates the element by updating it.
+   * Performs an element update.
+   *
+   * You can override this method to change the timing of updates. For instance,
+   * to schedule updates to occur just before the next frame:
+   *
+   * ```
+   * protected async scheduleUpdate(): Promise<unknown> {
+   *   await new Promise((resolve) => requestAnimationFrame(() => resolve());
+   *   super.performUpdate();
+   * }
+   * ```
    */
-  private _validate() {
+  protected performUpdate(): void|Promise<unknown> {
     // Mixin instance properties once, if they exist.
     if (this._instanceProperties) {
       this._applyInstanceProperties();
@@ -548,6 +571,7 @@ export abstract class UpdatingElement extends HTMLElement {
       this._markUpdated();
     }
   }
+
   private _markUpdated() {
     this._changedProperties = new Map();
     this._updateState = this._updateState & ~STATE_UPDATE_REQUESTED;

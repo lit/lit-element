@@ -14,7 +14,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 * Types for the `property` and `customElement` decorators updated ([#288](https://github.com/Polymer/lit-element/issues/288) and [#291](https://github.com/Polymer/lit-element/issues/291)).
 
 <!-- ### Changed -->
-<!-- ### Added -->
+### Added
+* Added the `performUpdate` method to allow control of update timing ([#290](https://github.com/Polymer/lit-element/issues/290)).
+* Updates deferred until first connection ([#258](https://github.com/Polymer/lit-element/issues/258)).
+
 <!-- ### Removed -->
 <!-- ### Fixed -->
 
