@@ -10,7 +10,7 @@ slug: lifecycle
 
 ## Overview
 
-LitElement-based components update asynchronously in response to observed property changes. Property changes are batched--if more properties change after an update is requested, but before the update starts, all of the changes are captured in the same update.
+LitElement-based components update asynchronously in response to observed property changes. Property changes are batched—if more properties change after an update is requested, but before the update starts, all of the changes are captured in the same update.
 
 At a high level, the update lifecycle is:
 
@@ -27,7 +27,7 @@ At a high level, the update lifecycle is:
 
 The browser executes JavaScript code by processing a queue of tasks in the [event loop](https://developer.mozilla.org/en-US/docs/Web/JavaScript/EventLoop). In each iteration of the event loop, the browser takes a task from the queue and runs it to completion. 
 
-When the task completes, before taking the next task from the queue, the browser allocates time to perform work from other sources--including DOM updates, user interactions, and the microtask queue. 
+When the task completes, before taking the next task from the queue, the browser allocates time to perform work from other sources—including DOM updates, user interactions, and the microtask queue. 
 
 LitElement updates are requested asynchronously as Promises, and are queued as microtasks. This means that updates are processed at the end of every iteration of the event loop, making updates fast and responsive.
 
