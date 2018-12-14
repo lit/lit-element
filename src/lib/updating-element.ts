@@ -29,7 +29,7 @@ const descriptorFromPrototype =
         }
       }
       return undefined;
-    }
+    };
 
 /**
  * Converts property values to and from attribute values.
@@ -220,7 +220,7 @@ export abstract class UpdatingElement extends HTMLElement {
       if (superDesc !== undefined && (superDesc.set && superDesc.get)) {
         const {set, get} = superDesc;
         desc = {
-          get() { return get.call(this) },
+          get() { return get.call(this); },
           set(value: any) {
             const oldValue = this[name];
             set.call(this, value);
@@ -228,7 +228,7 @@ export abstract class UpdatingElement extends HTMLElement {
           },
           configurable : true,
           enumerable : true
-        }
+        };
       } else {
         const key = typeof name === 'symbol' ? Symbol() : `__${name}`;
         desc = {
