@@ -132,23 +132,32 @@ export abstract class UpdatingElement extends HTMLElement {
   /**
    * Maps attribute names to properties; for example `foobar` attribute
    * to `fooBar` property.
+   * @nocollapse
    */
   private static _attributeToPropertyMap: AttributeMap = new Map();
 
   /**
-   * Marks class as having finished creating properties.
+   * Marks class as having finished creating properties. This is public only to
+   * ensure that the export can allow it to be accessed by name with
+   * Object.hasOwnProperty() when compiled.
+   * @export
    */
-  private static _finalized = true;
+  static _finalized = true;
 
   /**
    * Memoized list of all class properties, including any superclass properties.
+   * This is public only to ensure that the export can allow it to be accessed
+   * by name with Object.hasOwnProperty() when compiled.
+   * @export
    */
-  private static _classProperties: PropertyDeclarationMap = new Map();
+  static _classProperties: PropertyDeclarationMap = new Map();
 
+  /** @nocollapse */
   static properties: PropertyDeclarations = {};
 
   /**
    * Returns a list of attributes corresponding to the registered properties.
+   * @nocollapse
    */
   static get observedAttributes() {
     // note: piggy backing on this to ensure we're _finalized.
@@ -169,20 +178,11 @@ export abstract class UpdatingElement extends HTMLElement {
    * The property setter calls the property's `hasChanged` property option
    * or uses a strict identity check to determine whether or not to request
    * an update.
+   * @nocollapse
    */
   static createProperty(name: PropertyKey,
                         options:
                             PropertyDeclaration = defaultPropertyDeclaration) {
-    // ensure private storage for property declarations.
-    if (!this.hasOwnProperty('_classProperties')) {
-      this._classProperties = new Map();
-      // NOTE: Workaround IE11 not supporting Map constructor argument.
-      const superProperties = Object.getPrototypeOf(this)._classProperties;
-      if (superProperties !== undefined) {
-        superProperties.forEach((v: any, k: PropertyKey) =>
-                                    this._classProperties.set(k, v));
-      }
-    }
     this._classProperties.set(name, options);
     // Allow user defined accessors by not replacing an existing own-property
     // accessor.
@@ -205,6 +205,7 @@ export abstract class UpdatingElement extends HTMLElement {
   /**
    * Creates property accessors for registered properties and ensures
    * any superclasses are also finalized.
+   * @nocollapse
    */
   private static _finalize() {
     if (this.hasOwnProperty('_finalized') && this._finalized) {
@@ -216,6 +217,16 @@ export abstract class UpdatingElement extends HTMLElement {
       superCtor._finalize();
     }
     this._finalized = true;
+    // ensure private storage for property declarations.
+    if (!this.hasOwnProperty('_classProperties')) {
+      this._classProperties = new Map();
+      // NOTE: Workaround IE11 not supporting Map constructor argument.
+      const superProperties = Object.getPrototypeOf(this)._classProperties;
+      if (superProperties !== undefined) {
+        superProperties.forEach((v: any, k: PropertyKey) =>
+                                    this._classProperties.set(k, v));
+      }
+    }
     // initialize Map populated in observedAttributes
     this._attributeToPropertyMap = new Map();
     // make any properties
@@ -236,6 +247,7 @@ export abstract class UpdatingElement extends HTMLElement {
 
   /**
    * Returns the property name for the given attribute `name`.
+   * @nocollapse
    */
   private static _attributeNameForProperty(name: PropertyKey,
                                            options?: PropertyDeclaration) {
@@ -252,6 +264,7 @@ export abstract class UpdatingElement extends HTMLElement {
    * Returns true if a property should request an update.
    * Called when a property value is set and uses the `hasChanged`
    * option for the property if present or a strict identity check.
+   * @nocollapse
    */
   private static _valueHasChanged(value: unknown, old: unknown,
                                   hasChanged: HasChanged = notEqual) {
@@ -262,6 +275,7 @@ export abstract class UpdatingElement extends HTMLElement {
    * Returns the property value for the given attribute value.
    * Called via the `attributeChangedCallback` and uses the property's `type`
    * or `type.fromAttribute` property option.
+   * @nocollapse
    */
   private static _propertyValueFromAttribute(value: string,
                                              options?: PropertyDeclaration) {
@@ -283,6 +297,7 @@ export abstract class UpdatingElement extends HTMLElement {
    * If this returns null, the attribute will be removed, otherwise the
    * attribute will be set to the value.
    * This uses the property's `reflect` and `type.toAttribute` property options.
+   * @nocollapse
    */
   private static _propertyValueToAttribute(value: unknown,
                                            options?: PropertyDeclaration) {
