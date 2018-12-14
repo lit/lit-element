@@ -14,7 +14,7 @@ LitElement-based components update asynchronously in response to observed proper
 
 At a high level, the update lifecycle is:
 
-1.  A property is set. 
+1.  A property is set.
 2.  The property's `hasChanged` function evaluates whether the property has changed.
 3.  If the property has changed, `requestUpdate` fires, scheduling an update.
 4.  `shouldUpdate` checks whether the update should proceed.
@@ -25,9 +25,9 @@ At a high level, the update lifecycle is:
 
 ####  LitElement and the browser event loop
 
-The browser executes JavaScript code by processing a queue of tasks in the [event loop](https://developer.mozilla.org/en-US/docs/Web/JavaScript/EventLoop). In each iteration of the event loop, the browser takes a task from the queue and runs it to completion. 
+The browser executes JavaScript code by processing a queue of tasks in the [event loop](https://developer.mozilla.org/en-US/docs/Web/JavaScript/EventLoop). In each iteration of the event loop, the browser takes a task from the queue and runs it to completion.
 
-When the task completes, before taking the next task from the queue, the browser allocates time to perform work from other sources—including DOM updates, user interactions, and the microtask queue. 
+When the task completes, before taking the next task from the queue, the browser allocates time to perform work from other sources—including DOM updates, user interactions, and the microtask queue.
 
 LitElement updates are requested asynchronously as Promises, and are queued as microtasks. This means that updates are processed at the end of every iteration of the event loop, making updates fast and responsive.
 
@@ -35,12 +35,12 @@ For a more detailed explanation of the browser event loop, see [Jake Archibald's
 
 #### Promises and asynchronous functions
 
-LitElement uses [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) objects to schedule and respond to element updates. 
+LitElement uses [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) objects to schedule and respond to element updates.
 
 Using `async` and `await` makes it easy to work with Promises. For example, you can await the `updateComplete` Promise:
 
 ```js
-// `async` makes the function return a Promise & lets you use `await` 
+// `async` makes the function return a Promise & lets you use `await`
 async myFunc(data) {
   // Set a property, triggering an update
   this.myProp = data;
@@ -63,10 +63,10 @@ See the [Web Fundamentals primer on Promises](https://developers.google.com/web/
 
 ## Methods and properties
 
-In call order, the methods and properties in the update lifecycle are: 
+In call order, the methods and properties in the update lifecycle are:
 
 1.  [someProperty.hasChanged](#haschanged)
-1.  [requestUpdate](#requestupdate) 
+1.  [requestUpdate](#requestupdate)
 1.  [shouldUpdate](#shouldupdate)
 1.  [update](#update)
 1.  [render](#render)
@@ -119,7 +119,7 @@ To implement a custom property setter that supports property options, pass the p
 ### shouldUpdate
 
 ```js
-/** 
+/**
  * Implement to override default behavior.
  */
 shouldUpdate(changedProperties) { ... }
@@ -144,12 +144,12 @@ Controls whether an update should proceed. Implement `shouldUpdate` to specify w
 | **Params** | `changedProperties`| `Map`. Keys are the names of changed properties; Values are the corresponding previous values. |
 | **Updates?** | No | Property changes inside this method do not trigger an element update. |
 
-Reflects property values to attributes and calls `render` to render DOM via lit-html. Provided here for reference. You don't need to override or call this method. 
+Reflects property values to attributes and calls `render` to render DOM via lit-html. Provided here for reference. You don't need to override or call this method.
 
 ### render
 
 ```js
-/** 
+/**
  * Implement to override default behavior.
  */
 render() { ... }
@@ -165,7 +165,7 @@ See the documentation on [Templates](/templates) for more information.
 ### firstUpdated
 
 ```js
-/** 
+/**
  * Implement to override default behavior.
  */
 firstUpdated(changedProperties) { ... }
@@ -174,7 +174,7 @@ firstUpdated(changedProperties) { ... }
 | **Params** | `changedProperties`| `Map`. Keys are the names of changed properties; Values are the corresponding previous values. |
 | **Updates?** | Yes | Property changes inside this method will trigger an element update. |
 
-Called after the element's DOM has been updated the first time, immediately before [`updated`](#updated) is called. 
+Called after the element's DOM has been updated the first time, immediately before [`updated`](#updated) is called.
 
 Implement `firstUpdated` to perform one-time work after the element's template has been created.
 
@@ -189,7 +189,7 @@ Implement `firstUpdated` to perform one-time work after the element's template h
 ### updated
 
 ```js
-/** 
+/**
  * Implement to override default behavior.
  */
 updated(changedProperties) { ... }
@@ -330,7 +330,7 @@ this.requestUpdate('prop1', oldValue);
 
 #### Do something after the first update
 
-Implement [`firstUpdated`](#firstupdated): 
+Implement [`firstUpdated`](#firstupdated):
 
 ```js
 firstUpdated(changedProps) {

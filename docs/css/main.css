@@ -5,7 +5,8 @@ body {
   font-family: 'Google Sans', 'Roboto', 'Noto', sans-serif;
   -webkit-font-smoothing: antialiased;
   color: #222222;
-  line-height: 1.5;
+  font-size: 16px;
+  line-height: 24px;
 }
 
 a {
@@ -25,6 +26,11 @@ h2 {
 h3 {
   font-size: 20px;
   line-height: 30px;
+  font-weight: normal;
+}
+h4 {
+  font-size: 18px;
+  line-height: 28px;
   font-weight: normal;
 }
 
@@ -57,13 +63,6 @@ h2.description {
 ol li,
 ul li {
   padding-left: 12px;
-}
-
-article p {
-  font-family: 'Roboto', 'Noto', sans-serif;
-  font-size: 16px;
-  line-height: 26px;
-  max-width: 720px;
 }
 
 /* Code styles */
@@ -353,10 +352,49 @@ section p {
 article {
   flex: 1;
   margin: 40px 0;
-  /* Set min-width so article width will shrink
-  (and code snippets will horizontally scroll). */
   min-width: 1px;
+  max-width: 720px;
 }
+
+article h1 {
+  margin: 6px 0 16px 0;
+}
+
+article h2 {
+  margin: 60px 0 16px 0;
+}
+article h3,
+article h4 {
+  margin: 20px 0 16px 0;
+}
+
+article table,
+article p,
+article li {
+  font-family: 'Roboto', 'Noto', sans-serif;
+}
+
+article p {
+  margin: 16px 0;
+  max-width: 640px;
+}
+
+article ol,
+article ul {
+  padding-left: 24px;
+}
+
+
+article ul li {
+  padding-left: 0px;
+  margin: 4px 0;
+}
+
+article ol li {
+  padding-left: 6px;
+  margin: 4px 0;
+}
+
 
 .alert {
   position: relative;
@@ -369,8 +407,8 @@ article {
 
 .alert::before {
   position: absolute;
-  top: 16px;
-  left: 16px;
+  top: 17px;
+  left: 17px;
 }
 
 .alert.alert-info {
@@ -455,6 +493,7 @@ footer .social-links img {
 }
 
 table {
+  margin: 24px 0;
   border-collapse: collapse;
 }
 
@@ -464,12 +503,16 @@ thead {
   font-weight: 600;
 }
 
+tr:first-child {
+  border-top: 1px solid #ccc;
+}
 tr {
-  border-bottom: 1px solid #dadce0;
+  border-bottom: 1px solid #ccc;
 }
 
 th, td {
-  padding: 15px 20px;
+  padding: 8px 36px 8px 0;
+  vertical-align: top;
 }
 /* TODO: figure out if above rules are still needed */
 
