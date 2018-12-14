@@ -13,12 +13,12 @@
  */
 
 import {
+  ComplexAttributeConverter,
   html,
   LitElement,
   property,
   PropertyDeclarations,
-  PropertyValues,
-  ComplexAttributeConverter
+  PropertyValues
 } from '../lit-element.js';
 
 import {
