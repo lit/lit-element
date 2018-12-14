@@ -13,6 +13,25 @@
  */
 
 /**
+ * Returns the property descriptor for a property on this prototype by walking
+ * up the prototype chain. Note that we stop just before Object.prototype, which
+ * also avoids issues with Symbol polyfills (core-js, get-own-property-symbols),
+ * which create accessors for the symbols on Object.prototype.
+ */
+const descriptorFromPrototype =
+    (name: PropertyKey, proto: UpdatingElement) => {
+      if (name in proto) {
+        while (proto !== Object.prototype) {
+          if (proto.hasOwnProperty(name)) {
+            return Object.getOwnPropertyDescriptor(proto, name);
+          }
+          proto = Object.getPrototypeOf(proto);
+        }
+      }
+      return undefined;
+    }
+
+/**
  * Converts property values to and from attribute values.
  */
 export interface AttributeSerializer<T = any> {
@@ -73,6 +92,16 @@ export interface PropertyDeclaration<T = any> {
    * return `true` if an update should be requested.
    */
   hasChanged?(value: T, oldValue: T): boolean;
+
+  /**
+   * Indicates whether an accessor will be created for this property. By
+   * default, an accessor will be generated for this property that requests an
+   * update when set. If this flag is `true`, no accessor will be created, and
+   * it will be the user's responsibility to call
+   * `this.requestUpdate(propertyName, oldValue)` to request an update when
+   * the property changes.
+   */
+  noAccessor?: boolean;
 }
 
 /**
@@ -184,22 +213,37 @@ export abstract class UpdatingElement extends HTMLElement {
       }
     }
     this._classProperties.set(name, options);
-    // Allow user defined accessors by not replacing an existing accessor
-    // anywhere in the prototype chain.
-    if (name in this.prototype) {
-      return;
+    if (!options.noAccessor) {
+      const superDesc = descriptorFromPrototype(name, this.prototype);
+      let desc;
+      // If there is a super accessor, capture it and "super" to it
+      if (superDesc !== undefined && (superDesc.set && superDesc.get)) {
+        const {set, get} = superDesc;
+        desc = {
+          get() { return get.call(this) },
+          set(value: any) {
+            const oldValue = this[name];
+            set.call(this, value);
+            this.requestUpdate(name, oldValue);
+          },
+          configurable : true,
+          enumerable : true
+        }
+      } else {
+        const key = typeof name === 'symbol' ? Symbol() : `__${name}`;
+        desc = {
+          get() { return this[key]; },
+          set(value: any) {
+            const oldValue = this[name];
+            this[key] = value;
+            this.requestUpdate(name, oldValue);
+          },
+          configurable : true,
+          enumerable : true
+        };
+      }
+      Object.defineProperty(this.prototype, name, desc);
     }
-    const key = typeof name === 'symbol' ? Symbol() : `__${name}`;
-    Object.defineProperty(this.prototype, name, {
-      get() { return this[key]; },
-      set(value) {
-        const oldValue = this[name];
-        this[key] = value;
-        this.requestUpdate(name, oldValue);
-      },
-      configurable : true,
-      enumerable : true
-    });
   }
 
   /**
@@ -473,7 +517,7 @@ export abstract class UpdatingElement extends HTMLElement {
    * @returns {Promise} A Promise that is resolved when the update completes.
    */
   requestUpdate(name?: PropertyKey, oldValue?: any) {
-    if (name !== undefined) {
+    if (name !== undefined && !this._changedProperties.has(name)) {
       const ctor = this.constructor as typeof UpdatingElement;
       const options =
           ctor._classProperties.get(name) || defaultPropertyDeclaration;
@@ -482,9 +526,7 @@ export abstract class UpdatingElement extends HTMLElement {
         return this.updateComplete;
       }
       // track old value when changing.
-      if (!this._changedProperties.has(name)) {
-        this._changedProperties.set(name, oldValue);
-      }
+      this._changedProperties.set(name, oldValue);
       // add to reflecting properties set
       if (options.reflect === true) {
         if (this._reflectingProperties === undefined) {
