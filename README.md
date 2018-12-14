@@ -38,6 +38,8 @@ for additional information on how to create templates for lit-element.
     * `converter`: Indicates how to serialize and deserialize the attribute to/from a property.
     The value can be a function used for both serialization and deserialization, or it can
     be an object with individual functions via the optional keys, `fromAttribute` and `toAttribute`.
+    A default `converter` is used if none is provided; it supports
+    `Boolean`, `String`, `Number`, `Object`, and `Array`.
     * `type`: Indicates the type of the property. This is used only as a hint for the
     `converter` to determine how to serialize and deserialize the attribute
     to/from a property.

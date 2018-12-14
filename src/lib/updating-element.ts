@@ -62,7 +62,8 @@ export interface PropertyDeclaration<Type = any, TypeHint = any> {
    * deserialize function and `toAttribute` is a serialize function used to set
    * the property to an attribute. If no `toAttribute` function is provided and
    * `reflect` is set to `true`, the property value is set directly to the
-   * attribute.
+   * attribute. A default `converter` is used if none is provided; it supports
+   * `Boolean`, `String`, `Number`, `Object`, and `Array`.
    */
   converter?: AttributeConverter<Type, TypeHint>;
 
