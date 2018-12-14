@@ -15,28 +15,28 @@
 /**
  * Converts property values to and from attribute values.
  */
-export interface ComplexAttributeConverter<T = any> {
+export interface ComplexAttributeConverter<Type = any, TypeHint = any> {
 
   /**
    * Deserializing function called to convert an attribute value to a property
    * value.
    */
-  fromAttribute?(value: string, type?: any): T;
+  fromAttribute?(value: string, type?: TypeHint): Type;
 
   /**
    * Serializing function called to convert a property value to an attribute
    * value.
    */
-  toAttribute?(value: T, type?: any): string|null;
+  toAttribute?(value: Type, type?: TypeHint): string|null;
 }
 
-type AttributeConverter<T = any> =
-    ComplexAttributeConverter<T>|((value: string, type?: any) => T);
+type AttributeConverter<Type = any, TypeHint = any> =
+    ComplexAttributeConverter<Type>|((value: string, type?: TypeHint) => Type);
 
 /**
  * Defines options for a property accessor.
  */
-export interface PropertyDeclaration<T = any> {
+export interface PropertyDeclaration<Type = any, TypeHint = any> {
 
   /**
    * Indicates how and whether the property becomes an observed attribute.
@@ -52,7 +52,7 @@ export interface PropertyDeclaration<T = any> {
    * converter to determine how to serialize and deserialize the attribute
    * to/from a property.
    */
-  type?: T;
+  type?: TypeHint;
 
   /**
    * Indicates how to serialize and deserialize the attribute to/from a
@@ -64,7 +64,7 @@ export interface PropertyDeclaration<T = any> {
    * `reflect` is set to `true`, the property value is set directly to the
    * attribute.
    */
-  converter?: AttributeConverter<T>;
+  converter?: AttributeConverter<Type, TypeHint>;
 
   /**
    * Indicates if the property should reflect to an attribute.
@@ -80,7 +80,7 @@ export interface PropertyDeclaration<T = any> {
    * it is set. The function should take the `newValue` and `oldValue` and
    * return `true` if an update should be requested.
    */
-  hasChanged?(value: T, oldValue: T): boolean;
+  hasChanged?(value: Type, oldValue: Type): boolean;
 }
 
 /**

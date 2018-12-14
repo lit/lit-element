@@ -17,7 +17,8 @@ import {
   LitElement,
   property,
   PropertyDeclarations,
-  PropertyValues
+  PropertyValues,
+  ComplexAttributeConverter
 } from '../lit-element.js';
 
 import {
@@ -248,12 +249,12 @@ suite('LitElement', () => {
 
   test('property option `converter` can use `type` info', async () => {
     const FooType = {name : 'FooType'};
-    const converter = {
+    const converter: ComplexAttributeConverter = {
       fromAttribute :
-          (value: any,
+          (_value: any,
            type: any) => { return `fromAttribute: ${String(type.name)}`; },
       toAttribute :
-          (value: any,
+          (_value: any,
            type: any) => { return `toAttribute: ${String(type.name)}`; }
     };
 
