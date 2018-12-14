@@ -118,10 +118,10 @@ By default, LitElement uses the `String` constructor to serialize and deserializ
 
 `type` can be: 
 
-* A function that performs both serialization and deserialization:
+* A function that performs the deserialization (i.e. returns the property value from the attribute value). The `String` constructor is used to reflect the property value to the attribute.
 
   ```js
-  propName: { type: someFunction }
+  propName: { type: deserializerFunction }
   ```
 
 * An object with two function properties, `fromAttribute` and `toAttribute`. `fromAttribute` performs deserialization, and `toAttribute` performs serialization:
