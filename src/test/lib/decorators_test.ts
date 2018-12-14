@@ -46,6 +46,10 @@ const supportsPassive = (function() {
   if (hasPassive !== undefined) {
     return hasPassive;
   }
+  // Use an iframe since ShadyDOM will pass this test but doesn't actually
+  // enforce passive behavior.
+  const f = document.createElement('iframe');
+  document.body.appendChild(f);
   const fn = () => {};
   const event = 'foo';
   hasPassive = false;
@@ -55,8 +59,9 @@ const supportsPassive = (function() {
       return true;
     }
   };
-  document.body.addEventListener(event, fn, options);
-  document.body.removeEventListener(event, fn, options);
+  f.contentDocument!.addEventListener(event, fn, options);
+  f.contentDocument!.removeEventListener(event, fn, options as AddEventListenerOptions);
+  document.body.removeChild(f);
   return hasPassive;
 })();
 
