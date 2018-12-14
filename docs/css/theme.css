@@ -1,7 +1,9 @@
 /* Theme colors */
 a,
 h1,
-h2 {
+h2,
+h3,
+h4 {
   color: #2196F3;
 }
 

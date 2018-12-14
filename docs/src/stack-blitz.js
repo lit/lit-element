@@ -26,11 +26,11 @@ class StackBlitz extends LitElement {
           box-sizing: border-box;
           margin: 12px 0;
           padding: 13px 44px;
-          border: 2px solid #00A3E6;
+          border: 2px solid #2196F3;
           background-color: transparent;
           font-size: 14px;
           font-weight: 500;
-          color: #00A3E6;
+          color: #2196F3;
           text-align: center;
           text-decoration: none;
           text-transform: uppercase;
@@ -41,7 +41,7 @@ class StackBlitz extends LitElement {
 
         .pretty-button:hover,
         .pretty-button:active {
-          background-color: #00A3E6;
+          background-color: #2196F3;
           color: #FFF;
         }
 

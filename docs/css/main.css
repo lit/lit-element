@@ -44,7 +44,7 @@ h1.title:after {
   height: 1px;
   width: 32px;
   display: block;
-  margin-top: 16px;
+  margin-top: 8px;
 }
 h1.title.center,
 h1.title.center:after,
@@ -365,7 +365,7 @@ article h2 {
 }
 article h3,
 article h4 {
-  margin: 20px 0 16px 0;
+  margin: 40px 0 16px 0;
 }
 
 article table,
@@ -400,8 +400,8 @@ article ol li {
   position: relative;
   margin: 24px 0;
   padding: 1px 20px 1px 56px;
-  box-shadow: 0 0 5px rgba(0,0,0,.2);
-  border-radius: 5px;
+  box-shadow: 0 0 2px #ccc;
+  border-radius: 2px;
   box-sizing: border-box;
 }
 
@@ -411,16 +411,8 @@ article ol li {
   left: 17px;
 }
 
-.alert.alert-info {
-  color: #4285f4;
-}
-
 .alert.alert-info::before {
   content: url(/images/alerts/info.svg);
-}
-
-.alert.alert-warning {
-  color: #e42b00;
 }
 
 .alert.alert-warning::before {
