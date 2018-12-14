@@ -272,8 +272,8 @@ export abstract class UpdatingElement extends HTMLElement {
    * Returns the property name for the given attribute `name`.
    */
   private static _attributeNameForProperty(name: PropertyKey,
-                                           options?: PropertyDeclaration) {
-    const attribute = options !== undefined && options.attribute;
+                                           options: PropertyDeclaration) {
+    const attribute = options.attribute;
     return attribute === false
                ? undefined
                : (typeof attribute === 'string'
@@ -298,9 +298,9 @@ export abstract class UpdatingElement extends HTMLElement {
    * `converter` or `converter.fromAttribute` property option.
    */
   private static _propertyValueFromAttribute(value: string,
-                                             options?: PropertyDeclaration) {
-    const type = options && options.type;
-    const converter = options && options.converter || defaultConverter;
+                                             options: PropertyDeclaration) {
+    const type = options.type;
+    const converter = options.converter || defaultConverter;
     const fromAttribute =
         (typeof converter === 'function' ? converter : converter.fromAttribute);
     return fromAttribute ? fromAttribute(value, type) : value;
@@ -314,12 +314,12 @@ export abstract class UpdatingElement extends HTMLElement {
    * This uses the property's `reflect` and `type.toAttribute` property options.
    */
   private static _propertyValueToAttribute(value: unknown,
-                                           options?: PropertyDeclaration) {
-    if (options === undefined || options.reflect === undefined) {
+                                           options: PropertyDeclaration) {
+    if (options.reflect === undefined) {
       return;
     }
-    const type = options && options.type;
-    const converter = options && options.converter;
+    const type = options.type;
+    const converter = options.converter;
     const toAttribute =
         converter && (converter as ComplexAttributeConverter).toAttribute ||
         defaultConverter.toAttribute;
@@ -472,7 +472,7 @@ export abstract class UpdatingElement extends HTMLElement {
       const ctor = (this.constructor as typeof UpdatingElement);
       const propName = ctor._attributeToPropertyMap.get(name);
       if (propName !== undefined) {
-        const options = ctor._classProperties.get(propName);
+        const options = ctor._classProperties.get(propName) || defaultPropertyDeclaration;
         this[propName as keyof this] =
             ctor._propertyValueFromAttribute(value, options);
       }
