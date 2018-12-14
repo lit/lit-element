@@ -299,6 +299,13 @@ suite('LitElement', () => {
     assert.equal(el.num, 'fromAttribute: Number');
     assert.equal(el.str, 'fromAttribute: String');
     assert.equal(el.foo, 'fromAttribute: FooType');
+    assert.equal(el.getAttribute('num'), null);
+    assert.equal(el.getAttribute('str'), null);
+    assert.equal(el.getAttribute('foo'), null);
+    el.num = 0;
+    el.str = '';
+    el.foo = {};
+    await el.updateComplete;
     assert.equal(el.getAttribute('num'), 'toAttribute: Number');
     assert.equal(el.getAttribute('str'), 'toAttribute: String');
     assert.equal(el.getAttribute('foo'), 'toAttribute: FooType');
@@ -753,7 +760,7 @@ suite('LitElement', () => {
       assert.equal(el.getAttribute('zug'), '6');
       el.setAttribute('zug', '7');
       await el.updateComplete;
-      assert.equal(el.getAttribute('zug'), '107');
+      assert.equal(el.getAttribute('zug'), '7');
       assert.equal(el[zug], 107);
     });
   }
@@ -1145,12 +1152,12 @@ suite('LitElement', () => {
          await el.updateComplete;
          assert.equal(el.updateCount, 2);
          assert.equal(el.bar, 7);
-         assert.equal(el.getAttribute('attr-bar'), `7-attr`);
+         assert.equal(el.getAttribute('attr-bar'), `7`);
          el.bar = 4;
          await el.updateComplete;
          assert.equal(el.updateCount, 2);
          assert.equal(el.bar, 4);
-         assert.equal(el.getAttribute('attr-bar'), `7-attr`);
+         assert.equal(el.getAttribute('attr-bar'), `7`);
          el.setAttribute('attr-bar', '3');
          await el.updateComplete;
          assert.equal(el.updateCount, 2);

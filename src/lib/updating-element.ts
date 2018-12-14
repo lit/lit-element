@@ -63,7 +63,10 @@ export interface PropertyDeclaration<Type = any, TypeHint = any> {
    * the property to an attribute. If no `toAttribute` function is provided and
    * `reflect` is set to `true`, the property value is set directly to the
    * attribute. A default `converter` is used if none is provided; it supports
-   * `Boolean`, `String`, `Number`, `Object`, and `Array`.
+   * `Boolean`, `String`, `Number`, `Object`, and `Array`. Note,
+   * when a property changes and the converter is used to update the attribute,
+   * the property is never updated again as a result of the attribute changing,
+   * and visa versa.
    */
   converter?: AttributeConverter<Type, TypeHint>;
 
@@ -468,14 +471,19 @@ export abstract class UpdatingElement extends HTMLElement {
   private _attributeToProperty(name: string, value: string) {
     // Use tracking info to avoid deserializing attribute value if it was
     // just set from a property setter.
-    if (!(this._updateState & STATE_IS_REFLECTING)) {
-      const ctor = (this.constructor as typeof UpdatingElement);
-      const propName = ctor._attributeToPropertyMap.get(name);
-      if (propName !== undefined) {
-        const options = ctor._classProperties.get(propName) || defaultPropertyDeclaration;
-        this[propName as keyof this] =
-            ctor._propertyValueFromAttribute(value, options);
-      }
+    if (this._updateState & STATE_IS_REFLECTING) {
+      return;
+    }
+    const ctor = (this.constructor as typeof UpdatingElement);
+    const propName = ctor._attributeToPropertyMap.get(name);
+    if (propName !== undefined) {
+      const options = ctor._classProperties.get(propName) || defaultPropertyDeclaration;
+      // mark state reflecting
+      this._updateState = this._updateState | STATE_IS_REFLECTING;
+      this[propName as keyof this] =
+          ctor._propertyValueFromAttribute(value, options);
+      // mark state not reflecting
+      this._updateState = this._updateState & ~STATE_IS_REFLECTING;
     }
   }
 
@@ -515,12 +523,13 @@ export abstract class UpdatingElement extends HTMLElement {
                                options.hasChanged)) {
       return this.updateComplete;
     }
-    // track old value when changing.
+    // Track old value when changing.
     if (!this._changedProperties.has(name)) {
       this._changedProperties.set(name, oldValue);
     }
-    // add to reflecting properties set
-    if (options.reflect === true) {
+    // Add to reflecting properties set if `reflect` is true and the property
+    // is not reflecting from the attribute
+    if (options.reflect === true &&  !(this._updateState & STATE_IS_REFLECTING)) {
       if (this._reflectingProperties === undefined) {
         this._reflectingProperties = new Map();
       }

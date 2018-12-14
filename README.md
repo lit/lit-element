@@ -42,7 +42,9 @@ for additional information on how to create templates for lit-element.
     `Boolean`, `String`, `Number`, `Object`, and `Array`.
     * `type`: Indicates the type of the property. This is used only as a hint for the
     `converter` to determine how to serialize and deserialize the attribute
-    to/from a property.
+    to/from a property. Note, when a property changes and the converter is used
+    to update the attribute, the property is never updated again as a result of
+    the attribute changing, and visa versa.
     * `reflect`: Indicates whether the property should reflect to its associated
     attribute (as determined by the attribute option).
     If `true`, when the property is set, the attribute which name is determined
