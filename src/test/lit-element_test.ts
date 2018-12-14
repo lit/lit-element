@@ -249,6 +249,14 @@ suite('LitElement', () => {
 
   test('property option `converter` can use `type` info', async () => {
     const FooType = {name : 'FooType'};
+    // Make test work on IE where these are undefined.
+    if (!('name' in String)) {
+      (String as any).name = (String as any).name || 'String';
+    }
+    if (!('name' in Number)) {
+      (Number as any).name = (Number as any).name || 'Number';
+    }
+
     const converter: ComplexAttributeConverter = {
       fromAttribute :
           (_value: any,
