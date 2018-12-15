@@ -477,7 +477,8 @@ export abstract class UpdatingElement extends HTMLElement {
     const ctor = (this.constructor as typeof UpdatingElement);
     const propName = ctor._attributeToPropertyMap.get(name);
     if (propName !== undefined) {
-      const options = ctor._classProperties.get(propName) || defaultPropertyDeclaration;
+      const options =
+          ctor._classProperties.get(propName) || defaultPropertyDeclaration;
       // mark state reflecting
       this._updateState = this._updateState | STATE_IS_REFLECTING;
       this[propName as keyof this] =
@@ -529,7 +530,8 @@ export abstract class UpdatingElement extends HTMLElement {
     }
     // Add to reflecting properties set if `reflect` is true and the property
     // is not reflecting from the attribute
-    if (options.reflect === true &&  !(this._updateState & STATE_IS_REFLECTING)) {
+    if (options.reflect === true &&
+        !(this._updateState & STATE_IS_REFLECTING)) {
       if (this._reflectingProperties === undefined) {
         this._reflectingProperties = new Map();
       }
