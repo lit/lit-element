@@ -11,7 +11,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 -->
 
 ## Unreleased
-* Types for the `property` and `customElement` decorators updated ([#288](https://github.com/Polymer/lit-element/issues/288) and [#291](https://github.com/Polymer/lit-element/issues/291)).
 
 ### Fixed
 * [Breaking] User defined accessors are now wrapped to enable better composition ([#286](https://github.com/Polymer/lit-element/issues/286))
@@ -19,7 +18,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- ### Changed -->
 <!-- ### Added -->
 <!-- ### Removed -->
-<!-- ### Fixed -->
+### Fixed
+* Type for `eventOptions` decorator now properly includes `passive` and `once` options ([#325](https://github.com/Polymer/lit-element/issues/325))
+
+## [0.6.5] - 2018-12-13
+### Changed:
+* Use lit-html 1.0 release candidate.
+
+### Fixed
+* Types for the `property` and `customElement` decorators updated ([#288](https://github.com/Polymer/lit-element/issues/288) and [#291](https://github.com/Polymer/lit-element/issues/291)).
+* Docs updated.
 
 ## [0.6.4] - 2018-11-30
 ### Changed
