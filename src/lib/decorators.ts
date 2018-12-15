@@ -55,8 +55,8 @@ export const customElement = (tagName: string) =>
  * corresponding attribute value. A `PropertyDeclaration` may optionally be
  * supplied to configure property features.
  */
-export const property = (options?: PropertyDeclaration) => (proto: Object,
-                                                            name: PropertyKey) => {
+export const property = (options?: PropertyDeclaration) => (
+    proto: Object, name: PropertyKey) => {
   (proto.constructor as typeof UpdatingElement).createProperty(name, options);
 };
 
@@ -116,7 +116,7 @@ function _query<T>(queryFn: (target: NodeSelector, selector: string) => T) {
  *       }
  *     }
  */
-export const eventOptions = (options: EventListenerOptions) =>
+export const eventOptions = (options: AddEventListenerOptions) =>
     (proto: any, name: string) => {
       // This comment is here to fix a disagreement between formatter and linter
       Object.assign(proto[name], options);

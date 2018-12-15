@@ -10,10 +10,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
    Unreleased section, uncommenting the header as necessary.
 -->
 
+## Unreleased
+
 <!-- ### Changed -->
 <!-- ### Added -->
 <!-- ### Removed -->
-<!-- ### Fixed -->
+### Fixed
+* Type for `eventOptions` decorator now properly includes `passive` and `once` options ([#325](https://github.com/Polymer/lit-element/issues/325))
 
 ## [0.6.5] - 2018-12-13
 ### Changed:
