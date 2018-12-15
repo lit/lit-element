@@ -434,6 +434,36 @@ suite('LitElement', () => {
     assert.deepEqual(el.defaultReflectArr, null);
   });
 
+  test('if a `reflect: true` property\'s `converter.toAttribute` returns `undefined`, the attribute does not change', async () => {
+    class E extends LitElement {
+      static get properties() {
+        return {
+          foo: {reflect: true}
+        };
+      }
+
+      foo?: any;
+      render() { return html``; }
+    }
+    const name = generateElementName();
+    customElements.define(name, E);
+    const el = new E();
+    container.appendChild(el);
+    await el.updateComplete;
+    el.setAttribute('foo', 'foo');
+    assert.equal(el.foo, 'foo');
+    await el.updateComplete;
+    el.foo = 'foo2';
+    await el.updateComplete;
+    assert.equal(el.getAttribute('foo'), 'foo2');
+    el.foo = undefined;
+    await el.updateComplete;
+    assert.equal(el.getAttribute('foo'), 'foo2');
+    el.foo = 'foo3';
+    await el.updateComplete;
+    assert.equal(el.getAttribute('foo'), 'foo3');
+  });
+
   test('property options via decorator', async () => {
     const hasChanged = (value: any, old: any) =>
         old === undefined || value > old;
