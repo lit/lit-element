@@ -550,7 +550,7 @@ export abstract class UpdatingElement extends HTMLElement {
    * to schedule updates to occur just before the next frame:
    *
    * ```
-   * protected async scheduleUpdate(): Promise<unknown> {
+   * protected async performUpdate(): Promise<unknown> {
    *   await new Promise((resolve) => requestAnimationFrame(() => resolve());
    *   super.performUpdate();
    * }
