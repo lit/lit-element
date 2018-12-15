@@ -108,7 +108,9 @@ export const defaultConverter: ComplexAttributeConverter = {
       return value ? '' : null;
     case Object:
     case Array:
-      return JSON.stringify(value);
+      // if the value is `null` or `undefined` pass this through
+      // to allow removing/no change behavior.
+      return value == null ? value : JSON.stringify(value);
     }
     return value;
   },
