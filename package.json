@@ -1,6 +1,6 @@
 {
   "name": "@polymer/lit-element",
-  "version": "0.6.4",
+  "version": "0.6.5",
   "description": "Polymer based lit-html custom element",
   "license": "BSD-3-Clause",
   "repository": "Polymer/lit-element",
@@ -11,7 +11,7 @@
   },
   "scripts": {
     "build": "tsc",
-    "gen-docs": "typedoc --readme none --mode modules --excludeNotExported --excludePrivate --exclude **/*_test.ts --out ./docs/api .",
+    "gen-docs": "typedoc --readme none --tsconfig tsconfig_apidoc.json --mode modules --theme minimal --excludeNotExported --excludePrivate --ignoreCompilerErrors --exclude '{**/*test*,**/node_modules/**,**/test/**}' --out ./docs/api src/**/*.ts",
     "test": "npm run build && wct",
     "checksize": "rollup -c ; rm lit-element.bundled.js",
     "format": "find src test | grep '\\.js$\\|\\.ts$' | xargs clang-format --style=file -i",
@@ -40,7 +40,7 @@
   },
   "typings": "lit-element.d.ts",
   "dependencies": {
-    "lit-html": "^0.14.0"
+    "lit-html": "^1.0.0-rc.1"
   },
   "publishConfig": {
     "access": "public"
