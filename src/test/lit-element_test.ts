@@ -1331,8 +1331,9 @@ suite('LitElement', () => {
   });
 
   test('user accessors correctly wrapped', async () => {
+    // Sup implements an accessor that clamps to a maximum in the setter
     class Sup extends LitElement {
-      _supSet?: number;
+      _supSetCount?: number;
       _oldFoo?: any;
       _foo?: number;
       static get properties() { return {foo : {type : Number}}; }
@@ -1341,7 +1342,7 @@ suite('LitElement', () => {
         this.foo = 0;
       }
       set foo(v: number) {
-        this._supSet = (this._supSet || 0) + 1;
+        this._supSetCount = (this._supSetCount || 0) + 1;
         this._foo = Math.min(v, 10);
       }
       get foo(): number { return this._foo as number; }
@@ -1352,11 +1353,13 @@ suite('LitElement', () => {
       render() { return html`${this.foo}`; }
     }
     customElements.define(generateElementName(), Sup);
+    
+    // Sub implements an accessor that rounds down in the getter
     class Sub extends Sup {
-      _subSet?: number;
+      _subSetCount?: number;
       static get properties() { return {foo : {type : Number}}; }
       set foo(v: number) {
-        this._subSet = (this._subSet || 0) + 1;
+        this._subSetCount = (this._subSetCount || 0) + 1;
         super.foo = v;
       }
       get foo(): number {
@@ -1371,28 +1374,28 @@ suite('LitElement', () => {
     await sup.updateComplete;
     assert.equal(sup.foo, 0);
     assert.equal(sup._oldFoo, undefined);
-    assert.equal(sup._supSet, 1);
+    assert.equal(sup._supSetCount, 1);
     assert.equal(sup.shadowRoot!.textContent, '0');
 
     sup.foo = 5;
     await sup.updateComplete;
     assert.equal(sup.foo, 5);
     assert.equal(sup._oldFoo, 0);
-    assert.equal(sup._supSet, 2);
+    assert.equal(sup._supSetCount, 2);
     assert.equal(sup.shadowRoot!.textContent, '5');
 
     sup.foo = 20;
     await sup.updateComplete;
     assert.equal(sup.foo, 10); // (user getter implements a max of 10)
     assert.equal(sup._oldFoo, 5);
-    assert.equal(sup._supSet, 3);
+    assert.equal(sup._supSetCount, 3);
     assert.equal(sup.shadowRoot!.textContent, '10');
 
     sup.foo = 5;
     await sup.updateComplete;
     assert.equal(sup.foo, 5);
     assert.equal(sup._oldFoo, 10);
-    assert.equal(sup._supSet, 4);
+    assert.equal(sup._supSetCount, 4);
     assert.equal(sup.shadowRoot!.textContent, '5');
 
     const sub = new Sub();
@@ -1400,28 +1403,32 @@ suite('LitElement', () => {
     await sub.updateComplete;
     assert.equal(sub.foo, 0);
     assert.equal(sub._oldFoo, undefined);
-    assert.equal(sub._subSet, 1);
+    assert.equal(sub._supSetCount, 1);
+    assert.equal(sub._subSetCount, 1);
     assert.equal(sub.shadowRoot!.textContent, '0');
 
     sub.foo = 5;
     await sub.updateComplete;
     assert.equal(sub.foo, 5);
     assert.equal(sub._oldFoo, 0);
-    assert.equal(sub._subSet, 2);
+    assert.equal(sub._supSetCount, 2);
+    assert.equal(sub._subSetCount, 2);
     assert.equal(sub.shadowRoot!.textContent, '5');
 
     sub.foo = 7.5;
     await sub.updateComplete;
     assert.equal(sub.foo, 7); // (sub setter rounds down)
     assert.equal(sub._oldFoo, 5);
-    assert.equal(sub._subSet, 3);
+    assert.equal(sub._supSetCount, 3);
+    assert.equal(sub._subSetCount, 3);
     assert.equal(sub.shadowRoot!.textContent, '7');
 
     sub.foo = 20;
     await sub.updateComplete;
     assert.equal(sub.foo, 10); // (super user getter maxes at 10)
     assert.equal(sub._oldFoo, 7);
-    assert.equal(sub._subSet, 4);
+    assert.equal(sub._supSetCount, 4);
+    assert.equal(sub._subSetCount, 4);
     assert.equal(sub.shadowRoot!.textContent, '10');
   });
 
@@ -1491,7 +1498,56 @@ suite('LitElement', () => {
     assert.equal(el._updateCount, 3);
   });
 
-  test('attributeChangedCallback based rendering', async () => {
+  test('attribute-based property storage', async () => {
+    class E extends LitElement {
+      _updateCount = 0;
+      static get properties() {
+        return {
+          foo : {type : String},
+          bar : {type : String}
+        };
+      }
+      set foo(value: string|null) { this.setAttribute('foo', value as string); }
+      get foo() { return this.getAttribute('foo') || 'defaultFoo'; }
+      set bar(value: string|null) { this.setAttribute('bar', value as string); }
+      get bar() { return this.getAttribute('bar') || 'defaultBar'; }
+      update(changedProperties: PropertyValues) {
+        this._updateCount++;
+        super.update(changedProperties);
+      }
+      render() { return html`${this.foo}-${this.bar}`; }
+    }
+    customElements.define(generateElementName(), E);
+
+    const el = new E();
+    el.foo = 'foo1';
+    document.body.appendChild(el);
+    await el.updateComplete;
+    assert.equal(el.foo, 'foo1');
+    assert.equal(el.bar, 'defaultBar');
+    assert.equal(el.shadowRoot!.textContent, 'foo1-defaultBar');
+    assert.equal(el._updateCount, 1);
+
+    el.foo = 'foo2';
+    el.bar = 'bar';
+    await el.updateComplete;
+    assert.equal(el.foo, 'foo2');
+    assert.equal(el.bar, 'bar');
+    assert.equal(el.getAttribute('foo'), 'foo2');
+    assert.equal(el.getAttribute('bar'), 'bar');
+    assert.equal(el.shadowRoot!.textContent, 'foo2-bar');
+    assert.equal(el._updateCount, 2);
+
+    el.foo = 'foo3';
+    await el.updateComplete;
+    assert.equal(el.foo, 'foo3');
+    assert.equal(el.getAttribute('foo'), 'foo3');
+    assert.equal(el.getAttribute('bar'), 'bar');
+    assert.equal(el.shadowRoot!.textContent, 'foo3-bar');
+    assert.equal(el._updateCount, 3);
+  });
+
+  test('attributeChangedCallback-based updating', async () => {
     class E extends LitElement {
       _updateCount = 0;
       static get properties() {
@@ -1504,8 +1560,8 @@ suite('LitElement', () => {
       get foo() { return this.getAttribute('foo') || 'defaultFoo'; }
       set bar(value: string|null) { this.setAttribute('bar', value as string); }
       get bar() { return this.getAttribute('bar') || 'defaultBar'; }
-      attributeChangedCallback(name: string, old: null|string,
-                               _value: null|string) {
+      attributeChangedCallback(name: string, old: string, value: string) {
+        super.attributeChangedCallback(name, old, value);
         this.requestUpdate(name, old);
       }
       update(changedProperties: PropertyValues) {
