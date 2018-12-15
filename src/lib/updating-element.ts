@@ -13,8 +13,10 @@
  */
 
 /**
- * When using Closure Compiler, JSCompiler_renameProperty(property, object) is replaced by the munged name for object[property]
- * We cannot alias this function, so we have to use a small shim that has the same behavior when not compiling.
+ * When using Closure Compiler, JSCompiler_renameProperty(property, object) is
+ * replaced by the munged name for object[property] We cannot alias this
+ * function, so we have to use a small shim that has the same behavior when not
+ * compiling.
  */
 const JSCompiler_renameProperty = (prop: PropertyKey, _obj: any) => prop;
 
@@ -175,13 +177,14 @@ export abstract class UpdatingElement extends HTMLElement {
 
   /**
    * Ensures the private `_classProperties` property metadata is created.
-   * In addition to `_finalize` this is also called in `createProperty` to ensure
-   * the `@property` decorator can add property metadata.
+   * In addition to `_finalize` this is also called in `createProperty` to
+   * ensure the `@property` decorator can add property metadata.
    */
   /** @nocollapse */
   private static _ensureClassProperties() {
     // ensure private storage for property declarations.
-    if (!this.hasOwnProperty(JSCompiler_renameProperty('_classProperties', this))) {
+    if (!this.hasOwnProperty(
+            JSCompiler_renameProperty('_classProperties', this))) {
       this._classProperties = new Map();
       // NOTE: Workaround IE11 not supporting Map constructor argument.
       const superProperties = Object.getPrototypeOf(this)._classProperties;
@@ -203,7 +206,8 @@ export abstract class UpdatingElement extends HTMLElement {
                         options:
                             PropertyDeclaration = defaultPropertyDeclaration) {
     // Note, since this can be called by the `@property` decorator which
-    // is called before `_finalize`, we ensure storage exists for property metadata.
+    // is called before `_finalize`, we ensure storage exists for property
+    // metadata.
     this._ensureClassProperties();
     this._classProperties!.set(name, options);
     // Allow user defined accessors by not replacing an existing own-property
@@ -230,7 +234,8 @@ export abstract class UpdatingElement extends HTMLElement {
    * @nocollapse
    */
   private static _finalize() {
-    if (this.hasOwnProperty(JSCompiler_renameProperty('finalized', this)) && this.finalized) {
+    if (this.hasOwnProperty(JSCompiler_renameProperty('finalized', this)) &&
+        this.finalized) {
       return;
     }
     // finalize any superclasses

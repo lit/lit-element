@@ -338,9 +338,7 @@ suite('LitElement', () => {
     class E extends LitElement {
 
       static get properties() {
-        return {
-          foo: {type: Number, reflect: true}
-        };
+        return {foo : {type : Number, reflect : true}};
       }
 
       foo = 1;
@@ -353,8 +351,7 @@ suite('LitElement', () => {
 
     class F extends E {
 
-      @property({type: Number})
-      foo = 2;
+      @property({type : Number}) foo = 2;
     }
 
     customElements.define(generateElementName(), F);
