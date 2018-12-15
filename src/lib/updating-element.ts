@@ -13,6 +13,12 @@
  */
 
 /**
+ * When using Closure Compiler, JSCompiler_renameProperty(property, object) is replaced by the munged name for object[property]
+ * We cannot alias this function, so we have to use a small shim that has the same behavior when not compiling.
+ */
+const JSCompiler_renameProperty = (prop: PropertyKey, _obj: any) => prop;
+
+/**
  * Converts property values to and from attribute values.
  */
 export interface AttributeSerializer<T = any> {
@@ -137,20 +143,14 @@ export abstract class UpdatingElement extends HTMLElement {
   private static _attributeToPropertyMap: AttributeMap = new Map();
 
   /**
-   * Marks class as having finished creating properties. This is public only to
-   * ensure that the export can allow it to be accessed by name with
-   * Object.hasOwnProperty() when compiled.
-   * @export
+   * Marks class as having finished creating properties.
    */
-  static _finalized = true;
+  protected static finalized = true;
 
   /**
    * Memoized list of all class properties, including any superclass properties.
-   * This is public only to ensure that the export can allow it to be accessed
-   * by name with Object.hasOwnProperty() when compiled.
-   * @export
    */
-  static _classProperties: PropertyDeclarationMap = new Map();
+  private static _classProperties?: PropertyDeclarationMap;
 
   /** @nocollapse */
   static properties: PropertyDeclarations = {};
@@ -163,7 +163,7 @@ export abstract class UpdatingElement extends HTMLElement {
     // note: piggy backing on this to ensure we're _finalized.
     this._finalize();
     const attributes = [];
-    for (const [p, v] of this._classProperties) {
+    for (const [p, v] of this._classProperties!) {
       const attr = this._attributeNameForProperty(p, v);
       if (attr !== undefined) {
         this._attributeToPropertyMap.set(attr, p);
@@ -171,6 +171,25 @@ export abstract class UpdatingElement extends HTMLElement {
       }
     }
     return attributes;
+  }
+
+  /**
+   * Ensures the private `_classProperties` property metadata is created.
+   * In addition to `_finalize` this is also called in `createProperty` to ensure
+   * the `@property` decorator can add property metadata.
+   */
+  /** @nocollapse */
+  private static _ensureClassProperties() {
+    // ensure private storage for property declarations.
+    if (!this.hasOwnProperty(JSCompiler_renameProperty('_classProperties', this))) {
+      this._classProperties = new Map();
+      // NOTE: Workaround IE11 not supporting Map constructor argument.
+      const superProperties = Object.getPrototypeOf(this)._classProperties;
+      if (superProperties !== undefined) {
+        superProperties.forEach((v: any, k: PropertyKey) =>
+                                    this._classProperties!.set(k, v));
+      }
+    }
   }
 
   /**
@@ -183,7 +202,10 @@ export abstract class UpdatingElement extends HTMLElement {
   static createProperty(name: PropertyKey,
                         options:
                             PropertyDeclaration = defaultPropertyDeclaration) {
-    this._classProperties.set(name, options);
+    // Note, since this can be called by the `@property` decorator which
+    // is called before `_finalize`, we ensure storage exists for property metadata.
+    this._ensureClassProperties();
+    this._classProperties!.set(name, options);
     // Allow user defined accessors by not replacing an existing own-property
     // accessor.
     if (this.prototype.hasOwnProperty(name)) {
@@ -208,7 +230,7 @@ export abstract class UpdatingElement extends HTMLElement {
    * @nocollapse
    */
   private static _finalize() {
-    if (this.hasOwnProperty('_finalized') && this._finalized) {
+    if (this.hasOwnProperty(JSCompiler_renameProperty('finalized', this)) && this.finalized) {
       return;
     }
     // finalize any superclasses
@@ -216,17 +238,8 @@ export abstract class UpdatingElement extends HTMLElement {
     if (typeof superCtor._finalize === 'function') {
       superCtor._finalize();
     }
-    this._finalized = true;
-    // ensure private storage for property declarations.
-    if (!this.hasOwnProperty('_classProperties')) {
-      this._classProperties = new Map();
-      // NOTE: Workaround IE11 not supporting Map constructor argument.
-      const superProperties = Object.getPrototypeOf(this)._classProperties;
-      if (superProperties !== undefined) {
-        superProperties.forEach((v: any, k: PropertyKey) =>
-                                    this._classProperties.set(k, v));
-      }
-    }
+    this.finalized = true;
+    this._ensureClassProperties();
     // initialize Map populated in observedAttributes
     this._attributeToPropertyMap = new Map();
     // make any properties
@@ -365,7 +378,7 @@ export abstract class UpdatingElement extends HTMLElement {
    */
   private _saveInstanceProperties() {
     for (const [p] of (this.constructor as typeof UpdatingElement)
-             ._classProperties) {
+             ._classProperties!) {
       if (this.hasOwnProperty(p)) {
         const value = this[p as keyof this];
         delete this[p as keyof this];
@@ -462,7 +475,7 @@ export abstract class UpdatingElement extends HTMLElement {
       const ctor = (this.constructor as typeof UpdatingElement);
       const propName = ctor._attributeToPropertyMap.get(name);
       if (propName !== undefined) {
-        const options = ctor._classProperties.get(propName);
+        const options = ctor._classProperties!.get(propName);
         this[propName as keyof this] =
             ctor._propertyValueFromAttribute(value, options);
       }
@@ -485,7 +498,7 @@ export abstract class UpdatingElement extends HTMLElement {
   requestUpdate(name?: PropertyKey, oldValue?: any) {
     if (name !== undefined) {
       const options = (this.constructor as typeof UpdatingElement)
-                          ._classProperties.get(name) ||
+                          ._classProperties!.get(name) ||
                       defaultPropertyDeclaration;
       return this._requestPropertyUpdate(name, oldValue, options);
     }

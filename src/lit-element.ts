@@ -23,6 +23,12 @@ export {html, svg} from 'lit-html/lit-html';
 export class LitElement extends UpdatingElement {
 
   /**
+   * Ensure this class is marked as `finalized` as an optimization ensuring
+   * it will not needlessly try to `finalize`.
+   */
+  protected static finalized = true;
+
+  /**
    * Render method used to render the lit-html TemplateResult to the element's
    * DOM.
    * @param {TemplateResult} Template to render.
