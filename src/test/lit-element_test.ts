@@ -1353,7 +1353,7 @@ suite('LitElement', () => {
       render() { return html`${this.foo}`; }
     }
     customElements.define(generateElementName(), Sup);
-    
+
     // Sub implements an accessor that rounds down in the getter
     class Sub extends Sup {
       _subSetCount?: number;
@@ -1502,10 +1502,7 @@ suite('LitElement', () => {
     class E extends LitElement {
       _updateCount = 0;
       static get properties() {
-        return {
-          foo : {type : String},
-          bar : {type : String}
-        };
+        return {foo : {type : String}, bar : {type : String}};
       }
       set foo(value: string|null) { this.setAttribute('foo', value as string); }
       get foo() { return this.getAttribute('foo') || 'defaultFoo'; }

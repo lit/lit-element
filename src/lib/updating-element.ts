@@ -18,18 +18,17 @@
  * also avoids issues with Symbol polyfills (core-js, get-own-property-symbols),
  * which create accessors for the symbols on Object.prototype.
  */
-const descriptorFromPrototype =
-    (name: PropertyKey, proto: UpdatingElement) => {
-      if (name in proto) {
-        while (proto !== Object.prototype) {
-          if (proto.hasOwnProperty(name)) {
-            return Object.getOwnPropertyDescriptor(proto, name);
-          }
-          proto = Object.getPrototypeOf(proto);
-        }
+const descriptorFromPrototype = (name: PropertyKey, proto: UpdatingElement) => {
+  if (name in proto) {
+    while (proto !== Object.prototype) {
+      if (proto.hasOwnProperty(name)) {
+        return Object.getOwnPropertyDescriptor(proto, name);
       }
-      return undefined;
-    };
+      proto = Object.getPrototypeOf(proto);
+    }
+  }
+  return undefined;
+};
 
 /**
  * Converts property values to and from attribute values.
