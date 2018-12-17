@@ -14,6 +14,9 @@ Declare your element's properties by implementing the `properties` getter, or wi
 
 LitElement automatically observes declared properties. When a property changes, LitElement updates your element in the [element update lifecycle](lifecycle).
 
+{:.alert .alert-warning}
+**Initialize property values in the constructor.** To provide a default value for a property, initialize the property in the element constructor. See [Initialize property values](#initialize) for more information.
+ 
 ### Implement a properties getter
 
 To declare properties in the `properties` getter:
@@ -76,7 +79,7 @@ Property declarations can be specified in the `properties` getter or with TypeSc
 
 {% include project.html folder="docs/properties/declaretypescript" openFile="my-element.js" %}
 
-## Initialize property values
+## Initialize property values {#initialize}
 
 Initialize default property values in the element constructor:
 
