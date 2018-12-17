@@ -1247,6 +1247,73 @@ suite('LitElement', () => {
        });
 
   test(
+      'User defined accessor not overwritten by subclass, but subclass property options respected',
+      async () => {
+        class E extends LitElement {
+          __foo?: number;
+
+          static get properties(): PropertyDeclarations {
+            return {bar : {hasChanged : () => false}, foo : {}};
+          }
+
+          get foo() { return this.__foo; }
+
+          set foo(value) {
+            const old = this.foo;
+            this.__foo = Number(value);
+            this.requestUpdate('foo', old);
+          }
+
+          render() { return html``; }
+        }
+        class F extends E {
+          __bar?: string;
+
+          static get properties(): PropertyDeclarations {
+            return {bar : {}, foo : {reflect : true}};
+          }
+
+          get bar() { return this.__bar; }
+
+          set bar(value) {
+            const old = this.foo;
+            this.__bar = value;
+            this.requestUpdate('bar', old);
+          }
+        }
+
+        let changed = 0;
+
+        const hasChanged = () => {
+          changed++;
+          return true;
+        };
+
+        class G extends F {
+
+          static get properties(): PropertyDeclarations {
+            return {bar : {hasChanged, reflect : true}, foo : {hasChanged}};
+          }
+        }
+
+        customElements.define(generateElementName(), G);
+        const el = new G();
+        container.appendChild(el);
+        el.foo = 20;
+        await el.updateComplete;
+        assert.equal(changed, 1);
+        assert.equal(el.foo, 20);
+        assert.equal(el.__foo, 20);
+        assert.isFalse(el.hasAttribute('foo'));
+        el.bar = 'hi';
+        await el.updateComplete;
+        assert.equal(changed, 2);
+        assert.equal(el.bar, 'hi');
+        assert.equal(el.__bar, 'hi');
+        assert.isTrue(el.hasAttribute('bar'));
+      });
+
+  test(
       'updates/renders attributes, properties, and event listeners via `lit-html`',
       async () => {
         class E extends LitElement {
@@ -1520,9 +1587,7 @@ suite('LitElement', () => {
         this.changedProperties = changedProperties;
       }
 
-      render() {
-        return html`${this.id}-${this.name}-${this.title}-${this.foo}`;
-      }
+      render() { return html`${this.id}-${this.title}-${this.foo}`; }
     }
     customElements.define(generateElementName(), E);
     const el = new E() as any;
@@ -1530,16 +1595,283 @@ suite('LitElement', () => {
     await el.updateComplete;
     el.foo = 'foo';
     el.id = 'id';
-    el.name = 'name';
     el.title = 'title';
     await el.updateComplete;
-    assert.equal(el.shadowRoot!.textContent, 'id-name-title-foo');
+    assert.equal(el.shadowRoot!.textContent, 'id-title-foo');
     assert.equal((window as any).id, el);
+    assert.equal(el.getAttribute('id'), 'id');
     el.id = 'id2';
-    el.name = 'name2';
     await el.updateComplete;
-    assert.equal(el.shadowRoot!.textContent, 'id2-name2-title-foo');
+    assert.equal(el.shadowRoot!.textContent, 'id2-title-foo');
     assert.equal((window as any).id2, el);
+    assert.equal(el.getAttribute('id'), 'id2');
+  });
+
+  test('user accessors correctly wrapped', async () => {
+    // Sup implements an accessor that clamps to a maximum in the setter
+    class Sup extends LitElement {
+      _supSetCount?: number;
+      _oldFoo?: any;
+      _foo?: number;
+      static get properties() { return {foo : {type : Number}}; }
+      constructor() {
+        super();
+        this.foo = 0;
+      }
+      set foo(v: number) {
+        this._supSetCount = (this._supSetCount || 0) + 1;
+        this._foo = Math.min(v, 10);
+      }
+      get foo(): number { return this._foo as number; }
+      update(changedProperties: PropertyValues) {
+        this._oldFoo = changedProperties.get('foo');
+        super.update(changedProperties);
+      }
+      render() { return html`${this.foo}`; }
+    }
+    customElements.define(generateElementName(), Sup);
+
+    // Sub implements an accessor that rounds down in the getter
+    class Sub extends Sup {
+      _subSetCount?: number;
+      static get properties() { return {foo : {type : Number}}; }
+      set foo(v: number) {
+        this._subSetCount = (this._subSetCount || 0) + 1;
+        super.foo = v;
+      }
+      get foo(): number {
+        const v = super.foo;
+        return v ? Math.floor(v) : v;
+      }
+    }
+    customElements.define(generateElementName(), Sub);
+
+    const sup = new Sup();
+    container.appendChild(sup);
+    await sup.updateComplete;
+    assert.equal(sup.foo, 0);
+    assert.equal(sup._oldFoo, undefined);
+    assert.equal(sup._supSetCount, 1);
+    assert.equal(sup.shadowRoot!.textContent, '0');
+
+    sup.foo = 5;
+    await sup.updateComplete;
+    assert.equal(sup.foo, 5);
+    assert.equal(sup._oldFoo, 0);
+    assert.equal(sup._supSetCount, 2);
+    assert.equal(sup.shadowRoot!.textContent, '5');
+
+    sup.foo = 20;
+    await sup.updateComplete;
+    assert.equal(sup.foo, 10); // (user getter implements a max of 10)
+    assert.equal(sup._oldFoo, 5);
+    assert.equal(sup._supSetCount, 3);
+    assert.equal(sup.shadowRoot!.textContent, '10');
+
+    sup.foo = 5;
+    await sup.updateComplete;
+    assert.equal(sup.foo, 5);
+    assert.equal(sup._oldFoo, 10);
+    assert.equal(sup._supSetCount, 4);
+    assert.equal(sup.shadowRoot!.textContent, '5');
+
+    const sub = new Sub();
+    container.appendChild(sub);
+    await sub.updateComplete;
+    assert.equal(sub.foo, 0);
+    assert.equal(sub._oldFoo, undefined);
+    assert.equal(sub._supSetCount, 1);
+    assert.equal(sub._subSetCount, 1);
+    assert.equal(sub.shadowRoot!.textContent, '0');
+
+    sub.foo = 5;
+    await sub.updateComplete;
+    assert.equal(sub.foo, 5);
+    assert.equal(sub._oldFoo, 0);
+    assert.equal(sub._supSetCount, 2);
+    assert.equal(sub._subSetCount, 2);
+    assert.equal(sub.shadowRoot!.textContent, '5');
+
+    sub.foo = 7.5;
+    await sub.updateComplete;
+    assert.equal(sub.foo, 7); // (sub setter rounds down)
+    assert.equal(sub._oldFoo, 5);
+    assert.equal(sub._supSetCount, 3);
+    assert.equal(sub._subSetCount, 3);
+    assert.equal(sub.shadowRoot!.textContent, '7');
+
+    sub.foo = 20;
+    await sub.updateComplete;
+    assert.equal(sub.foo, 10); // (super user getter maxes at 10)
+    assert.equal(sub._oldFoo, 7);
+    assert.equal(sub._supSetCount, 4);
+    assert.equal(sub._subSetCount, 4);
+    assert.equal(sub.shadowRoot!.textContent, '10');
+  });
+
+  test('user accessors only using noAccessor', async () => {
+    class E extends LitElement {
+      _updateCount = 0;
+      _foo?: String;
+      _bar?: String;
+      static get properties() {
+        return {
+          foo : {type : String, reflect : true, noAccessor : true},
+          bar : {type : String, reflect : true, noAccessor : true}
+        };
+      }
+      constructor() {
+        super();
+        this.foo = 'defaultFoo';
+        this.bar = 'defaultBar';
+      }
+      set foo(value: string) {
+        const old = this._foo;
+        this._foo = value;
+        this.requestUpdate('foo', old);
+      }
+      get foo() { return this._foo as string; }
+      set bar(value: string) {
+        const old = this._bar;
+        this._bar = value;
+        this.requestUpdate('bar', old);
+      }
+      get bar() { return this._bar as string; }
+      update(changedProperties: PropertyValues) {
+        this._updateCount++;
+        super.update(changedProperties);
+      }
+      render() { return html`${this.foo}-${this.bar}`; }
+    }
+    customElements.define(generateElementName(), E);
+
+    const el = new E();
+    el.foo = 'foo1';
+    document.body.appendChild(el);
+    await el.updateComplete;
+    assert.equal(el.foo, 'foo1');
+    assert.equal(el.bar, 'defaultBar');
+    assert.equal(el.getAttribute('foo'), 'foo1');
+    assert.equal(el.getAttribute('bar'), 'defaultBar');
+    assert.equal(el.shadowRoot!.textContent, 'foo1-defaultBar');
+    assert.equal(el._updateCount, 1);
+
+    el.foo = 'foo2';
+    el.bar = 'bar';
+    await el.updateComplete;
+    assert.equal(el.foo, 'foo2');
+    assert.equal(el.bar, 'bar');
+    assert.equal(el.getAttribute('foo'), 'foo2');
+    assert.equal(el.getAttribute('bar'), 'bar');
+    assert.equal(el.shadowRoot!.textContent, 'foo2-bar');
+    assert.equal(el._updateCount, 2);
+
+    el.foo = 'foo3';
+    await el.updateComplete;
+    assert.equal(el.foo, 'foo3');
+    assert.equal(el.getAttribute('foo'), 'foo3');
+    assert.equal(el.getAttribute('bar'), 'bar');
+    assert.equal(el.shadowRoot!.textContent, 'foo3-bar');
+    assert.equal(el._updateCount, 3);
+  });
+
+  test('attribute-based property storage', async () => {
+    class E extends LitElement {
+      _updateCount = 0;
+      static get properties() {
+        return {foo : {type : String}, bar : {type : String}};
+      }
+      set foo(value: string|null) { this.setAttribute('foo', value as string); }
+      get foo() { return this.getAttribute('foo') || 'defaultFoo'; }
+      set bar(value: string|null) { this.setAttribute('bar', value as string); }
+      get bar() { return this.getAttribute('bar') || 'defaultBar'; }
+      update(changedProperties: PropertyValues) {
+        this._updateCount++;
+        super.update(changedProperties);
+      }
+      render() { return html`${this.foo}-${this.bar}`; }
+    }
+    customElements.define(generateElementName(), E);
+
+    const el = new E();
+    el.foo = 'foo1';
+    document.body.appendChild(el);
+    await el.updateComplete;
+    assert.equal(el.foo, 'foo1');
+    assert.equal(el.bar, 'defaultBar');
+    assert.equal(el.shadowRoot!.textContent, 'foo1-defaultBar');
+    assert.equal(el._updateCount, 1);
+
+    el.foo = 'foo2';
+    el.bar = 'bar';
+    await el.updateComplete;
+    assert.equal(el.foo, 'foo2');
+    assert.equal(el.bar, 'bar');
+    assert.equal(el.getAttribute('foo'), 'foo2');
+    assert.equal(el.getAttribute('bar'), 'bar');
+    assert.equal(el.shadowRoot!.textContent, 'foo2-bar');
+    assert.equal(el._updateCount, 2);
+
+    el.foo = 'foo3';
+    await el.updateComplete;
+    assert.equal(el.foo, 'foo3');
+    assert.equal(el.getAttribute('foo'), 'foo3');
+    assert.equal(el.getAttribute('bar'), 'bar');
+    assert.equal(el.shadowRoot!.textContent, 'foo3-bar');
+    assert.equal(el._updateCount, 3);
+  });
+
+  test('attributeChangedCallback-based updating', async () => {
+    class E extends LitElement {
+      _updateCount = 0;
+      static get properties() {
+        return {
+          foo : {type : String, noAccessor : true},
+          bar : {type : String, noAccessor : true}
+        };
+      }
+      set foo(value: string|null) { this.setAttribute('foo', value as string); }
+      get foo() { return this.getAttribute('foo') || 'defaultFoo'; }
+      set bar(value: string|null) { this.setAttribute('bar', value as string); }
+      get bar() { return this.getAttribute('bar') || 'defaultBar'; }
+      attributeChangedCallback(name: string, old: string, value: string) {
+        super.attributeChangedCallback(name, old, value);
+        this.requestUpdate(name, old);
+      }
+      update(changedProperties: PropertyValues) {
+        this._updateCount++;
+        super.update(changedProperties);
+      }
+      render() { return html`${this.foo}-${this.bar}`; }
+    }
+    customElements.define(generateElementName(), E);
+
+    const el = new E();
+    el.foo = 'foo1';
+    document.body.appendChild(el);
+    await el.updateComplete;
+    assert.equal(el.foo, 'foo1');
+    assert.equal(el.bar, 'defaultBar');
+    assert.equal(el.shadowRoot!.textContent, 'foo1-defaultBar');
+    assert.equal(el._updateCount, 1);
+
+    el.foo = 'foo2';
+    el.bar = 'bar';
+    await el.updateComplete;
+    assert.equal(el.foo, 'foo2');
+    assert.equal(el.bar, 'bar');
+    assert.equal(el.getAttribute('foo'), 'foo2');
+    assert.equal(el.getAttribute('bar'), 'bar');
+    assert.equal(el.shadowRoot!.textContent, 'foo2-bar');
+    assert.equal(el._updateCount, 2);
+
+    el.foo = 'foo3';
+    await el.updateComplete;
+    assert.equal(el.foo, 'foo3');
+    assert.equal(el.getAttribute('foo'), 'foo3');
+    assert.equal(el.getAttribute('bar'), 'bar');
+    assert.equal(el.shadowRoot!.textContent, 'foo3-bar');
+    assert.equal(el._updateCount, 3);
   });
 
   test(

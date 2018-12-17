@@ -21,15 +21,16 @@ class StackBlitz extends LitElement {
     return html`
       <style>
         .pretty-button {
+          cursor: pointer;
           display: inline-block;
           box-sizing: border-box;
-          margin: 0 4px;
-          padding: 8px 44px;
-          border: 2px solid #000;
+          margin: 12px 0;
+          padding: 13px 44px;
+          border: 2px solid #2196F3;
           background-color: transparent;
           font-size: 14px;
           font-weight: 500;
-          color: inherit;
+          color: #2196F3;
           text-align: center;
           text-decoration: none;
           text-transform: uppercase;
@@ -40,7 +41,7 @@ class StackBlitz extends LitElement {
 
         .pretty-button:hover,
         .pretty-button:active {
-          background-color: #333;
+          background-color: #2196F3;
           color: #FFF;
         }
 
@@ -63,7 +64,7 @@ class StackBlitz extends LitElement {
         </button>
       </div>`;
   }
-  
+
   async loadProject() {
     const folder = this.folder;
     if (folder && !this._loading) {
