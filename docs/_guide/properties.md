@@ -313,7 +313,7 @@ To create an observed attribute with a different name, set `attribute` to a stri
 myProp: { attribute: 'my-prop' }
 ```
 
-To prevent an observed attribute from being created for a property, set `attribute` to `false`. The property will not be initialized from attributes in markup, and won't be updated if the attribute changes.
+To prevent an observed attribute from being created for a property, set `attribute` to `false`. The property will not be initialized from attributes in markup, and attribute changes won't affect it.
 
 ```js
 // No observed attribute for this property
@@ -350,7 +350,7 @@ When the property changes, LitElement uses the `toAttribute` function in the pro
 {:.alert .alert-info}
 <div>
 
-**LitElement tracks reflection state during updates.** LitElement keeps track of  state information to avoid creating an infinite loop of updates between a property and an observed, reflected attribute.
+**LitElement tracks reflection state during updates.** LitElement keeps track of  state information to avoid creating an infinite loop of changes between a property and an observed, reflected attribute.
 
 </div>
 
