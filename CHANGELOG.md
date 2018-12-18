@@ -9,11 +9,23 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
    PRs should document their user-visible changes (if any) in the
    Unreleased section, uncommenting the header as necessary.
 -->
-
-<!-- ### Changed -->
 <!-- ### Added -->
+<!-- ### Changed -->
 <!-- ### Removed -->
 <!-- ### Fixed -->
+
+## Unreleased
+
+<!-- ### Added -->
+### Changed
+* [Breaking] Changes property options to add `converter`. This option works the same as the previous `type` option except that the `converter` methods now also get `type` as the second argument. This effectively changes `type` to be a hint for the `converter`. A default `converter` is used if none is provided and it now supports `Boolean`, `String`, `Number`, `Object`, and `Array` ([#264](https://github.com/Polymer/lit-element/issues/264)).
+* [Breaking] Numbers and strings now become null if their reflected attribute is removed (https://github.com/Polymer/lit-element/issues/264)).
+* [Breaking] Previously, when an attribute changed as a result of a reflecting property changing, the property was prevented from mutating again as can happen when a custom
+`converter` is used. Now, the oppose is also true. When a property changes as a result of an attribute changing, the attribute is prevented from mutating again (https://github.com/Polymer/lit-element/issues/264))
+<!-- ### Removed -->
+### Fixed
+* [Breaking] User defined accessors are now wrapped to enable better composition ([#286](https://github.com/Polymer/lit-element/issues/286))
+* Type for `eventOptions` decorator now properly includes `passive` and `once` options ([#325](https://github.com/Polymer/lit-element/issues/325))
 
 ## [0.6.5] - 2018-12-13
 ### Changed:
@@ -77,8 +89,3 @@ https://github.com/Polymer/lit-html/pull/486).
 * The `firstUpdated` method should now always be called the first time the element
 updates, even if `shouldUpdate` initially returned `false`
 (https://github.com/Polymer/lit-element/pull/173).
-
-
-<!-- ### Changed -->
-<!-- ### Removed -->
-<!-- ### Fixed -->

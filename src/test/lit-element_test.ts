@@ -13,6 +13,7 @@
  */
 
 import {
+  ComplexAttributeConverter,
   html,
   LitElement,
   property,
@@ -161,12 +162,12 @@ suite('LitElement', () => {
           atTr : {attribute : true},
           customAttr : {attribute : 'custom', reflect : true},
           hasChanged : {hasChanged},
-          fromAttribute : {type : fromAttribute},
-          toAttribute : {reflect : true, type : {toAttribute}},
+          fromAttribute : {converter : fromAttribute},
+          toAttribute : {reflect : true, converter : {toAttribute}},
           all : {
             attribute : 'all-attr',
             hasChanged,
-            type : {fromAttribute, toAttribute},
+            converter : {fromAttribute, toAttribute},
             reflect : true
           },
         };
@@ -246,6 +247,274 @@ suite('LitElement', () => {
     assert.equal(el.updateCount, 6);
   });
 
+  test('property option `converter` can use `type` info', async () => {
+    const FooType = {name : 'FooType'};
+    // Make test work on IE where these are undefined.
+    if (!('name' in String)) {
+      (String as any).name = (String as any).name || 'String';
+    }
+    if (!('name' in Number)) {
+      (Number as any).name = (Number as any).name || 'Number';
+    }
+
+    const converter: ComplexAttributeConverter = {
+      fromAttribute :
+          (_value: any,
+           type: any) => { return `fromAttribute: ${String(type.name)}`; },
+      toAttribute :
+          (_value: any,
+           type: any) => { return `toAttribute: ${String(type.name)}`; }
+    };
+
+    class E extends LitElement {
+      static get properties() {
+        return {
+          num : {type : Number, converter, reflect : true},
+          str : {type : String, converter, reflect : true},
+          foo : {type : FooType, converter, reflect : true}
+        };
+      }
+
+      num?: any;
+      str?: any;
+      foo?: any;
+
+      render() { return html``; }
+    }
+    customElements.define(generateElementName(), E);
+    const el = new E();
+    container.appendChild(el);
+    await el.updateComplete;
+    el.num = 5;
+    el.str = 'hi';
+    el.foo = 'zoink';
+    await el.updateComplete;
+    assert.equal(el.getAttribute('num'), 'toAttribute: Number');
+    assert.equal(el.getAttribute('str'), 'toAttribute: String');
+    assert.equal(el.getAttribute('foo'), 'toAttribute: FooType');
+    el.removeAttribute('num');
+    el.removeAttribute('str');
+    el.removeAttribute('foo');
+    await el.updateComplete;
+    assert.equal(el.num, 'fromAttribute: Number');
+    assert.equal(el.str, 'fromAttribute: String');
+    assert.equal(el.foo, 'fromAttribute: FooType');
+    assert.equal(el.getAttribute('num'), null);
+    assert.equal(el.getAttribute('str'), null);
+    assert.equal(el.getAttribute('foo'), null);
+    el.num = 0;
+    el.str = '';
+    el.foo = {};
+    await el.updateComplete;
+    assert.equal(el.getAttribute('num'), 'toAttribute: Number');
+    assert.equal(el.getAttribute('str'), 'toAttribute: String');
+    assert.equal(el.getAttribute('foo'), 'toAttribute: FooType');
+  });
+
+  test('property/attribute values when attributes removed', async () => {
+    class E extends LitElement {
+      static get properties() {
+        return {
+          bool : {type : Boolean},
+          num : {type : Number},
+          str : {type : String},
+          obj : {type : Object},
+          arr : {type : Array},
+          reflectBool : {type : Boolean, reflect : true},
+          reflectNum : {type : Number, reflect : true},
+          reflectStr : {type : String, reflect : true},
+          reflectObj : {type : Object, reflect : true},
+          reflectArr : {type : Array, reflect : true},
+          defaultBool : {type : Boolean},
+          defaultNum : {type : Number},
+          defaultStr : {type : String},
+          defaultObj : {type : Object},
+          defaultArr : {type : Array},
+          defaultReflectBool : {type : Boolean, reflect : true},
+          defaultReflectNum : {type : Number, reflect : true},
+          defaultReflectStr : {type : String, reflect : true},
+          defaultReflectObj : {type : Object, reflect : true},
+          defaultReflectArr : {type : Array, reflect : true},
+        };
+      }
+
+      bool?: any;
+      num?: any;
+      str?: any;
+      obj?: any;
+      arr?: any;
+      reflectBool?: any;
+      reflectNum?: any;
+      reflectStr?: any;
+      reflectObj?: any;
+      reflectArr?: any;
+      defaultBool = false;
+      defaultNum = 0;
+      defaultStr = '';
+      defaultObj = {defaultObj : false};
+      defaultArr = [ 1 ];
+      defaultReflectBool = false;
+      defaultReflectNum = 0;
+      defaultReflectStr = 'defaultReflectStr';
+      defaultReflectObj = {defaultReflectObj : true};
+      defaultReflectArr = [ 1, 2 ];
+
+      render() { return html``; }
+    }
+    const name = generateElementName();
+    customElements.define(name, E);
+    container.innerHTML = `<${name} bool num="2" str="str" obj='{"obj": true}'
+      arr='[1]' reflectBool reflectNum="3" reflectStr="reflectStr"
+      reflectObj ='{"reflectObj": true}' reflectArr="[1, 2]"
+      defaultBool defaultNum="4" defaultStr="defaultStr"
+      defaultObj='{"defaultObj": true}' defaultArr="[1, 2, 3]">
+      </${name}>`;
+    const el = container.firstChild as E;
+    await el.updateComplete;
+    assert.equal(el.bool, true);
+    assert.equal(el.num, 2);
+    assert.equal(el.str, 'str');
+    assert.deepEqual(el.obj, {obj : true});
+    assert.deepEqual(el.arr, [ 1 ]);
+    assert.equal(el.reflectBool, true);
+    assert.equal(el.reflectNum, 3);
+    assert.equal(el.reflectStr, 'reflectStr');
+    assert.deepEqual(el.reflectObj, {reflectObj : true});
+    assert.deepEqual(el.reflectArr, [ 1, 2 ]);
+    assert.equal(el.defaultBool, true);
+    assert.equal(el.defaultNum, 4);
+    assert.equal(el.defaultStr, 'defaultStr');
+    assert.deepEqual(el.defaultObj, {defaultObj : true});
+    assert.deepEqual(el.defaultArr, [ 1, 2, 3 ]);
+    assert.equal(el.defaultReflectBool, false);
+    assert.equal(el.defaultReflectNum, 0);
+    assert.equal(el.defaultReflectStr, 'defaultReflectStr');
+    assert.deepEqual(el.defaultReflectObj, {defaultReflectObj : true});
+    assert.deepEqual(el.defaultReflectArr, [ 1, 2 ]);
+    el.removeAttribute('bool');
+    el.removeAttribute('num');
+    el.removeAttribute('str');
+    el.removeAttribute('obj');
+    el.removeAttribute('arr');
+    el.removeAttribute('reflectbool');
+    el.removeAttribute('reflectnum');
+    el.removeAttribute('reflectstr');
+    el.removeAttribute('reflectobj');
+    el.removeAttribute('reflectarr');
+    el.removeAttribute('defaultbool');
+    el.removeAttribute('defaultnum');
+    el.removeAttribute('defaultstr');
+    el.removeAttribute('defaultobj');
+    el.removeAttribute('defaultarr');
+    el.removeAttribute('defaultreflectbool');
+    el.removeAttribute('defaultreflectnum');
+    el.removeAttribute('defaultreflectstr');
+    el.removeAttribute('defaultreflectobj');
+    el.removeAttribute('defaultreflectarr');
+    await el.updateComplete;
+    assert.equal(el.bool, false);
+    assert.equal(el.num, null);
+    assert.equal(el.str, null);
+    assert.deepEqual(el.obj, null);
+    assert.deepEqual(el.arr, null);
+    assert.equal(el.reflectBool, false);
+    assert.equal(el.reflectNum, null);
+    assert.equal(el.reflectStr, null);
+    assert.deepEqual(el.reflectObj, null);
+    assert.deepEqual(el.reflectArr, null);
+    assert.equal(el.defaultBool, false);
+    assert.equal(el.defaultNum, null);
+    assert.equal(el.defaultStr, null);
+    assert.deepEqual(el.defaultObj, null);
+    assert.deepEqual(el.defaultArr, null);
+    assert.equal(el.defaultReflectBool, false);
+    assert.equal(el.defaultReflectNum, null);
+    assert.equal(el.defaultReflectStr, null);
+    assert.deepEqual(el.defaultReflectObj, null);
+    assert.deepEqual(el.defaultReflectArr, null);
+  });
+
+  test('attributes removed when a reflecting property\'s value becomes null', async () => {
+    class E extends LitElement {
+      static get properties() {
+        return {
+          bool : {type : Boolean, reflect: true},
+          num : {type : Number, reflect: true},
+          str : {type : String, reflect: true},
+          obj : {type : Object, reflect: true},
+          arr : {type : Array, reflect: true}
+        };
+      }
+
+      bool?: any;
+      num?: any;
+      str?: any;
+      obj?: any;
+      arr?: any;
+
+      render() { return html``; }
+    }
+    const name = generateElementName();
+    customElements.define(name, E);
+    container.innerHTML = `<${name} bool num="2" str="str" obj='{"obj": true}'
+      arr='[1]'>
+      </${name}>`;
+    const el = container.firstChild as E;
+    await el.updateComplete;
+    el.bool = false;
+    el.num = null;
+    el.str = null;
+    el.obj = null;
+    el.arr = null;
+    await el.updateComplete;
+    assert.isFalse(el.hasAttribute('bool'));
+    assert.isFalse(el.hasAttribute('num'));
+    assert.isFalse(el.hasAttribute('str'));
+    assert.isFalse(el.hasAttribute('obj'));
+    assert.isFalse(el.hasAttribute('arr'));
+  });
+
+  test('if a `reflect: true` returns `undefined`, the attribute does not change', async () => {
+    class E extends LitElement {
+      static get properties() {
+        return {
+          foo: {reflect: true},
+          obj: {type: Object, reflect: true}
+        };
+      }
+
+      foo?: any;
+      obj?: any;
+
+      render() { return html``; }
+    }
+    const name = generateElementName();
+    customElements.define(name, E);
+    const el = new E();
+    container.appendChild(el);
+    await el.updateComplete;
+    el.setAttribute('foo', 'foo');
+    el.setAttribute('obj', '{"obj": 1}');
+    assert.equal(el.foo, 'foo');
+    assert.deepEqual(el.obj, {obj: 1});
+    await el.updateComplete;
+    el.foo = 'foo2';
+    el.obj = {obj: 2};
+    await el.updateComplete;
+    assert.equal(el.getAttribute('foo'), 'foo2');
+    assert.equal(el.getAttribute('obj'), '{"obj":2}');
+    el.foo = undefined;
+    el.obj = undefined;
+    await el.updateComplete;
+    assert.equal(el.getAttribute('foo'), 'foo2');
+    assert.equal(el.getAttribute('obj'), '{"obj":2}');
+    el.foo = 'foo3';
+    el.obj = {obj: 3};
+    await el.updateComplete;
+    assert.equal(el.getAttribute('foo'), 'foo3');
+    assert.equal(el.getAttribute('obj'), '{"obj":3}');
+  });
+
   test('property options via decorator', async () => {
     const hasChanged = (value: any, old: any) =>
         old === undefined || value > old;
@@ -258,12 +527,12 @@ suite('LitElement', () => {
       @property({attribute : 'custom', reflect: true})
       customAttr = 'customAttr';
       @property({hasChanged}) hasChanged = 10;
-      @property({type : fromAttribute}) fromAttribute = 1;
-      @property({reflect : true, type: {toAttribute}}) toAttribute = 1;
+      @property({converter : fromAttribute}) fromAttribute = 1;
+      @property({reflect : true, converter: {toAttribute}}) toAttribute = 1;
       @property({
         attribute : 'all-attr',
         hasChanged,
-        type: {fromAttribute, toAttribute},
+        converter: {fromAttribute, toAttribute},
         reflect: true
       })
       all = 10;
@@ -376,12 +645,12 @@ suite('LitElement', () => {
     class E extends LitElement {
 
       @property({hasChanged}) hasChanged = 10;
-      @property({type : fromAttribute}) fromAttribute = 1;
-      @property({reflect : true, type: {toAttribute}}) toAttribute = 1;
+      @property({converter : fromAttribute}) fromAttribute = 1;
+      @property({reflect : true, converter: {toAttribute}}) toAttribute = 1;
       @property({
         attribute : 'all-attr',
         hasChanged,
-        type: {fromAttribute, toAttribute},
+        converter: {fromAttribute, toAttribute},
         reflect: true
       })
       all = 10;
@@ -484,14 +753,16 @@ suite('LitElement', () => {
           noAttr : {attribute : false},
           atTr : {attribute : true},
           customAttr : {attribute : 'custom', reflect : true},
-          fromAttribute : {type : fromAttribute},
+          fromAttribute : {converter : fromAttribute},
           toAttribute :
-              {reflect : true, type : {toAttribute : toAttributeOnly}},
+              {reflect : true, converter : {toAttribute : toAttributeOnly}},
           all : {
             attribute : 'all-attr',
-            type : {fromAttribute, toAttribute},
+            converter : {fromAttribute, toAttribute},
             reflect : true
           },
+          obj : {type : Object},
+          arr : {type : Array}
         };
       }
 
@@ -501,6 +772,8 @@ suite('LitElement', () => {
       fromAttribute = 1;
       toAttribute: string|number = 1;
       all = 10;
+      obj?: any;
+      arr?: any;
 
       render() { return html``; }
     }
@@ -512,7 +785,9 @@ suite('LitElement', () => {
       custom="3"
       fromAttribute="6-attr"
       toAttribute="7"
-      all-attr="11-attr"></${name}>`;
+      all-attr="11-attr"
+      obj='{"foo": true, "bar": 5, "baz": "hi"}'
+      arr="[1, 2, 3, 4]"></${name}>`;
     const el = container.firstChild as E;
     await el.updateComplete;
     assert.equal(el.noAttr, 'noAttr');
@@ -525,6 +800,8 @@ suite('LitElement', () => {
     assert.equal(el.getAttribute('toattribute'), '7-attr');
     assert.equal(el.all, 11);
     assert.equal(el.getAttribute('all-attr'), '11-attr');
+    assert.deepEqual(el.obj, {foo : true, bar : 5, baz : 'hi'});
+    assert.deepEqual(el.arr, [ 1, 2, 3, 4 ]);
   });
 
   if (Object.getOwnPropertySymbols) {
@@ -574,7 +851,7 @@ suite('LitElement', () => {
             [zug] : {
               attribute : 'zug',
               reflect : true,
-              type : (value: string) => Number(value) + 100
+              converter : (value: string) => Number(value) + 100
             }
           };
         }
@@ -598,7 +875,7 @@ suite('LitElement', () => {
       assert.equal(el.getAttribute('zug'), '6');
       el.setAttribute('zug', '7');
       await el.updateComplete;
-      assert.equal(el.getAttribute('zug'), '107');
+      assert.equal(el.getAttribute('zug'), '7');
       assert.equal(el[zug], 107);
     });
   }
@@ -652,12 +929,12 @@ suite('LitElement', () => {
     class G extends F {
       static get properties(): PropertyDeclarations {
         return {
-          fromAttribute : {type : fromAttribute},
-          toAttribute : {reflect : true, type : {toAttribute}},
+          fromAttribute : {converter : fromAttribute},
+          toAttribute : {reflect : true, converter : {toAttribute}},
           all : {
             attribute : 'all-attr',
             hasChanged,
-            type : {fromAttribute, toAttribute},
+            converter : {fromAttribute, toAttribute},
             reflect : true
           },
         };
@@ -780,7 +1057,7 @@ suite('LitElement', () => {
         return {
           foo : {
             reflect : true,
-            type : {toAttribute : (value: any) => `${value}${suffix}`}
+            converter : {toAttribute : (value: any) => `${value}${suffix}`}
           }
         };
       }
@@ -953,7 +1230,7 @@ suite('LitElement', () => {
                bar : {
                  attribute : 'attr-bar',
                  reflect : true,
-                 type : {fromAttribute, toAttribute},
+                 converter : {fromAttribute, toAttribute},
                  hasChanged
                }
              };
@@ -990,18 +1267,85 @@ suite('LitElement', () => {
          await el.updateComplete;
          assert.equal(el.updateCount, 2);
          assert.equal(el.bar, 7);
-         assert.equal(el.getAttribute('attr-bar'), `7-attr`);
+         assert.equal(el.getAttribute('attr-bar'), `7`);
          el.bar = 4;
          await el.updateComplete;
          assert.equal(el.updateCount, 2);
          assert.equal(el.bar, 4);
-         assert.equal(el.getAttribute('attr-bar'), `7-attr`);
+         assert.equal(el.getAttribute('attr-bar'), `7`);
          el.setAttribute('attr-bar', '3');
          await el.updateComplete;
          assert.equal(el.updateCount, 2);
          assert.equal(el.bar, 3);
          assert.equal(el.getAttribute('attr-bar'), `3`);
        });
+
+  test(
+      'User defined accessor not overwritten by subclass, but subclass property options respected',
+      async () => {
+        class E extends LitElement {
+          __foo?: number;
+
+          static get properties(): PropertyDeclarations {
+            return {bar : {hasChanged : () => false}, foo : {}};
+          }
+
+          get foo() { return this.__foo; }
+
+          set foo(value) {
+            const old = this.foo;
+            this.__foo = Number(value);
+            this.requestUpdate('foo', old);
+          }
+
+          render() { return html``; }
+        }
+        class F extends E {
+          __bar?: string;
+
+          static get properties(): PropertyDeclarations {
+            return {bar : {}, foo : {reflect : true}};
+          }
+
+          get bar() { return this.__bar; }
+
+          set bar(value) {
+            const old = this.foo;
+            this.__bar = value;
+            this.requestUpdate('bar', old);
+          }
+        }
+
+        let changed = 0;
+
+        const hasChanged = () => {
+          changed++;
+          return true;
+        };
+
+        class G extends F {
+
+          static get properties(): PropertyDeclarations {
+            return {bar : {hasChanged, reflect : true}, foo : {hasChanged}};
+          }
+        }
+
+        customElements.define(generateElementName(), G);
+        const el = new G();
+        container.appendChild(el);
+        el.foo = 20;
+        await el.updateComplete;
+        assert.equal(changed, 1);
+        assert.equal(el.foo, 20);
+        assert.equal(el.__foo, 20);
+        assert.isFalse(el.hasAttribute('foo'));
+        el.bar = 'hi';
+        await el.updateComplete;
+        assert.equal(changed, 2);
+        assert.equal(el.bar, 'hi');
+        assert.equal(el.__bar, 'hi');
+        assert.isTrue(el.hasAttribute('bar'));
+      });
 
   test(
       'updates/renders attributes, properties, and event listeners via `lit-html`',
@@ -1277,9 +1621,7 @@ suite('LitElement', () => {
         this.changedProperties = changedProperties;
       }
 
-      render() {
-        return html`${this.id}-${this.name}-${this.title}-${this.foo}`;
-      }
+      render() { return html`${this.id}-${this.title}-${this.foo}`; }
     }
     customElements.define(generateElementName(), E);
     const el = new E() as any;
@@ -1287,16 +1629,283 @@ suite('LitElement', () => {
     await el.updateComplete;
     el.foo = 'foo';
     el.id = 'id';
-    el.name = 'name';
     el.title = 'title';
     await el.updateComplete;
-    assert.equal(el.shadowRoot!.textContent, 'id-name-title-foo');
+    assert.equal(el.shadowRoot!.textContent, 'id-title-foo');
     assert.equal((window as any).id, el);
+    assert.equal(el.getAttribute('id'), 'id');
     el.id = 'id2';
-    el.name = 'name2';
     await el.updateComplete;
-    assert.equal(el.shadowRoot!.textContent, 'id2-name2-title-foo');
+    assert.equal(el.shadowRoot!.textContent, 'id2-title-foo');
     assert.equal((window as any).id2, el);
+    assert.equal(el.getAttribute('id'), 'id2');
+  });
+
+  test('user accessors correctly wrapped', async () => {
+    // Sup implements an accessor that clamps to a maximum in the setter
+    class Sup extends LitElement {
+      _supSetCount?: number;
+      _oldFoo?: any;
+      _foo?: number;
+      static get properties() { return {foo : {type : Number}}; }
+      constructor() {
+        super();
+        this.foo = 0;
+      }
+      set foo(v: number) {
+        this._supSetCount = (this._supSetCount || 0) + 1;
+        this._foo = Math.min(v, 10);
+      }
+      get foo(): number { return this._foo as number; }
+      update(changedProperties: PropertyValues) {
+        this._oldFoo = changedProperties.get('foo');
+        super.update(changedProperties);
+      }
+      render() { return html`${this.foo}`; }
+    }
+    customElements.define(generateElementName(), Sup);
+
+    // Sub implements an accessor that rounds down in the getter
+    class Sub extends Sup {
+      _subSetCount?: number;
+      static get properties() { return {foo : {type : Number}}; }
+      set foo(v: number) {
+        this._subSetCount = (this._subSetCount || 0) + 1;
+        super.foo = v;
+      }
+      get foo(): number {
+        const v = super.foo;
+        return v ? Math.floor(v) : v;
+      }
+    }
+    customElements.define(generateElementName(), Sub);
+
+    const sup = new Sup();
+    container.appendChild(sup);
+    await sup.updateComplete;
+    assert.equal(sup.foo, 0);
+    assert.equal(sup._oldFoo, undefined);
+    assert.equal(sup._supSetCount, 1);
+    assert.equal(sup.shadowRoot!.textContent, '0');
+
+    sup.foo = 5;
+    await sup.updateComplete;
+    assert.equal(sup.foo, 5);
+    assert.equal(sup._oldFoo, 0);
+    assert.equal(sup._supSetCount, 2);
+    assert.equal(sup.shadowRoot!.textContent, '5');
+
+    sup.foo = 20;
+    await sup.updateComplete;
+    assert.equal(sup.foo, 10); // (user getter implements a max of 10)
+    assert.equal(sup._oldFoo, 5);
+    assert.equal(sup._supSetCount, 3);
+    assert.equal(sup.shadowRoot!.textContent, '10');
+
+    sup.foo = 5;
+    await sup.updateComplete;
+    assert.equal(sup.foo, 5);
+    assert.equal(sup._oldFoo, 10);
+    assert.equal(sup._supSetCount, 4);
+    assert.equal(sup.shadowRoot!.textContent, '5');
+
+    const sub = new Sub();
+    container.appendChild(sub);
+    await sub.updateComplete;
+    assert.equal(sub.foo, 0);
+    assert.equal(sub._oldFoo, undefined);
+    assert.equal(sub._supSetCount, 1);
+    assert.equal(sub._subSetCount, 1);
+    assert.equal(sub.shadowRoot!.textContent, '0');
+
+    sub.foo = 5;
+    await sub.updateComplete;
+    assert.equal(sub.foo, 5);
+    assert.equal(sub._oldFoo, 0);
+    assert.equal(sub._supSetCount, 2);
+    assert.equal(sub._subSetCount, 2);
+    assert.equal(sub.shadowRoot!.textContent, '5');
+
+    sub.foo = 7.5;
+    await sub.updateComplete;
+    assert.equal(sub.foo, 7); // (sub setter rounds down)
+    assert.equal(sub._oldFoo, 5);
+    assert.equal(sub._supSetCount, 3);
+    assert.equal(sub._subSetCount, 3);
+    assert.equal(sub.shadowRoot!.textContent, '7');
+
+    sub.foo = 20;
+    await sub.updateComplete;
+    assert.equal(sub.foo, 10); // (super user getter maxes at 10)
+    assert.equal(sub._oldFoo, 7);
+    assert.equal(sub._supSetCount, 4);
+    assert.equal(sub._subSetCount, 4);
+    assert.equal(sub.shadowRoot!.textContent, '10');
+  });
+
+  test('user accessors only using noAccessor', async () => {
+    class E extends LitElement {
+      _updateCount = 0;
+      _foo?: String;
+      _bar?: String;
+      static get properties() {
+        return {
+          foo : {type : String, reflect : true, noAccessor : true},
+          bar : {type : String, reflect : true, noAccessor : true}
+        };
+      }
+      constructor() {
+        super();
+        this.foo = 'defaultFoo';
+        this.bar = 'defaultBar';
+      }
+      set foo(value: string) {
+        const old = this._foo;
+        this._foo = value;
+        this.requestUpdate('foo', old);
+      }
+      get foo() { return this._foo as string; }
+      set bar(value: string) {
+        const old = this._bar;
+        this._bar = value;
+        this.requestUpdate('bar', old);
+      }
+      get bar() { return this._bar as string; }
+      update(changedProperties: PropertyValues) {
+        this._updateCount++;
+        super.update(changedProperties);
+      }
+      render() { return html`${this.foo}-${this.bar}`; }
+    }
+    customElements.define(generateElementName(), E);
+
+    const el = new E();
+    el.foo = 'foo1';
+    document.body.appendChild(el);
+    await el.updateComplete;
+    assert.equal(el.foo, 'foo1');
+    assert.equal(el.bar, 'defaultBar');
+    assert.equal(el.getAttribute('foo'), 'foo1');
+    assert.equal(el.getAttribute('bar'), 'defaultBar');
+    assert.equal(el.shadowRoot!.textContent, 'foo1-defaultBar');
+    assert.equal(el._updateCount, 1);
+
+    el.foo = 'foo2';
+    el.bar = 'bar';
+    await el.updateComplete;
+    assert.equal(el.foo, 'foo2');
+    assert.equal(el.bar, 'bar');
+    assert.equal(el.getAttribute('foo'), 'foo2');
+    assert.equal(el.getAttribute('bar'), 'bar');
+    assert.equal(el.shadowRoot!.textContent, 'foo2-bar');
+    assert.equal(el._updateCount, 2);
+
+    el.foo = 'foo3';
+    await el.updateComplete;
+    assert.equal(el.foo, 'foo3');
+    assert.equal(el.getAttribute('foo'), 'foo3');
+    assert.equal(el.getAttribute('bar'), 'bar');
+    assert.equal(el.shadowRoot!.textContent, 'foo3-bar');
+    assert.equal(el._updateCount, 3);
+  });
+
+  test('attribute-based property storage', async () => {
+    class E extends LitElement {
+      _updateCount = 0;
+      static get properties() {
+        return {foo : {type : String}, bar : {type : String}};
+      }
+      set foo(value: string|null) { this.setAttribute('foo', value as string); }
+      get foo() { return this.getAttribute('foo') || 'defaultFoo'; }
+      set bar(value: string|null) { this.setAttribute('bar', value as string); }
+      get bar() { return this.getAttribute('bar') || 'defaultBar'; }
+      update(changedProperties: PropertyValues) {
+        this._updateCount++;
+        super.update(changedProperties);
+      }
+      render() { return html`${this.foo}-${this.bar}`; }
+    }
+    customElements.define(generateElementName(), E);
+
+    const el = new E();
+    el.foo = 'foo1';
+    document.body.appendChild(el);
+    await el.updateComplete;
+    assert.equal(el.foo, 'foo1');
+    assert.equal(el.bar, 'defaultBar');
+    assert.equal(el.shadowRoot!.textContent, 'foo1-defaultBar');
+    assert.equal(el._updateCount, 1);
+
+    el.foo = 'foo2';
+    el.bar = 'bar';
+    await el.updateComplete;
+    assert.equal(el.foo, 'foo2');
+    assert.equal(el.bar, 'bar');
+    assert.equal(el.getAttribute('foo'), 'foo2');
+    assert.equal(el.getAttribute('bar'), 'bar');
+    assert.equal(el.shadowRoot!.textContent, 'foo2-bar');
+    assert.equal(el._updateCount, 2);
+
+    el.foo = 'foo3';
+    await el.updateComplete;
+    assert.equal(el.foo, 'foo3');
+    assert.equal(el.getAttribute('foo'), 'foo3');
+    assert.equal(el.getAttribute('bar'), 'bar');
+    assert.equal(el.shadowRoot!.textContent, 'foo3-bar');
+    assert.equal(el._updateCount, 3);
+  });
+
+  test('attributeChangedCallback-based updating', async () => {
+    class E extends LitElement {
+      _updateCount = 0;
+      static get properties() {
+        return {
+          foo : {type : String, noAccessor : true},
+          bar : {type : String, noAccessor : true}
+        };
+      }
+      set foo(value: string|null) { this.setAttribute('foo', value as string); }
+      get foo() { return this.getAttribute('foo') || 'defaultFoo'; }
+      set bar(value: string|null) { this.setAttribute('bar', value as string); }
+      get bar() { return this.getAttribute('bar') || 'defaultBar'; }
+      attributeChangedCallback(name: string, old: string, value: string) {
+        super.attributeChangedCallback(name, old, value);
+        this.requestUpdate(name, old);
+      }
+      update(changedProperties: PropertyValues) {
+        this._updateCount++;
+        super.update(changedProperties);
+      }
+      render() { return html`${this.foo}-${this.bar}`; }
+    }
+    customElements.define(generateElementName(), E);
+
+    const el = new E();
+    el.foo = 'foo1';
+    document.body.appendChild(el);
+    await el.updateComplete;
+    assert.equal(el.foo, 'foo1');
+    assert.equal(el.bar, 'defaultBar');
+    assert.equal(el.shadowRoot!.textContent, 'foo1-defaultBar');
+    assert.equal(el._updateCount, 1);
+
+    el.foo = 'foo2';
+    el.bar = 'bar';
+    await el.updateComplete;
+    assert.equal(el.foo, 'foo2');
+    assert.equal(el.bar, 'bar');
+    assert.equal(el.getAttribute('foo'), 'foo2');
+    assert.equal(el.getAttribute('bar'), 'bar');
+    assert.equal(el.shadowRoot!.textContent, 'foo2-bar');
+    assert.equal(el._updateCount, 2);
+
+    el.foo = 'foo3';
+    await el.updateComplete;
+    assert.equal(el.foo, 'foo3');
+    assert.equal(el.getAttribute('foo'), 'foo3');
+    assert.equal(el.getAttribute('bar'), 'bar');
+    assert.equal(el.shadowRoot!.textContent, 'foo3-bar');
+    assert.equal(el._updateCount, 3);
   });
 
   test(
