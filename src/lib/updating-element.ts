@@ -640,7 +640,7 @@ export abstract class UpdatingElement extends HTMLElement {
    *
    * ```
    * protected async performUpdate(): Promise<unknown> {
-   *   await new Promise((resolve) => requestAnimationFrame(() => resolve());
+   *   await new Promise((resolve) => requestAnimationFrame(() => resolve()));
    *   super.performUpdate();
    * }
    * ```
