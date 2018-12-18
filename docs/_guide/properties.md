@@ -194,14 +194,9 @@ See [observed attributes](#observed-attributes) and [converting between properti
 
 While element properties can be of any type, attributes are always strings. This impacts the [observed attributes](#observed-attributes) and [reflected attributes](#reflected-attributes) of non-string properties:
 
-  * To **observe** an attribute (set a property from an attribute), the attribute value must be converted from a string to match the property type.
+  * To **observe** an attribute (set a property from an attribute), the attribute value must be converted from a string to match the property type. 
 
   * To **reflect** an attribute (set an attribute from a property), the property value must be converted to a string.
-
-LitElement defines a **converter** for every declared property. A converter is an object that contains two functions:
-
-  * `fromAttribute` converts from an [observed attribute](#observed-attributes) to a property when the attribute changes.
-  * `toAttribute` converts from a property to its [reflected attribute](#reflected-attributes) when the property changes.
 
 #### Use the default converter {#conversion-type}
 
@@ -218,22 +213,36 @@ prop4: { type: Array },
 prop5: { type: Object }
 ```
 
-The table below shows how the default converter handles conversion for each type.
+The information below shows how the default converter handles conversion for each type.
 
-For all types: 
+**Convert from attribute to property**
 
-* If `toAttribute` returns `null`, the attribute is removed. 
-* If `toAttribute` returns `undefined`, the attribute is not changed.
+* For **Strings**, when the attribute is defined, set the property to the attribute value.
+* For **Numbers**, when the attribute is defined, set the property to `Number(attributeValue)`.
+* For **Booleans**, when the attribute is:
+  * non-`null`, set the property to `true`.
+  * `null` or `undefined`, set the property to `false`.
+* For **Objects and Arrays**, when the attribute is:
+  * Defined, set the property value to `JSON.parse(attributeValue)`.
 
-|**Type**|**`fromAttribute` returns**|**`toAttribute` returns**|
-|---|---|---|
-| `String` | Attribute value | Property value |
-| `Number` | Number(attributeValue) | Property value |
-| `Boolean` | `true` if non-`null`, `false` otherwise | `''` if truthy, `null` otherwise |
-| `Array` | `JSON.parse(attributeValue)` | `null` if the property value is `null`;  `JSON.stringify(propertyValue)` otherwise |
-| `Object` | `JSON.parse(attributeValue)` | `null` if the property value is `null`;  `JSON.stringify(propertyValue)` otherwise |
+**Convert from property to attribute** 
 
-**Example: Use the default converter with the type option** 
+* For **Strings**, when the property is:
+  * `null`, remove the attribute.
+  * `undefined`, don't change the attribute.
+  * Defined and not `null`, set the attribute to the property value.
+* For **Numbers**, when the property is:
+  * `null`, remove the attribute.
+  * `undefined`, don't change the attribute.
+  * Defined and not `null`, set the attribute to the property value.
+* For **Booleans**, when the property is:
+  * truthy, create the attribute.
+  * falsy, remove the attribute.
+* For **Objects and Arrays**, when the property is:
+  * `null` or `undefined`, remove the attribute.
+  * Defined and not `null`, set the attribute value to `JSON.stringify(propertyValue)`.
+
+**Example: Use the default converter** 
 
 ```js
 {% include projects/properties/defaultconverter/my-element.js %}
@@ -378,34 +387,76 @@ Generated accessors automatically call `requestUpdate`, initiating an update if 
 
 ### Create custom property accessors {#accessors-custom}
 
-To create custom property accessors:
+To specify how getting and setting works for a property, create custom accessors:
 
 ```js
+// Declare a property
 static get properties() { return { myProp: { type: String } }; }
-set myProp(newValue) { 
-  ...
-  this.requestUpdate('foo', oldVal);
-}
-get myProp() { ... }
+
+// Custom accessors
+set myProp(value) { ... /* Custom setter */ } 
+get myProp() { ... /* Custom getter */ }
+
+...
+
+// Later, set the property
+this.myProp = 'hi'; // Invokes generated accessor, which calls custom accessor
 ```
 
-Call `requestUpdate('propertyName', oldValue)` when implementing a custom property setter to ensure that changes to the property will trigger updates when required. Pass the name and old value of the property to `requestUpdate` so that any property options can be correctly applied.
+When you create custom property accessors for a property, LitElement still generates its own accessors unless you specify otherwise ([see below](#accessors-noaccessor)). The generated setter:
 
-**Example: Create custom property accessors** 
+* Saves the previous property value.
+* Calls your custom setter.
+* Requests an update, supplying the property name and its old value to the update lifecycle.
+
+### Prevent LitElement from generating a property accessor {#accessors-noaccessor}
+
+To prevent LitElement from generating property accessors, set `noAccessors` to `true` in the property declaration:
+
+```js
+static get properties() { return { 
+  // Don't generate accessors for myProp
+  myProp: { type: Number, noAccessors: true } 
+
+  // Do generate accessors for aProp
+  aProp: { type: String }
+}; }
+
+// Create custom accessors for myProp
+set myProp(value) { this._myProp = Math.floor(value); } 
+get myProp() { return this._myProp; }
+
+updated(changedProperties) { ... /* no changedProperties entry for myProp */ }
+
+...
+// later...
+this.myProp = Math.random()*10; // Invokes custom setter; no generated setter
+this.aProp = 'hi'; // Invokes generated setter
+```
+
+In the example above: 
+
+* No update request will be made when `this.myProp = ...` is executed.
+* The update requested as a result of `this.aProp = ...` will still capture `myProp`'s new value.
+* The change to `myProp` won't register in the element update lifecycle.
+
+To handle update requests and property options in a custom setter, call `this.requestUpdate('propertyName', oldValue)`:
+
+```js
+set myProp(value) { 
+  let oldValue = this._myProp;
+  this._myProp = Math.floor(value); 
+  this.requestUpdate('myProp', oldValue);
+} 
+```
+
+**Example: Custom property accessors** 
 
 ```js
 {% include projects/properties/customsetter/my-element.js %}
 ```
 
 {% include project.html folder="properties/customsetter" openFile="my-element.js" %}
-
-### Prevent LitElement from generating a property accessor {#accessors-noaccessor}
-
-To prevent LitElement from generating a property accessor, set `noAccessor` to `true`: 
-
-```js
-myProp: { type: String, noAccessor: true }
-```
 
 ## Configure property changes
 

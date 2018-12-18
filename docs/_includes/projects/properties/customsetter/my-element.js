@@ -2,45 +2,51 @@ import { LitElement, html } from '@polymer/lit-element';
 
 class MyElement extends LitElement { 
   static get properties() { return { 
-    foo: String,
+    prop1: { type: Number, noAccessors: true },
+    prop2: { type: Number },
+    prop3: { type: Number, noAccessors: true },
   };}
   
-  /**
-   * Custom property setter for `foo`. 
-   * 
-   * Call `requestUpdate` when implementing a custom property setter
-   * to ensure that changes to the property will trigger updates
-   * when required.
-   * 
-   * Pass the old value of the property to `requestUpdate` so that 
-   * any property options can be correctly applied.
-   */
-  set foo(newVal) { 
-    let oldVal = this.foo;
-    console.log('setting foo from', oldVal, 'to', newVal);
-    this.setAttribute('foo', newVal);
-    this.requestUpdate('foo', oldVal).then(
-      result => console.log('updateComplete:', result)
-    );
+  set prop1(newVal) { this._prop1 = Math.floor(newVal); }
+  set prop2(newVal) { this._prop2 = Math.floor(newVal); }
+  set prop3(newVal) { 
+    let oldVal = this._prop3;
+    this._prop3 = Math.floor(newVal); 
+    this.requestUpdate('prop3', oldVal);
   }
 
-  /**
-   * Custom property getter for `foo`. 
-   */ 
-  get foo() {
-    return this.getAttribute('foo'); 
+  get prop1() { return this._prop1; }
+  get prop2() { return this._prop2; }
+  get prop3() { return this._prop3; }
+
+  constructor() {
+    super();
+    this._prop1 = 0;
+    this._prop2 = 0;
+    this._prop3 = 0;
   }
 
   render() { 
     return html`
-      ${this.foo}
-      <button @click="${this.getNewVal}">get new value</button>
+      <p>prop1: ${this.prop1}</p>
+      <p>prop2: ${this.prop2}</p>
+      <p>prop3: ${this.prop3}</p>
+
+      <button @click="${this.getNewVal}">change properties</button>
     `;
   }
   
+  updated(changedProperties) {
+    changedProperties.forEach((oldValue, propName) => { 
+      console.log(`${propName} changed. oldValue: ${oldValue}`);
+    });
+  }
+  
   getNewVal() {
-    let newVal = Math.floor(Math.random()*10);
-    this.foo = newVal;
+    let newVal = Math.random()*10;
+    this.prop1 = newVal;
+    this.prop2 = newVal;
+    this.prop3 = newVal;
   }
 }
 customElements.define('my-element', MyElement);
