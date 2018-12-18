@@ -35,19 +35,22 @@ for additional information on how to create templates for lit-element.
     If the value is `false`, the property is not added to the static `observedAttributes` getter.
     If `true` or absent, the lowercased property name is observed (e.g. `fooBar` becomes `foobar`).
     If a string, the string value is observed (e.g `attribute: 'foo-bar'`).
-    * `type`: Indicates how to serialize and deserialize the attribute to/from a property.
+    * `converter`: Indicates how to convert the attribute to/from a property.
     The value can be a function used for both serialization and deserialization, or it can
     be an object with individual functions via the optional keys, `fromAttribute` and `toAttribute`.
-    `type` defaults to the `String` constructor, and so does the `toAttribute` and `fromAttribute`
-    keys.
+    A default `converter` is used if none is provided; it supports
+    `Boolean`, `String`, `Number`, `Object`, and `Array`.
+    * `type`: Indicates the type of the property. This is used only as a hint for the
+    `converter` to determine how to convert the attribute
+    to/from a property. Note, when a property changes and the converter is used
+    to update the attribute, the property is never updated again as a result of
+    the attribute changing, and vice versa.
     * `reflect`: Indicates whether the property should reflect to its associated
-    attribute (as determined by the attribute option).
-    If `true`, when the property is set, the attribute which name is determined
-    according to the rules for the `attribute` property option, will be set to the
-    value of the property serialized using the rules from the `type` property option.
-    Note, `type: Boolean` has special handling by default which means that truthy
-    values result in the presence of the attribute, whereas falsy values result
-    in the absence of the attribute.
+    attribute (as determined by the attribute option). If `true`, when the
+    property is set, the attribute which name is determined according to the
+    rules for the `attribute` property option will be set to the value of the
+    property converted using the rules from the `type` and `converter`
+    property options.
     * `hasChanged`: A function that indicates whether a property should be considered
     changed when it is set and thus result in an update. The function should take the
     `newValue` and `oldValue` and return `true` if an update should be requested.

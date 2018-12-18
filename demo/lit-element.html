@@ -38,7 +38,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           foo: {},
           bar: {},
           whales: {type: Number},
-          fooBar: {type: {fromAttribute: parseInt, toAttribute: (value) => value + '-attr'}, reflect: true}
+          fooBar: {converter: {fromAttribute: parseInt, toAttribute: (value) => value + '-attr'}, reflect: true}
         }
       }
 

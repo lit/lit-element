@@ -1,16 +1,20 @@
 /* Theme colors */
-a {
-  color: #00A3E6;
+a,
+h1,
+h2,
+h3,
+h4 {
+  color: #2196F3;
 }
 
 .hero {
   background: #00A3E6;
-  background: linear-gradient(315deg, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0) 100%), linear-gradient(315deg, #3FC7FF 0%, #00A3E6 100%);
+  background: linear-gradient(315deg, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0) 100%), linear-gradient(315deg, #8FCDFF 0%, #2196F3 100%);
 }
 
 .main-nav {
-  background: #00A3E6;
-  background: linear-gradient(315deg, #3FC7FF 0%, #00A3E6 100%);
+  background: #304ffe;
+  background: linear-gradient(315deg, #8FCDFF 0%, #2196F3 100%);
 }
 
 .hero-title,
