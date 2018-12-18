@@ -505,7 +505,7 @@ export abstract class UpdatingElement extends HTMLElement {
       }
     }
     if (!this._hasRequestedUpdate && shouldRequestUpdate) {
-      this._setupUpdate();
+      this._enqueueUpdate();
     }
     return this.updateComplete;
   }
@@ -513,7 +513,7 @@ export abstract class UpdatingElement extends HTMLElement {
   /**
    * Sets up the element to asynchronously update.
    */
-  private async _setupUpdate() {
+  private async _enqueueUpdate() {
     // Mark state updating...
     this._updateState = this._updateState | STATE_UPDATE_REQUESTED;
     let resolve: (r: boolean) => void;
@@ -528,6 +528,8 @@ export abstract class UpdatingElement extends HTMLElement {
     }
     // Allow `performUpdate` to be asynchronous to enable scheduling of updates.
     const result = this.performUpdate();
+    // Note, this is to avoid delaying an additional microtask unless we need
+    // to.
     if (result != null &&
         typeof (result as PromiseLike<unknown>).then === 'function') {
       await result;
