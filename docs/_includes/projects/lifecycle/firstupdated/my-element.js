@@ -1,23 +1,23 @@
 import { LitElement, html } from '@polymer/lit-element';
 
 class MyElement extends LitElement {  
-  static get properties(){
+  static get properties() {
     return {
-      textAreaId: String,
-      startingText: String
+      textAreaId: { type: String },
+      startingText: { type: String }
     };
   }
-  constructor(){
+  constructor() {
     super();
     this.textAreaId = 'myText';
     this.startingText = 'Focus me on first update';
   }
-  render(){
+  render() {
     return html`
       <textarea id="${this.textAreaId}">${this.startingText}</textarea>
     `;
   }
-  firstUpdated(changedProperties){
+  firstUpdated(changedProperties) {
     changedProperties.forEach((oldValue, propName) => { 
       console.log(`${propName} changed. oldValue: ${oldValue}`);
     });

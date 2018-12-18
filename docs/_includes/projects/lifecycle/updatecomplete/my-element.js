@@ -3,7 +3,7 @@ import { LitElement, html } from '@polymer/lit-element';
 class MyElement extends LitElement {  
   static get properties() {
     return {
-      prop1: Number
+      prop1: { type: Number }
     };
   }
 
@@ -19,24 +19,14 @@ class MyElement extends LitElement {
     `;
   }
 
-  /**
-   * Wait for additional state before completion of every update
-   */
-  get updateComplete() {
-    console.log('Waiting for additional state...');
-    return this.getMoreState().then(() => {
-      console.log('Additional state.');
-      return this._updatePromise;
-    });
-  }
-
   async getMoreState() {
     return;
   }
 
   async changeProp() {
     this.prop1 = Math.random();
-    console.log('updateComplete resolved: ', await this.updateComplete);
+    await Promise.all(this.updateComplete, this.getMoreState());
+    console.log('Update complete. Other state completed.');
   }
 }
 

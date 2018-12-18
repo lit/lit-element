@@ -1,7 +1,7 @@
 import { LitElement, html } from '@polymer/lit-element';
 
 class MyElement extends LitElement {  
-  static get properties(){ return {
+  static get properties() { return {
     myProp: {
       type: Number,
 
@@ -24,23 +24,23 @@ class MyElement extends LitElement {
     }};
   }
   
-  constructor(){
+  constructor() {
     super();
     this.myProp = 1;
   }
 
-  render(){
+  render() {
     return html`
       <p>${this.myProp}</p>
       <button @click="${this.getNewVal}">get new value</button>
     `;
   }
   
-  updated(){
+  updated() {
     console.log('updated');
   }
 
-  getNewVal(){
+  getNewVal() {
     let newVal = Math.floor(Math.random()*10);
     this.myProp = newVal;
   }

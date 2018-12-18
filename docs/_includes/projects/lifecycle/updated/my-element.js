@@ -3,11 +3,11 @@ import { LitElement, html } from '@polymer/lit-element';
 class MyElement extends LitElement {  
   static get properties() {
     return {
-      prop1: Number,
-      prop2: Number
+      prop1: { type: Number },
+      prop2: { type: Number }
     };
   }
-  constructor(){
+  constructor() {
     super();
     this.prop1 = 0;
     this.prop2 = 0;
@@ -23,7 +23,7 @@ class MyElement extends LitElement {
       <button id="b" @click="${() => this.prop2=Math.random()}">prop2</button>
     `;
   }
-  updated(changedProperties){
+  updated(changedProperties) {
     changedProperties.forEach((oldValue, propName) => { 
       console.log(`${propName} changed. oldValue: ${oldValue}`);
     });
