@@ -60,7 +60,8 @@ const supportsPassive = (function() {
     }
   };
   f.contentDocument!.addEventListener(event, fn, options);
-  f.contentDocument!.removeEventListener(event, fn, options as AddEventListenerOptions);
+  f.contentDocument!.removeEventListener(event, fn,
+                                         options as AddEventListenerOptions);
   document.body.removeChild(f);
   return hasPassive;
 })();

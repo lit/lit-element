@@ -165,6 +165,10 @@ into the element.
   By default, this method always returns `true`, but this can be customized as
   an optimization to avoid updating work when changes occur, which should not be rendered.
 
+  * `performUpdate()` (protected): Implement to control the timing of an update, for example
+  to integrate with a scheduler. If a Promise is returned from `performUpdate` it will be
+  awaited before finishing the update.
+
   * `update(changedProperties)` (protected): This method calls `render()` and then uses `lit-html`
   in order to render the template DOM. It also updates any reflected attributes based on
   property values. Setting properties inside this method will *not* trigger another update.
@@ -206,6 +210,7 @@ into the element.
 update. If it returns `true`, `requestUpdate()` is called to schedule an update.
 * `requestUpdate()`: Updates the element after awaiting a [microtask](https://jakearchibald.com/2015/tasks-microtasks-queues-and-schedules/) (at the end
 of the event loop, before the next paint).
+* `performUpdate()`: Performs the update, calling the rest of the update API.
 * `shouldUpdate(changedProperties)`: The update proceeds if this returns `true`, which
 it does by default.
 * `update(changedProperties)`: Updates the element. Setting properties inside this

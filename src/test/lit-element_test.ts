@@ -434,86 +434,90 @@ suite('LitElement', () => {
     assert.deepEqual(el.defaultReflectArr, null);
   });
 
-  test('attributes removed when a reflecting property\'s value becomes null', async () => {
-    class E extends LitElement {
-      static get properties() {
-        return {
-          bool : {type : Boolean, reflect: true},
-          num : {type : Number, reflect: true},
-          str : {type : String, reflect: true},
-          obj : {type : Object, reflect: true},
-          arr : {type : Array, reflect: true}
-        };
-      }
+  test('attributes removed when a reflecting property\'s value becomes null',
+       async () => {
+         class E extends LitElement {
+           static get properties() {
+             return {
+               bool : {type : Boolean, reflect : true},
+               num : {type : Number, reflect : true},
+               str : {type : String, reflect : true},
+               obj : {type : Object, reflect : true},
+               arr : {type : Array, reflect : true}
+             };
+           }
 
-      bool?: any;
-      num?: any;
-      str?: any;
-      obj?: any;
-      arr?: any;
+           bool?: any;
+           num?: any;
+           str?: any;
+           obj?: any;
+           arr?: any;
 
-      render() { return html``; }
-    }
-    const name = generateElementName();
-    customElements.define(name, E);
-    container.innerHTML = `<${name} bool num="2" str="str" obj='{"obj": true}'
+           render() { return html``; }
+         }
+         const name = generateElementName();
+         customElements.define(name, E);
+         container.innerHTML =
+             `<${name} bool num="2" str="str" obj='{"obj": true}'
       arr='[1]'>
       </${name}>`;
-    const el = container.firstChild as E;
-    await el.updateComplete;
-    el.bool = false;
-    el.num = null;
-    el.str = null;
-    el.obj = null;
-    el.arr = null;
-    await el.updateComplete;
-    assert.isFalse(el.hasAttribute('bool'));
-    assert.isFalse(el.hasAttribute('num'));
-    assert.isFalse(el.hasAttribute('str'));
-    assert.isFalse(el.hasAttribute('obj'));
-    assert.isFalse(el.hasAttribute('arr'));
-  });
+         const el = container.firstChild as E;
+         await el.updateComplete;
+         el.bool = false;
+         el.num = null;
+         el.str = null;
+         el.obj = null;
+         el.arr = null;
+         await el.updateComplete;
+         assert.isFalse(el.hasAttribute('bool'));
+         assert.isFalse(el.hasAttribute('num'));
+         assert.isFalse(el.hasAttribute('str'));
+         assert.isFalse(el.hasAttribute('obj'));
+         assert.isFalse(el.hasAttribute('arr'));
+       });
 
-  test('if a `reflect: true` returns `undefined`, the attribute does not change', async () => {
-    class E extends LitElement {
-      static get properties() {
-        return {
-          foo: {reflect: true},
-          obj: {type: Object, reflect: true}
-        };
-      }
+  test(
+      'if a `reflect: true` returns `undefined`, the attribute does not change',
+      async () => {
+        class E extends LitElement {
+          static get properties() {
+            return {
+              foo : {reflect : true},
+              obj : {type : Object, reflect : true}
+            };
+          }
 
-      foo?: any;
-      obj?: any;
+          foo?: any;
+          obj?: any;
 
-      render() { return html``; }
-    }
-    const name = generateElementName();
-    customElements.define(name, E);
-    const el = new E();
-    container.appendChild(el);
-    await el.updateComplete;
-    el.setAttribute('foo', 'foo');
-    el.setAttribute('obj', '{"obj": 1}');
-    assert.equal(el.foo, 'foo');
-    assert.deepEqual(el.obj, {obj: 1});
-    await el.updateComplete;
-    el.foo = 'foo2';
-    el.obj = {obj: 2};
-    await el.updateComplete;
-    assert.equal(el.getAttribute('foo'), 'foo2');
-    assert.equal(el.getAttribute('obj'), '{"obj":2}');
-    el.foo = undefined;
-    el.obj = undefined;
-    await el.updateComplete;
-    assert.equal(el.getAttribute('foo'), 'foo2');
-    assert.equal(el.getAttribute('obj'), '{"obj":2}');
-    el.foo = 'foo3';
-    el.obj = {obj: 3};
-    await el.updateComplete;
-    assert.equal(el.getAttribute('foo'), 'foo3');
-    assert.equal(el.getAttribute('obj'), '{"obj":3}');
-  });
+          render() { return html``; }
+        }
+        const name = generateElementName();
+        customElements.define(name, E);
+        const el = new E();
+        container.appendChild(el);
+        await el.updateComplete;
+        el.setAttribute('foo', 'foo');
+        el.setAttribute('obj', '{"obj": 1}');
+        assert.equal(el.foo, 'foo');
+        assert.deepEqual(el.obj, {obj : 1});
+        await el.updateComplete;
+        el.foo = 'foo2';
+        el.obj = {obj : 2};
+        await el.updateComplete;
+        assert.equal(el.getAttribute('foo'), 'foo2');
+        assert.equal(el.getAttribute('obj'), '{"obj":2}');
+        el.foo = undefined;
+        el.obj = undefined;
+        await el.updateComplete;
+        assert.equal(el.getAttribute('foo'), 'foo2');
+        assert.equal(el.getAttribute('obj'), '{"obj":2}');
+        el.foo = 'foo3';
+        el.obj = {obj : 3};
+        await el.updateComplete;
+        assert.equal(el.getAttribute('foo'), 'foo3');
+        assert.equal(el.getAttribute('obj'), '{"obj":3}');
+      });
 
   test('property options via decorator', async () => {
     const hasChanged = (value: any, old: any) =>
