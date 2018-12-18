@@ -10,7 +10,7 @@ class MyElement extends LitElement {
     return {
       message: { type: String },
       myBool: { type: Boolean },
-      myArray: {}
+      myArray: { type: Array }
     };
   }
   constructor() {

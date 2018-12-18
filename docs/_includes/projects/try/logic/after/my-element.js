@@ -10,7 +10,7 @@ class MyElement extends LitElement {
     return {
       message: { type: String },
       myBool: { type: Boolean },
-      myArray: {}
+      myArray: { type: Array }
     };
   }
   constructor() {
@@ -26,7 +26,7 @@ class MyElement extends LitElement {
 
       <!-- DONE: Add a loop -->
       <ul>
-        ${this.myArray.map(i => html`<li>${i}</li>`)}
+        ${this.myArray.map(item => html`<li>${item}</li>`)}
       </ul>
 
       <!-- DONE: Add a conditional -->

@@ -10,7 +10,7 @@ class MyElement extends LitElement {
     return {
       message: { type: String },
       myBool: { type: Boolean },
-      myArray: {}
+      myArray: { type: Array }
     };
   }
   constructor() {
@@ -24,7 +24,7 @@ class MyElement extends LitElement {
     return html`
       <p>${this.message}</p>
       <ul>
-        ${this.myArray.map(i => html`<li>${i}</li>`)}
+        ${this.myArray.map(item => html`<li>${item}</li>`)}
       </ul>
       ${this.myBool?
         html`<p>Render some HTML if myBool is true</p>`:
