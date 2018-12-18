@@ -12,11 +12,10 @@ slug: properties
 
 LitElement manages your declared properties and their corresponding attributes. By default, LitElement will: 
 
-* Update the element when any declared property changes.
-* Capture instance values for declared properties. Apply any values set before the browser registers a custom element definition.
+* Ensure that an element update is scheduled when any declared property changes.
+* Capture instance values for declared properties. Apply any property values that are set before the browser registers a custom element definition.
 * Set up an observed (not reflected) attribute with the lowercased name of each property.
 * Handle attribute conversion for properties declared as type `String`, `Number`, `Boolean`, `Array`, and `Object`.
-* Create default accesors for declared properties, which automatically request updates.
 * Use direct comparison (`oldValue !== newValue`) to test for property changes.
 * Apply any property options and accessors declared by a superclass. 
 
@@ -45,7 +44,6 @@ The following options are available:
 * `hasChanged`: Specify what constitutes a [property change](#haschanged).
 
 All property declaration options can be specified in a static properties getter, or with TypeScript decorators.
-
 
 ## Declare properties {#declare}
 
@@ -413,7 +411,7 @@ myProp: { type: String, noAccessor: true }
 
 All declared properties have a function, `hasChanged`, which is called whenever the property is set. 
 
-`hasChanged` compares the property's old and new values, and evaluates whether or not the property has changed. If `hasChanged` returns true, LitElement starts an element update. See the [Element update lifecycle documentation](lifecycle) for more information on how updates work.
+`hasChanged` compares the property's old and new values, and evaluates whether or not the property has changed. If `hasChanged` returns true, LitElement starts an element update if one is not already scheduled. See the [Element update lifecycle documentation](lifecycle) for more information on how updates work.
 
 By default:
 
