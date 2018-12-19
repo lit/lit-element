@@ -43,12 +43,12 @@ class MyElement extends LitElement {
       
       <p>${this.message}</p>
       <ul>
-        ${this.myArray.map(i => html`<li>${i}</li>`)}
+        ${this.myArray.map(item => html`<li>${item}</li>`)}
       </ul>
       ${this.myBool?
         html`<p>Render some HTML if myBool is true</p>`:
         html`<p>Render some other HTML if myBool is false</p>`}
-      <button @click="${(event) => this.clickHandler(event)}">Click</button>
+      <button @click="${this.clickHandler}">Click</button>
     `;
   }
 

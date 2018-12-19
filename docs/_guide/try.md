@@ -224,7 +224,7 @@ _my-element.js_
     In my-element.js, in your template, replace the existing HTML `button` element with the following code:
 
     ```html
-    <button @click="${(event) => this.clickHandler(event)}">Click</button>
+    <button @click="${this.clickHandler}">Click</button>
     ```
 
     The annotation above adds a listener for the `click` event.
