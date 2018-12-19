@@ -1,7 +1,7 @@
 import { LitElement, html } from '@polymer/lit-element';
 
 class MyElement extends LitElement { 
-  static get properties() { return { prop1: Object }; }
+  static get properties() { return { prop1: { type: Object } }; }
   constructor() {
     super();
     this.prop1 = { subProp: 0 }

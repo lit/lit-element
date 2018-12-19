@@ -3,8 +3,8 @@ import { LitElement, html } from '@polymer/lit-element';
 class MyElement extends LitElement {  
   static get properties() {
     return {
-      prop1: Number,
-      prop2: Number
+      prop1: { type: Number },
+      prop2: { type: Number }
     };
   }
   constructor() {
