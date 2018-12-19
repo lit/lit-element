@@ -1,0 +1,176 @@
+
+<div hidden>
+
+```
+Examples
+
+* [`attribute`](#examples-attribute)
+* [`converter`](#examples-converter)
+* [`hasChanged`](#examples-haschanged)
+* [`noAccessor`](#examples-noaccessor)
+* [`reflect`](#examples-reflect)
+* [`type`](#examples-type)
+
+### attribute {#examples-attribute}
+
+#### (Default) Create an observed attribute with the name of the property, lowercased
+
+// Observed attribute is "myprop"
+myProp: { }
+
+_Same as:_
+
+// Observed attribute is "myprop"
+myProp: { attribute: true } 
+
+Change the name of the observed attribute
+
+// Observed attribute is "my-prop"
+myProp: { attribute: 'my-prop' } 
+
+Do not create an observed attribute
+
+// No observed attribute
+myProp: { attribute: false } 
+
+
+converter {#examples-converter}
+
+(Default) No type; default converter handles without conversion
+
+myProp: { }
+
+(Default) Unknown type; default converter handles without conversion
+
+myProp: { type: MyType }
+
+(Default) Recognized type; default converter handles based on type
+
+// Use LitElement's default converter 
+prop1: { type: String },
+prop2: { type: Number },
+prop3: { type: Boolean },
+prop4: { type: Array },
+prop5: { type: Object }
+
+Specify custom converter as an object
+
+myProp: { 
+  reflect: true,
+  converter: { 
+    fromAttribute: (value, type) => { 
+      // `value` is a string
+      // Convert it to a value of type `type` and return it
+    },
+
+    toAttribute: (value, type) => { 
+      // `value` is of type `type` 
+      // Convert it to a string and return it
+    }
+  }
+}
+
+myProp: { 
+  reflect: true,
+
+  converter: { 
+    fromAttribute: (value, type) => { 
+      // `value` is a string
+      // Convert it to a value of type `type` and return it
+    }
+
+    // No toAttribute supplied
+    // Reflected attribute will be set to property value without conversion
+  }
+}
+
+Specify custom converter as a function
+
+myProp: { 
+  // Converter is used as fromAttribute
+  converter: (value, type) => { 
+    // `value` is a string
+    // Convert it to a value of type `type` and return it
+  }
+} 
+
+myProp: { 
+  reflect: true,
+
+  // Converter is used in place of fromAttribute
+  converter: (value, type) => { 
+    // `value` is a string
+    // Convert it to a value of type `type` and return it
+  }
+  // No toAttribute supplied
+  // Reflected attribute will be set to property value without conversion
+} 
+
+### hasChanged {#examples-haschanged}
+
+#### (Default) hasChanged compares old and new values with dirty checking  
+
+// hasChanged uses oldVal !== newVal to test for changes 
+myProp: { } 
+
+#### Customize hasChanged
+
+myProp: { hasChanged() { 
+  // Implement custom property change checking 
+  // Return true if an update should proceed, false otherwise
+}}
+
+### noAccessor {#examples-noaccessor}
+
+#### (Default) Generate an accessor which requests updates
+
+// An accessor is generated for myProp
+// Accessor requests an update whenever it is called
+// this.myProp = ... calls generated accessor and initiates update
+myProp: { }
+
+#### Do not generate an accessor
+
+// No accessor is generated for myProp
+// User should implement a custom setter 
+// Custom setter should call this.requestUpdate(propertyName, oldValue) 
+myProp: { noAccessor: true } 
+
+### reflect {#examples-reflect}
+
+#### (Default) Do not reflect property value to attribute
+
+myProp: { }
+
+#### Reflect property value to attribute
+
+myProp: { reflect: true }
+
+### type {#examples-type}
+
+{:.alert .alert-warning} 
+**Don't specify `converter` if you specify `type`.** If you want to enable LitElement's default conversion for a string, number, boolean, array or object property, specify `type` and do not specify `converter`. 
+
+#### (Default) Do not perform any conversion between properties and attributes
+
+myProp: { }
+
+#### Set property type to enable default conversion between properties and attributes 
+
+// Use LitElement's default converter 
+prop1: { type: String },
+prop2: { type: Number },
+prop3: { type: Boolean },
+prop4: { type: Array },
+prop5: { type: Object }
+
+#### Unknown type is ignored
+
+{:.alert .alert-warning} 
+**Unknown types are ignored.** Use `converter` and implement custom accessors to define custom property types. 
+
+// Ignored 
+myProp: { type: MyType }
+```
+
+</div>
