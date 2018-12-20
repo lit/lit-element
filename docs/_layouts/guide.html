@@ -1,0 +1,36 @@
+---
+layout: default
+---
+
+{% include topnav.html %}
+
+<main class="wrapper">
+  <nav class="side-nav">
+    <button id="toggleNavButton">Menu</button>
+    <ul>
+      {%- for item in site.data.guide.toc -%}
+      <li>
+        <a href="{{site.baseurl}}{{item[1].url}}">{{item[1].title}}</a>
+      </li>
+      {%- endfor -%}      
+    </ul>    
+  </nav>
+
+  <article>
+    <h1>{{page.title}}</h1>
+    <div class="alert alert-info">
+      <p>
+        This documentation is a work in progress. It describes prerelease software, and is subject to change.
+      </p>
+    </div>
+    {{ content }}
+  </article>
+  
+</main>
+
+<script>
+  toggleNavButton.addEventListener('click', function(event) {
+    const nav = event.target.parentElement;
+    nav.classList.toggle('open');
+  });
+</script>
