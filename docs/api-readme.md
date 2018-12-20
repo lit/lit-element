@@ -26,6 +26,6 @@ customElements.define('my-element', MyElement);
 
 Inherits API functionality from [UpdatingElement](#UpdatingElement).
 
-### UpdatingElement 
+### updating-element
 
-[UpdatingElement](/api/modules/_lib_updating_element_.html): Manages properties and attributes; Performs element updates. Inherited by UpdatingElement.
+[updating-element](/api/modules/_lib_updating_element_.html): Manages properties and attributes; Performs element updates. Inherited by UpdatingElement.
