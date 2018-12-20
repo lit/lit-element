@@ -1,5 +1,5 @@
 ---
-layout: guide
+layout: post
 title: Templates
 slug: templates
 ---

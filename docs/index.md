@@ -7,7 +7,7 @@ layout: default
 <div class="wrapper">
 <div class="hero-title">{{ site.name }}</div>
 <p class="hero-caption">{{ site.description }}</p>
-<a class="hero-link link-with-arrow" href="{{ site.baseurl }}/guide">Get Started</a>
+<a class="hero-link link-with-arrow" href="{{ site.baseurl }}/guide/try">Get Started</a>
 </div>
 </header>
 
@@ -145,12 +145,12 @@ LitElement uses [lit-html](https://github.com/Polymer/lit-html) to define and re
 
 <div style="flex:1">
 <h2 class="caption">One.</h2>
-<p>[Try LitElement]({{ site.baseurl }}/try) in our live tutorial. You don’t need to install anything.</p>
+<p>[Try LitElement]({{ site.baseurl }}/guide/try) in our live tutorial. You don’t need to install anything.</p>
 </div>
 
 <div style="flex:1">
 <h2 class="caption">Two.</h2>
-<p>When you’re ready to dive in, [set up LitElement locally]({{ site.baseurl }}/guide/start) and start building components!</p>
+<p>When you’re ready to dive in, [set up LitElement locally]({{ site.baseurl }}/guide/tools) and start building components!</p>
 </div>
 
 <div style="flex:1">

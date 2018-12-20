@@ -1,5 +1,5 @@
 /**
- * Try LitElement https://lit-element.polymer-project.org/try
+ * Try LitElement https://lit-element.polymer-project.org/guide/try
  * Starting code for 5. Events
  */
 
