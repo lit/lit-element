@@ -945,6 +945,9 @@ img { max-width: 100%; }
 				<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-protected">
 					<a href="_lib_updating_element_.updatingelement.html#initialize" class="tsd-kind-icon">initialize</a>
 				</li>
+				<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-protected">
+					<a href="_lib_updating_element_.updatingelement.html#performupdate" class="tsd-kind-icon">perform<wbr>Update</a>
+				</li>
 				<li class=" tsd-kind-method tsd-parent-kind-class">
 					<a href="_lib_updating_element_.updatingelement.html#requestupdate" class="tsd-kind-icon">request<wbr>Update</a>
 				</li>
@@ -963,7 +966,7 @@ img { max-width: 100%; }
 			</ul>
 		</li>
 		<li class=" tsd-kind-interface tsd-parent-kind-external-module tsd-has-type-parameter">
-			<a href="../interfaces/_lib_updating_element_.attributeserializer.html" class="tsd-kind-icon">Attribute<wbr>Serializer</a>
+			<a href="../interfaces/_lib_updating_element_.complexattributeconverter.html" class="tsd-kind-icon">Complex<wbr>Attribute<wbr>Converter</a>
 		</li>
 		<li class=" tsd-kind-interface tsd-parent-kind-external-module">
 			<a href="../interfaces/_lib_updating_element_.haschanged.html" class="tsd-kind-icon">Has<wbr>Changed</a>
@@ -979,6 +982,9 @@ img { max-width: 100%; }
 		</li>
 		<li class=" tsd-kind-function tsd-parent-kind-external-module">
 			<a href="../modules/_lib_updating_element_.html#notequal" class="tsd-kind-icon">not<wbr>Equal</a>
+		</li>
+		<li class=" tsd-kind-object-literal tsd-parent-kind-external-module">
+			<a href="../modules/_lib_updating_element_.html#defaultconverter" class="tsd-kind-icon">default<wbr>Converter</a>
 		</li>
 	</ul>
 </nav>
@@ -1047,6 +1053,7 @@ img { max-width: 100%; }
 							<li class="tsd-kind-method tsd-parent-kind-class"><a href="_lib_updating_element_.updatingelement.html#disconnectedcallback" class="tsd-kind-icon">disconnected<wbr>Callback</a></li>
 							<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><a href="_lib_updating_element_.updatingelement.html#firstupdated" class="tsd-kind-icon">first<wbr>Updated</a></li>
 							<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><a href="_lib_updating_element_.updatingelement.html#initialize" class="tsd-kind-icon">initialize</a></li>
+							<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><a href="_lib_updating_element_.updatingelement.html#performupdate" class="tsd-kind-icon">perform<wbr>Update</a></li>
 							<li class="tsd-kind-method tsd-parent-kind-class"><a href="_lib_updating_element_.updatingelement.html#requestupdate" class="tsd-kind-icon">request<wbr>Update</a></li>
 							<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><a href="_lib_updating_element_.updatingelement.html#shouldupdate" class="tsd-kind-icon">should<wbr>Update</a></li>
 							<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><a href="_lib_updating_element_.updatingelement.html#update" class="tsd-kind-icon">update</a></li>
@@ -1069,7 +1076,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/e37c94e/src/lib/updating-element.ts#L322">lib/updating-element.ts:322</a></li>
+								<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/cda6c10/src/lib/updating-element.ts#L404">lib/updating-element.ts:404</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-returns-title">Returns <a href="_lib_updating_element_.updatingelement.html" class="tsd-signature-type">UpdatingElement</a></h4>
@@ -1085,7 +1092,7 @@ img { max-width: 100%; }
 				<div class="tsd-signature tsd-kind-icon">render<wbr>Root<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Element</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">DocumentFragment</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/e37c94e/src/lib/updating-element.ts#L322">lib/updating-element.ts:322</a></li>
+						<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/cda6c10/src/lib/updating-element.ts#L404">lib/updating-element.ts:404</a></li>
 					</ul>
 				</aside>
 				<div class="tsd-comment tsd-typography">
@@ -1101,7 +1108,7 @@ img { max-width: 100%; }
 				<div class="tsd-signature tsd-kind-icon">properties<span class="tsd-signature-symbol">:</span> <a href="../interfaces/_lib_updating_element_.propertydeclarations.html" class="tsd-signature-type">PropertyDeclarations</a></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/e37c94e/src/lib/updating-element.ts#L148">lib/updating-element.ts:148</a></li>
+						<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/cda6c10/src/lib/updating-element.ts#L216">lib/updating-element.ts:216</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -1114,7 +1121,7 @@ img { max-width: 100%; }
 				<div class="tsd-signature tsd-kind-icon">update<wbr>Complete<span class="tsd-signature-symbol">:</span> </div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/e37c94e/src/lib/updating-element.ts#L568">lib/updating-element.ts:568</a></li>
+						<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/cda6c10/src/lib/updating-element.ts#L684">lib/updating-element.ts:684</a></li>
 					</ul>
 				</aside>
 				<div class="tsd-comment tsd-typography">
@@ -1135,7 +1142,7 @@ img { max-width: 100%; }
 				<div class="tsd-signature tsd-kind-icon">observed<wbr>Attributes<span class="tsd-signature-symbol">:</span> </div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/e37c94e/src/lib/updating-element.ts#L153">lib/updating-element.ts:153</a></li>
+						<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/cda6c10/src/lib/updating-element.ts#L221">lib/updating-element.ts:221</a></li>
 					</ul>
 				</aside>
 				<div class="tsd-comment tsd-typography">
@@ -1157,7 +1164,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/e37c94e/src/lib/updating-element.ts#L409">lib/updating-element.ts:409</a></li>
+								<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/cda6c10/src/lib/updating-element.ts#L501">lib/updating-element.ts:501</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -1191,7 +1198,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/e37c94e/src/lib/updating-element.ts#L389">lib/updating-element.ts:389</a></li>
+								<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/cda6c10/src/lib/updating-element.ts#L471">lib/updating-element.ts:471</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -1213,7 +1220,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/e37c94e/src/lib/updating-element.ts#L382">lib/updating-element.ts:382</a></li>
+								<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/cda6c10/src/lib/updating-element.ts#L464">lib/updating-element.ts:464</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -1242,7 +1249,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/e37c94e/src/lib/updating-element.ts#L404">lib/updating-element.ts:404</a></li>
+								<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/cda6c10/src/lib/updating-element.ts#L496">lib/updating-element.ts:496</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -1266,7 +1273,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/e37c94e/src/lib/updating-element.ts#L619">lib/updating-element.ts:619</a></li>
+								<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/cda6c10/src/lib/updating-element.ts#L735">lib/updating-element.ts:735</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -1300,7 +1307,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/e37c94e/src/lib/updating-element.ts#L334">lib/updating-element.ts:334</a></li>
+								<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/cda6c10/src/lib/updating-element.ts#L416">lib/updating-element.ts:416</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -1314,6 +1321,38 @@ img { max-width: 100%; }
 					</li>
 				</ul>
 			</section>
+			<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-protected">
+				<a name="performupdate" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagProtected">Protected</span> perform<wbr>Update</h3>
+				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-protected">
+					<li class="tsd-signature tsd-kind-icon">perform<wbr>Update<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">&gt;</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/cda6c10/src/lib/updating-element.ts#L648">lib/updating-element.ts:648</a></li>
+							</ul>
+						</aside>
+						<div class="tsd-comment tsd-typography">
+							<div class="lead">
+								<p>Performs an element update.</p>
+							</div>
+							<p>You can override this method to change the timing of updates. For instance,
+							to schedule updates to occur just before the next frame:</p>
+							<pre><code><span class="hljs-keyword">protected</span> <span class="hljs-keyword">async</span> performUpdate(): <span class="hljs-built_in">Promise</span>&lt;unknown&gt; {
+  <span class="hljs-keyword">await</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function">(<span class="hljs-params">resolve</span>) =&gt;</span> requestAnimationFrame(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> resolve());
+  <span class="hljs-keyword">super</span>.performUpdate();
+}
+</code></pre>
+						</div>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span>
+							<span class="tsd-signature-symbol"> | </span>
+							<span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">&gt;</span>
+						</h4>
+					</li>
+				</ul>
+			</section>
 			<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
 				<a name="requestupdate" class="tsd-anchor"></a>
 				<h3>request<wbr>Update</h3>
@@ -1324,7 +1363,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/e37c94e/src/lib/updating-element.ts#L470">lib/updating-element.ts:470</a></li>
+								<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/cda6c10/src/lib/updating-element.ts#L570">lib/updating-element.ts:570</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -1368,7 +1407,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/e37c94e/src/lib/updating-element.ts#L577">lib/updating-element.ts:577</a></li>
+								<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/cda6c10/src/lib/updating-element.ts#L693">lib/updating-element.ts:693</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -1401,7 +1440,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/e37c94e/src/lib/updating-element.ts#L589">lib/updating-element.ts:589</a></li>
+								<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/cda6c10/src/lib/updating-element.ts#L705">lib/updating-element.ts:705</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -1435,7 +1474,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/e37c94e/src/lib/updating-element.ts#L608">lib/updating-element.ts:608</a></li>
+								<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/cda6c10/src/lib/updating-element.ts#L724">lib/updating-element.ts:724</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -1469,7 +1508,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/e37c94e/src/lib/updating-element.ts#L173">lib/updating-element.ts:173</a></li>
+								<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/cda6c10/src/lib/updating-element.ts#L241">lib/updating-element.ts:241</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">

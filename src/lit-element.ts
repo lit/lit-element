@@ -11,6 +11,18 @@
  * subject to an additional IP rights grant found at
  * http://polymer.github.io/PATENTS.txt
  */
+
+/**
+ * Base LitElement module.
+ *
+ * @module lit-element
+ * @preferred
+ */
+
+/**
+ * Do not remove this comment; it keeps typedoc from misplacing the module
+ * docs.
+ */
 import {TemplateResult} from 'lit-html';
 import {render} from 'lit-html/lib/shady-render';
 
@@ -20,6 +32,21 @@ export * from './lib/updating-element.js';
 export * from './lib/decorators.js';
 export {html, svg} from 'lit-html/lit-html';
 
+/**
+ * Base class for creating a component with LitElement. Usage:
+ *
+ * ```
+ * import { LitElement, html } from '@polymer/lit-element';
+ *
+ * class MyElement extends LitElement {
+ *   render() {
+ *      return html`<p>your template here</p>`;
+ *   }
+ * }
+ *
+ * customElements.define('my-element', MyElement);
+ * ```
+ */
 export class LitElement extends UpdatingElement {
 
   /**
