@@ -11,6 +11,8 @@ collections:
     output: true
   guide:
     output: true
+  try: 
+    output: true
 include:
   - "_*_.html"
   - "_*_.*.html"

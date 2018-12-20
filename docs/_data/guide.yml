@@ -1,18 +1,17 @@
 title: LitElement Documentation
 toc:
-  try: 
-    title: Try LitElement
-    desc: Try LitElement with interactive code samples.
-    url: /guide/try
   introduction: 
     title: Introduction
     url: /guide
+  getting started: 
+    title: Getting Started
+    url: /guide/start
   templates: 
     title: Templates
     desc: Create and render LitElement templates. Use JavaScript expressions to add properties and logic.      
     url: /guide/templates
   styles:
-    title: CSS Styles
+    title: Styles
     desc: Style your elements with CSS.
     url: /guide/styles
   properties: 
@@ -23,7 +22,3 @@ toc:
     title: Lifecycle
     desc: Specify when an element should update. Respond to updates, or wait for an update to complete.
     url: /guide/lifecycle
-  tools:
-    title: Tools
-    desc: Tools for developing and deploying LitElement projects.
-    url: /guide/tools

@@ -1,6 +1,6 @@
 ---
-layout: post
-title: CSS Styles
+layout: guide
+title: Styles
 slug: styles
 ---
 
