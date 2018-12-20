@@ -913,7 +913,7 @@ img { max-width: 100%; }
 			<a href="../classes/_lib_updating_element_.updatingelement.html" class="tsd-kind-icon">Updating<wbr>Element</a>
 		</li>
 		<li class=" tsd-kind-interface tsd-parent-kind-external-module tsd-has-type-parameter">
-			<a href="_lib_updating_element_.attributeserializer.html" class="tsd-kind-icon">Attribute<wbr>Serializer</a>
+			<a href="_lib_updating_element_.complexattributeconverter.html" class="tsd-kind-icon">Complex<wbr>Attribute<wbr>Converter</a>
 		</li>
 		<li class=" tsd-kind-interface tsd-parent-kind-external-module">
 			<a href="_lib_updating_element_.haschanged.html" class="tsd-kind-icon">Has<wbr>Changed</a>
@@ -923,6 +923,12 @@ img { max-width: 100%; }
 			<ul>
 				<li class=" tsd-kind-property tsd-parent-kind-interface">
 					<a href="_lib_updating_element_.propertydeclaration.html#attribute" class="tsd-kind-icon">attribute</a>
+				</li>
+				<li class=" tsd-kind-property tsd-parent-kind-interface">
+					<a href="_lib_updating_element_.propertydeclaration.html#converter" class="tsd-kind-icon">converter</a>
+				</li>
+				<li class=" tsd-kind-property tsd-parent-kind-interface">
+					<a href="_lib_updating_element_.propertydeclaration.html#noaccessor" class="tsd-kind-icon">no<wbr>Accessor</a>
 				</li>
 				<li class=" tsd-kind-property tsd-parent-kind-interface">
 					<a href="_lib_updating_element_.propertydeclaration.html#reflect" class="tsd-kind-icon">reflect</a>
@@ -944,6 +950,9 @@ img { max-width: 100%; }
 		<li class=" tsd-kind-function tsd-parent-kind-external-module">
 			<a href="../modules/_lib_updating_element_.html#notequal" class="tsd-kind-icon">not<wbr>Equal</a>
 		</li>
+		<li class=" tsd-kind-object-literal tsd-parent-kind-external-module">
+			<a href="../modules/_lib_updating_element_.html#defaultconverter" class="tsd-kind-icon">default<wbr>Converter</a>
+		</li>
 	</ul>
 </nav>
 <div class="container container-main">
@@ -959,7 +968,10 @@ img { max-width: 100%; }
 			<h3>Type parameters</h3>
 			<ul class="tsd-type-parameters">
 				<li>
-					<h4>T</h4>
+					<h4>Type</h4>
+				</li>
+				<li>
+					<h4>TypeHint</h4>
 				</li>
 			</ul>
 		</section>
@@ -979,6 +991,8 @@ img { max-width: 100%; }
 						<h3>Properties</h3>
 						<ul class="tsd-index-list">
 							<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_lib_updating_element_.propertydeclaration.html#attribute" class="tsd-kind-icon">attribute</a></li>
+							<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_lib_updating_element_.propertydeclaration.html#converter" class="tsd-kind-icon">converter</a></li>
+							<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_lib_updating_element_.propertydeclaration.html#noaccessor" class="tsd-kind-icon">no<wbr>Accessor</a></li>
 							<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_lib_updating_element_.propertydeclaration.html#reflect" class="tsd-kind-icon">reflect</a></li>
 							<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_lib_updating_element_.propertydeclaration.html#type" class="tsd-kind-icon">type</a></li>
 						</ul>
@@ -1000,7 +1014,7 @@ img { max-width: 100%; }
 				<div class="tsd-signature tsd-kind-icon">attribute<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/e37c94e/src/lib/updating-element.ts#L47">lib/updating-element.ts:47</a></li>
+						<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/b33bd5a/src/lib/updating-element.ts#L66">lib/updating-element.ts:66</a></li>
 					</ul>
 				</aside>
 				<div class="tsd-comment tsd-typography">
@@ -1014,12 +1028,56 @@ img { max-width: 100%; }
 				</div>
 			</section>
 			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+				<a name="converter" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagOptional">Optional</span> converter</h3>
+				<div class="tsd-signature tsd-kind-icon">converter<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">AttributeConverter</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Type</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">TypeHint</span><span class="tsd-signature-symbol">&gt;</span></div>
+				<aside class="tsd-sources">
+					<ul>
+						<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/b33bd5a/src/lib/updating-element.ts#L87">lib/updating-element.ts:87</a></li>
+					</ul>
+				</aside>
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>Indicates how to convert the attribute to/from a property. If this value
+							is a function, it is used to convert the attribute value a the property
+							value. If it&#39;s an object, it can have keys for <code>fromAttribute</code> and
+							<code>toAttribute</code>. If no <code>toAttribute</code> function is provided and
+							<code>reflect</code> is set to <code>true</code>, the property value is set directly to the
+							attribute. A default <code>converter</code> is used if none is provided; it supports
+							<code>Boolean</code>, <code>String</code>, <code>Number</code>, <code>Object</code>, and <code>Array</code>. Note,
+							when a property changes and the converter is used to update the attribute,
+							the property is never updated again as a result of the attribute changing,
+						and vice versa.</p>
+					</div>
+				</div>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+				<a name="noaccessor" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagOptional">Optional</span> no<wbr>Accessor</h3>
+				<div class="tsd-signature tsd-kind-icon">no<wbr>Accessor<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">true</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">false</span></div>
+				<aside class="tsd-sources">
+					<ul>
+						<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/b33bd5a/src/lib/updating-element.ts#L113">lib/updating-element.ts:113</a></li>
+					</ul>
+				</aside>
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>Indicates whether an accessor will be created for this property. By
+							default, an accessor will be generated for this property that requests an
+							update when set. If this flag is <code>true</code>, no accessor will be created, and
+							it will be the user&#39;s responsibility to call
+							<code>this.requestUpdate(propertyName, oldValue)</code> to request an update when
+						the property changes.</p>
+					</div>
+				</div>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 				<a name="reflect" class="tsd-anchor"></a>
 				<h3><span class="tsd-flag ts-flagOptional">Optional</span> reflect</h3>
 				<div class="tsd-signature tsd-kind-icon">reflect<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">true</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">false</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/e37c94e/src/lib/updating-element.ts#L68">lib/updating-element.ts:68</a></li>
+						<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/b33bd5a/src/lib/updating-element.ts#L96">lib/updating-element.ts:96</a></li>
 					</ul>
 				</aside>
 				<div class="tsd-comment tsd-typography">
@@ -1027,30 +1085,25 @@ img { max-width: 100%; }
 						<p>Indicates if the property should reflect to an attribute.
 							If <code>true</code>, when the property is set, the attribute is set using the
 							attribute name determined according to the rules for the <code>attribute</code>
-							property option and the value of the property serialized using the rules
-						from the <code>type</code> property option.</p>
+							property option and the value of the property converted using the rules
+						from the <code>converter</code> property option.</p>
 					</div>
 				</div>
 			</section>
 			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 				<a name="type" class="tsd-anchor"></a>
 				<h3><span class="tsd-flag ts-flagOptional">Optional</span> type</h3>
-				<div class="tsd-signature tsd-kind-icon">type<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">AttributeType</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span></div>
+				<div class="tsd-signature tsd-kind-icon">type<span class="tsd-signature-symbol">:</span> <a href="" class="tsd-signature-type">TypeHint</a></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/e37c94e/src/lib/updating-element.ts#L59">lib/updating-element.ts:59</a></li>
+						<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/b33bd5a/src/lib/updating-element.ts#L73">lib/updating-element.ts:73</a></li>
 					</ul>
 				</aside>
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>Indicates how to serialize and deserialize the attribute to/from a
-							property. If this value is a function, it is used to deserialize the
-							attribute value a the property value. If it&#39;s an object, it can have keys
-							for <code>fromAttribute</code> and <code>toAttribute</code> where <code>fromAttribute</code> is the
-							deserialize function and <code>toAttribute</code> is a serialize function used to set
-							the property to an attribute. If no <code>toAttribute</code> function is provided and
-							<code>reflect</code> is set to <code>true</code>, the property value is set directly to the
-						attribute.</p>
+						<p>Indicates the type of the property. This is used only as a hint for the
+							<code>converter</code> to determine how to convert the attribute
+						to/from a property.</p>
 					</div>
 				</div>
 			</section>
@@ -1061,13 +1114,13 @@ img { max-width: 100%; }
 				<a name="haschanged" class="tsd-anchor"></a>
 				<h3><span class="tsd-flag ts-flagOptional">Optional</span> has<wbr>Changed</h3>
 				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
-					<li class="tsd-signature tsd-kind-icon">has<wbr>Changed<span class="tsd-signature-symbol">(</span>value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">T</span>, oldValue<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+					<li class="tsd-signature tsd-kind-icon">has<wbr>Changed<span class="tsd-signature-symbol">(</span>value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Type</span>, oldValue<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Type</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
 				</ul>
 				<ul class="tsd-descriptions">
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/e37c94e/src/lib/updating-element.ts#L75">lib/updating-element.ts:75</a></li>
+								<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/b33bd5a/src/lib/updating-element.ts#L103">lib/updating-element.ts:103</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -1080,10 +1133,10 @@ img { max-width: 100%; }
 						<h4 class="tsd-parameters-title">Parameters</h4>
 						<ul class="tsd-parameters">
 							<li>
-								<h5>value: <span class="tsd-signature-type">T</span></h5>
+								<h5>value: <span class="tsd-signature-type">Type</span></h5>
 							</li>
 							<li>
-								<h5>oldValue: <span class="tsd-signature-type">T</span></h5>
+								<h5>oldValue: <span class="tsd-signature-type">Type</span></h5>
 							</li>
 						</ul>
 						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>

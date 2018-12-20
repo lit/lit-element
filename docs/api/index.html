@@ -913,6 +913,30 @@ img { max-width: 100%; }
 </nav>
 <div class="container container-main">
 	<div class="content-wrap">
+		<div class="tsd-panel tsd-typography">
+			<h1 id="litelement-api-documentation">LitElement API Documentation</h1>
+			<h2 id="install-polymer-lit-element">Install @polymer/lit-element</h2>
+			<pre><code><span class="hljs-selector-tag">npm</span> <span class="hljs-selector-tag">install</span> <span class="hljs-selector-tag">--save</span> @<span class="hljs-keyword">polymer</span>/<span class="hljs-keyword">lit</span>-<span class="hljs-keyword">element</span>
+</code></pre><h2 id="modules">Modules</h2>
+			<h3 id="lit-element">lit-element</h3>
+			<p><a href="/api/modules/_lit_element_.html">lit-element</a></p>
+			<p>Contains LitElement base class. Import <code>LitElement</code> and <code>html</code> from this module to create a component:</p>
+			<pre><code class="lang-js"><span class="hljs-keyword">import</span> { LitElement, html } <span class="hljs-keyword">from</span> <span class="hljs-string">'@polymer/lit-element'</span>;
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyElement</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">LitElement</span> </span>{
+  render() {
+      <span class="hljs-keyword">return</span> html<span class="hljs-string">`&lt;p&gt;your template here&lt;/p&gt;`</span>;
+  }
+}
+
+customElements.define(<span class="hljs-string">'my-element'</span>, MyElement);
+</code></pre>
+			<p>Inherits API functionality from <a href="#updating-element">updating-element</a>.</p>
+			<h3 id="updating-element">updating-element</h3>
+			<p><a href="/api/modules/_lib_updating_element_.html">updating-element</a></p>
+			<p>Provides API functionality for LitElement. Manages properties and attributes; Performs element updates.</p>
+		</div>
+		<div style="position:relative;"><a name="typedoc-main-index" class="tsd-anchor"></a></div>
 		<section class="tsd-panel-group tsd-index-group">
 			<h2>Index</h2>
 			<section class="tsd-panel tsd-index-panel">
