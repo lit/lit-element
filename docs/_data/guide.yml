@@ -22,7 +22,3 @@ toc:
     title: Lifecycle
     desc: Specify when an element should update. Respond to updates, or wait for an update to complete.
     url: /guide/lifecycle
-  deploy:
-    title: Deploy
-    desc: Deploy a LitElement project to production.
-    url: /guide/deploy
