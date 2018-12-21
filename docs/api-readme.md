@@ -3,14 +3,12 @@
 ## Install @polymer/lit-element
 
 ```
-npm install --save @polymer/lit-element
+npm install --save @polymer/lit-element@^1.0.0
 ```
 
 ## Modules
 
-### lit-element
-
-[lit-element](/api/modules/_lit_element_.html)
+### [lit-element](/api/modules/_lit_element_.html)
 
 Contains LitElement base class. Import `LitElement` and `html` from this module to create a component:
 
@@ -28,8 +26,6 @@ customElements.define('my-element', MyElement);
 
 Inherits API functionality from [updating-element](#updating-element).
 
-### updating-element
+### [updating-element](/api/modules/_lib_updating_element_.html)
 
-[updating-element](/api/modules/_lib_updating_element_.html)
-
-Provides API functionality for LitElement. Manages properties and attributes; Performs element updates.
+Custom Element base class that supports declaring observable properties, reflecting attributes to properties, and the core update lifecycle methods.
