@@ -9,6 +9,16 @@
   "directories": {
     "test": "test"
   },
+  "files": [
+    "/lib/",
+    "/src/",
+    "!/src/demo/",
+    "!/src/test/",
+    "/lit-element.d.ts",
+    "/lit-element.d.ts.map",
+    "/lit-element.js",
+    "/lit-element.js.map"
+  ],
   "scripts": {
     "build": "tsc",
     "gen-docs": "typedoc --readme none --tsconfig tsconfig_apidoc.json --mode modules --theme minimal --excludeNotExported --excludePrivate --ignoreCompilerErrors --exclude '{**/*test*,**/node_modules/**,**/test/**}' --out ./docs/api src/**/*.ts",
