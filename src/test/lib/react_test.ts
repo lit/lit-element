@@ -52,8 +52,9 @@ suite('createReactComponent', () => {
     const tagName = generateElementName();
     customElements.define(tagName, A);
     const ReactA = createReactComponent(window.React, A, tagName);
-    window.ReactDOM.render(window.React.createElement(ReactA, {items : [ 1, 2, 3 ]} as any),
-                    container);
+    window.ReactDOM.render(
+        window.React.createElement(ReactA, {items : [ 1, 2, 3 ]} as any),
+        container);
 
     await 0;
     assert.equal(stripExpressionDelimeters(container.innerHTML),

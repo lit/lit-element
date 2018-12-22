@@ -33,7 +33,8 @@ export const createReactComponent =
                                 tagName: string):
         ReactModule.ComponentClass<T, void> => {
       const Component: ReactModule.ComponentClass = React.Component;
-      const createElement: typeof ReactModule.createElement = React.createElement;
+      const createElement: typeof ReactModule.createElement =
+          React.createElement;
 
       const setProperty = (node: T, name: string, value: any, old: any) => {
         if ((clazz as any)._classProperties.has(name)) {
