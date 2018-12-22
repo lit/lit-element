@@ -34,22 +34,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       static get properties() {
         return {
           nug: {},
-          zot: {},
           foo: {},
           bar: {},
           whales: {type: Number},
           fooBar: {converter: {fromAttribute: parseInt, toAttribute: (value) => value + '-attr'}, reflect: true}
         }
       }
-
-      // a custom getter/setter can be created to customize property processing
-      get zot() { return this.getAttribute('zot'); }
-
-      set zot(value) {
-        this.setAttribute('zot', value);
-        this.invalidate();
-      }
-
 
       constructor() {
         super();

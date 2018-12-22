@@ -190,6 +190,12 @@ type UpdateState = typeof STATE_HAS_UPDATED|typeof STATE_UPDATE_REQUESTED|
     typeof STATE_IS_REFLECTING_TO_ATTRIBUTE|
     typeof STATE_IS_REFLECTING_TO_PROPERTY|typeof STATE_HAS_CONNECTED;
 
+// The element that is currently updating
+let currentUpdatingElement: UpdatingElement|undefined;
+
+// The set of elements waiting to update.
+export const elementsPendingUpdate = new Set();
+
 /**
  * Base element class which manages element properties and attributes. When
  * properties change, the `update` method is asynchronously called. This method
@@ -283,6 +289,14 @@ export abstract class UpdatingElement extends HTMLElement {
       }
       Object.defineProperty(this.prototype, name, desc);
     }
+  }
+
+  /**
+   * Synchronously flushes any pending updates.
+   */
+  static flushUpdates() {
+    elementsPendingUpdate.forEach((updatingElement) =>
+      updatingElement.flushUpdate());
   }
 
   /**
@@ -397,6 +411,9 @@ export abstract class UpdatingElement extends HTMLElement {
   private _reflectingProperties: Map<PropertyKey, PropertyDeclaration>|
       undefined = undefined;
 
+  private _updateParent: UpdatingElement|undefined = undefined;
+  private _updateChildren: Set<UpdatingElement> = new Set();
+
   /**
    * Node or ShadowRoot into which element DOM should be rendered. Defaults
    * to an open shadowRoot.
@@ -493,7 +510,13 @@ export abstract class UpdatingElement extends HTMLElement {
    * reserving the possibility of making non-breaking feature additions
    * when disconnecting at some point in the future.
    */
-  disconnectedCallback() {}
+  disconnectedCallback() {
+    // Remove from update tree.
+    if (this._updateParent) {
+      this._updateParent._updateChildren.delete(this);
+      this._updateParent = undefined;
+    }
+  }
 
   /**
    * Synchronizes property values when attributes change.
@@ -601,6 +624,12 @@ export abstract class UpdatingElement extends HTMLElement {
    * Sets up the element to asynchronously update.
    */
   private async _enqueueUpdate() {
+    // Place element into update tree if it does not have an updateParent
+    if (!this._updateParent && currentUpdatingElement) {
+      this._updateParent = currentUpdatingElement;
+      this._updateParent._updateChildren.add(this);
+    }
+    elementsPendingUpdate.add(this);
     // Mark state updating...
     this._updateState = this._updateState | STATE_UPDATE_REQUESTED;
     let resolve: (r: boolean) => void;
@@ -633,6 +662,16 @@ export abstract class UpdatingElement extends HTMLElement {
   }
 
   /**
+   * Flushes any pending updates in the element and any rendered child updating elements.
+   */
+  flushUpdate() {
+    if (this._hasRequestedUpdate) {
+      this.performUpdate();
+      this._updateChildren.forEach((e) => e.flushUpdate());
+    }
+  }
+
+  /**
    * Performs an element update.
    *
    * You can override this method to change the timing of updates. For instance,
@@ -646,13 +685,19 @@ export abstract class UpdatingElement extends HTMLElement {
    * ```
    */
   protected performUpdate(): void|Promise<unknown> {
+    if (!this._hasRequestedUpdate) {
+      return;
+    }
     // Mixin instance properties once, if they exist.
     if (this._instanceProperties) {
       this._applyInstanceProperties();
     }
     if (this.shouldUpdate(this._changedProperties)) {
       const changedProperties = this._changedProperties;
+      // During update set this element as `currentUpdatingElement`.
+      currentUpdatingElement = this;
       this.update(changedProperties);
+      currentUpdatingElement = undefined;
       this._markUpdated();
       if (!(this._updateState & STATE_HAS_UPDATED)) {
         this._updateState = this._updateState | STATE_HAS_UPDATED;
@@ -665,6 +710,7 @@ export abstract class UpdatingElement extends HTMLElement {
   }
 
   private _markUpdated() {
+    elementsPendingUpdate.delete(this);
     this._changedProperties = new Map();
     this._updateState = this._updateState & ~STATE_UPDATE_REQUESTED;
   }
@@ -682,6 +728,13 @@ export abstract class UpdatingElement extends HTMLElement {
    * update resolved without triggering another update.
    */
   get updateComplete() { return this._updatePromise; }
+
+  get updateSubtreeComplete() {
+    return (async () => {
+      await this.updateComplete;
+      await Promise.all(Array.from(this._updateChildren).map((e) => e.updateSubtreeComplete));
+    })();
+  }
 
   /**
    * Controls whether or not `update` should be called when the element requests
