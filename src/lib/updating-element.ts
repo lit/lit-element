@@ -11,6 +11,8 @@
  * subject to an additional IP rights grant found at
  * http://polymer.github.io/PATENTS.txt
  */
+import {supportsAdoptedStyleSheets} from './css-tag.js';
+export * from './css-tag.js';
 
 /**
  * Returns the property descriptor for a property on this prototype by walking
@@ -214,6 +216,14 @@ export abstract class UpdatingElement extends HTMLElement {
   private static _classProperties: PropertyDeclarationMap = new Map();
 
   static properties: PropertyDeclarations = {};
+
+  /**
+   * Array of styles to apply to the element. The styles should be defined
+   * using the `css` tag function.
+   */
+  static get styles() {
+    return [];
+  }
 
   /**
    * Returns a list of attributes corresponding to the registered properties.
@@ -462,7 +472,25 @@ export abstract class UpdatingElement extends HTMLElement {
    * @returns {Element|DocumentFragment} Returns a node into which to render.
    */
   protected createRenderRoot(): Element|ShadowRoot {
-    return this.attachShadow({mode : 'open'});
+    const shadowRoot = this.attachShadow({mode : 'open'});
+    const styles = (this.constructor as typeof UpdatingElement).styles;
+    if (window.ShadyCSS !== undefined && !(window.ShadyCSS as any).nativeShadow) {
+      // TODO(sorvell): fix type
+      (window.ShadyCSS as any).prepareAdoptedCssText(styles, this.localName);
+    } else if (supportsAdoptedStyleSheets) {
+      // TODO(sorvell): fix type
+      (shadowRoot as any).adoptedStyleSheets = styles;
+    } else {
+      this.requestUpdate();
+      this._updatePromise.then(() => {
+        styles.forEach((s) => {
+          const style = document.createElement('style');
+          style.textContent = s;
+          shadowRoot.appendChild(style);
+        });
+      });
+    }
+    return shadowRoot;
   }
 
   /**
