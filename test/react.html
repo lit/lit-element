@@ -11,16 +11,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
   <title>lit-element tests</title>
   <script src="../node_modules/mocha/mocha.js"></script>
+  <script src="../node_modules/chai/chai.js"></script>
   <script src="../node_modules/wct-mocha/wct-mocha.js"></script>
+  <script src="../node_modules/react/umd/react.development.js"></script>
+  <script src="../node_modules/react-dom/umd/react-dom.development.js"></script>
 </head>
 <body>
-  <script>
-      WCT.loadSuites([
-        'react.html',
-        'runner.html',
-        'runner.html?wc-shadydom=true',
-        'runner.html?wc-shadydom=true&wc-ce=true',
-        'runner.html?wc-shadydom=true&wc-ce=true&wc-shimcssproperties=true'
-      ]);
-    </script>
+  <script type="module" src="lib/react_test.js"></script>
 </body></html>

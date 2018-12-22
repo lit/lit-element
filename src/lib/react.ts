@@ -14,7 +14,7 @@
 
 // TODO: Write a UMD->module shim or take React as an argument to
 // createReactComponent so we don't have to worry about how to load React.
-import {Component, createElement} from 'react';
+import * as ReactModule from 'react';
 
 import {UpdatingElement} from './updating-element.js';
 
@@ -29,7 +29,12 @@ const reservedReactProperties =
  *  Creates a React component from a LitElement or UpdatingElement.
  */
 export const createReactComponent =
-    <T extends UpdatingElement>(clazz: Constructor<T>, tagName: string) => {
+    <T extends UpdatingElement>(React: any, clazz: Constructor<T>,
+                                tagName: string):
+        ReactModule.ComponentClass<T, void> => {
+      const Component: ReactModule.ComponentClass = React.Component;
+      const createElement: typeof ReactModule.createElement = React.createElement;
+
       const setProperty = (node: T, name: string, value: any, old: any) => {
         if ((clazz as any)._classProperties.has(name)) {
           node[name as keyof T] = value;
@@ -46,7 +51,7 @@ export const createReactComponent =
         }
       };
 
-      return class extends Component {
+      return (class extends Component {
         base!: T;
         ref!: any;
 
@@ -99,5 +104,5 @@ export const createReactComponent =
           }
           return createElement(tagName, props, this.props.children);
         }
-      };
+      } as any as ReactModule.ComponentClass<T, void>);
     };

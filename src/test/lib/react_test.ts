@@ -12,8 +12,8 @@
  * http://polymer.github.io/PATENTS.txt
  */
 
-import {createElement} from 'react';
-import * as ReactDOM from 'react-dom';
+import * as ReactModule from 'react';
+import * as ReactDOMModule from 'react-dom';
 
 import {property} from '../../lib/decorators.js';
 import {createReactComponent} from '../../lib/react.js';
@@ -51,12 +51,22 @@ suite('createReactComponent', () => {
     }
     const tagName = generateElementName();
     customElements.define(tagName, A);
-    const ReactA = createReactComponent(A, tagName);
-    ReactDOM.render(createElement(ReactA, {items : [ 1, 2, 3 ]} as any),
+    const ReactA = createReactComponent(window.React, A, tagName);
+    window.ReactDOM.render(window.React.createElement(ReactA, {items : [ 1, 2, 3 ]} as any),
                     container);
 
     await 0;
     assert.equal(stripExpressionDelimeters(container.innerHTML),
-                 '<div>1-2-3</div>');
+                 `<${tagName}></${tagName}>`);
+    const el = container.querySelector(tagName)!;
+    assert.equal(stripExpressionDelimeters(el.shadowRoot!.innerHTML).trim(),
+                 `<div>1-2-3</div>`);
   });
 });
+
+declare global {
+  interface Window {
+    React: typeof ReactModule;
+    ReactDOM: typeof ReactDOMModule;
+  }
+}
