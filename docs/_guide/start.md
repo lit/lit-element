@@ -27,7 +27,7 @@ npm install -g polymer-cli
 To serve a LitElement project locally:
 
 ```bash
-polymer-serve
+polymer serve
 ```
 
 See the [Polymer CLI documentation](https://polymer-library.polymer-project.org/3.0/docs/tools/polymer-cli) for more information on configuring these tools. 
