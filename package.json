@@ -21,7 +21,7 @@
   ],
   "scripts": {
     "build": "tsc",
-    "gen-docs": "typedoc --readme none --tsconfig tsconfig_apidoc.json --mode modules --theme minimal --excludeNotExported --excludePrivate --ignoreCompilerErrors --exclude '{**/*test*,**/node_modules/**,**/test/**}' --out ./docs/api src/**/*.ts",
+    "gen-docs": "typedoc --readme docs/_api/api-readme.md --tsconfig tsconfig_apidoc.json --mode modules --theme docs/_api/theme --excludeNotExported --excludePrivate --ignoreCompilerErrors --exclude '{**/*test*,**/node_modules/**,**/test/**}' --out ./docs/api src/**/*.ts",
     "test": "npm run build && wct",
     "checksize": "rollup -c ; rm lit-element.bundled.js",
     "format": "find src test | grep '\\.js$\\|\\.ts$' | xargs clang-format --style=file -i",
