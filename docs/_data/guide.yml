@@ -18,6 +18,9 @@ toc:
     title: Properties
     desc: Declare and configure a component's properties and attributes.
     url: /guide/properties
+  events:
+    title: Events
+    url: /guide/events
   lifecycle: 
     title: Lifecycle
     desc: Specify when an element should update. Respond to updates, or wait for an update to complete.
