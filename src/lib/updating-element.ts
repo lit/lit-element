@@ -494,7 +494,16 @@ export abstract class UpdatingElement extends HTMLElement {
    * available and will fallback otherwise.
    */
   protected createRenderRootStyles(shadowRoot: ShadowRoot) {
-    const styles = (this.constructor as typeof UpdatingElement).styles;
+    let styles = (this.constructor as typeof UpdatingElement).styles;
+    // de-duplicate styles preserving the last item in the list.
+    const stylesSet = new Set();
+    styles.forEach((s) => {
+      if (stylesSet.has(s)) {
+        stylesSet.delete(s);
+      }
+      stylesSet.add(s);
+    });
+    styles = Array.from(stylesSet);
     // There are three separate cases here based on Shadow DOM support:
     // (1) shadowRoot polyfilled: use ShadyCSS
     // (2) shadowRoot.adoptedStyleSheets available: use it.
