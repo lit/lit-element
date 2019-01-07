@@ -18,7 +18,7 @@ import {PropertyValues, UpdatingElement} from './lib/updating-element.js';
 
 export * from './lib/updating-element.js';
 export * from './lib/decorators.js';
-export {html, svg} from 'lit-html/lit-html';
+export {html, svg, TemplateResult} from 'lit-html/lit-html';
 
 export class LitElement extends UpdatingElement {
 
