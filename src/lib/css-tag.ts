@@ -9,7 +9,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 */
 export const supportsAdoptedStyleSheets = ('adoptedStyleSheets' in Document.prototype);
 
-class LiteralString {
+interface ConstructableStyleSheet extends CSSStyleSheet {
+  replaceSync(cssText: string): void;
+  replace(cssText: string): Promise<unknown>;
+}
+
+class CSSLiteral {
 
   value: string;
 
@@ -22,31 +27,35 @@ class LiteralString {
   }
 }
 
-const literalValue = (value: LiteralString) => {
-  if (value instanceof LiteralString) {
+const cssLiteralValue = (value: CSSLiteral) => {
+  if (value instanceof CSSLiteral) {
     return value.value;
   } else {
     throw new Error(
-        `non-literal value passed to 'css' function: ${value}`
+        `Non-literal value passed to 'css' function: ${value}.`
     );
   }
 };
 
-export const css = (strings: string[], ...values: any[]) => {
+export type CSSStyleSheetOrCssText = {
+  cssText?: CSSLiteral,
+  styleSheet?: ConstructableStyleSheet}
+;
+
+export const css = (strings: string[], ...values: CSSLiteral[]): CSSStyleSheetOrCssText => {
   const cssText = values.reduce((acc, v, idx) =>
-      acc + literalValue(v) + strings[idx + 1], strings[0]);
-  let result;
+      acc + cssLiteralValue(v) + strings[idx + 1], strings[0]);
+  const result: CSSStyleSheetOrCssText = {};
   if (supportsAdoptedStyleSheets) {
-    result = new CSSStyleSheet();
-    // TODO(sorvell): fix type.
-    (result as any).replaceSync(cssText);
+    result.styleSheet = new CSSStyleSheet() as ConstructableStyleSheet;
+    result.styleSheet.replaceSync(cssText);
   } else {
-    result = new LiteralString(cssText);
+    result.cssText = new CSSLiteral(cssText);
   }
   return result;
 };
 
 export const cssLiteral = (strings: string[], ...values: any[]) => {
-  return new LiteralString(values.reduce((acc, v, idx) =>
-      acc + literalValue(v) + strings[idx + 1], strings[0]));
+  return new CSSLiteral(values.reduce((acc, v, idx) =>
+      acc + cssLiteralValue(v) + strings[idx + 1], strings[0]));
 };

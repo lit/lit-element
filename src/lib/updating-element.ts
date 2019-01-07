@@ -11,8 +11,19 @@
  * subject to an additional IP rights grant found at
  * http://polymer.github.io/PATENTS.txt
  */
-import {supportsAdoptedStyleSheets} from './css-tag.js';
+import {supportsAdoptedStyleSheets, CSSStyleSheetOrCssText} from './css-tag.js';
 export * from './css-tag.js';
+
+// Augment existing types with bleeding edge API.
+declare global {
+  interface ShadyCSS {
+    prepareAdoptedCssText(cssText: string[], name: string): void;
+  }
+
+  interface ShadowRoot {
+    adoptedStyleSheets: CSSStyleSheet[];
+  }
+}
 
 /**
  * Returns the property descriptor for a property on this prototype by walking
@@ -221,7 +232,7 @@ export abstract class UpdatingElement extends HTMLElement {
    * Array of styles to apply to the element. The styles should be defined
    * using the `css` tag function.
    */
-  static get styles() {
+  static get styles(): CSSStyleSheetOrCssText[] {
     return [];
   }
 
@@ -473,24 +484,38 @@ export abstract class UpdatingElement extends HTMLElement {
    */
   protected createRenderRoot(): Element|ShadowRoot {
     const shadowRoot = this.attachShadow({mode : 'open'});
+    this.createRenderRootStyles(shadowRoot);
+    return shadowRoot;
+  }
+
+  /**
+   * Applies styling to the element shadowRoot using the `static get styles`
+   * property. Styling will apply using `shadowRoot.adoptedStyleSheets` where
+   * available and will fallback otherwise.
+   */
+  protected createRenderRootStyles(shadowRoot: ShadowRoot) {
     const styles = (this.constructor as typeof UpdatingElement).styles;
+    // There are three separate cases here based on Shadow DOM support:
+    // (1) shadowRoot polyfilled: use ShadyCSS
+    // (2) shadowRoot.adoptedStyleSheets available: use it.
+    // (3) shadowRoot.adoptedStyleSheets polyfilled: add styles after rendering.
     if (window.ShadyCSS !== undefined && !(window.ShadyCSS as any).nativeShadow) {
-      // TODO(sorvell): fix type
-      (window.ShadyCSS as any).prepareAdoptedCssText(styles, this.localName);
+      window.ShadyCSS.prepareAdoptedCssText(styles.map((s) => s.cssText!.toString()), this.localName);
     } else if (supportsAdoptedStyleSheets) {
-      // TODO(sorvell): fix type
-      (shadowRoot as any).adoptedStyleSheets = styles;
+      shadowRoot.adoptedStyleSheets = styles.map((s) => s.styleSheet!);
     } else {
+      // Ensure styling comes after rendering so styles are *after* all other rendered content.
+      // This matches the spec'd behavior of `adoptedStyleSheets`.
+      // Ensure an updated is requested and then render styling directly after the update.
       this.requestUpdate();
       this._updatePromise.then(() => {
         styles.forEach((s) => {
           const style = document.createElement('style');
-          style.textContent = s;
+          style.textContent = s.cssText!.toString();
           shadowRoot.appendChild(style);
         });
       });
     }
-    return shadowRoot;
   }
 
   /**
