@@ -38,19 +38,19 @@ const cssLiteralValue = (value: CSSLiteral) => {
 };
 
 export type CSSStyleSheetOrCssText = {
-  cssText?: CSSLiteral,
+  cssText: CSSLiteral,
   styleSheet?: ConstructableStyleSheet}
 ;
 
 export const css = (strings: TemplateStringsArray, ...values: CSSLiteral[]): CSSStyleSheetOrCssText => {
   const cssText = values.reduce((acc, v, idx) =>
       acc + cssLiteralValue(v) + strings[idx + 1], strings[0]);
-  const result: CSSStyleSheetOrCssText = {};
+  const result: CSSStyleSheetOrCssText = {
+    cssText: new CSSLiteral(cssText)
+  };
   if (supportsAdoptedStyleSheets) {
     result.styleSheet = new CSSStyleSheet() as ConstructableStyleSheet;
     result.styleSheet.replaceSync(cssText);
-  } else {
-    result.cssText = new CSSLiteral(cssText);
   }
   return result;
 };

@@ -509,7 +509,7 @@ export abstract class UpdatingElement extends HTMLElement {
     // (2) shadowRoot.adoptedStyleSheets available: use it.
     // (3) shadowRoot.adoptedStyleSheets polyfilled: add styles after rendering.
     if (window.ShadyCSS !== undefined && !(window.ShadyCSS as any).nativeShadow) {
-      window.ShadyCSS.prepareAdoptedCssText(styles.map((s) => s.cssText!.toString()), this.localName);
+      window.ShadyCSS.prepareAdoptedCssText(styles.map((s) => s.cssText.toString()), this.localName);
     } else if (supportsAdoptedStyleSheets) {
       shadowRoot.adoptedStyleSheets = styles.map((s) => s.styleSheet!);
     } else {
@@ -520,7 +520,7 @@ export abstract class UpdatingElement extends HTMLElement {
       this._updatePromise.then(() => {
         styles.forEach((s) => {
           const style = document.createElement('style');
-          style.textContent = s.cssText!.toString();
+          style.textContent = s.cssText.toString();
           shadowRoot.appendChild(style);
         });
       });
