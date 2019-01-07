@@ -42,7 +42,7 @@ export type CSSStyleSheetOrCssText = {
   styleSheet?: ConstructableStyleSheet}
 ;
 
-export const css = (strings: string[], ...values: CSSLiteral[]): CSSStyleSheetOrCssText => {
+export const css = (strings: TemplateStringsArray, ...values: CSSLiteral[]): CSSStyleSheetOrCssText => {
   const cssText = values.reduce((acc, v, idx) =>
       acc + cssLiteralValue(v) + strings[idx + 1], strings[0]);
   const result: CSSStyleSheetOrCssText = {};
@@ -55,7 +55,7 @@ export const css = (strings: string[], ...values: CSSLiteral[]): CSSStyleSheetOr
   return result;
 };
 
-export const cssLiteral = (strings: string[], ...values: any[]) => {
+export const cssLiteral = (strings: TemplateStringsArray, ...values: any[]) => {
   return new CSSLiteral(values.reduce((acc, v, idx) =>
       acc + cssLiteralValue(v) + strings[idx + 1], strings[0]));
 };

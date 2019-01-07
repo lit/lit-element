@@ -16,6 +16,7 @@ import '@webcomponents/shadycss/apply-shim.min.js';
 
 import {
   html as htmlWithStyles,
+  css, cssLiteral,
   LitElement,
 } from '../lit-element.js';
 
@@ -328,6 +329,122 @@ suite('Styling', () => {
         assert.equal(getComputedStyleValue(el.applied!, 'margin-top').trim(),
                      '2px');
       });
+});
+
+suite('Static get styles', () => {
+  let container: HTMLElement;
+
+  setup(() => {
+    container = document.createElement('div');
+    document.body.appendChild(container);
+  });
+
+  teardown(() => {
+    if (container && container.parentNode) {
+      container.parentNode.removeChild(container);
+    }
+  });
+
+  test('content shadowRoot is styled via static get styles', async () => {
+    const name = generateElementName();
+    customElements.define(name, class extends LitElement {
+
+      static get styles() {
+        return [css`div {
+            border: 2px solid blue;
+          }`, css`span {
+            display: block;
+            border: 3px solid blue;
+          }`];
+      }
+
+      render() {
+        return htmlWithStyles`
+        <div>Testing1</div>
+        <span>Testing2</span>`;
+      }
+    });
+    const el = document.createElement(name);
+    container.appendChild(el);
+    await (el as LitElement).updateComplete;
+    const div = el.shadowRoot!.querySelector('div');
+    assert.equal(getComputedStyleValue(div!, 'border-top-width').trim(), '2px');
+    const span = el.shadowRoot!.querySelector('span');
+    assert.equal(getComputedStyleValue(span!, 'border-top-width').trim(), '3px');
+  });
+
+  test('static get styles allows `cssLiteral` values', async () => {
+    const name = generateElementName();
+    customElements.define(name, class extends LitElement {
+
+      static get styles() {
+        return [css`div {
+            border: ${cssLiteral`2px solid blue`};
+          }`, css`span {
+            display: block;
+            border: ${cssLiteral`3px solid blue`};
+          }`];
+      }
+
+      render() {
+        return htmlWithStyles`
+        <div>Testing1</div>
+        <span>Testing2</span>`;
+      }
+    });
+    const el = document.createElement(name);
+    container.appendChild(el);
+    await (el as LitElement).updateComplete;
+    const div = el.shadowRoot!.querySelector('div');
+    assert.equal(getComputedStyleValue(div!, 'border-top-width').trim(), '2px');
+    const span = el.shadowRoot!.querySelector('span');
+    assert.equal(getComputedStyleValue(span!, 'border-top-width').trim(), '3px');
+  });
+
+  test('`css` get styles throws when unsafe values are used', async () => {
+    assert.throws(() => {
+      css`div { border: ${`2px solid blue;` as any}}`;
+    });
+  });
+
+  test('styles in render compose with `static get styles`', async () => {
+    const name = generateElementName();
+    customElements.define(name, class extends LitElement {
+
+      static get styles() {
+        return [css`div {
+            border: 2px solid blue;
+          }`, css`span {
+            display: block;
+            border: 3px solid blue;
+          }`];
+      }
+
+      render() {
+        return htmlWithStyles`
+        <style>
+          div {
+            padding: 4px;
+          }
+          span {
+            display: block;
+            border: 4px solid blue;
+          }
+        </style>
+        <div>Testing1</div>
+        <span>Testing2</span>`;
+      }
+    });
+    const el = document.createElement(name);
+    container.appendChild(el);
+    await (el as LitElement).updateComplete;
+    const div = el.shadowRoot!.querySelector('div');
+    assert.equal(getComputedStyleValue(div!, 'border-top-width').trim(), '2px');
+    assert.equal(getComputedStyleValue(div!, 'padding-top').trim(), '4px');
+    const span = el.shadowRoot!.querySelector('span');
+    assert.equal(getComputedStyleValue(span!, 'border-top-width').trim(), '3px');
+  });
+
 });
 
 suite('ShadyDOM', () => {
