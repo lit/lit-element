@@ -510,7 +510,7 @@ export abstract class UpdatingElement extends HTMLElement {
    */
   protected adoptStyles() {
     const styles = (this.constructor as typeof UpdatingElement)._uniqueStyles;
-    if (!styles.length) {
+    if (styles.length === 0) {
       return;
     }
     // There are three separate cases here based on Shadow DOM support.
