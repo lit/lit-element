@@ -16,7 +16,7 @@ import '@webcomponents/shadycss/apply-shim.min.js';
 
 import {
   html as htmlWithStyles,
-  css, cssLiteral,
+  css,
   LitElement,
 } from '../lit-element.js';
 
@@ -373,16 +373,16 @@ suite('Static get styles', () => {
     assert.equal(getComputedStyleValue(span!, 'border-top-width').trim(), '3px');
   });
 
-  test('static get styles allows `cssLiteral` values', async () => {
+  test('static get styles allows composition via `css` values', async () => {
     const name = generateElementName();
     customElements.define(name, class extends LitElement {
 
       static get styles() {
         return [css`div {
-            border: ${cssLiteral`2px solid blue`};
+            border: ${css`2px solid blue`};
           }`, css`span {
             display: block;
-            border: ${cssLiteral`3px solid blue`};
+            border: ${css`3px solid blue`};
           }`];
       }
 

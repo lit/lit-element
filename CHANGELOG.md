@@ -17,6 +17,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## Unreleased
 
 ### Added
+* Added `static get styles()` to allow defining element styling separate from `render` method.
+This takes advantage of [`adoptedStyleSheets`](https://wicg.github.io/construct-stylesheets/#using-constructed-stylesheets) when possible ([#391](https://github.com/Polymer/lit-element/issues/391)).
 * Added the `performUpdate` method to allow control of update timing ([#290](https://github.com/Polymer/lit-element/issues/290)).
 * Updates deferred until first connection ([#258](https://github.com/Polymer/lit-element/issues/258)).
 ### Changed

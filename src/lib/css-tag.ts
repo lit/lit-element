@@ -9,53 +9,42 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 */
 export const supportsAdoptedStyleSheets = ('adoptedStyleSheets' in Document.prototype);
 
-interface ConstructableStyleSheet extends CSSStyleSheet {
-  replaceSync(cssText: string): void;
-  replace(cssText: string): Promise<unknown>;
-}
+export class CSSResult {
 
-class CSSLiteral {
+  _styleSheet?: CSSStyleSheet|null;
 
-  value: string;
-
-  constructor(value: string) {
-    this.value = value.toString();
+  constructor(public readonly cssText: string) {
   }
 
-  toString() {
-    return this.value;
+  // Note, this is a getter so that it's lazy. In practice, this means stylesheets
+  // are not created until the first element instance is made.
+  get styleSheet(): CSSStyleSheet|null {
+    if (this._styleSheet === undefined) {
+      // Note, assume that if adoptedStyleSheets is supported,
+      // constructable stylesheets are as well.
+      if (supportsAdoptedStyleSheets) {
+        this._styleSheet = new CSSStyleSheet();
+        this._styleSheet.replaceSync(this.cssText);
+      } else {
+        this._styleSheet = null;
+      }
+    }
+    return this._styleSheet;
   }
 }
 
-const cssLiteralValue = (value: CSSLiteral) => {
-  if (value instanceof CSSLiteral) {
-    return value.value;
+const textFromCSSResult = (value: CSSResult) => {
+  if (value instanceof CSSResult) {
+    return value.cssText;
   } else {
     throw new Error(
-        `Non-literal value passed to 'css' function: ${value}.`
+        `Value passed to 'css' function must be a 'css' function result: ${value}.`
     );
   }
 };
 
-export type CSSStyleSheetOrCssText = {
-  cssText: CSSLiteral,
-  styleSheet?: ConstructableStyleSheet}
-;
-
-export const css = (strings: TemplateStringsArray, ...values: CSSLiteral[]): CSSStyleSheetOrCssText => {
+export const css = (strings: TemplateStringsArray, ...values: CSSResult[]): CSSResult => {
   const cssText = values.reduce((acc, v, idx) =>
-      acc + cssLiteralValue(v) + strings[idx + 1], strings[0]);
-  const result: CSSStyleSheetOrCssText = {
-    cssText: new CSSLiteral(cssText)
-  };
-  if (supportsAdoptedStyleSheets) {
-    result.styleSheet = new CSSStyleSheet() as ConstructableStyleSheet;
-    result.styleSheet.replaceSync(cssText);
-  }
-  return result;
-};
-
-export const cssLiteral = (strings: TemplateStringsArray, ...values: any[]) => {
-  return new CSSLiteral(values.reduce((acc, v, idx) =>
-      acc + cssLiteralValue(v) + strings[idx + 1], strings[0]));
+    acc + textFromCSSResult(v) + strings[idx + 1], strings[0]);
+  return new CSSResult(cssText);
 };

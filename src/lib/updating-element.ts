@@ -11,19 +11,8 @@
  * subject to an additional IP rights grant found at
  * http://polymer.github.io/PATENTS.txt
  */
-import {supportsAdoptedStyleSheets, CSSStyleSheetOrCssText} from './css-tag.js';
+import {supportsAdoptedStyleSheets, CSSResult} from './css-tag.js';
 export * from './css-tag.js';
-
-// Augment existing types with bleeding edge API.
-declare global {
-  interface ShadyCSS {
-    prepareAdoptedCssText(cssText: string[], name: string): void;
-  }
-
-  interface ShadowRoot {
-    adoptedStyleSheets: CSSStyleSheet[];
-  }
-}
 
 /**
  * Returns the property descriptor for a property on this prototype by walking
@@ -232,8 +221,27 @@ export abstract class UpdatingElement extends HTMLElement {
    * Array of styles to apply to the element. The styles should be defined
    * using the `css` tag function.
    */
-  static get styles(): CSSStyleSheetOrCssText[] {
+  static get styles(): CSSResult[] {
     return [];
+  }
+
+  private static _styles: CSSResult[]|undefined;
+
+  private static get _uniqueStyles(): CSSResult[] {
+    if (this._styles === undefined) {
+      const styles = this.styles;
+      // As a performance optimization to avoid duplicated styling that can
+      // occur especially when composing via subclassing, de-duplicate styles
+      // preserving the last item in the list. The last item is kept to
+      // try to preserve cascade order with the assumption that it's most
+      // important that last added styles override previous styles.
+      const styleSet = styles.reduceRight((set, s) => {
+        set.add(s);
+        return set;
+      }, new Set());
+      this._styles = Array.from(styleSet).reverse();
+    }
+    return this._styles;
   }
 
   /**
@@ -436,6 +444,12 @@ export abstract class UpdatingElement extends HTMLElement {
    */
   protected initialize() {
     this.renderRoot = this.createRenderRoot();
+    // Note, tf renderRoot is not a shadowRoot, styles would/could apply to the
+    // element's getRootNode(). While this could be done, we're choosing not to
+    // support this now since it would require different logic around de-duping.
+    if (this.renderRoot instanceof window.ShadowRoot) {
+      this.adoptStyles();
+    }
     this._saveInstanceProperties();
   }
 
@@ -483,35 +497,30 @@ export abstract class UpdatingElement extends HTMLElement {
    * @returns {Element|DocumentFragment} Returns a node into which to render.
    */
   protected createRenderRoot(): Element|ShadowRoot {
-    const shadowRoot = this.attachShadow({mode : 'open'});
-    this.createRenderRootStyles(shadowRoot);
-    return shadowRoot;
+    return this.attachShadow({mode : 'open'});
   }
 
   /**
    * Applies styling to the element shadowRoot using the `static get styles`
    * property. Styling will apply using `shadowRoot.adoptedStyleSheets` where
-   * available and will fallback otherwise.
+   * available and will fallback otherwise. When Shadow DOM is polyfilled,
+   * ShadyCSS scopes styles and adds them to the document. When Shadow DOM
+   * is available but `adoptedStyleSheets` is not, styles are appended to the
+   * end of the `shadowRoot` to [mimic spec behavior](https://wicg.github.io/construct-stylesheets/#using-constructed-stylesheets).
    */
-  protected createRenderRootStyles(shadowRoot: ShadowRoot) {
-    let styles = (this.constructor as typeof UpdatingElement).styles;
-    // de-duplicate styles preserving the last item in the list.
-    const stylesSet = new Set();
-    styles.forEach((s) => {
-      if (stylesSet.has(s)) {
-        stylesSet.delete(s);
-      }
-      stylesSet.add(s);
-    });
-    styles = Array.from(stylesSet);
-    // There are three separate cases here based on Shadow DOM support:
+  protected adoptStyles() {
+    const styles = (this.constructor as typeof UpdatingElement)._uniqueStyles;
+    if (!styles.length) {
+      return;
+    }
+    // There are three separate cases here based on Shadow DOM support.
     // (1) shadowRoot polyfilled: use ShadyCSS
     // (2) shadowRoot.adoptedStyleSheets available: use it.
-    // (3) shadowRoot.adoptedStyleSheets polyfilled: add styles after rendering.
-    if (window.ShadyCSS !== undefined && !(window.ShadyCSS as any).nativeShadow) {
-      window.ShadyCSS.prepareAdoptedCssText(styles.map((s) => s.cssText.toString()), this.localName);
+    // (3) shadowRoot.adoptedStyleSheets polyfilled: append styles after rendering.
+    if (window.ShadyCSS !== undefined && !window.ShadyCSS.nativeShadow) {
+      window.ShadyCSS.prepareAdoptedCssText(styles.map((s) => s.cssText), this.localName);
     } else if (supportsAdoptedStyleSheets) {
-      shadowRoot.adoptedStyleSheets = styles.map((s) => s.styleSheet!);
+      (this.renderRoot as ShadowRoot).adoptedStyleSheets = styles.map((s) => s.styleSheet!);
     } else {
       // Ensure styling comes after rendering so styles are *after* all other rendered content.
       // This matches the spec'd behavior of `adoptedStyleSheets`.
@@ -520,8 +529,8 @@ export abstract class UpdatingElement extends HTMLElement {
       this._updatePromise.then(() => {
         styles.forEach((s) => {
           const style = document.createElement('style');
-          style.textContent = s.cssText.toString();
-          shadowRoot.appendChild(style);
+          style.textContent = s.cssText;
+          this.renderRoot!.appendChild(style);
         });
       });
     }
