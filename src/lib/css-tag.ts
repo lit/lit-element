@@ -1,28 +1,40 @@
 /**
 @license
-Copyright (c) 2017 The Polymer Project Authors. All rights reserved.
+Copyright (c) 2019 The Polymer Project Authors. All rights reserved.
 This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
 The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
 The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
 Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 */
-export const supportsAdoptedStyleSheets = ('adoptedStyleSheets' in Document.prototype);
+const supportsConstructableStyleSheets = (() => {
+  let constructable = true;
+  try {
+    new CSSStyleSheet();
+  } catch {
+    constructable = false;
+  }
+  return constructable;
+})();
+
+export const supportsAdoptingStyleSheets = supportsConstructableStyleSheets &&
+    ('adoptedStyleSheets' in Document.prototype);
 
 export class CSSResult {
 
   _styleSheet?: CSSStyleSheet|null;
 
-  constructor(public readonly cssText: string) {
+  readonly cssText: string;
+
+  constructor(cssText: string) {
+    this.cssText = cssText;
   }
 
   // Note, this is a getter so that it's lazy. In practice, this means stylesheets
   // are not created until the first element instance is made.
   get styleSheet(): CSSStyleSheet|null {
     if (this._styleSheet === undefined) {
-      // Note, assume that if adoptedStyleSheets is supported,
-      // constructable stylesheets are as well.
-      if (supportsAdoptedStyleSheets) {
+      if (supportsAdoptingStyleSheets) {
         this._styleSheet = new CSSStyleSheet();
         this._styleSheet.replaceSync(this.cssText);
       } else {

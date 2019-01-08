@@ -11,7 +11,7 @@
  * subject to an additional IP rights grant found at
  * http://polymer.github.io/PATENTS.txt
  */
-import {supportsAdoptedStyleSheets, CSSResult} from './css-tag.js';
+import {supportsAdoptingStyleSheets, CSSResult} from './css-tag.js';
 export * from './css-tag.js';
 
 /**
@@ -444,7 +444,7 @@ export abstract class UpdatingElement extends HTMLElement {
    */
   protected initialize() {
     this.renderRoot = this.createRenderRoot();
-    // Note, tf renderRoot is not a shadowRoot, styles would/could apply to the
+    // Note, if renderRoot is not a shadowRoot, styles would/could apply to the
     // element's getRootNode(). While this could be done, we're choosing not to
     // support this now since it would require different logic around de-duping.
     if (this.renderRoot instanceof window.ShadowRoot) {
@@ -519,7 +519,7 @@ export abstract class UpdatingElement extends HTMLElement {
     // (3) shadowRoot.adoptedStyleSheets polyfilled: append styles after rendering.
     if (window.ShadyCSS !== undefined && !window.ShadyCSS.nativeShadow) {
       window.ShadyCSS.prepareAdoptedCssText(styles.map((s) => s.cssText), this.localName);
-    } else if (supportsAdoptedStyleSheets) {
+    } else if (supportsAdoptingStyleSheets) {
       (this.renderRoot as ShadowRoot).adoptedStyleSheets = styles.map((s) => s.styleSheet!);
     } else {
       // Ensure styling comes after rendering so styles are *after* all other rendered content.
