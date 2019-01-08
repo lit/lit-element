@@ -1,5 +1,5 @@
 /**
- * Try LitElement https://lit-element.polymer-project.org/guide/try
+ * Try LitElement https://lit-element.polymer-project.org/try
  * Starting code for 4. Logic
  */
 
@@ -10,7 +10,7 @@ class MyElement extends LitElement {
     return {
       message: { type: String },
       myBool: { type: Boolean },
-      myArray: {}
+      myArray: { type: Array }
     };
   }
   constructor() {

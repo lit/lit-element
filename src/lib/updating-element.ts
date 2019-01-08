@@ -187,7 +187,7 @@ const defaultPropertyDeclaration: PropertyDeclaration = {
   hasChanged : notEqual
 };
 
-const microtaskPromise = new Promise((resolve) => resolve(true));
+const microtaskPromise = Promise.resolve(true);
 
 const STATE_HAS_UPDATED = 1;
 const STATE_UPDATE_REQUESTED = 1 << 2;
@@ -673,7 +673,7 @@ export abstract class UpdatingElement extends HTMLElement {
    *
    * ```
    * protected async performUpdate(): Promise<unknown> {
-   *   await new Promise((resolve) => requestAnimationFrame(() => resolve());
+   *   await new Promise((resolve) => requestAnimationFrame(() => resolve()));
    *   super.performUpdate();
    * }
    * ```

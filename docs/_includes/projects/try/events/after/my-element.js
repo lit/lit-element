@@ -1,5 +1,5 @@
 /**
- * Try LitElement https://lit-element.polymer-project.org/guide/try
+ * Try LitElement https://lit-element.polymer-project.org/try
  * Completed code for 5. Events
  */
 
@@ -10,7 +10,7 @@ class MyElement extends LitElement {
     return {
       message: { type: String },
       myBool: { type: Boolean },
-      myArray: {}
+      myArray: { type: Array }
     };
   }
   constructor() {
@@ -24,14 +24,14 @@ class MyElement extends LitElement {
     return html`
       <p>${this.message}</p>
       <ul>
-        ${this.myArray.map(i => html`<li>${i}</li>`)}
+        ${this.myArray.map(item => html`<li>${item}</li>`)}
       </ul>
       ${this.myBool?
         html`<p>Render some HTML if myBool is true</p>`:
         html`<p>Render some other HTML if myBool is false</p>`}
 
       <!-- DONE: Add an event listener. -->
-      <button @click="${(event) => this.clickHandler(event)}">Click</button>
+      <button @click="${this.clickHandler}">Click</button>
     `;
   }
 

@@ -1,0 +1,24 @@
+title: LitElement Documentation
+toc:
+  introduction: 
+    title: Introduction
+    url: /guide
+  getting started: 
+    title: Getting Started
+    url: /guide/start
+  templates: 
+    title: Templates
+    desc: Create and render LitElement templates. Use JavaScript expressions to add properties and logic.      
+    url: /guide/templates
+  styles:
+    title: Styles
+    desc: Style your elements with CSS.
+    url: /guide/styles
+  properties: 
+    title: Properties
+    desc: Declare and configure a component's properties and attributes.
+    url: /guide/properties
+  lifecycle: 
+    title: Lifecycle
+    desc: Specify when an element should update. Respond to updates, or wait for an update to complete.
+    url: /guide/lifecycle

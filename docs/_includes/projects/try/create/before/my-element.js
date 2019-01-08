@@ -1,5 +1,5 @@
 /**
- * Try LitElement https://lit-element.polymer-project.org/guide/try
+ * Try LitElement https://lit-element.polymer-project.org/try
  * Starting code for 1. Create
  */
 
