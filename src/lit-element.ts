@@ -37,9 +37,7 @@ export class LitElement extends UpdatingElement {
    * Array of styles to apply to the element. The styles should be defined
    * using the `css` tag function.
    */
-  static get styles(): CSSResult[] {
-    return [];
-  }
+  static get styles(): CSSResult[] { return []; }
 
   private static _styles: CSSResult[]|undefined;
 
@@ -98,7 +96,8 @@ export class LitElement extends UpdatingElement {
    * available and will fallback otherwise. When Shadow DOM is polyfilled,
    * ShadyCSS scopes styles and adds them to the document. When Shadow DOM
    * is available but `adoptedStyleSheets` is not, styles are appended to the
-   * end of the `shadowRoot` to [mimic spec behavior](https://wicg.github.io/construct-stylesheets/#using-constructed-stylesheets).
+   * end of the `shadowRoot` to [mimic spec
+   * behavior](https://wicg.github.io/construct-stylesheets/#using-constructed-stylesheets).
    */
   protected adoptStyles() {
     const styles = (this.constructor as typeof LitElement)._uniqueStyles;
@@ -108,13 +107,17 @@ export class LitElement extends UpdatingElement {
     // There are three separate cases here based on Shadow DOM support.
     // (1) shadowRoot polyfilled: use ShadyCSS
     // (2) shadowRoot.adoptedStyleSheets available: use it.
-    // (3) shadowRoot.adoptedStyleSheets polyfilled: append styles after rendering
+    // (3) shadowRoot.adoptedStyleSheets polyfilled: append styles after
+    // rendering
     if (window.ShadyCSS !== undefined && !window.ShadyCSS.nativeShadow) {
-      window.ShadyCSS.prepareAdoptedCssText(styles.map((s) => s.cssText), this.localName);
+      window.ShadyCSS.prepareAdoptedCssText(styles.map((s) => s.cssText),
+                                            this.localName);
     } else if (supportsAdoptingStyleSheets) {
-      (this.renderRoot as ShadowRoot).adoptedStyleSheets = styles.map((s) => s.styleSheet!);
+      (this.renderRoot as ShadowRoot).adoptedStyleSheets =
+          styles.map((s) => s.styleSheet!);
     } else {
-      // This must be done after rendering so the actual style insertion is done in `update`.
+      // This must be done after rendering so the actual style insertion is done
+      // in `update`.
       this._needsShimAdoptedStyleSheets = true;
     }
   }
@@ -123,8 +126,7 @@ export class LitElement extends UpdatingElement {
     super.connectedCallback();
     // Note, first update/render handles styleElement so we only call this if
     // connected after first update.
-    if (this.hasUpdated &&
-        window.ShadyCSS !== undefined) {
+    if (this.hasUpdated && window.ShadyCSS !== undefined) {
       window.ShadyCSS.styleElement(this);
     }
   }
@@ -154,8 +156,6 @@ export class LitElement extends UpdatingElement {
         this.renderRoot!.appendChild(style);
       });
     }
-
-
   }
 
   /**

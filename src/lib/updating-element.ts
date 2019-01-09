@@ -406,9 +406,7 @@ export abstract class UpdatingElement extends HTMLElement {
    * Performs element initialization. By default captures any pre-set values for
    * registered properties.
    */
-  protected initialize() {
-    this._saveInstanceProperties();
-  }
+  protected initialize() { this._saveInstanceProperties(); }
 
   /**
    * Fixes any properties set on the instance before upgrade time.
@@ -604,9 +602,7 @@ export abstract class UpdatingElement extends HTMLElement {
     return (this._updateState & STATE_UPDATE_REQUESTED);
   }
 
-  protected get hasUpdated() {
-    return (this._updateState & STATE_HAS_UPDATED);
-  }
+  protected get hasUpdated() { return (this._updateState & STATE_HAS_UPDATED); }
 
   /**
    * Performs an element update.
