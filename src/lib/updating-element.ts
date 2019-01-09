@@ -11,8 +11,6 @@
  * subject to an additional IP rights grant found at
  * http://polymer.github.io/PATENTS.txt
  */
-import {supportsAdoptingStyleSheets, CSSResult} from './css-tag.js';
-export * from './css-tag.js';
 
 /**
  * Returns the property descriptor for a property on this prototype by walking
@@ -218,33 +216,6 @@ export abstract class UpdatingElement extends HTMLElement {
   static properties: PropertyDeclarations = {};
 
   /**
-   * Array of styles to apply to the element. The styles should be defined
-   * using the `css` tag function.
-   */
-  static get styles(): CSSResult[] {
-    return [];
-  }
-
-  private static _styles: CSSResult[]|undefined;
-
-  private static get _uniqueStyles(): CSSResult[] {
-    if (this._styles === undefined) {
-      const styles = this.styles;
-      // As a performance optimization to avoid duplicated styling that can
-      // occur especially when composing via subclassing, de-duplicate styles
-      // preserving the last item in the list. The last item is kept to
-      // try to preserve cascade order with the assumption that it's most
-      // important that last added styles override previous styles.
-      const styleSet = styles.reduceRight((set, s) => {
-        set.add(s);
-        return set;
-      }, new Set());
-      this._styles = Array.from(styleSet).reverse();
-    }
-    return this._styles;
-  }
-
-  /**
    * Returns a list of attributes corresponding to the registered properties.
    */
   static get observedAttributes() {
@@ -411,7 +382,7 @@ export abstract class UpdatingElement extends HTMLElement {
 
   private _updateState: UpdateState = 0;
   private _instanceProperties: PropertyValues|undefined = undefined;
-  private _updatePromise: Promise<unknown> = microtaskPromise;
+  protected updatePromise: Promise<unknown> = microtaskPromise;
   private _hasConnectedResolver: (() => void)|undefined = undefined;
 
   /**
@@ -426,30 +397,16 @@ export abstract class UpdatingElement extends HTMLElement {
   private _reflectingProperties: Map<PropertyKey, PropertyDeclaration>|
       undefined = undefined;
 
-  /**
-   * Node or ShadowRoot into which element DOM should be rendered. Defaults
-   * to an open shadowRoot.
-   */
-  protected renderRoot?: Element|DocumentFragment;
-
   constructor() {
     super();
     this.initialize();
   }
 
   /**
-   * Performs element initialization. By default this calls `createRenderRoot`
-   * to create the element `renderRoot` node and captures any pre-set values for
+   * Performs element initialization. By default captures any pre-set values for
    * registered properties.
    */
   protected initialize() {
-    this.renderRoot = this.createRenderRoot();
-    // Note, if renderRoot is not a shadowRoot, styles would/could apply to the
-    // element's getRootNode(). While this could be done, we're choosing not to
-    // support this now since it would require different logic around de-duping.
-    if (this.renderRoot instanceof window.ShadowRoot) {
-      this.adoptStyles();
-    }
     this._saveInstanceProperties();
   }
 
@@ -489,56 +446,6 @@ export abstract class UpdatingElement extends HTMLElement {
     this._instanceProperties = undefined;
   }
 
-  /**
-   * Returns the node into which the element should render and by default
-   * creates and returns an open shadowRoot. Implement to customize where the
-   * element's DOM is rendered. For example, to render into the element's
-   * childNodes, return `this`.
-   * @returns {Element|DocumentFragment} Returns a node into which to render.
-   */
-  protected createRenderRoot(): Element|ShadowRoot {
-    return this.attachShadow({mode : 'open'});
-  }
-
-  /**
-   * Applies styling to the element shadowRoot using the `static get styles`
-   * property. Styling will apply using `shadowRoot.adoptedStyleSheets` where
-   * available and will fallback otherwise. When Shadow DOM is polyfilled,
-   * ShadyCSS scopes styles and adds them to the document. When Shadow DOM
-   * is available but `adoptedStyleSheets` is not, styles are appended to the
-   * end of the `shadowRoot` to [mimic spec behavior](https://wicg.github.io/construct-stylesheets/#using-constructed-stylesheets).
-   */
-  protected adoptStyles() {
-    const styles = (this.constructor as typeof UpdatingElement)._uniqueStyles;
-    if (styles.length === 0) {
-      return;
-    }
-    // There are three separate cases here based on Shadow DOM support.
-    // (1) shadowRoot polyfilled: use ShadyCSS
-    // (2) shadowRoot.adoptedStyleSheets available: use it.
-    // (3) shadowRoot.adoptedStyleSheets polyfilled: append styles after rendering.
-    if (window.ShadyCSS !== undefined && !window.ShadyCSS.nativeShadow) {
-      window.ShadyCSS.prepareAdoptedCssText(styles.map((s) => s.cssText), this.localName);
-    } else if (supportsAdoptingStyleSheets) {
-      (this.renderRoot as ShadowRoot).adoptedStyleSheets = styles.map((s) => s.styleSheet!);
-    } else {
-      // Ensure styling comes after rendering so styles are *after* all other rendered content.
-      // This matches the spec'd behavior of `adoptedStyleSheets`.
-      // Ensure an updated is requested and then render styling directly after the update.
-      this.requestUpdate();
-      this._updatePromise.then(() => {
-        styles.forEach((s) => {
-          const style = document.createElement('style');
-          style.textContent = s.cssText;
-          this.renderRoot!.appendChild(style);
-        });
-      });
-    }
-  }
-
-  /**
-   * Uses ShadyCSS to keep element DOM updated.
-   */
   connectedCallback() {
     this._updateState = this._updateState | STATE_HAS_CONNECTED;
     // Ensure connection triggers an update. Updates cannot complete before
@@ -550,12 +457,6 @@ export abstract class UpdatingElement extends HTMLElement {
       this._hasConnectedResolver = undefined;
     } else {
       this.requestUpdate();
-    }
-    // Note, first update/render handles styleElement so we only call this if
-    // connected after first update.
-    if ((this._updateState & STATE_HAS_UPDATED) &&
-        window.ShadyCSS !== undefined) {
-      window.ShadyCSS.styleElement(this);
     }
   }
 
@@ -675,8 +576,8 @@ export abstract class UpdatingElement extends HTMLElement {
     // Mark state updating...
     this._updateState = this._updateState | STATE_UPDATE_REQUESTED;
     let resolve: (r: boolean) => void;
-    const previousUpdatePromise = this._updatePromise;
-    this._updatePromise = new Promise((res) => resolve = res);
+    const previousUpdatePromise = this.updatePromise;
+    this.updatePromise = new Promise((res) => resolve = res);
     // Ensure any previous update has resolved before updating.
     // This `await` also ensures that property changes are batched.
     await previousUpdatePromise;
@@ -701,6 +602,10 @@ export abstract class UpdatingElement extends HTMLElement {
 
   private get _hasRequestedUpdate() {
     return (this._updateState & STATE_UPDATE_REQUESTED);
+  }
+
+  protected get hasUpdated() {
+    return (this._updateState & STATE_HAS_UPDATED);
   }
 
   /**
@@ -752,7 +657,7 @@ export abstract class UpdatingElement extends HTMLElement {
    * @returns {Promise} The Promise returns a boolean that indicates if the
    * update resolved without triggering another update.
    */
-  get updateComplete() { return this._updatePromise; }
+  get updateComplete() { return this.updatePromise; }
 
   /**
    * Controls whether or not `update` should be called when the element requests
@@ -767,8 +672,8 @@ export abstract class UpdatingElement extends HTMLElement {
 
   /**
    * Updates the element. This method reflects property values to attributes.
-   * It can be overridden to render and keep updated DOM in the element's
-   * `renderRoot`. Setting properties inside this method will *not* trigger
+   * It can be overridden to render and keep updated element DOM.
+   * Setting properties inside this method will *not* trigger
    * another update.
    *
    * * @param _changedProperties Map of changed properties with old values

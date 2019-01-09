@@ -7,18 +7,8 @@ The complete set of contributors may be found at http://polymer.github.io/CONTRI
 Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 */
-const supportsConstructableStyleSheets = (() => {
-  let constructable = true;
-  try {
-    new CSSStyleSheet();
-  } catch {
-    constructable = false;
-  }
-  return constructable;
-})();
 
-export const supportsAdoptingStyleSheets = supportsConstructableStyleSheets &&
-    ('adoptedStyleSheets' in Document.prototype);
+export const supportsAdoptingStyleSheets = ('adoptedStyleSheets' in Document.prototype);
 
 export class CSSResult {
 
@@ -34,6 +24,7 @@ export class CSSResult {
   // are not created until the first element instance is made.
   get styleSheet(): CSSStyleSheet|null {
     if (this._styleSheet === undefined) {
+      // Note, if `adoptedStyleSheets` is supported then we assume CSSStyleSheet is constructable.
       if (supportsAdoptingStyleSheets) {
         this._styleSheet = new CSSStyleSheet();
         this._styleSheet.replaceSync(this.cssText);
