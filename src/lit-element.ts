@@ -110,7 +110,7 @@ export class LitElement extends UpdatingElement {
     // (3) shadowRoot.adoptedStyleSheets polyfilled: append styles after
     // rendering
     if (window.ShadyCSS !== undefined && !window.ShadyCSS.nativeShadow) {
-      window.ShadyCSS.prepareAdoptedCssText(styles.map((s) => s.cssText),
+      window.ShadyCSS.ScopingShim.prepareAdoptedCssText(styles.map((s) => s.cssText),
                                             this.localName);
     } else if (supportsAdoptingStyleSheets) {
       (this.renderRoot as ShadowRoot).adoptedStyleSheets =
