@@ -12,7 +12,7 @@
  * http://polymer.github.io/PATENTS.txt
  */
 
-import {elementsPendingUpdate, UpdatingElement} from './updating-element.js';
+import {UpdatingElement} from './updating-element.js';
 
 /**
  * **EXPERIMENTAL**
@@ -23,24 +23,6 @@ import {elementsPendingUpdate, UpdatingElement} from './updating-element.js';
  * that these properties will always return the expected value, even if
  * contained UpdatingElements are pending update.
  */
-
-const contains = (container: Element, element: UpdatingElement) => {
-  while (element && container !== element) {
-    element = (element as any)._updateParent || element.parentNode  || (element as any).host;
-  }
-  return container === element;
-};
-
-/**
- * Commits updates within the given element's subtree.
- */
-export const commit = (element: Element) => {
-  elementsPendingUpdate.forEach((updatingElement) => {
-    if (contains(element, updatingElement)) {
-      updatingElement.flushUpdate();
-    }
-  });
-};
 
 const protos = [Element.prototype, HTMLElement.prototype];
 
@@ -59,7 +41,7 @@ const redefineProperty = (prop: PropertyKey, isMethod?: boolean) => {
   }
   const native = isMethod ? descriptor!.value : descriptor!.get!;
   const wrapped = function(this: Element) {
-    commit(this);
+    UpdatingElement.flushUpdates();
     return native.call(this);
   };
   if (isMethod) {

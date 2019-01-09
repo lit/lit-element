@@ -193,8 +193,12 @@ type UpdateState = typeof STATE_HAS_UPDATED|typeof STATE_UPDATE_REQUESTED|
 // The element that is currently updating
 let currentUpdatingElement: UpdatingElement|undefined;
 
+class UpdateParent {
+  updateChildren = new Set();
+}
+
 // The set of elements waiting to update.
-export const elementsPendingUpdate = new Set();
+const rootUpdateParent = new UpdateParent();
 
 /**
  * Base element class which manages element properties and attributes. When
@@ -295,7 +299,7 @@ export abstract class UpdatingElement extends HTMLElement {
    * Synchronously flushes any pending updates.
    */
   static flushUpdates() {
-    elementsPendingUpdate.forEach((updatingElement) =>
+    rootUpdateParent.updateChildren.forEach((updatingElement) =>
       updatingElement.flushUpdate());
   }
 
@@ -411,8 +415,8 @@ export abstract class UpdatingElement extends HTMLElement {
   private _reflectingProperties: Map<PropertyKey, PropertyDeclaration>|
       undefined = undefined;
 
-  private _updateParent: UpdatingElement|undefined = undefined;
-  private _updateChildren: Set<UpdatingElement> = new Set();
+  updateParent: UpdatingElement|UpdateParent|undefined = undefined;
+  updateChildren: Set<UpdatingElement> = new Set();
 
   /**
    * Node or ShadowRoot into which element DOM should be rendered. Defaults
@@ -512,9 +516,9 @@ export abstract class UpdatingElement extends HTMLElement {
    */
   disconnectedCallback() {
     // Remove from update tree.
-    if (this._updateParent) {
-      this._updateParent._updateChildren.delete(this);
-      this._updateParent = undefined;
+    if (this.updateParent) {
+      this.updateParent.updateChildren.delete(this);
+      this.updateParent = undefined;
     }
   }
 
@@ -625,11 +629,10 @@ export abstract class UpdatingElement extends HTMLElement {
    */
   private async _enqueueUpdate() {
     // Place element into update tree if it does not have an updateParent
-    if (!this._updateParent && currentUpdatingElement) {
-      this._updateParent = currentUpdatingElement;
-      this._updateParent._updateChildren.add(this);
+    if (!this.updateParent) {
+      this.updateParent = currentUpdatingElement || rootUpdateParent;
+      this.updateParent!.updateChildren.add(this);
     }
-    elementsPendingUpdate.add(this);
     // Mark state updating...
     this._updateState = this._updateState | STATE_UPDATE_REQUESTED;
     let resolve: (r: boolean) => void;
@@ -667,8 +670,8 @@ export abstract class UpdatingElement extends HTMLElement {
   flushUpdate() {
     if (this._hasRequestedUpdate) {
       this.performUpdate();
-      this._updateChildren.forEach((e) => e.flushUpdate());
     }
+    this.updateChildren.forEach((e) => e.flushUpdate());
   }
 
   /**
@@ -710,7 +713,6 @@ export abstract class UpdatingElement extends HTMLElement {
   }
 
   private _markUpdated() {
-    elementsPendingUpdate.delete(this);
     this._changedProperties = new Map();
     this._updateState = this._updateState & ~STATE_UPDATE_REQUESTED;
   }
@@ -732,7 +734,7 @@ export abstract class UpdatingElement extends HTMLElement {
   get updateSubtreeComplete() {
     return (async () => {
       await this.updateComplete;
-      await Promise.all(Array.from(this._updateChildren).map((e) => e.updateSubtreeComplete));
+      await Promise.all(Array.from(this.updateChildren).map((e) => e.updateSubtreeComplete));
     })();
   }
 
