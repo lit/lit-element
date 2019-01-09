@@ -41,13 +41,28 @@ export type Constructor<T> = {
  *
  */
 export const customElement = (tagName: string) =>
-    (clazz: Constructor<HTMLElement>) => {
-      window.customElements.define(tagName, clazz);
-      // Cast as any because TS doesn't recognize the return type as being a
-      // subtype of the decorated class when clazz is typed as
-      // `Constructor<HTMLElement>` for some reason. `Constructor<HTMLElement>`
-      // is helpful to make sure the decorator is applied to elements however.
-      return clazz as any;
+    (classOrDescriptor: Constructor<HTMLElement>|ClassDescriptor) => {
+      if (typeof classOrDescriptor === 'function') {
+        const clazz = classOrDescriptor as Constructor<HTMLElement>;
+        // Legacy decorator
+        window.customElements.define(tagName, clazz);
+        // Cast as any because TS doesn't recognize the return type as being a
+        // subtype of the decorated class when clazz is typed as
+        // `Constructor<HTMLElement>` for some reason.
+        // `Constructor<HTMLElement>` is helpful to make sure the decorator is
+        // applied to elements however.
+        return clazz as any;
+      }
+      const {kind, elements} = classOrDescriptor;
+      console.assert(kind === 'class');
+      return {
+        kind,
+        elements,
+        // This callback is called once the class is otherwise fully defined
+        finisher(clazz: Constructor<HTMLElement>) {
+          window.customElements.define(tagName, clazz);
+        }
+      };
     };
 
 /**
@@ -55,10 +70,44 @@ export const customElement = (tagName: string) =>
  * corresponding attribute value. A `PropertyDeclaration` may optionally be
  * supplied to configure property features.
  */
-export const property = (options?: PropertyDeclaration) => (
-    proto: Object, name: PropertyKey) => {
-  (proto.constructor as typeof UpdatingElement).createProperty(name, options);
-};
+export const property = (options?: PropertyDeclaration) =>
+    (protoOrDescriptor: Object|ClassElement, name?: PropertyKey): any => {
+      if (name !== undefined) {
+        // Legacy decorator
+        (protoOrDescriptor.constructor as typeof UpdatingElement)
+            .createProperty(name!, options);
+        return;
+      }
+      const element = protoOrDescriptor as ClassElement;
+      console.assert(element.kind === 'field');
+      // createProperty() takes care of defining the property, but we still must
+      // return some kind of descriptor, so return a descriptor for an unused
+      // prototype field. The finisher calls createProperty().
+      return {
+        kind : 'field',
+        key : Symbol(),
+        placement : 'own',
+        descriptor : {},
+        // When @babel/plugin-proposal-decorators implements initializers, do
+        // this instead of the initializer below.
+        // See: https://github.com/babel/babel/issues/9260
+        // extras: [
+        //   {
+        //     kind: 'initializer',
+        //     placement: 'own',
+        //     initializer: descriptor.initializer,
+        //   }
+        // ],
+        initializer(this: any) {
+          if (typeof element.initializer === 'function') {
+            this[element.key] = element.initializer!.call(this);
+          }
+        },
+        finisher(clazz: typeof UpdatingElement) {
+          clazz.createProperty(element.key, options);
+        }
+      };
+    };
 
 /**
  * A property decorator that converts a class property into a getter that
@@ -81,12 +130,24 @@ export const queryAll = _query((target: NodeSelector, selector: string) =>
  * against `target`.
  */
 function _query<T>(queryFn: (target: NodeSelector, selector: string) => T) {
-  return (selector: string) => (proto: any, propName: string) => {
-    Object.defineProperty(proto, propName, {
+  return (selector: string) => (protoOrDescriptor: any, name?: string): any => {
+    const descriptor = {
       get(this: LitElement) { return queryFn(this.renderRoot!, selector); },
       enumerable : true,
       configurable : true,
-    });
+    };
+    if (name !== undefined) {
+      // Legacy decorator
+      Object.defineProperty(protoOrDescriptor, name, descriptor);
+    } else {
+      const element = protoOrDescriptor as ClassElement;
+      return {
+        kind : 'method',
+        placement : 'prototype',
+        key : element.key,
+        descriptor,
+      };
+    }
   };
 }
 
@@ -117,7 +178,18 @@ function _query<T>(queryFn: (target: NodeSelector, selector: string) => T) {
  *     }
  */
 export const eventOptions = (options: AddEventListenerOptions) =>
-    (proto: any, name: string) => {
-      // This comment is here to fix a disagreement between formatter and linter
-      Object.assign(proto[name], options);
+    (protoOrDescriptor: any, name?: string) => {
+      if (name !== undefined) {
+        // Legacy decorator
+        Object.assign(protoOrDescriptor[name], options);
+      } else {
+        return {
+          ...protoOrDescriptor,
+          finisher(clazz: typeof UpdatingElement) {
+            Object.assign(
+                clazz.prototype[protoOrDescriptor.key as keyof UpdatingElement],
+                options);
+          },
+        };
+      }
     };

@@ -21,8 +21,9 @@
   ],
   "scripts": {
     "build": "tsc",
+    "build:babel-test": "babel src/test/lib/decorators_test.ts --out-file test/lib/decorators-babel_test.js",
     "gen-docs": "typedoc --readme docs/_api/api-readme.md --tsconfig tsconfig_apidoc.json --mode modules --theme docs/_api/theme --excludeNotExported --excludePrivate --ignoreCompilerErrors --exclude '{**/*test*,**/node_modules/**,**/test/**}' --out ./docs/api src/**/*.ts",
-    "test": "npm run build && wct",
+    "test": "npm run build && npm run build:babel-test && wct",
     "checksize": "rollup -c ; rm lit-element.bundled.js",
     "format": "find src test | grep '\\.js$\\|\\.ts$' | xargs clang-format --style=file -i",
     "lint": "tslint --project ./",
@@ -31,6 +32,10 @@
   },
   "author": "The Polymer Authors",
   "devDependencies": {
+    "@babel/cli": "^7.2.3",
+    "@babel/plugin-proposal-class-properties": "^7.2.3",
+    "@babel/plugin-proposal-decorators": "^7.2.3",
+    "@babel/plugin-transform-typescript": "^7.2.0",
     "@types/chai": "^4.0.1",
     "@types/mocha": "^5.2.4",
     "@webcomponents/shadycss": "^1.5.2",
