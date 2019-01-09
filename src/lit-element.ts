@@ -51,14 +51,13 @@ export class LitElement extends UpdatingElement {
       // preserving the last item in the list. The last item is kept to
       // try to preserve cascade order with the assumption that it's most
       // important that last added styles override previous styles.
-      const styleSet = styles.reduceRight((set, s) => {
-        set.add(s);
-        return set;
-      }, new Set());
+      const styleSet = styles.reduceRight((set, s) => set.add(s), new Set());
       this._styles = Array.from(styleSet).reverse();
     }
     return this._styles;
   }
+
+  private _needsShimAdoptedStyleSheets?: boolean;
 
   /**
    * Node or ShadowRoot into which element DOM should be rendered. Defaults
@@ -109,23 +108,14 @@ export class LitElement extends UpdatingElement {
     // There are three separate cases here based on Shadow DOM support.
     // (1) shadowRoot polyfilled: use ShadyCSS
     // (2) shadowRoot.adoptedStyleSheets available: use it.
-    // (3) shadowRoot.adoptedStyleSheets polyfilled: append styles after rendering.
+    // (3) shadowRoot.adoptedStyleSheets polyfilled: append styles after rendering
     if (window.ShadyCSS !== undefined && !window.ShadyCSS.nativeShadow) {
       window.ShadyCSS.prepareAdoptedCssText(styles.map((s) => s.cssText), this.localName);
     } else if (supportsAdoptingStyleSheets) {
       (this.renderRoot as ShadowRoot).adoptedStyleSheets = styles.map((s) => s.styleSheet!);
     } else {
-      // Ensure styling comes after rendering so styles are *after* all other rendered content.
-      // This matches the spec'd behavior of `adoptedStyleSheets`.
-      // Ensure an updated is requested and then render styling directly after the update.
-      this.requestUpdate();
-      this.updatePromise.then(() => {
-        styles.forEach((s) => {
-          const style = document.createElement('style');
-          style.textContent = s.cssText;
-          this.renderRoot!.appendChild(style);
-        });
-      });
+      // This must be done after rendering so the actual style insertion is done in `update`.
+      this._needsShimAdoptedStyleSheets = true;
     }
   }
 
@@ -153,6 +143,19 @@ export class LitElement extends UpdatingElement {
           .render(templateResult, this.renderRoot!,
                   {scopeName : this.localName!, eventContext : this});
     }
+    // When native Shadow DOM is used but adoptedStyles are not supported,
+    // insert styling after rendering to ensure adoptedStyles have highest
+    // priority.
+    if (this._needsShimAdoptedStyleSheets) {
+      this._needsShimAdoptedStyleSheets = false;
+      (this.constructor as typeof LitElement)._uniqueStyles.forEach((s) => {
+        const style = document.createElement('style');
+        style.textContent = s.cssText;
+        this.renderRoot!.appendChild(style);
+      });
+    }
+
+
   }
 
   /**

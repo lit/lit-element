@@ -382,7 +382,7 @@ export abstract class UpdatingElement extends HTMLElement {
 
   private _updateState: UpdateState = 0;
   private _instanceProperties: PropertyValues|undefined = undefined;
-  protected updatePromise: Promise<unknown> = microtaskPromise;
+  private _updatePromise: Promise<unknown> = microtaskPromise;
   private _hasConnectedResolver: (() => void)|undefined = undefined;
 
   /**
@@ -576,8 +576,8 @@ export abstract class UpdatingElement extends HTMLElement {
     // Mark state updating...
     this._updateState = this._updateState | STATE_UPDATE_REQUESTED;
     let resolve: (r: boolean) => void;
-    const previousUpdatePromise = this.updatePromise;
-    this.updatePromise = new Promise((res) => resolve = res);
+    const previousUpdatePromise = this._updatePromise;
+    this._updatePromise = new Promise((res) => resolve = res);
     // Ensure any previous update has resolved before updating.
     // This `await` also ensures that property changes are batched.
     await previousUpdatePromise;
@@ -657,7 +657,7 @@ export abstract class UpdatingElement extends HTMLElement {
    * @returns {Promise} The Promise returns a boolean that indicates if the
    * update resolved without triggering another update.
    */
-  get updateComplete() { return this.updatePromise; }
+  get updateComplete() { return this._updatePromise; }
 
   /**
    * Controls whether or not `update` should be called when the element requests
