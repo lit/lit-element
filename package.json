@@ -28,6 +28,7 @@
     "format": "find src test | grep '\\.js$\\|\\.ts$' | xargs clang-format --style=file -i",
     "lint": "tslint --project ./",
     "prepublishOnly": "npm run build",
+    "prepare": "npm run build",
     "regen-package-lock": "rm -rf node_modules package-lock.json; npm install"
   },
   "author": "The Polymer Authors",
