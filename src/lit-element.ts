@@ -49,8 +49,14 @@ export class LitElement extends UpdatingElement {
       // preserving the last item in the list. The last item is kept to
       // try to preserve cascade order with the assumption that it's most
       // important that last added styles override previous styles.
-      const styleSet = styles.reduceRight((set, s) => set.add(s), new Set());
-      this._styles = Array.from(styleSet).reverse();
+      const styleSet = styles.reduceRight((set, s) => {
+        set.add(s);
+        // on IE set.add does not return the set.
+        return set;
+      }, new Set());
+      // Array.form does not work on Set in IE
+      this._styles = [];
+      styleSet.forEach((v) => this._styles!.unshift(v));
     }
     return this._styles;
   }
