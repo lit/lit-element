@@ -16,6 +16,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
+## [2.0.0-rc.1] - 2019-01-10
+### Changed
+* [Breaking] Changed NPM package name to `lit-element`
+
 ## [0.7.0] - 2019-01-10
 ### Added
 * Updated decorator implementations to support TC39 decorator API proposal (supported by Babel 7.1+) in addition to the legacy decorator API (supported by older Babel and TypeScript) ([#156](https://github.com/Polymer/lit-element/issues/156)).
