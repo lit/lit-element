@@ -18,7 +18,7 @@ import {PropertyValues, UpdatingElement} from './lib/updating-element.js';
 
 export * from './lib/updating-element.js';
 export * from './lib/decorators.js';
-export {html, svg} from 'lit-html/lit-html';
+export {html, svg, TemplateResult, SVGTemplateResult} from 'lit-html/lit-html';
 import {supportsAdoptingStyleSheets, CSSResult} from './lib/css-tag.js';
 export * from './lib/css-tag.js';
 
