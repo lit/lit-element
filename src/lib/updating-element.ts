@@ -440,26 +440,16 @@ export abstract class UpdatingElement extends HTMLElement {
   private _reflectingProperties: Map<PropertyKey, PropertyDeclaration>|
       undefined = undefined;
 
-  /**
-   * Node or ShadowRoot into which element DOM should be rendered. Defaults
-   * to an open shadowRoot.
-   */
-  protected renderRoot?: Element|DocumentFragment;
-
   constructor() {
     super();
     this.initialize();
   }
 
   /**
-   * Performs element initialization. By default this calls `createRenderRoot`
-   * to create the element `renderRoot` node and captures any pre-set values for
+   * Performs element initialization. By default captures any pre-set values for
    * registered properties.
    */
-  protected initialize() {
-    this.renderRoot = this.createRenderRoot();
-    this._saveInstanceProperties();
-  }
+  protected initialize() { this._saveInstanceProperties(); }
 
   /**
    * Fixes any properties set on the instance before upgrade time.
@@ -497,20 +487,6 @@ export abstract class UpdatingElement extends HTMLElement {
     this._instanceProperties = undefined;
   }
 
-  /**
-   * Returns the node into which the element should render and by default
-   * creates and returns an open shadowRoot. Implement to customize where the
-   * element's DOM is rendered. For example, to render into the element's
-   * childNodes, return `this`.
-   * @returns {Element|DocumentFragment} Returns a node into which to render.
-   */
-  protected createRenderRoot(): Element|ShadowRoot {
-    return this.attachShadow({mode : 'open'});
-  }
-
-  /**
-   * Uses ShadyCSS to keep element DOM updated.
-   */
   connectedCallback() {
     this._updateState = this._updateState | STATE_HAS_CONNECTED;
     // Ensure connection triggers an update. Updates cannot complete before
@@ -522,12 +498,6 @@ export abstract class UpdatingElement extends HTMLElement {
       this._hasConnectedResolver = undefined;
     } else {
       this.requestUpdate();
-    }
-    // Note, first update/render handles styleElement so we only call this if
-    // connected after first update.
-    if ((this._updateState & STATE_HAS_UPDATED) &&
-        window.ShadyCSS !== undefined) {
-      window.ShadyCSS.styleElement(this);
     }
   }
 
@@ -675,6 +645,8 @@ export abstract class UpdatingElement extends HTMLElement {
     return (this._updateState & STATE_UPDATE_REQUESTED);
   }
 
+  protected get hasUpdated() { return (this._updateState & STATE_HAS_UPDATED); }
+
   /**
    * Performs an element update.
    *
@@ -739,8 +711,8 @@ export abstract class UpdatingElement extends HTMLElement {
 
   /**
    * Updates the element. This method reflects property values to attributes.
-   * It can be overridden to render and keep updated DOM in the element's
-   * `renderRoot`. Setting properties inside this method will *not* trigger
+   * It can be overridden to render and keep updated element DOM.
+   * Setting properties inside this method will *not* trigger
    * another update.
    *
    * * @param _changedProperties Map of changed properties with old values
