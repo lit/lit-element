@@ -207,8 +207,7 @@ export abstract class UpdatingElement extends HTMLElement {
 
   /*
    * Due to closure compiler ES6 compilation bugs, @nocollapse is required on
-   * all static methods to prevent them from being pruned, as well as on any
-   * *private* static field with an initializer.  Reference:
+   * all static methods and properties with initializers.  Reference:
    * - https://github.com/google/closure-compiler/issues/1776
    */
 
@@ -216,7 +215,6 @@ export abstract class UpdatingElement extends HTMLElement {
    * Maps attribute names to properties; for example `foobar` attribute to
    * `fooBar` property. Created lazily on user subclasses when finalizing the
    * class.
-   * @nocollapse
    */
   private static _attributeToPropertyMap: AttributeMap;
 
@@ -234,7 +232,6 @@ export abstract class UpdatingElement extends HTMLElement {
   /**
    * User-supplied object that maps property names to `PropertyDeclaration`
    * objects containing options for configuring the property.
-   * @nocollapse
    */
   static properties: PropertyDeclarations;
 
