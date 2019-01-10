@@ -607,6 +607,40 @@ suite('LitElement', () => {
     assert.equal(el.updateCount, 6);
   });
 
+  test('property options via decorator do not modify superclass', async () => {
+    class E extends LitElement {
+
+      static get properties() {
+        return {foo : {type : Number, reflect : true}};
+      }
+
+      foo = 1;
+
+      render() { return html``; }
+    }
+    customElements.define(generateElementName(), E);
+    // Note, this forces `E` to finalize
+    const el1 = new E();
+
+    class F extends E {
+
+      @property({type : Number}) foo = 2;
+    }
+
+    customElements.define(generateElementName(), F);
+    const el2 = new E();
+    const el3 = new F();
+    container.appendChild(el1);
+    container.appendChild(el2);
+    container.appendChild(el3);
+    await el1.updateComplete;
+    await el2.updateComplete;
+    await el3.updateComplete;
+    assert.isTrue(el1.hasAttribute('foo'));
+    assert.isTrue(el2.hasAttribute('foo'));
+    assert.isFalse(el3.hasAttribute('foo'));
+  });
+
   test('can mix property options via decorator and via getter', async () => {
     const hasChanged = (value: any, old: any) =>
         old === undefined || value > old;

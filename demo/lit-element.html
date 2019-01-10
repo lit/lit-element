@@ -19,9 +19,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <ts-element message="Yo" more-info="person"></ts-element>
 
   <script type="module">
-    import { LitElement, html } from '../lit-element.js';
+    import { LitElement, html, css } from '../lit-element.js';
 
     class Inner extends LitElement {
+
+      static get styles() {
+        return [css`:host { color: green; }`];
+      }
       render() {
         return html`Hello world`;
       }
@@ -34,22 +38,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       static get properties() {
         return {
           nug: {},
-          zot: {},
           foo: {},
           bar: {},
           whales: {type: Number},
           fooBar: {converter: {fromAttribute: parseInt, toAttribute: (value) => value + '-attr'}, reflect: true}
         }
       }
-
-      // a custom getter/setter can be created to customize property processing
-      get zot() { return this.getAttribute('zot'); }
-
-      set zot(value) {
-        this.setAttribute('zot', value);
-        this.invalidate();
-      }
-
 
       constructor() {
         super();
@@ -62,6 +56,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.dispatchEvent(new CustomEvent('whales', {detail: {whales: this.whales}}))
           console.log(this.shadowRoot.querySelector('.count').textContent);
         });
+      }
+
+      static get styles() {
+        return [css`h4 { color: orange;} `];
       }
 
       render() {
