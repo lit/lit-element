@@ -14,9 +14,9 @@
 
 /**
  * When using Closure Compiler, JSCompiler_renameProperty(property, object) is
- * replaced by the munged name for object[property] We cannot alias this
- * function, so we have to use a small shim that has the same behavior when not
- * compiling.
+ * replaced at compile time by the munged name for object[property]. We cannot
+ * alias this function, so we have to use a small shim that has the same
+ * behavior when not compiling.
  */
 const JSCompiler_renameProperty = (prop: PropertyKey, _obj: any) => prop;
 
@@ -205,12 +205,20 @@ type UpdateState = typeof STATE_HAS_UPDATED|typeof STATE_UPDATE_REQUESTED|
  */
 export abstract class UpdatingElement extends HTMLElement {
 
+  /*
+   * Due to closure compiler ES6 compilation bugs, @nocollapse is required on
+   * all static methods to prevent them from being pruned, as well as on any
+   * *private* static field with an initializer.  Reference:
+   * - https://github.com/google/closure-compiler/issues/1776
+   */
+
   /**
-   * Maps attribute names to properties; for example `foobar` attribute
-   * to `fooBar` property.
+   * Maps attribute names to properties; for example `foobar` attribute to
+   * `fooBar` property. Created lazily on user subclasses when finalizing the
+   * class.
    * @nocollapse
    */
-  private static _attributeToPropertyMap: AttributeMap = new Map();
+  private static _attributeToPropertyMap: AttributeMap;
 
   /**
    * Marks class as having finished creating properties.
@@ -219,11 +227,16 @@ export abstract class UpdatingElement extends HTMLElement {
 
   /**
    * Memoized list of all class properties, including any superclass properties.
+   * Created lazily on user subclasses when finalizing the class.
    */
   private static _classProperties?: PropertyDeclarationMap;
 
-  /** @nocollapse */
-  static properties: PropertyDeclarations = {};
+  /**
+   * User-supplied object that maps property names to `PropertyDeclaration`
+   * objects containing options for configuring the property.
+   * @nocollapse
+   */
+  static properties: PropertyDeclarations;
 
   /**
    * Returns a list of attributes corresponding to the registered properties.
