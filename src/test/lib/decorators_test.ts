@@ -12,11 +12,12 @@
  * http://polymer.github.io/PATENTS.txt
  */
 
-import {eventOptions} from '../../lib/decorators.js';
+import {eventOptions, property} from '../../lib/decorators.js';
 import {
   customElement,
   html,
   LitElement,
+  PropertyValues,
   query,
   queryAll
 } from '../../lit-element.js';
@@ -92,6 +93,199 @@ suite('decorators', () => {
       }
       const DefinedC = customElements.get(tagName);
       assert.strictEqual(DefinedC, C0);
+    });
+  });
+
+  suite('@property', () => {
+    test('property options via decorator', async () => {
+      const hasChanged = (value: any, old: any) =>
+          old === undefined || value > old;
+      const fromAttribute = (value: any) => parseInt(value);
+      const toAttribute = (value: any) => `${value}-attr`;
+      class E extends LitElement {
+
+        @property({attribute : false}) noAttr = 'noAttr';
+        @property({attribute : true}) atTr = 'attr';
+        @property({attribute : 'custom', reflect: true})
+        customAttr = 'customAttr';
+        @property({hasChanged}) hasChanged = 10;
+        @property({converter : fromAttribute}) fromAttribute = 1;
+        @property({reflect : true, converter: {toAttribute}}) toAttribute = 1;
+        @property({
+          attribute : 'all-attr',
+          hasChanged,
+          converter: {fromAttribute, toAttribute},
+          reflect: true
+        })
+        all = 10;
+
+        updateCount = 0;
+
+        update(changed: PropertyValues) {
+          this.updateCount++;
+          super.update(changed);
+        }
+
+        render() { return html``; }
+      }
+      customElements.define(generateElementName(), E);
+      const el = new E();
+      container.appendChild(el);
+      await el.updateComplete;
+      assert.equal(el.updateCount, 1);
+      assert.equal(el.noAttr, 'noAttr');
+      assert.equal(el.atTr, 'attr');
+      assert.equal(el.customAttr, 'customAttr');
+      assert.equal(el.hasChanged, 10);
+      assert.equal(el.fromAttribute, 1);
+      assert.equal(el.toAttribute, 1);
+      assert.equal(el.getAttribute('toattribute'), '1-attr');
+      assert.equal(el.all, 10);
+      assert.equal(el.getAttribute('all-attr'), '10-attr');
+      el.setAttribute('noattr', 'noAttr2');
+      el.setAttribute('attr', 'attr2');
+      el.setAttribute('custom', 'customAttr2');
+      el.setAttribute('fromattribute', '2attr');
+      el.toAttribute = 2;
+      el.all = 5;
+      await el.updateComplete;
+      assert.equal(el.updateCount, 2);
+      assert.equal(el.noAttr, 'noAttr');
+      assert.equal(el.atTr, 'attr2');
+      assert.equal(el.customAttr, 'customAttr2');
+      assert.equal(el.fromAttribute, 2);
+      assert.equal(el.toAttribute, 2);
+      assert.equal(el.getAttribute('toattribute'), '2-attr');
+      assert.equal(el.all, 5);
+      el.all = 15;
+      await el.updateComplete;
+      assert.equal(el.updateCount, 3);
+      assert.equal(el.all, 15);
+      assert.equal(el.getAttribute('all-attr'), '15-attr');
+      el.setAttribute('all-attr', '16-attr');
+      await el.updateComplete;
+      assert.equal(el.updateCount, 4);
+      assert.equal(el.getAttribute('all-attr'), '16-attr');
+      assert.equal(el.all, 16);
+      el.hasChanged = 5;
+      await el.updateComplete;
+      assert.equal(el.hasChanged, 5);
+      assert.equal(el.updateCount, 4);
+      el.hasChanged = 15;
+      await el.updateComplete;
+      assert.equal(el.hasChanged, 15);
+      assert.equal(el.updateCount, 5);
+      el.setAttribute('all-attr', '5-attr');
+      await el.updateComplete;
+      assert.equal(el.all, 5);
+      assert.equal(el.updateCount, 5);
+      el.all = 15;
+      await el.updateComplete;
+      assert.equal(el.all, 15);
+      assert.equal(el.updateCount, 6);
+    });
+
+    test('can mix property options via decorator and via getter', async () => {
+      const hasChanged = (value: any, old: any) =>
+          old === undefined || value > old;
+      const fromAttribute = (value: any) => parseInt(value);
+      const toAttribute = (value: any) => `${value}-attr`;
+      class E extends LitElement {
+
+        @property({hasChanged}) hasChanged = 10;
+        @property({converter : fromAttribute}) fromAttribute = 1;
+        @property({reflect : true, converter: {toAttribute}}) toAttribute = 1;
+        @property({
+          attribute : 'all-attr',
+          hasChanged,
+          converter: {fromAttribute, toAttribute},
+          reflect: true
+        })
+        all = 10;
+
+        updateCount = 0;
+
+        static get properties() {
+          return {
+            noAttr : {attribute : false},
+            atTr : {attribute : true},
+            customAttr : {attribute : 'custom', reflect : true},
+          };
+        }
+
+        noAttr: string|undefined;
+        atTr: string|undefined;
+        customAttr: string|undefined;
+
+        constructor() {
+          super();
+          this.noAttr = 'noAttr';
+          this.atTr = 'attr';
+          this.customAttr = 'customAttr';
+        }
+
+        update(changed: PropertyValues) {
+          this.updateCount++;
+          super.update(changed);
+        }
+
+        render() { return html``; }
+      }
+      customElements.define(generateElementName(), E);
+      const el = new E();
+      container.appendChild(el);
+      await el.updateComplete;
+      assert.equal(el.updateCount, 1);
+      assert.equal(el.noAttr, 'noAttr');
+      assert.equal(el.atTr, 'attr');
+      assert.equal(el.customAttr, 'customAttr');
+      assert.equal(el.hasChanged, 10);
+      assert.equal(el.fromAttribute, 1);
+      assert.equal(el.toAttribute, 1);
+      assert.equal(el.getAttribute('toattribute'), '1-attr');
+      assert.equal(el.all, 10);
+      assert.equal(el.getAttribute('all-attr'), '10-attr');
+      el.setAttribute('noattr', 'noAttr2');
+      el.setAttribute('attr', 'attr2');
+      el.setAttribute('custom', 'customAttr2');
+      el.setAttribute('fromattribute', '2attr');
+      el.toAttribute = 2;
+      el.all = 5;
+      await el.updateComplete;
+      assert.equal(el.updateCount, 2);
+      assert.equal(el.noAttr, 'noAttr');
+      assert.equal(el.atTr, 'attr2');
+      assert.equal(el.customAttr, 'customAttr2');
+      assert.equal(el.fromAttribute, 2);
+      assert.equal(el.toAttribute, 2);
+      assert.equal(el.getAttribute('toattribute'), '2-attr');
+      assert.equal(el.all, 5);
+      el.all = 15;
+      await el.updateComplete;
+      assert.equal(el.updateCount, 3);
+      assert.equal(el.all, 15);
+      assert.equal(el.getAttribute('all-attr'), '15-attr');
+      el.setAttribute('all-attr', '16-attr');
+      await el.updateComplete;
+      assert.equal(el.updateCount, 4);
+      assert.equal(el.getAttribute('all-attr'), '16-attr');
+      assert.equal(el.all, 16);
+      el.hasChanged = 5;
+      await el.updateComplete;
+      assert.equal(el.hasChanged, 5);
+      assert.equal(el.updateCount, 4);
+      el.hasChanged = 15;
+      await el.updateComplete;
+      assert.equal(el.hasChanged, 15);
+      assert.equal(el.updateCount, 5);
+      el.setAttribute('all-attr', '5-attr');
+      await el.updateComplete;
+      assert.equal(el.all, 5);
+      assert.equal(el.updateCount, 5);
+      el.all = 15;
+      await el.updateComplete;
+      assert.equal(el.all, 15);
+      assert.equal(el.updateCount, 6);
     });
   });
 

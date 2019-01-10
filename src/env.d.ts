@@ -1,9 +1,7 @@
 interface ShadyCSS {
   styleElement(host: Element, overrideProps?: {[key: string]: string}): void;
   getComputedStyleValue(element: Element, property: string): string;
-  ScopingShim: {
-    prepareAdoptedCssText(cssText: string[], name: string): void;
-  }
+  ScopingShim: {prepareAdoptedCssText(cssText: string[], name: string): void;};
   nativeShadow: boolean;
 }
 
@@ -27,4 +25,22 @@ declare var ShadowRoot: {prototype: ShadowRoot; new () : ShadowRoot;}
 interface CSSStyleSheet {
   replaceSync(cssText: string): void;
   replace(cssText: string): Promise<unknown>;
+}
+
+// From the TC39 Decorators proposal
+interface ClassDescriptor {
+  kind: 'class';
+  elements: ClassElement[];
+  finisher?: (clazz: Constructor<T>) => undefined | Constructor<T>;
+}
+
+// From the TC39 Decorators proposal
+interface ClassElement {
+  kind: 'field'|'method';
+  key: PropertyKey;
+  placement: 'static'|'prototype'|'own';
+  initializer?: Function;
+  extras?;
+  finisher?;
+  descriptor?: PropertyDescriptor;
 }
