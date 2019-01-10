@@ -36,12 +36,13 @@ const standardCustomElement =
     (tagName: string, descriptor: ClassDescriptor) => {
       const {kind, elements} = descriptor;
       return {
-        kind, elements,
-            // This callback is called once the class is otherwise fully defined
-            finisher(clazz: Constructor<HTMLElement>) {
+        kind,
+        elements,
+        // This callback is called once the class is otherwise fully defined
+        finisher(clazz: Constructor<HTMLElement>) {
           window.customElements.define(tagName, clazz);
         }
-      }
+      };
     };
 
 /**
@@ -76,25 +77,28 @@ const standardProperty =
       // return some kind of descriptor, so return a descriptor for an unused
       // prototype field. The finisher calls createProperty().
       return {
-        kind: 'field', key: Symbol(), placement: 'own', descriptor: {},
-            // When @babel/plugin-proposal-decorators implements initializers,
-            // do this instead of the initializer below. See:
-            // https://github.com/babel/babel/issues/9260 extras: [
-            //   {
-            //     kind: 'initializer',
-            //     placement: 'own',
-            //     initializer: descriptor.initializer,
-            //   }
-            // ],
-            initializer(this: any) {
+        kind : 'field',
+        key : Symbol(),
+        placement : 'own',
+        descriptor : {},
+        // When @babel/plugin-proposal-decorators implements initializers,
+        // do this instead of the initializer below. See:
+        // https://github.com/babel/babel/issues/9260 extras: [
+        //   {
+        //     kind: 'initializer',
+        //     placement: 'own',
+        //     initializer: descriptor.initializer,
+        //   }
+        // ],
+        initializer(this: any) {
           if (typeof element.initializer === 'function') {
             this[element.key] = element.initializer!.call(this);
           }
-        }
-        , finisher(clazz: typeof UpdatingElement) {
+        },
+        finisher(clazz: typeof UpdatingElement) {
           clazz.createProperty(element.key, options);
         }
-      }
+      };
     };
 
 const legacyProperty = (options: PropertyDeclaration, proto: Object,
@@ -129,7 +133,7 @@ export const queryAll = _query((target: NodeSelector, selector: string) =>
 
 const legacyQuery =
     (descriptor: PropertyDescriptor, proto: Object,
-     name: PropertyKey) => { Object.defineProperty(proto, name, descriptor); }
+     name: PropertyKey) => { Object.defineProperty(proto, name, descriptor); };
 
 const standardQuery = (descriptor: PropertyDescriptor, element: ClassElement) =>
     ({
@@ -168,11 +172,11 @@ const standardEventOptions =
                         options);
         }
       };
-    }
+    };
 
 const legacyEventOptions =
     (options: AddEventListenerOptions, proto: any,
-     name: PropertyKey) => { Object.assign(proto[name], options); }
+     name: PropertyKey) => { Object.assign(proto[name], options); };
 
 /**
  * Adds event listener options to a method used as an event listener in a
