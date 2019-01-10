@@ -15,11 +15,23 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 </head>
 <body>
   <script>
+      // Currently Babel decorator compilation does not work on some older
+      // browsers due to use of some newish features; detect these and don't
+      // run babel-compiled tests on those browsers
+      const fnNameDesc = Object.getOwnPropertyDescriptor(function() {}, 'name');
+      const testBabel = fnNameDesc && fnNameDesc.configurable && Array.prototype.find;
       WCT.loadSuites([
         'runner.html',
         'runner.html?wc-shadydom=true',
         'runner.html?wc-shadydom=true&wc-ce=true',
         'runner.html?wc-shadydom=true&wc-ce=true&wc-shimcssproperties=true'
-      ]);
+      ].concat(
+        // Don't run Babel tests on 
+        testBabel ? [
+        'runner-babel.html',
+        'runner-babel.html?wc-shadydom=true',
+        'runner-babel.html?wc-shadydom=true&wc-ce=true',
+        'runner-babel.html?wc-shadydom=true&wc-ce=true&wc-shimcssproperties=true'
+      ]: []));
     </script>
 </body></html>
