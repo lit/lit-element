@@ -31,6 +31,7 @@ interface CSSStyleSheet {
 interface ClassDescriptor {
   kind: 'class';
   elements: ClassElement[];
+  finisher?: (clazz: Constructor<T>) => undefined | Constructor<T>;
 }
 
 // From the TC39 Decorators proposal
@@ -41,4 +42,5 @@ interface ClassElement {
   initializer?: Function;
   extras?;
   finisher?;
+  descriptor?: PropertyDescriptor;
 }

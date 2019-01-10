@@ -21,6 +21,29 @@ export type Constructor<T> = {
   new (...args: any[]): T
 };
 
+const legacyCustomElement =
+    (tagName: string, clazz: Constructor<HTMLElement>) => {
+      window.customElements.define(tagName, clazz);
+      // Cast as any because TS doesn't recognize the return type as being a
+      // subtype of the decorated class when clazz is typed as
+      // `Constructor<HTMLElement>` for some reason.
+      // `Constructor<HTMLElement>` is helpful to make sure the decorator is
+      // applied to elements however.
+      return clazz as any;
+    };
+
+const standardCustomElement =
+    (tagName: string, descriptor: ClassDescriptor) => {
+      const {kind, elements} = descriptor;
+      return {
+        kind, elements,
+            // This callback is called once the class is otherwise fully defined
+            finisher(clazz: Constructor<HTMLElement>) {
+          window.customElements.define(tagName, clazz);
+        }
+      }
+    };
+
 /**
  * Class decorator factory that defines the decorated class as a custom element.
  *
@@ -40,30 +63,44 @@ export type Constructor<T> = {
  *     }
  *
  */
-export const customElement = (tagName: string) =>
-    (classOrDescriptor: Constructor<HTMLElement>|ClassDescriptor) => {
-      if (typeof classOrDescriptor === 'function') {
-        const clazz = classOrDescriptor as Constructor<HTMLElement>;
-        // Legacy decorator
-        window.customElements.define(tagName, clazz);
-        // Cast as any because TS doesn't recognize the return type as being a
-        // subtype of the decorated class when clazz is typed as
-        // `Constructor<HTMLElement>` for some reason.
-        // `Constructor<HTMLElement>` is helpful to make sure the decorator is
-        // applied to elements however.
-        return clazz as any;
-      }
-      const {kind, elements} = classOrDescriptor;
-      console.assert(kind === 'class');
+export const customElement = (tagName: string) => (
+    classOrDescriptor: Constructor<HTMLElement>|ClassDescriptor) =>
+    (typeof classOrDescriptor === 'function')
+        ? legacyCustomElement(tagName,
+                              classOrDescriptor as Constructor<HTMLElement>)
+        : standardCustomElement(tagName, classOrDescriptor as ClassDescriptor);
+
+const standardProperty =
+    (options: PropertyDeclaration, element: ClassElement) => {
+      // createProperty() takes care of defining the property, but we still must
+      // return some kind of descriptor, so return a descriptor for an unused
+      // prototype field. The finisher calls createProperty().
       return {
-        kind,
-        elements,
-        // This callback is called once the class is otherwise fully defined
-        finisher(clazz: Constructor<HTMLElement>) {
-          window.customElements.define(tagName, clazz);
+        kind: 'field', key: Symbol(), placement: 'own', descriptor: {},
+            // When @babel/plugin-proposal-decorators implements initializers,
+            // do this instead of the initializer below. See:
+            // https://github.com/babel/babel/issues/9260 extras: [
+            //   {
+            //     kind: 'initializer',
+            //     placement: 'own',
+            //     initializer: descriptor.initializer,
+            //   }
+            // ],
+            initializer(this: any) {
+          if (typeof element.initializer === 'function') {
+            this[element.key] = element.initializer!.call(this);
+          }
         }
-      };
+        , finisher(clazz: typeof UpdatingElement) {
+          clazz.createProperty(element.key, options);
+        }
+      }
     };
+
+const legacyProperty = (options: PropertyDeclaration, proto: Object,
+                        name: PropertyKey) => {
+  (proto.constructor as typeof UpdatingElement).createProperty(name!, options);
+};
 
 /**
  * A property decorator which creates a LitElement property which reflects a
@@ -71,43 +108,10 @@ export const customElement = (tagName: string) =>
  * supplied to configure property features.
  */
 export const property = (options?: PropertyDeclaration) =>
-    (protoOrDescriptor: Object|ClassElement, name?: PropertyKey): any => {
-      if (name !== undefined) {
-        // Legacy decorator
-        (protoOrDescriptor.constructor as typeof UpdatingElement)
-            .createProperty(name!, options);
-        return;
-      }
-      const element = protoOrDescriptor as ClassElement;
-      console.assert(element.kind === 'field');
-      // createProperty() takes care of defining the property, but we still must
-      // return some kind of descriptor, so return a descriptor for an unused
-      // prototype field. The finisher calls createProperty().
-      return {
-        kind : 'field',
-        key : Symbol(),
-        placement : 'own',
-        descriptor : {},
-        // When @babel/plugin-proposal-decorators implements initializers, do
-        // this instead of the initializer below.
-        // See: https://github.com/babel/babel/issues/9260
-        // extras: [
-        //   {
-        //     kind: 'initializer',
-        //     placement: 'own',
-        //     initializer: descriptor.initializer,
-        //   }
-        // ],
-        initializer(this: any) {
-          if (typeof element.initializer === 'function') {
-            this[element.key] = element.initializer!.call(this);
-          }
-        },
-        finisher(clazz: typeof UpdatingElement) {
-          clazz.createProperty(element.key, options);
-        }
-      };
-    };
+    (protoOrDescriptor: Object|ClassElement, name?: PropertyKey): any =>
+        (name !== undefined)
+            ? legacyProperty(options!, protoOrDescriptor as Object, name)
+            : standardProperty(options!, protoOrDescriptor as ClassElement);
 
 /**
  * A property decorator that converts a class property into a getter that
@@ -123,6 +127,18 @@ export const query = _query((target: NodeSelector, selector: string) =>
 export const queryAll = _query((target: NodeSelector, selector: string) =>
                                    target.querySelectorAll(selector));
 
+const legacyQuery =
+    (descriptor: PropertyDescriptor, proto: Object,
+     name: PropertyKey) => { Object.defineProperty(proto, name, descriptor); }
+
+const standardQuery = (descriptor: PropertyDescriptor, element: ClassElement) =>
+    ({
+      kind : 'method',
+      placement : 'prototype',
+      key : element.key,
+      descriptor,
+    });
+
 /**
  * Base-implementation of `@query` and `@queryAll` decorators.
  *
@@ -130,26 +146,33 @@ export const queryAll = _query((target: NodeSelector, selector: string) =>
  * against `target`.
  */
 function _query<T>(queryFn: (target: NodeSelector, selector: string) => T) {
-  return (selector: string) => (protoOrDescriptor: any, name?: string): any => {
+  return (selector: string) => (protoOrDescriptor: Object|ClassElement,
+                                name?: PropertyKey): any => {
     const descriptor = {
       get(this: LitElement) { return queryFn(this.renderRoot!, selector); },
       enumerable : true,
       configurable : true,
     };
-    if (name !== undefined) {
-      // Legacy decorator
-      Object.defineProperty(protoOrDescriptor, name, descriptor);
-    } else {
-      const element = protoOrDescriptor as ClassElement;
-      return {
-        kind : 'method',
-        placement : 'prototype',
-        key : element.key,
-        descriptor,
-      };
-    }
+    return (name !== undefined)
+               ? legacyQuery(descriptor, protoOrDescriptor as Object, name)
+               : standardQuery(descriptor, protoOrDescriptor as ClassElement);
   };
 }
+
+const standardEventOptions =
+    (options: AddEventListenerOptions, element: ClassElement) => {
+      return {
+        ...element,
+        finisher(clazz: typeof UpdatingElement) {
+          Object.assign(clazz.prototype[element.key as keyof UpdatingElement],
+                        options);
+        }
+      };
+    }
+
+const legacyEventOptions =
+    (options: AddEventListenerOptions, proto: any,
+     name: PropertyKey) => { Object.assign(proto[name], options); }
 
 /**
  * Adds event listener options to a method used as an event listener in a
@@ -178,18 +201,13 @@ function _query<T>(queryFn: (target: NodeSelector, selector: string) => T) {
  *     }
  */
 export const eventOptions = (options: AddEventListenerOptions) =>
-    (protoOrDescriptor: any, name?: string) => {
-      if (name !== undefined) {
-        // Legacy decorator
-        Object.assign(protoOrDescriptor[name], options);
-      } else {
-        return {
-          ...protoOrDescriptor,
-          finisher(clazz: typeof UpdatingElement) {
-            Object.assign(
-                clazz.prototype[protoOrDescriptor.key as keyof UpdatingElement],
-                options);
-          },
-        };
-      }
-    };
+    // Return value typed as any to prevent TypeScript from complaining that
+    // standard decorator function signature does not match TypeScript decorator
+    // signature
+    // TODO(kschaaf): unclear why it was only failing on this decorator and not
+    // the others
+    ((protoOrDescriptor: Object|ClassElement, name?: string) =>
+         (name !== undefined)
+             ? legacyEventOptions(options, protoOrDescriptor as Object, name)
+             : standardEventOptions(options,
+                                    protoOrDescriptor as ClassElement)) as any;
