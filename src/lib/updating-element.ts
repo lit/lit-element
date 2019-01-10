@@ -13,6 +13,14 @@
  */
 
 /**
+ * When using Closure Compiler, JSCompiler_renameProperty(property, object) is
+ * replaced at compile time by the munged name for object[property]. We cannot
+ * alias this function, so we have to use a small shim that has the same
+ * behavior when not compiling.
+ */
+const JSCompiler_renameProperty = (prop: PropertyKey, _obj: any) => prop;
+
+/**
  * Returns the property descriptor for a property on this prototype by walking
  * up the prototype chain. Note that we stop just before Object.prototype, which
  * also avoids issues with Symbol polyfills (core-js, get-own-property-symbols),
@@ -197,32 +205,45 @@ type UpdateState = typeof STATE_HAS_UPDATED|typeof STATE_UPDATE_REQUESTED|
  */
 export abstract class UpdatingElement extends HTMLElement {
 
-  /**
-   * Maps attribute names to properties; for example `foobar` attribute
-   * to `fooBar` property.
+  /*
+   * Due to closure compiler ES6 compilation bugs, @nocollapse is required on
+   * all static methods and properties with initializers.  Reference:
+   * - https://github.com/google/closure-compiler/issues/1776
    */
-  private static _attributeToPropertyMap: AttributeMap = new Map();
+
+  /**
+   * Maps attribute names to properties; for example `foobar` attribute to
+   * `fooBar` property. Created lazily on user subclasses when finalizing the
+   * class.
+   */
+  private static _attributeToPropertyMap: AttributeMap;
 
   /**
    * Marks class as having finished creating properties.
    */
-  private static _finalized = true;
+  protected static finalized = true;
 
   /**
    * Memoized list of all class properties, including any superclass properties.
+   * Created lazily on user subclasses when finalizing the class.
    */
-  private static _classProperties: PropertyDeclarationMap = new Map();
+  private static _classProperties?: PropertyDeclarationMap;
 
-  static properties: PropertyDeclarations = {};
+  /**
+   * User-supplied object that maps property names to `PropertyDeclaration`
+   * objects containing options for configuring the property.
+   */
+  static properties: PropertyDeclarations;
 
   /**
    * Returns a list of attributes corresponding to the registered properties.
+   * @nocollapse
    */
   static get observedAttributes() {
     // note: piggy backing on this to ensure we're _finalized.
     this._finalize();
     const attributes = [];
-    for (const [p, v] of this._classProperties) {
+    for (const [p, v] of this._classProperties!) {
       const attr = this._attributeNameForProperty(p, v);
       if (attr !== undefined) {
         this._attributeToPropertyMap.set(attr, p);
@@ -233,25 +254,40 @@ export abstract class UpdatingElement extends HTMLElement {
   }
 
   /**
-   * Creates a property accessor on the element prototype if one does not exist.
-   * The property setter calls the property's `hasChanged` property option
-   * or uses a strict identity check to determine whether or not to request
-   * an update.
+   * Ensures the private `_classProperties` property metadata is created.
+   * In addition to `_finalize` this is also called in `createProperty` to
+   * ensure the `@property` decorator can add property metadata.
    */
-  static createProperty(name: PropertyKey,
-                        options:
-                            PropertyDeclaration = defaultPropertyDeclaration) {
+  /** @nocollapse */
+  private static _ensureClassProperties() {
     // ensure private storage for property declarations.
-    if (!this.hasOwnProperty('_classProperties')) {
+    if (!this.hasOwnProperty(
+            JSCompiler_renameProperty('_classProperties', this))) {
       this._classProperties = new Map();
       // NOTE: Workaround IE11 not supporting Map constructor argument.
       const superProperties = Object.getPrototypeOf(this)._classProperties;
       if (superProperties !== undefined) {
         superProperties.forEach((v: any, k: PropertyKey) =>
-                                    this._classProperties.set(k, v));
+                                    this._classProperties!.set(k, v));
       }
     }
-    this._classProperties.set(name, options);
+  }
+
+  /**
+   * Creates a property accessor on the element prototype if one does not exist.
+   * The property setter calls the property's `hasChanged` property option
+   * or uses a strict identity check to determine whether or not to request
+   * an update.
+   * @nocollapse
+   */
+  static createProperty(name: PropertyKey,
+                        options:
+                            PropertyDeclaration = defaultPropertyDeclaration) {
+    // Note, since this can be called by the `@property` decorator which
+    // is called before `_finalize`, we ensure storage exists for property
+    // metadata.
+    this._ensureClassProperties();
+    this._classProperties!.set(name, options);
     if (!options.noAccessor) {
       const superDesc = descriptorFromPrototype(name, this.prototype);
       let desc;
@@ -288,9 +324,11 @@ export abstract class UpdatingElement extends HTMLElement {
   /**
    * Creates property accessors for registered properties and ensures
    * any superclasses are also finalized.
+   * @nocollapse
    */
   private static _finalize() {
-    if (this.hasOwnProperty('_finalized') && this._finalized) {
+    if (this.hasOwnProperty(JSCompiler_renameProperty('finalized', this)) &&
+        this.finalized) {
       return;
     }
     // finalize any superclasses
@@ -298,14 +336,15 @@ export abstract class UpdatingElement extends HTMLElement {
     if (typeof superCtor._finalize === 'function') {
       superCtor._finalize();
     }
-    this._finalized = true;
+    this.finalized = true;
+    this._ensureClassProperties();
     // initialize Map populated in observedAttributes
     this._attributeToPropertyMap = new Map();
     // make any properties
     // Note, only process "own" properties since this element will inherit
     // any properties defined on the superClass, and finalization ensures
     // the entire prototype chain is finalized.
-    if (this.hasOwnProperty('properties')) {
+    if (this.hasOwnProperty(JSCompiler_renameProperty('properties', this))) {
       const props = this.properties;
       // support symbols in properties (IE11 does not support this)
       const propKeys = [
@@ -324,6 +363,7 @@ export abstract class UpdatingElement extends HTMLElement {
 
   /**
    * Returns the property name for the given attribute `name`.
+   * @nocollapse
    */
   private static _attributeNameForProperty(name: PropertyKey,
                                            options: PropertyDeclaration) {
@@ -340,6 +380,7 @@ export abstract class UpdatingElement extends HTMLElement {
    * Returns true if a property should request an update.
    * Called when a property value is set and uses the `hasChanged`
    * option for the property if present or a strict identity check.
+   * @nocollapse
    */
   private static _valueHasChanged(value: unknown, old: unknown,
                                   hasChanged: HasChanged = notEqual) {
@@ -350,6 +391,7 @@ export abstract class UpdatingElement extends HTMLElement {
    * Returns the property value for the given attribute value.
    * Called via the `attributeChangedCallback` and uses the property's
    * `converter` or `converter.fromAttribute` property option.
+   * @nocollapse
    */
   private static _propertyValueFromAttribute(value: string,
                                              options: PropertyDeclaration) {
@@ -366,6 +408,7 @@ export abstract class UpdatingElement extends HTMLElement {
    * If this returns null, the attribute will be removed, otherwise the
    * attribute will be set to the value.
    * This uses the property's `reflect` and `type.toAttribute` property options.
+   * @nocollapse
    */
   private static _propertyValueToAttribute(value: unknown,
                                            options: PropertyDeclaration) {
@@ -432,7 +475,7 @@ export abstract class UpdatingElement extends HTMLElement {
    */
   private _saveInstanceProperties() {
     for (const [p] of (this.constructor as typeof UpdatingElement)
-             ._classProperties) {
+             ._classProperties!) {
       if (this.hasOwnProperty(p)) {
         const value = this[p as keyof this];
         delete this[p as keyof this];
@@ -544,7 +587,7 @@ export abstract class UpdatingElement extends HTMLElement {
     const propName = ctor._attributeToPropertyMap.get(name);
     if (propName !== undefined) {
       const options =
-          ctor._classProperties.get(propName) || defaultPropertyDeclaration;
+          ctor._classProperties!.get(propName) || defaultPropertyDeclaration;
       // mark state reflecting
       this._updateState = this._updateState | STATE_IS_REFLECTING_TO_PROPERTY;
       this[propName as keyof this] =
@@ -573,7 +616,7 @@ export abstract class UpdatingElement extends HTMLElement {
     if (name !== undefined && !this._changedProperties.has(name)) {
       const ctor = this.constructor as typeof UpdatingElement;
       const options =
-          ctor._classProperties.get(name) || defaultPropertyDeclaration;
+          ctor._classProperties!.get(name) || defaultPropertyDeclaration;
       if (ctor._valueHasChanged(this[name as keyof this], oldValue,
                                 options.hasChanged)) {
         // track old value when changing.
