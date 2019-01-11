@@ -1,5 +1,5 @@
 {
-  "name": "@polymer/lit-element",
+  "name": "lit-element",
   "version": "0.6.5",
   "description": "Polymer based lit-html custom element",
   "license": "BSD-3-Clause",
