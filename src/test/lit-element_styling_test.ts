@@ -474,6 +474,52 @@ suite('Static get styles', () => {
     const div = el.shadowRoot!.querySelector('div');
     assert.equal(getComputedStyleValue(div!, 'border-top-width').trim(), '2px');
   });
+
+  test('`static get styles` array is flattened', async () => {
+    const name = generateElementName();
+    const styles = [
+      css`.level1 {
+        border: 1px solid blue;
+      }`,
+      [
+        css`.level2 {
+          border: 2px solid blue;
+        }`,
+        [
+          css`.level3 {
+            border: 3px solid blue;
+          }`,
+          [
+            css`.level4 {
+              border: 4px solid blue;
+            }`,
+          ],
+        ],
+      ],
+    ];
+    customElements.define(name, class extends LitElement {
+      static get styles() { return [ styles ]; }
+
+      render() {
+        return htmlWithStyles`
+        <div class="level1">Testing1</div>
+        <div class="level2">Testing2</div>
+        <div class="level3">Testing3</div>
+        <div class="level4">Testing4</div>`;
+      }
+    });
+    const el = document.createElement(name);
+    container.appendChild(el);
+    await (el as LitElement).updateComplete;
+    const level1 = el.shadowRoot!.querySelector('.level1');
+    const level2 = el.shadowRoot!.querySelector('.level2');
+    const level3 = el.shadowRoot!.querySelector('.level3');
+    const level4 = el.shadowRoot!.querySelector('.level4');
+    assert.equal(getComputedStyleValue(level1!, 'border-top-width').trim(), '1px');
+    assert.equal(getComputedStyleValue(level2!, 'border-top-width').trim(), '2px');
+    assert.equal(getComputedStyleValue(level3!, 'border-top-width').trim(), '3px');
+    assert.equal(getComputedStyleValue(level4!, 'border-top-width').trim(), '4px');
+  });
 });
 
 suite('ShadyDOM', () => {

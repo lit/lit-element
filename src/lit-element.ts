@@ -22,6 +22,28 @@ export {html, svg, TemplateResult, SVGTemplateResult} from 'lit-html/lit-html';
 import {supportsAdoptingStyleSheets, CSSResult} from './lib/css-tag.js';
 export * from './lib/css-tag.js';
 
+export interface LitElementStyles extends Array<CSSResult | CSSResult[] | LitElementStyles> {}
+
+/**
+ * Minimal implementation of Array.prototype.flat
+ * @param arr the array to flatten
+ * @param result the accumlated result
+ */
+function arrayFlat(styles: LitElementStyles, result: CSSResult[] = []): CSSResult[] {
+  for (let i = 0, length = styles.length; i < length; i++) {
+    const value = styles[i];
+    if (Array.isArray(value)) {
+      arrayFlat(value, result);
+    } else {
+      result.push(value);
+    }
+  }
+  return result;
+}
+
+/** Deeply flattens styles array. Uses native flat if available. */
+const flattenStyles = (styles: LitElementStyles): CSSResult[] => styles.flat ? styles.flat(Infinity) : arrayFlat(styles);
+
 export class LitElement extends UpdatingElement {
 
   /**
@@ -44,13 +66,13 @@ export class LitElement extends UpdatingElement {
    * Array of styles to apply to the element. The styles should be defined
    * using the `css` tag function.
    */
-  static get styles(): CSSResult[] { return []; }
+  static get styles(): LitElementStyles { return []; }
 
   private static _styles: CSSResult[]|undefined;
 
   private static get _uniqueStyles(): CSSResult[] {
     if (this._styles === undefined) {
-      const styles = this.styles;
+      const styles = flattenStyles(this.styles);
       // As a performance optimization to avoid duplicated styling that can
       // occur especially when composing via subclassing, de-duplicate styles
       // preserving the last item in the list. The last item is kept to
@@ -60,8 +82,8 @@ export class LitElement extends UpdatingElement {
         set.add(s);
         // on IE set.add does not return the set.
         return set;
-      }, new Set());
-      // Array.form does not work on Set in IE
+      }, new Set<CSSResult>());
+      // Array.from does not work on Set in IE
       this._styles = [];
       styleSet.forEach((v) => this._styles!.unshift(v));
     }
