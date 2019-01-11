@@ -3,7 +3,7 @@
  * Completed code for 6. Style
  */
 
-import { LitElement, html } from '@polymer/lit-element'; 
+import { LitElement, html } from 'lit-element';
 
 class MyElement extends LitElement {
   static get properties() {
@@ -40,7 +40,7 @@ class MyElement extends LitElement {
 
       <!-- DONE: Add a styled paragraph. -->
       <p class="${this.myBool?'red':'blue'}">styled paragraph</p>
-      
+
       <p>${this.message}</p>
       <ul>
         ${this.myArray.map(item => html`<li>${item}</li>`)}

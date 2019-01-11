@@ -1,17 +1,17 @@
-import { LitElement, html } from '@polymer/lit-element';
+import { LitElement, html } from 'lit-element';
 
-class MyElement extends LitElement { 
-  static get properties() { return { 
+class MyElement extends LitElement {
+  static get properties() { return {
     prop1: { type: Number, noAccessors: true },
     prop2: { type: Number },
     prop3: { type: Number, noAccessors: true },
   };}
-  
+
   set prop1(newVal) { this._prop1 = Math.floor(newVal); }
   set prop2(newVal) { this._prop2 = Math.floor(newVal); }
-  set prop3(newVal) { 
+  set prop3(newVal) {
     let oldVal = this._prop3;
-    this._prop3 = Math.floor(newVal); 
+    this._prop3 = Math.floor(newVal);
     this.requestUpdate('prop3', oldVal);
   }
 
@@ -26,7 +26,7 @@ class MyElement extends LitElement {
     this._prop3 = 0;
   }
 
-  render() { 
+  render() {
     return html`
       <p>prop1: ${this.prop1}</p>
       <p>prop2: ${this.prop2}</p>
@@ -35,13 +35,13 @@ class MyElement extends LitElement {
       <button @click="${this.getNewVal}">change properties</button>
     `;
   }
-  
+
   updated(changedProperties) {
-    changedProperties.forEach((oldValue, propName) => { 
+    changedProperties.forEach((oldValue, propName) => {
       console.log(`${propName} changed. oldValue: ${oldValue}`);
     });
   }
-  
+
   getNewVal() {
     let newVal = Math.random()*10;
     this.prop1 = newVal;

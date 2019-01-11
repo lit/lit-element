@@ -10,7 +10,7 @@
     "index.ts"
   ],
   "dependencies": {
-    "@polymer/lit-element": "latest",
+    "lit-element": "latest",
     "@webcomponents/webcomponentsjs": "latest"
   },
   "template": "typescript"

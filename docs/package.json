@@ -7,7 +7,7 @@
     "deploy": "npm run build && gcloud app deploy _site/app.yaml --project polymer-lit-element --no-promote"
   },
   "dependencies": {
-    "@polymer/lit-element": "^0.6.2",
+    "lit-element": "^2.0.0-rc.1",
     "@stackblitz/sdk": "^1.2.0",
     "@webcomponents/webcomponentsjs": "^2.1.3"
   }

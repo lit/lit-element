@@ -3,7 +3,7 @@
  * Completed code for 4. Logic
  */
 
-import { LitElement, html } from '@polymer/lit-element'; 
+import { LitElement, html } from 'lit-element';
 
 class MyElement extends LitElement {
   static get properties() {

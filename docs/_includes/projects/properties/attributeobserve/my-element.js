@@ -1,7 +1,7 @@
-import { LitElement, html } from '@polymer/lit-element';
+import { LitElement, html } from 'lit-element';
 
-class MyElement extends LitElement { 
-  static get properties() { return {  
+class MyElement extends LitElement {
+  static get properties() { return {
     myProp: { attribute: true },
     theProp: { attribute: false },
     otherProp: { attribute: 'other-prop' },
@@ -10,7 +10,7 @@ class MyElement extends LitElement {
   constructor() {
     super();
     this.myProp = 'myProp';
-    this.theProp = 'theProp'; 
+    this.theProp = 'theProp';
     this.otherProp = 'otherProp';
   }
 
@@ -36,9 +36,9 @@ class MyElement extends LitElement {
     this.setAttribute('other-prop', 'other-prop ' + randomString);
     this.requestUpdate();
   }
-  
+
   updated(changedProperties) {
-    changedProperties.forEach((oldValue, propName) => { 
+    changedProperties.forEach((oldValue, propName) => {
       console.log(`${propName} changed. oldValue: ${oldValue}`);
     });
   }

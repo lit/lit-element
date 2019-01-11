@@ -3,10 +3,10 @@
 
 # LitElement API Documentation
 
-## Install @polymer/lit-element
+## Install lit-element
 
 ```
-npm install --save @polymer/lit-element
+npm install --save lit-element
 ```
 
 ## Modules
@@ -18,7 +18,7 @@ Extends [UpdatingElement](#lib-updating-element) to include lit-html templating.
 Import `LitElement` and `html` from this module to create a component:
 
 ```js
-import { LitElement, html } from '@polymer/lit-element';
+import { LitElement, html } from 'lit-element';
 
 class MyElement extends LitElement {
   render() {
@@ -32,7 +32,7 @@ customElements.define('my-element', MyElement);
 ### [lib/updating-element](/api/modules/_lib_updating_element_.html)
 
 ```js
-import { UpdatingElement } from '@polymer/lit-element/lib/updating-element.js';
+import { UpdatingElement } from 'lit-element/lib/updating-element.js';
 ```
 
 Custom Element base class that supports declaring observable properties, reflecting attributes to properties, and the core update lifecycle methods.

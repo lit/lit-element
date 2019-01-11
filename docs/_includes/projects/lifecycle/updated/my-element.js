@@ -1,6 +1,6 @@
-import { LitElement, html } from '@polymer/lit-element';
+import { LitElement, html } from 'lit-element';
 
-class MyElement extends LitElement {  
+class MyElement extends LitElement {
   static get properties() {
     return {
       prop1: { type: Number },
@@ -15,7 +15,7 @@ class MyElement extends LitElement {
   render() {
     return html`
       <style>button:focus { background-color: aliceblue; }</style>
-      
+
       <p>prop1: ${this.prop1}</p>
       <p>prop2: ${this.prop2}</p>
 
@@ -24,7 +24,7 @@ class MyElement extends LitElement {
     `;
   }
   updated(changedProperties) {
-    changedProperties.forEach((oldValue, propName) => { 
+    changedProperties.forEach((oldValue, propName) => {
       console.log(`${propName} changed. oldValue: ${oldValue}`);
     });
     let b = this.shadowRoot.getElementById('b');

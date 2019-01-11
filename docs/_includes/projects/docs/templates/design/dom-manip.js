@@ -1,4 +1,4 @@
-import { LitElement, html } from '@polymer/lit-element';
+import { LitElement, html } from 'lit-element';
 
 // Anti-pattern. Avoid!
 
@@ -17,7 +17,7 @@ class DomManip extends LitElement {
   }
   loadStuff() {
     setInterval(() => {
-      let loaded = new CustomEvent('stuff-loaded', { 
+      let loaded = new CustomEvent('stuff-loaded', {
         detail: 'Loading complete.'
       });
       this.dispatchEvent(loaded);
