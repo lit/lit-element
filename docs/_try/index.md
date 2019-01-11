@@ -18,4 +18,4 @@ Click **Preview** at any time to see your code in action.
 
 </div>
 
-[Next: 1. Create a component](create)
+[Next: 1. Create a component](/try/create)
