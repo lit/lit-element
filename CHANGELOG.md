@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- ### Removed -->
 <!-- ### Fixed -->
 
-## [2.0.0-rc.2] - 2019-01-11j
+## [2.0.0-rc.2] - 2019-01-11
 ### Fixed
 * Fix references to `@polymer/lit-element` in README and docs ([#427](https://github.com/Polymer/lit-element/pull/427)).
 * Fix decorator types causing compiler errors for TypeScript users. ([#431](https://github.com/Polymer/lit-element/pull/431)).
