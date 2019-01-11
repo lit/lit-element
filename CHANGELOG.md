@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- ### Removed -->
 <!-- ### Fixed -->
 
-## Unreleased
+## [0.7.1] - 2019-01-11
 ### Fixed
 * Fix decorator types causing compiler errors for TypeScript users. ([#432](https://github.com/Polymer/lit-element/pull/432)).
 
