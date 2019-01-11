@@ -26,21 +26,3 @@ interface CSSStyleSheet {
   replaceSync(cssText: string): void;
   replace(cssText: string): Promise<unknown>;
 }
-
-// From the TC39 Decorators proposal
-interface ClassDescriptor {
-  kind: 'class';
-  elements: ClassElement[];
-  finisher?: (clazz: Constructor<T>) => undefined | Constructor<T>;
-}
-
-// From the TC39 Decorators proposal
-interface ClassElement {
-  kind: 'field'|'method';
-  key: PropertyKey;
-  placement: 'static'|'prototype'|'own';
-  initializer?: Function;
-  extras?;
-  finisher?;
-  descriptor?: PropertyDescriptor;
-}
