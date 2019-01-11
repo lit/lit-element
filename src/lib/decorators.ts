@@ -166,6 +166,8 @@ const standardQuery = (descriptor: PropertyDescriptor, element: ClassElement) =>
  *
  * @param queryFn exectute a `selector` (ie, querySelector or querySelectorAll)
  * against `target`.
+ * @suppress {visibility} The descriptor accesses an internal field on the
+ * element.
  */
 function _query<T>(queryFn: (target: NodeSelector, selector: string) => T) {
   return (selector: string) => (protoOrDescriptor: Object|ClassElement,
