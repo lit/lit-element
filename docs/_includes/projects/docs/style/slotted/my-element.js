@@ -1,4 +1,4 @@
-import { LitElement, html } from '@polymer/lit-element'; 
+import { LitElement, html } from 'lit-element';
 
 class MyElement extends LitElement {
   render() {
@@ -6,8 +6,8 @@ class MyElement extends LitElement {
       <style>
         :host[hidden] { display: none; }
         :host { display: block; }
-        ::slotted(*) { font-family: Roboto; } 
-        ::slotted(span) { color: blue; } 
+        ::slotted(*) { font-family: Roboto; }
+        ::slotted(span) { color: blue; }
         div ::slotted(*) { color: red; }
       </style>
       <slot></slot>

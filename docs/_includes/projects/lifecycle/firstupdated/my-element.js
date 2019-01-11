@@ -1,6 +1,6 @@
-import { LitElement, html } from '@polymer/lit-element';
+import { LitElement, html } from 'lit-element';
 
-class MyElement extends LitElement {  
+class MyElement extends LitElement {
   static get properties() {
     return {
       textAreaId: { type: String },
@@ -18,7 +18,7 @@ class MyElement extends LitElement {
     `;
   }
   firstUpdated(changedProperties) {
-    changedProperties.forEach((oldValue, propName) => { 
+    changedProperties.forEach((oldValue, propName) => {
       console.log(`${propName} changed. oldValue: ${oldValue}`);
     });
     const textArea = this.shadowRoot.getElementById(this.textAreaId);

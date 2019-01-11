@@ -8,7 +8,7 @@
     "README.md"
   ],
   "dependencies": {
-    "@polymer/lit-element": "0.5.2",
+    "lit-element": "0.5.2",
     "@webcomponents/webcomponentsjs": "latest"
   }
 }

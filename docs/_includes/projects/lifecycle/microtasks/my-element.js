@@ -1,13 +1,13 @@
-import { LitElement, html } from '@polymer/lit-element';
+import { LitElement, html } from 'lit-element';
 
-class MyElement extends LitElement { 
+class MyElement extends LitElement {
 
-  render() { 
+  render() {
     return html`
       <button @click="${this.doThing}">doThing</button>
     `;
   }
-  
+
   doThing() {
     console.log('doing a thing.');
   }

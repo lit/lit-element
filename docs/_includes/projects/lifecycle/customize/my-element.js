@@ -1,6 +1,6 @@
-import { LitElement, html } from '@polymer/lit-element';
+import { LitElement, html } from 'lit-element';
 
-class MyElement extends LitElement {  
+class MyElement extends LitElement {
   static get properties() { return { prop1: { type: String } }; }
 
   constructor() {
@@ -18,7 +18,7 @@ class MyElement extends LitElement {
     console.log('render');
     return html`<p>${this.prop1}</p>`;
   }
-  
+
   firstUpdated() {
     console.log('firstUpdated');
   }

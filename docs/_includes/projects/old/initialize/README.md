@@ -31,11 +31,11 @@ static get properties(){
   }
 }
 constructor(){
-  // myObject.prop1 is used in this template, 
+  // myObject.prop1 is used in this template,
   // so initialize myObject
   this.myObject={};
 
-  // anotherObject.myArray[0-n] are used in this template, 
+  // anotherObject.myArray[0-n] are used in this template,
   // so initialize anotherObject.myArray
   this.anotherObject={
     myArray: []
@@ -90,7 +90,7 @@ To provide a value for an element's declared `Boolean` property when the element
 From inside another lit-element template, you can provide values to a lit-element with data bindings using JavaScript expressions:
 
 ```js
-import {LitElement, html} from '@polymer/lit-element';
+import {LitElement, html} from 'lit-element';
 import './my-element.js';
 
 class SomeElement extends LitElement {
@@ -109,7 +109,7 @@ customElement.define('some-element', SomeElement);
 **Supplying object and array property values with JavaScript expressions is...???**
 
 ```js
-import {LitElement, html} from '@polymer/lit-element';
+import {LitElement, html} from 'lit-element';
 import './my-element.js';
 
 class SomeElement extends LitElement {

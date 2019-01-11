@@ -1,6 +1,6 @@
-import { LitElement, html } from '@polymer/lit-element';
+import { LitElement, html } from 'lit-element';
 
-class CustomElement extends LitElement {  
+class CustomElement extends LitElement {
   static get properties(){
     return {
       myArray: Array,
@@ -21,7 +21,7 @@ class CustomElement extends LitElement {
       <ul>
         ${myArray.map(i => html`<li>${i}</li>`)}
       </ul>
-      
+
       <div>
         myObject.prop1: ${myObject.prop1}<br/>
         myObject.prop2: ${myObject.prop2}<br/>

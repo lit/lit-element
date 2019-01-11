@@ -1,6 +1,6 @@
-import { LitElement, html } from '@polymer/lit-element';
+import { LitElement, html } from 'lit-element';
 
-class MyElement extends LitElement {  
+class MyElement extends LitElement {
   static get properties() {
     return {
       prop1: { type: Number }
@@ -13,7 +13,7 @@ class MyElement extends LitElement {
   }
 
   render() {
-    return html`      
+    return html`
       <p>prop1: ${this.prop1}</p>
       <button @click="${this.changeProp}">prop1</button>
     `;

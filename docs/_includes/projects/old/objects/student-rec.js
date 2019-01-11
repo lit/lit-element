@@ -1,8 +1,8 @@
-import { LitElement, html } from '@polymer/lit-element';
+import { LitElement, html } from 'lit-element';
 
-class StudentRec extends LitElement {  
+class StudentRec extends LitElement {
   static get properties(){
-    return { 
+    return {
       student: Object
     }
   }

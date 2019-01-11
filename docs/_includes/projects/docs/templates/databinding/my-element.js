@@ -1,6 +1,6 @@
-import { LitElement, html } from '@polymer/lit-element';
+import { LitElement, html } from 'lit-element';
 
-class MyElement extends LitElement {  
+class MyElement extends LitElement {
   static get properties() {
     return {
       prop1: String,
@@ -29,13 +29,13 @@ class MyElement extends LitElement {
         boolean attribute binding
         <input type="checkbox" ?checked="${this.prop3}"/>
       </div>
-      
+
       <!-- property binding -->
       <div>
         property binding
         <input type="checkbox" .value="${this.prop4}"/>
       </div>
-      
+
       <!-- event handler binding -->
       <div>event handler binding
         <button @click="${this.clickHandler}">click</button>

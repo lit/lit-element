@@ -1,6 +1,6 @@
 # LitElement
 
-[![Published on npm](https://img.shields.io/npm/v/@polymer/lit-element.svg)](https://www.npmjs.com/package/lit-element)
+[![Published on npm](https://img.shields.io/npm/v/lit-element.svg)](https://www.npmjs.com/package/lit-element)
 [![Published on webcomponents.org](https://img.shields.io/badge/webcomponents.org-published-blue.svg)](https://www.webcomponents.org/element/lit-element)
 [![Mentioned in Awesome lit-html](https://awesome.re/mentioned-badge.svg)](https://github.com/web-padawan/awesome-lit-html)
 
@@ -84,7 +84,7 @@ for additional information on how to create templates for lit-element.
 
     1. Add LitElement to your project:
 
-        ```npm i @polymer/lit-element```
+        ```npm i lit-element```
 
     1. Install the webcomponents polyfill. If you're developing a reusable package, this should be a dev dependency which you load in your tests, demos, etc.
 
@@ -101,7 +101,7 @@ for additional information on how to create templates for lit-element.
 
         ```polymer serve```
 
-    > LitElement is published on [npm](https://www.npmjs.com/package/@polymer/lit-element) using JavaScript Modules.
+    > LitElement is published on [npm](https://www.npmjs.com/package/lit-element) using JavaScript Modules.
     This means it can take advantage of the standard native JavaScript module loader available in all current major browsers.
     >
     > However, since LitElement uses npm convention to reference dependencies by name, a light transform to rewrite specifiers to URLs is required to get it to run in the browser. The polymer-cli's development server `polymer serve` automatically handles this transform.
@@ -121,7 +121,7 @@ into the element.
 ```html
   <script src="node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
   <script type="module">
-    import {LitElement, html} from '@polymer/lit-element';
+    import {LitElement, html} from 'lit-element';
 
     class MyElement extends LitElement {
 
@@ -230,7 +230,7 @@ Note, this example uses decorators to create properties. Decorators are a propos
 standard currently available in [TypeScript](https://www.typescriptlang.org/) or [Babel](https://babeljs.io/docs/en/babel-plugin-proposal-decorators).
 
 ```ts
-import {LitElement, html, property} from '@polymer/lit-element';
+import {LitElement, html, property} from 'lit-element';
 
 class MyElement extends LitElement {
 

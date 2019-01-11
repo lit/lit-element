@@ -1,7 +1,7 @@
-import { LitElement, html } from '@polymer/lit-element';
+import { LitElement, html } from 'lit-element';
 import './student-rec.js';
 
-class MainApp extends LitElement {  
+class MainApp extends LitElement {
   _render({}){
     return html`
       <student-rec></student-rec>

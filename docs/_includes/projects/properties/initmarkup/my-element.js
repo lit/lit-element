@@ -1,7 +1,7 @@
-import { LitElement, html } from '@polymer/lit-element';
+import { LitElement, html } from 'lit-element';
 
-class MyElement extends LitElement { 
-  static get properties() { return { 
+class MyElement extends LitElement {
+  static get properties() { return {
     myString: { type: String },
     myNumber: { type: Number },
     myBool: { type: Boolean },
@@ -22,7 +22,7 @@ class MyElement extends LitElement {
     return html`
       <p>myString: ${this.myString}</p>
       <p>myNumber: ${this.myNumber}</p>
-      <p>myBool: ${this.myBool}</p> 
+      <p>myBool: ${this.myBool}</p>
       <p>myObj.stuff: ${this.myObj.stuff}</p>
       <p>myArray: ${this.myArray.map(item => html`<span>${item},</span>`)}</p>
     `;

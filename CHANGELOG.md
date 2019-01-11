@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- ### Fixed -->
 
 ## Unreleased
+### Fixed
+* Fix references to `@polymer/lit-element` in README and docs
 
 ## [2.0.0-rc.1] - 2019-01-10
 ### Changed

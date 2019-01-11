@@ -1,4 +1,4 @@
-import { LitElement, html } from '@polymer/lit-element'; 
+import { LitElement, html } from 'lit-element';
 import { navStyles } from './my-styles.js';
 
 class MyElement extends LitElement {
@@ -13,7 +13,7 @@ class MyElement extends LitElement {
     return html`
       <style>
         :host[hidden] { display: none; }
-        :host { display: block; 
+        :host { display: block;
           color: var(--myColor);
           font-family: var(--myFont);
         }

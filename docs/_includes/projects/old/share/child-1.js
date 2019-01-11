@@ -1,6 +1,6 @@
-import { LitElement, html } from '@polymer/lit-element';
+import { LitElement, html } from 'lit-element';
 
-class Child1 extends LitElement {  
+class Child1 extends LitElement {
   static get properties(){
     return {
       stuff: String
@@ -13,7 +13,7 @@ class Child1 extends LitElement {
   _render({stuff}){
     return html`
       <p>${stuff}</p>
-      <button on-click="${() => { 
+      <button on-click="${() => {
         this.stuff='meh';
         var event = new CustomEvent(
           'stuff-change',

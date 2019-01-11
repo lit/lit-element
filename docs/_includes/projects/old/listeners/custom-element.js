@@ -1,6 +1,6 @@
-import { LitElement, html } from '@polymer/lit-element';
+import { LitElement, html } from 'lit-element';
 
-class CustomElement extends LitElement {  
+class CustomElement extends LitElement {
   static get properties(){
     return {
       myStyle: String
@@ -16,7 +16,7 @@ class CustomElement extends LitElement {
         .red { color: red; }
         .blue { color: blue; }
       </style>
-      
+
       <p>lit-element is <span class$="${myStyle}">rad</span> :)</p>
     `;
   }

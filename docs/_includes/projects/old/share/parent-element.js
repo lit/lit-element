@@ -1,8 +1,8 @@
-import { LitElement, html } from '@polymer/lit-element';
+import { LitElement, html } from 'lit-element';
 import './child-1.js';
 import './child-2.js';
 
-class ParentElement extends LitElement {  
+class ParentElement extends LitElement {
   static get properties(){
     return {
       data: Object
@@ -21,17 +21,17 @@ class ParentElement extends LitElement {
       <p>data.prop1: ${data.prop1}</p>
       <p>data.prop2: ${data.prop2}</p>
       <h3>child-1</h3>
-      <child-1 
-        on-stuff-change="${(e) => { 
+      <child-1
+        on-stuff-change="${(e) => {
           this.data = Object.assign({}, this.data, { prop1: e.detail })
-        }}" 
+        }}"
         stuff="${data.prop1}">
       </child-1>
       <h3>child-2</h3>
-      <child-2 
-        on-stuff-change="${(e) => { 
+      <child-2
+        on-stuff-change="${(e) => {
           this.data = Object.assign({}, this.data, { prop2: e.detail })
-        }}" 
+        }}"
         stuff="${data.prop2}">
       </child-2>
     `;

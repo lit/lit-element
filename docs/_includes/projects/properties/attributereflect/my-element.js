@@ -1,7 +1,7 @@
-import { LitElement, html } from '@polymer/lit-element';
+import { LitElement, html } from 'lit-element';
 
-class MyElement extends LitElement { 
-  static get properties() { return {  
+class MyElement extends LitElement {
+  static get properties() { return {
     myProp: { reflect: true }
   };}
 
@@ -18,7 +18,7 @@ class MyElement extends LitElement {
   render() {
     return html`
       <p>${this.myProp}</p>
-      
+
       <button @click="${this.changeProperty}">change property</button>
     `;
   }
@@ -27,6 +27,6 @@ class MyElement extends LitElement {
     let randomString = Math.floor(Math.random()*100).toString();
     this.myProp='myProp ' + randomString;
   }
-  
+
 }
 customElements.define('my-element', MyElement);

@@ -1,15 +1,15 @@
-import { LitElement, html } from '@polymer/lit-element'; 
+import { LitElement, html } from 'lit-element';
 
 class MyElement extends LitElement {
-  render() { 
+  render() {
     return html`
       <style>${this.myStyles}</style>
       <p>hi world</p>
-    `; 
+    `;
   }
-  get myStyles() { 
-    return html`p { color: red }`; 
-  } 
+  get myStyles() {
+    return html`p { color: red }`;
+  }
 }
 
 customElements.define('my-element', MyElement);
