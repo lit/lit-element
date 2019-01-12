@@ -376,6 +376,27 @@ suite('Static get styles', () => {
                  '3px');
   });
 
+  test('static get styles can be a single CSSResult', async () => {
+    const name = generateElementName();
+    customElements.define(name, class extends LitElement {
+      static get styles() {
+        return css`div {
+          border: 2px solid blue;
+        }`;
+      }
+
+      render() {
+        return htmlWithStyles`
+        <div>Testing</div>`;
+      }
+    });
+    const el = document.createElement(name);
+    container.appendChild(el);
+    await (el as LitElement).updateComplete;
+    const div = el.shadowRoot!.querySelector('div');
+    assert.equal(getComputedStyleValue(div!, 'border-top-width').trim(), '2px');
+  });
+
   test('static get styles allows composition via `css` values', async () => {
     const name = generateElementName();
     customElements.define(name, class extends LitElement {
