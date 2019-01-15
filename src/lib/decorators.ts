@@ -128,12 +128,15 @@ const legacyProperty = (options: PropertyDeclaration, proto: Object,
  * A property decorator which creates a LitElement property which reflects a
  * corresponding attribute value. A `PropertyDeclaration` may optionally be
  * supplied to configure property features.
+ *
+ * @ExportDecoratedItems
  */
-export const property = (options?: PropertyDeclaration) =>
-    (protoOrDescriptor: Object|ClassElement, name?: PropertyKey): any =>
-        (name !== undefined)
-            ? legacyProperty(options!, protoOrDescriptor as Object, name)
-            : standardProperty(options!, protoOrDescriptor as ClassElement);
+export function property(options?: PropertyDeclaration) {
+  return (protoOrDescriptor: Object|ClassElement, name?: PropertyKey): any =>
+             (name !== undefined) ?
+      legacyProperty(options!, protoOrDescriptor as Object, name) :
+      standardProperty(options!, protoOrDescriptor as ClassElement);
+}
 
 /**
  * A property decorator that converts a class property into a getter that
