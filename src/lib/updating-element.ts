@@ -242,14 +242,16 @@ export abstract class UpdatingElement extends HTMLElement {
   static get observedAttributes() {
     // note: piggy backing on this to ensure we're _finalized.
     this._finalize();
-    const attributes = [];
-    for (const [p, v] of this._classProperties!) {
+    const attributes: string[] = [];
+    // Use forEach so this works even if for/of loops are compiled to for loops
+    // expecting arrays
+    this._classProperties!.forEach((v, p) => {
       const attr = this._attributeNameForProperty(p, v);
       if (attr !== undefined) {
         this._attributeToPropertyMap.set(attr, p);
         attributes.push(attr);
       }
-    }
+    });
     return attributes;
   }
 
@@ -353,6 +355,7 @@ export abstract class UpdatingElement extends HTMLElement {
             ? Object.getOwnPropertySymbols(props)
             : []
       ];
+      // This for/of is ok because propKeys is an array
       for (const p of propKeys) {
         // note, use of `any` is due to TypeSript lack of support for symbol in
         // index types
@@ -464,26 +467,28 @@ export abstract class UpdatingElement extends HTMLElement {
    * the native platform default).
    */
   private _saveInstanceProperties() {
-    for (const [p] of (this.constructor as typeof UpdatingElement)
-             ._classProperties!) {
-      if (this.hasOwnProperty(p)) {
-        const value = this[p as keyof this];
-        delete this[p as keyof this];
-        if (!this._instanceProperties) {
-          this._instanceProperties = new Map();
-        }
-        this._instanceProperties.set(p, value);
-      }
-    }
+    // Use forEach so this works even if for/of loops are compiled to for loops
+    // expecting arrays
+    (this.constructor as typeof UpdatingElement)
+        ._classProperties!.forEach((_v, p) => {
+          if (this.hasOwnProperty(p)) {
+            const value = this[p as keyof this];
+            delete this[p as keyof this];
+            if (!this._instanceProperties) {
+              this._instanceProperties = new Map();
+            }
+            this._instanceProperties.set(p, value);
+          }
+        });
   }
 
   /**
    * Applies previously saved instance properties.
    */
   private _applyInstanceProperties() {
-    for (const [p, v] of this._instanceProperties!) {
-      (this as any)[p] = v;
-    }
+    // Use forEach so this works even if for/of loops are compiled to for loops
+    // expecting arrays
+    this._instanceProperties!.forEach((v, p) => (this as any)[p] = v);
     this._instanceProperties = undefined;
   }
 
@@ -720,9 +725,10 @@ export abstract class UpdatingElement extends HTMLElement {
   protected update(_changedProperties: PropertyValues) {
     if (this._reflectingProperties !== undefined &&
         this._reflectingProperties.size > 0) {
-      for (const [k, v] of this._reflectingProperties) {
-        this._propertyToAttribute(k, this[k as keyof this], v);
-      }
+      // Use forEach so this works even if for/of loops are compiled to for
+      // loops expecting arrays
+      this._reflectingProperties.forEach(
+          (v, k) => this._propertyToAttribute(k, this[k as keyof this], v));
       this._reflectingProperties = undefined;
     }
   }

@@ -133,9 +133,10 @@ const legacyProperty = (options: PropertyDeclaration, proto: Object,
  */
 export function property(options?: PropertyDeclaration) {
   return (protoOrDescriptor: Object|ClassElement, name?: PropertyKey): any =>
-             (name !== undefined) ?
-      legacyProperty(options!, protoOrDescriptor as Object, name) :
-      standardProperty(options!, protoOrDescriptor as ClassElement);
+             (name !== undefined)
+                 ? legacyProperty(options!, protoOrDescriptor as Object, name)
+                 : standardProperty(options!,
+                                    protoOrDescriptor as ClassElement);
 }
 
 /**
