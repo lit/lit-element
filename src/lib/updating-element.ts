@@ -133,26 +133,26 @@ export const defaultConverter: ComplexAttributeConverter = {
 
   toAttribute(value: unknown, type?: unknown): unknown {
     switch (type) {
-    case Boolean:
-      return value ? '' : null;
-    case Object:
-    case Array:
-      // if the value is `null` or `undefined` pass this through
-      // to allow removing/no change behavior.
-      return value == null ? value : JSON.stringify(value);
+      case Boolean:
+        return value ? '' : null;
+      case Object:
+      case Array:
+        // if the value is `null` or `undefined` pass this through
+        // to allow removing/no change behavior.
+        return value == null ? value : JSON.stringify(value);
     }
     return value;
   },
 
   fromAttribute(value: string|null, type?: unknown) {
     switch (type) {
-    case Boolean:
-      return value !== null;
-    case Number:
-      return value === null ? null : Number(value);
-    case Object:
-    case Array:
-      return JSON.parse(value!);
+      case Boolean:
+        return value !== null;
+      case Number:
+        return value === null ? null : Number(value);
+      case Object:
+      case Array:
+        return JSON.parse(value!);
     }
     return value;
   }
@@ -384,8 +384,8 @@ export abstract class UpdatingElement extends HTMLElement {
    * `converter` or `converter.fromAttribute` property option.
    * @nocollapse
    */
-  private static _propertyValueFromAttribute(value: string|null,
-                                             options: PropertyDeclaration) {
+  private static _propertyValueFromAttribute(
+      value: string|null, options: PropertyDeclaration) {
     const type = options.type;
     const converter = options.converter || defaultConverter;
     const fromAttribute =
