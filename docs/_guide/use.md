@@ -1,59 +1,93 @@
 ---
 layout: guide
-title: Use an element
+title: Use a component
 slug: use
 ---
-
-**TODO: clean this up**
 
 {::options toc_levels="1..3" /}
 * ToC
 {:toc}
 
-General guide. you must  also the element's README
+This page describes how to [use a LitElement component in your application](#use). It also describes how to make sure your deployed application is compatible with your target browsers by [building it for production](#build) and [loading the Web Components polyfills](#polyfills).
 
-## import
+## Use a LitElement component {#use}
 
-### Install from npm
+This is a general guide to using third-party LitElement components. Refer to a component's README or other documentation for specific details.
+
+To use a LitElement component in your code:
+
+1.  Install the component from npm.
+
+    ```
+    npm install some-package-name
+    ```
+
+2.  Import the component.
+
+    In another JavaScript module: 
+
+    ```js
+    import 'some-package-name';
+    ```
+
+    In an HTML page:
+
+    ```html
+    <script type="module">
+    import './path-to/some-package-name/some-component.js';
+    </script>
+    ```
+
+    Or:
+
+    ```html
+    <script type="module" src="./path-to/some-package-name/some-component.js"></script>
+    ```
+
+3.  Add the component to the page via markup:
+
+    ```html
+    <some-component></some-component>
+    ```
+
+## Serve for local development {#serve}
+
+LitElement uses npm conventions to reference dependencies by name. A light transform to rewrite specifiers to URLs is required to get it to run in the browser. 
+
+For local development, we recommend installing the [Polymer CLI](https://github.com/Polymer/polymer-cli) and using its development server via `polymer serve`. The development server automatically handles this transform.
+
+To install Polymer CLI:
 
 ```
-npm install some-element-package-name
+npm install -g polymer-cli
 ```
 
-### Import the package
+From within your project folder, run the development server:
 
 ```
-import 'some-element-package-name';
+polymer serve
 ```
 
-or
+You can also use tools like [WebPack](https://webpack.js.org/) or [Rollup](https://rollupjs.org/guide/en). See the section on [Rollup configuration](#rollup) for an example configuration.
 
-```
-<script type="module">
-import './path-to/some-element-package-name/some-element.js';
-</script>
-```
+## Build for production {#build}
 
-### Use in html
+LitElement is published on npm using JavaScript Modules. This means it can take advantage of the standard native JavaScript module loader available in all current major browsers. We distribute LitElement as a JavaScript library compiled from LitElement's TypeScript source. 
 
-```html
-<some-element></some-element>
-```
+This section describes how to build an app that uses a LitElement component for production.
 
-## Build an app with a LitElement in it
+To build your app:
 
-* babel 
-* rollup/webpack
+1.  [Configure transpilation with Babel](#babel).
+2.  [Configure module resolution and bundling](#bundle).
 
-### Configure Babel
+### Configure transpilation with Babel {#babel}
 
-* babel - transpile from es2017 to target
-
-e.g. 1 - serving esmodules
+To serve ES Modules:
 
 **.babelrc**
 
-```
+```js
 {
   "presets": [
     [
@@ -70,11 +104,11 @@ e.g. 1 - serving esmodules
 }
 ```
 
-e.g. 2 - serving es5
+To serve ES5 code:
 
 **.babelrc**
 
-```
+```js
 {
   "presets": [
     [
@@ -91,10 +125,9 @@ e.g. 2 - serving es5
 }
 ```
 
+### Configure module resolution and bundling {#bundle}
 
-## Configure a bundler 
-
-### Rollup example
+This example uses [Rollup](https://rollupjs.org/guide/en) to resolve modules and dependencies, and bundle the output.
 
 **rollup.config.js**
 
@@ -116,76 +149,65 @@ export default {
       exclude: 'node_modules/**',
       include: 'src/**'
     })
-  ]
+  ],
+  // If using any exports from a symlinked project, uncomment the following:
+  // preserveSymlinks: true,
 };
 ```
 
-### WebPack example
+## Load the WebComponents polyfills {#polyfills}
 
-```js
+To load the WebCompnents polyfills:
 
-```
+1.  Install the `@webcomponents/webcomponentsjs` package:
 
+    ```
+    npm install --save @webcomponents/webcomponentsjs
+    ```
 
-## load Polyfills from entrypoing
+2.  Add the polyfills to your HTML entrypoint:
 
-Because reasons
+    ```html
+    <head>
+      <!-- 
+        If you are loading es5 code you will need 
+        custom-elements-es5-loader to make the element work in 
+        es6-capable browsers. 
+        
+        If you are not loading es5 code, you don't need 
+        custom-elements-es5-loader. 
+      --> 
+      <script src="./path-to/custom-elements-es5-loader.js"></script>
 
-  * reason
-  * reason
+      <!-- Load polyfills -->
+      <script 
+        src="path-to/webcomponents-loader.js"
+        defer>
+      </script> 
 
+      <!-- Load component when polyfills are definitely ready -->
+      <script type="module">
+        // Take care of cases in which the browser runs this
+        // script before it has finished running 
+        // webcomponents-loader.js (e.g. Firefox script execution order)
+        window.WebComponents = window.WebComponents || { 
+          waitFor(cb){ addEventListener('WebComponentsReady', cb) }
+        }
 
-### install polyfills 
-
-```
-npm install @webcomponents/webcomponentsjs
-```
-
-### Use polyfills
-
-**index.html**
-
-```html
-<head>
-  <!-- 
-    If you are loading es5 code you will need 
-    custom-elements-es5-loader to make the element work in 
-    es6-capable browsers. 
-    
-    If you are not loading es5 code, you don't need 
-    custom-elements-es5-loader. 
-  --> 
-  <script src="./path-to/custom-elements-es5-loader.js"></script>
-
-  <!-- Load polyfills -->
-  <script 
-    src="path-to/webcomponents-loader.js"
-    defer>
-  </script> 
-
-  <!-- Load component when polyfills are definitely ready -->
-  <script type="module">
-    // Take care of cases in which the browser runs this
-    // script before it has finished running 
-    // webcomponents-loader.js (e.g. Firefox script execution order)
-    window.WebComponents = window.WebComponents || { 
-      waitFor(cb){ addEventListener('WebComponentsReady', cb) }
-    }
-
-    WebComponents.waitFor(async () => { 
-      import('./path-to/some-element.js');
-    });
-  </script>
-</head>
-<body>
-  <!-- Add the element to the page -->
-  <some-element></some-element>
-</body>
-```
+        WebComponents.waitFor(async () => { 
+          import('./path-to/some-element.js');
+        });
+      </script>
+    </head>
+    <body>
+      <!-- Add the element to the page -->
+      <some-element></some-element>
+    </body>
+    ```
 
 <div class="alert"> 
 
-**Do not transpile or bundle the polyfills.**
+**Do not transpile the polyfills.**
 
 </div>
 
