@@ -1499,6 +1499,73 @@ suite('UpdatingElement', () => {
     assert.equal(el.getAttribute('id'), 'id2');
   });
 
+  test('user accessors', async () => {
+    class E extends UpdatingElement {
+      _updateCount = 0;
+      updatedText = '';
+      _foo?: String;
+      _bar?: String;
+      static get properties() {
+        return {
+          foo : {type : String, reflect : true},
+          bar : {type : String, reflect : true}
+        };
+      }
+      constructor() {
+        super();
+        this.foo = 'defaultFoo';
+        this.bar = 'defaultBar';
+      }
+      set foo(value: string) {
+        const old = this._foo;
+        this._foo = value;
+        this.requestUpdate('foo', old);
+      }
+      get foo() { return this._foo as string; }
+      set bar(value: string) {
+        const old = this._bar;
+        this._bar = value;
+        this.requestUpdate('bar', old);
+      }
+      get bar() { return this._bar as string; }
+      update(changedProperties: PropertyValues) {
+        this._updateCount++;
+        super.update(changedProperties);
+      }
+      updated() { this.updatedText = `${this.foo}-${this.bar}`; }
+    }
+    customElements.define(generateElementName(), E);
+
+    const el = new E();
+    el.foo = 'foo1';
+    document.body.appendChild(el);
+    await el.updateComplete;
+    assert.equal(el.foo, 'foo1');
+    assert.equal(el.bar, 'defaultBar');
+    assert.equal(el.getAttribute('foo'), 'foo1');
+    assert.equal(el.getAttribute('bar'), 'defaultBar');
+    assert.equal(el.updatedText, 'foo1-defaultBar');
+    assert.equal(el._updateCount, 1);
+
+    el.foo = 'foo2';
+    el.bar = 'bar';
+    await el.updateComplete;
+    assert.equal(el.foo, 'foo2');
+    assert.equal(el.bar, 'bar');
+    assert.equal(el.getAttribute('foo'), 'foo2');
+    assert.equal(el.getAttribute('bar'), 'bar');
+    assert.equal(el.updatedText, 'foo2-bar');
+    assert.equal(el._updateCount, 2);
+
+    el.foo = 'foo3';
+    await el.updateComplete;
+    assert.equal(el.foo, 'foo3');
+    assert.equal(el.getAttribute('foo'), 'foo3');
+    assert.equal(el.getAttribute('bar'), 'bar');
+    assert.equal(el.updatedText, 'foo3-bar');
+    assert.equal(el._updateCount, 3);
+  });
+
   test('user accessors can be extended', async () => {
     // Sup implements an accessor that clamps to a maximum in the setter
     class Sup extends UpdatingElement {
@@ -1506,7 +1573,7 @@ suite('UpdatingElement', () => {
       _oldFoo?: any;
       _foo?: number;
       updatedText = '';
-      static get properties() { return {foo : {type : Number, noAccessor: true}}; }
+      static get properties() { return {foo : {type : Number}}; }
       constructor() {
         super();
         this.foo = 0;
@@ -1529,7 +1596,7 @@ suite('UpdatingElement', () => {
     // Sub implements an accessor that rounds down in the getter
     class Sub extends Sup {
       _subSetCount?: number;
-      static get properties() { return {foo : {type : Number, noAccessor: true}}; }
+      static get properties() { return {foo : {type : Number}}; }
       set foo(v: number) {
         this._subSetCount = (this._subSetCount || 0) + 1;
         super.foo = v;
@@ -1604,83 +1671,75 @@ suite('UpdatingElement', () => {
     assert.equal(sub.updatedText, '10');
   });
 
-  test('user accessors only using noAccessor', async () => {
-    class E extends UpdatingElement {
-      _updateCount = 0;
-      updatedText = '';
-      _foo?: String;
-      _bar?: String;
-      static get properties() {
-        return {
-          foo : {type : String, reflect : true, noAccessor : true},
-          bar : {type : String, reflect : true, noAccessor : true}
-        };
-      }
-      constructor() {
-        super();
-        this.foo = 'defaultFoo';
-        this.bar = 'defaultBar';
-      }
-      set foo(value: string) {
-        const old = this._foo;
-        this._foo = value;
-        this.requestUpdate('foo', old);
-      }
-      get foo() { return this._foo as string; }
-      set bar(value: string) {
-        const old = this._bar;
-        this._bar = value;
-        this.requestUpdate('bar', old);
-      }
-      get bar() { return this._bar as string; }
-      update(changedProperties: PropertyValues) {
-        this._updateCount++;
-        super.update(changedProperties);
-      }
-      updated() { this.updatedText = `${this.foo}-${this.bar}`; }
-    }
-    customElements.define(generateElementName(), E);
+  test('Using `noAccessor` to set property options for extended user accessors',
+       async () => {
+         // Sup implements an accessor that clamps to a maximum in the setter
+         class Sup extends UpdatingElement {
+           _supSetCount?: number;
+           _oldFoo?: any;
+           _foo?: number;
+           updatedText = '';
+           static get properties() { return {foo : {type : Number}}; }
+           constructor() {
+             super();
+             this.foo = 0;
+           }
+           set foo(v: number) {
+             this._supSetCount = (this._supSetCount || 0) + 1;
+             const old = this.foo;
+             this._foo = Math.min(v, 10);
+             this.requestUpdate('foo', old);
+           }
+           get foo(): number { return this._foo as number; }
+           update(changedProperties: PropertyValues) {
+             this._oldFoo = changedProperties.get('foo');
+             super.update(changedProperties);
+           }
+           updated() { this.updatedText = `${this.foo}`; }
+         }
+         customElements.define(generateElementName(), Sup);
 
-    const el = new E();
-    el.foo = 'foo1';
-    document.body.appendChild(el);
-    await el.updateComplete;
-    assert.equal(el.foo, 'foo1');
-    assert.equal(el.bar, 'defaultBar');
-    assert.equal(el.getAttribute('foo'), 'foo1');
-    assert.equal(el.getAttribute('bar'), 'defaultBar');
-    assert.equal(el.updatedText, 'foo1-defaultBar');
-    assert.equal(el._updateCount, 1);
+         // Sub implements an accessor that rounds down in the getter
+         class Sub extends Sup {
+           static get properties() {
+             return {foo : {type : Number, reflect : true, noAccessor : true}};
+           }
+         }
+         customElements.define(generateElementName(), Sub);
 
-    el.foo = 'foo2';
-    el.bar = 'bar';
-    await el.updateComplete;
-    assert.equal(el.foo, 'foo2');
-    assert.equal(el.bar, 'bar');
-    assert.equal(el.getAttribute('foo'), 'foo2');
-    assert.equal(el.getAttribute('bar'), 'bar');
-    assert.equal(el.updatedText, 'foo2-bar');
-    assert.equal(el._updateCount, 2);
+         const sub = new Sub();
+         container.appendChild(sub);
+         await sub.updateComplete;
+         assert.equal(sub.foo, 0);
+         assert.equal(sub._oldFoo, undefined);
+         assert.equal(sub._supSetCount, 1);
+         assert.equal(sub.updatedText, '0');
 
-    el.foo = 'foo3';
-    await el.updateComplete;
-    assert.equal(el.foo, 'foo3');
-    assert.equal(el.getAttribute('foo'), 'foo3');
-    assert.equal(el.getAttribute('bar'), 'bar');
-    assert.equal(el.updatedText, 'foo3-bar');
-    assert.equal(el._updateCount, 3);
-  });
+         sub.foo = 5;
+         await sub.updateComplete;
+         assert.equal(sub.foo, 5);
+         assert.equal(sub._oldFoo, 0);
+         assert.equal(sub._supSetCount, 2);
+         assert.equal(sub.updatedText, '5');
+         assert.equal(sub.getAttribute('foo'), '5');
+       });
 
   test('attribute-based property storage', async () => {
     class E extends UpdatingElement {
       _updateCount = 0;
       updatedText = '';
       static get properties() {
-        return {foo : {type : String, noAccessor: true}, bar : {type : String, noAccessor: true}};
+        return {foo : {type : String}, bar : {type : String}};
       }
-      set foo(value: string|null) { this.setAttribute('foo', value as string); this.requestUpdate(); }
+      set foo(value: string|null) {
+        this.setAttribute('foo', value as string);
+        this.requestUpdate();
+      }
       get foo() { return this.getAttribute('foo') || 'defaultFoo'; }
-      set bar(value: string|null) { this.setAttribute('bar', value as string); this.requestUpdate(); }
+      set bar(value: string|null) {
+        this.setAttribute('bar', value as string);
+        this.requestUpdate();
+      }
       get bar() { return this.getAttribute('bar') || 'defaultBar'; }
       update(changedProperties: PropertyValues) {
         this._updateCount++;
@@ -1723,10 +1782,7 @@ suite('UpdatingElement', () => {
       _updateCount = 0;
       updatedText = '';
       static get properties() {
-        return {
-          foo : {type : String, noAccessor : true},
-          bar : {type : String, noAccessor : true}
-        };
+        return {foo : {type : String}, bar : {type : String}};
       }
       set foo(value: string|null) { this.setAttribute('foo', value as string); }
       get foo() { return this.getAttribute('foo') || 'defaultFoo'; }

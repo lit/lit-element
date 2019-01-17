@@ -270,7 +270,7 @@ export abstract class UpdatingElement extends HTMLElement {
     // metadata.
     this._ensureClassProperties();
     this._classProperties!.set(name, options);
-    if (!options.noAccessor) {
+    if (!options.noAccessor && !this.prototype.hasOwnProperty(name)) {
         const key = typeof name === 'symbol' ? Symbol() : `__${name}`;
       const desc = {
         get(): any { return (this as any)[key]; },
