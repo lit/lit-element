@@ -18,7 +18,7 @@ import {LitElement} from '../lit-element.js';
 import {PropertyDeclaration, UpdatingElement} from './updating-element.js';
 
 export type Constructor<T> = {
-  new (...args: any[]): T
+  new (...args: unknown[]): T
 };
 
 // From the TC39 Decorators proposal
@@ -47,6 +47,7 @@ const legacyCustomElement =
       // `Constructor<HTMLElement>` for some reason.
       // `Constructor<HTMLElement>` is helpful to make sure the decorator is
       // applied to elements however.
+      // tslint:disable-next-line:no-any
       return clazz as any;
     };
 
@@ -106,6 +107,7 @@ const standardProperty =
           //     initializer: descriptor.initializer,
           //   }
           // ],
+          // tslint:disable-next-line:no-any decorator
           initializer(this: any) {
             if (typeof element.initializer === 'function') {
               this[element.key] = element.initializer!.call(this);
@@ -132,6 +134,7 @@ const legacyProperty =
  * @ExportDecoratedItems
  */
 export function property(options?: PropertyDeclaration) {
+  // tslint:disable-next-line:no-any decorator
   return (protoOrDescriptor: Object|ClassElement, name?: PropertyKey): any =>
              (name !== undefined) ?
       legacyProperty(options!, protoOrDescriptor as Object, name) :
@@ -177,6 +180,7 @@ const standardQuery = (descriptor: PropertyDescriptor, element: ClassElement) =>
 function _query<T>(queryFn: (target: NodeSelector, selector: string) => T) {
   return (selector: string) =>
              (protoOrDescriptor: Object|ClassElement,
+              // tslint:disable-next-line:no-any decorator
               name?: PropertyKey): any => {
                const descriptor = {
                  get(this: LitElement) {
@@ -203,6 +207,7 @@ const standardEventOptions =
     };
 
 const legacyEventOptions =
+    // tslint:disable-next-line:no-any legacy decorator
     (options: AddEventListenerOptions, proto: any, name: PropertyKey) => {
       Object.assign(proto[name], options);
     };
@@ -243,4 +248,5 @@ export const eventOptions = (options: AddEventListenerOptions) =>
          (name !== undefined) ?
          legacyEventOptions(options, protoOrDescriptor as Object, name) :
          standardEventOptions(options, protoOrDescriptor as ClassElement)) as
-    any;
+        // tslint:disable-next-line:no-any decorator
+        any;
