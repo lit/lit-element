@@ -541,6 +541,35 @@ suite('Static get styles', () => {
     assert.equal(getComputedStyleValue(level3!, 'border-top-width').trim(), '3px');
     assert.equal(getComputedStyleValue(level4!, 'border-top-width').trim(), '4px');
   });
+
+  test('`styles` can be a static field', async () => {
+    const name = generateElementName();
+    customElements.define(name, class extends LitElement {
+      static styles = [
+        css`div {
+          border: 2px solid blue;
+        }`,
+        css`span {
+          display: block;
+          border: 3px solid blue;
+        }`
+      ];
+
+      render() {
+        return htmlWithStyles`
+        <div>Testing1</div>
+        <span>Testing2</span>`;
+      }
+    });
+    const el = document.createElement(name);
+    container.appendChild(el);
+    await (el as LitElement).updateComplete;
+    const div = el.shadowRoot!.querySelector('div');
+    assert.equal(getComputedStyleValue(div!, 'border-top-width').trim(), '2px');
+    const span = el.shadowRoot!.querySelector('span');
+    assert.equal(getComputedStyleValue(span!, 'border-top-width').trim(),
+                 '3px');
+  });
 });
 
 suite('ShadyDOM', () => {

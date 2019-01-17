@@ -66,14 +66,15 @@ export class LitElement extends UpdatingElement {
    * Array of styles to apply to the element. The styles should be defined
    * using the `css` tag function.
    */
-  static get styles(): CSSResult | CSSResultArray { return []; }
+  static styles?: CSSResult | CSSResultArray;
 
   private static _styles: CSSResult[]|undefined;
 
   private static get _uniqueStyles(): CSSResult[] {
     if (this._styles === undefined) {
-      if (Array.isArray(this.styles)) {
-        const styles = flattenStyles(this.styles);
+      const userStyles = this.styles;
+      if (Array.isArray(userStyles)) {
+        const styles = flattenStyles(userStyles);
         // As a performance optimization to avoid duplicated styling that can
         // occur especially when composing via subclassing, de-duplicate styles
         // preserving the last item in the list. The last item is kept to
@@ -88,7 +89,7 @@ export class LitElement extends UpdatingElement {
         this._styles = [];
         styleSet.forEach((v) => this._styles!.unshift(v));
       } else {
-        this._styles = [this.styles];
+        this._styles = userStyles ? [userStyles] : [];
       }
     }
     return this._styles;
