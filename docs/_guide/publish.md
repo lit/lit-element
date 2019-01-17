@@ -29,9 +29,9 @@ Your package.json configuration should have both the `main` and `module` fields:
 
 You should also create a README describing how to consume your component. A basic guide to consuming LitElement components is documented at [Use a component](use).
 
-## Transpiling TypeScript
+## Transpiling with TypeScript
 
-To transpile element code from TypeScript, conigure tsconfig.json. Make sure you include the `"downlevelIteration": true` option.
+To transpile element code from TypeScript to JavaScript, conigure tsconfig.json. Make sure you include the `"downlevelIteration": true` option.
 
 **tsconfig.json**
 
@@ -55,4 +55,31 @@ Run the TypeScript compiler:
 tsc 
 ```
 
-Publish your `lib` folder as well as your component's `src` files. Users of your element would consume it from `lib`.
+## Transpiling with Babel
+
+To transpile a LitElement component that uses proposed JavaScript features like class properties and decorators, use Babel. 
+
+Install Babel and the Babel plugins you need. For example:
+
+```
+npm install --save-dev @babel/core
+npm install --save-dev @babel/plugin-proposal-class-properties
+npm install --save-dev @babel/proposal-decorators
+```
+
+Configure Babel. For example:
+
+**babel.config.js**
+
+```js
+const plugins = [
+  '@babel/plugin-proposal-class-properties',
+  ['@babel/proposal-decorators', { decoratorsBeforeExport: true } ],
+];
+
+module.exports = { plugins };
+```
+
+You can run Babel via a bundler plugin such as [rollup-plugin-babel](https://www.npmjs.com/package/rollup-plugin-babel), or from the command line. See the [Babel documentation](https://babeljs.io/docs/en/) for more information.
+
+See a [sample build configuration for LitElement with Babel and Rollup](https://github.com/PolymerLabs/lit-element-build-rollup/blob/master/src/index.html).

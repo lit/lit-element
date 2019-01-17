@@ -8,7 +8,7 @@ slug: use
 * ToC
 {:toc}
 
-This page describes how to [use a LitElement component in your application](#use). It also describes how to make sure your deployed application is compatible with your target browsers by [building it for production](#build) and [loading the Web Components polyfills](#polyfills).
+This page describes how to [use a LitElement component in your application](#use). It also describes how to make sure your deployed code is browser-ready by [building it for production](#build) and [loading the Web Components polyfills](#polyfills).
 
 ## Use a LitElement component {#use}
 
@@ -19,12 +19,12 @@ To use a LitElement component in your code:
 1.  Install the component from npm.
 
     ```
-    npm install some-package-name
+    npm install --save some-package-name
     ```
 
 2.  Import the component.
 
-    In another JavaScript module: 
+    In a JavaScript module: 
 
     ```js
     import 'some-package-name';
@@ -50,119 +50,44 @@ To use a LitElement component in your code:
     <some-component></some-component>
     ```
 
-## Serve for local development {#serve}
-
-LitElement uses npm conventions to reference dependencies by name. A light transform to rewrite specifiers to URLs is required to get it to run in the browser. 
-
-For local development, we recommend installing the [Polymer CLI](https://github.com/Polymer/polymer-cli) and using its development server via `polymer serve`. The development server automatically handles this transform.
-
-To install Polymer CLI:
-
-```
-npm install -g polymer-cli
-```
-
-From within your project folder, run the development server:
-
-```
-polymer serve
-```
-
-You can also use tools like [WebPack](https://webpack.js.org/) or [Rollup](https://rollupjs.org/guide/en). See the section on [Rollup configuration](#rollup) for an example configuration.
-
 ## Build for production {#build}
 
-LitElement is published on npm using JavaScript Modules. This means it can take advantage of the standard native JavaScript module loader available in all current major browsers. We distribute LitElement as a JavaScript library compiled from LitElement's TypeScript source. 
+LitElement is published on npm using JavaScript Modules. This means it can take advantage of the standard native JavaScript module loader available in all current major browsers. 
 
-This section describes how to build an app that uses a LitElement component for production.
+You will need a light transform to resolve LitElement's npm dependencies. This can be done with a bundler such as WebPack or Rollup.
 
-To build your app:
-
-1.  [Configure transpilation with Babel](#babel).
-2.  [Configure module resolution and bundling](#bundle).
-
-### Configure transpilation with Babel {#babel}
-
-To serve ES Modules:
-
-**.babelrc**
-
-```js
-{
-  "presets": [
-    [
-      "@babel/preset-env",
-      {
-        "modules": false,
-        "targets": {
-          "esmodules": true
-        }
-      }
-    ]
-  ],
-  "plugins": [@babel/proposal-decorators]
-}
-```
-
-To serve ES5 code:
-
-**.babelrc**
-
-```js
-{
-  "presets": [
-    [
-      "@babel/preset-env",
-      {
-        "modules": ??,
-        "targets": {
-          ??
-        }
-      }
-    ]
-  ],
-  "plugins": [@babel/proposal-decorators]
-}
-```
-
-### Configure module resolution and bundling {#bundle}
-
-This example uses [Rollup](https://rollupjs.org/guide/en) to resolve modules and dependencies, and bundle the output.
+The following example configuration for [Rollup](https://rollupjs.org/guide/en) resolves modules and dependencies, and bundles the output.
 
 **rollup.config.js**
 
 ```js
 import resolve from 'rollup-plugin-node-resolve';
-import common from 'rollup-plugin-commonjs';
-import babel from 'rollup-plugin-babel';
 
 export default {
-	input: 'index.js',
-	output: {
-		dir: 'build',
-		format: 'es'
-	},
-	plugins: [
-    resolve(),
-    common(),
-    babel({
-      exclude: 'node_modules/**',
-      include: 'src/**'
-    })
-  ],
   // If using any exports from a symlinked project, uncomment the following:
   // preserveSymlinks: true,
+	input: ['src/index.js'],
+	output: {
+		file: 'build/index.js',
+    format: 'es',
+		sourcemap: true
+	},
+	plugins: [
+    resolve()
+  ]
 };
 ```
 
+See a [sample build configuration for LitElement with Babel and Rollup](https://github.com/PolymerLabs/lit-element-build-rollup/blob/master/src/index.html).
+
 ## Load the WebComponents polyfills {#polyfills}
 
-To load the WebCompnents polyfills:
+To load the WebComponents polyfills:
 
 1.  Install the `@webcomponents/webcomponentsjs` package:
 
     ```
-    npm install --save @webcomponents/webcomponentsjs
+    npm install --save-dev @webcomponents/webcomponentsjs
     ```
 
 2.  Add the polyfills to your HTML entrypoint:
@@ -177,7 +102,9 @@ To load the WebCompnents polyfills:
         If you are not loading es5 code, you don't need 
         custom-elements-es5-loader. 
       --> 
+      <!-- 
       <script src="./path-to/custom-elements-es5-loader.js"></script>
+      -->
 
       <!-- Load polyfills -->
       <script 
@@ -205,9 +132,11 @@ To load the WebCompnents polyfills:
     </body>
     ```
 
+3.  Ensure that `node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js` and `node_modules/@webcomponents/webcomponentsjs/bundles/**.*` are included in your build.
+
 <div class="alert"> 
 
-**Do not transpile the polyfills.**
+**Do not transpile the polyfills.** Bundling them is okay.
 
 </div>
 
