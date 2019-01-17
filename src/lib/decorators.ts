@@ -91,9 +91,21 @@ export const customElement = (tagName: string) => (
 
 const standardProperty =
     (options: PropertyDeclaration, element: ClassElement) => {
-      // createProperty() takes care of defining the property, but we still must
-      // return some kind of descriptor, so return a descriptor for an unused
-      // prototype field. The finisher calls createProperty().
+      // When decorating an accessor, pass it through and add property metadata.
+      // Note, the `hasOwnProperty` check in `createProperty` ensures we don't
+      // stomp over the user's accessor.
+      if (element.kind === 'method' && element.descriptor &&
+          !('value' in element.descriptor)) {
+        return {
+          ...element,
+          finisher(clazz: typeof UpdatingElement) {
+            clazz.createProperty(element.key, options);
+          }
+        };
+        // createProperty() takes care of defining the property, but we still
+        // must return some kind of descriptor, so return a descriptor for an
+        // unused prototype field. The finisher calls createProperty().
+      } else {
       return {
         kind : 'field',
         key : Symbol(),
@@ -117,6 +129,7 @@ const standardProperty =
           clazz.createProperty(element.key, options);
         }
       };
+      }
     };
 
 const legacyProperty = (options: PropertyDeclaration, proto: Object,
