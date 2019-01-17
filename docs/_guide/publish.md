@@ -4,24 +4,19 @@ title: Publish an element
 slug: publish
 ---
 
-**TODO: actual sentences**
-
 {::options toc_levels="1..3" /}
 * ToC
 {:toc}
 
-TODO: make sentences
+This page describes how to publish a LitElement component to npm.
 
-* We recommend publishing ES2017
-* We recommend not bundling elements
-* If you're writing your element in standard ES2017, you don't need to transpile for publication
-* If you're using decorators, class fields, or other ES2017+ features, you'll need to transpile your element for publication
+We recommend publishing JavaScript modules in standard ES2017. If you're writing your element in standard ES2017, you don't need to transpile for publication. If you're using decorators, class fields, or other ES2017+ features, you will need to transpile your element for publication.
 
-## publish to npm
+## Publish to npm
 
-To publish to npm [see instructions on npm site](https://docs.npmjs.com/packages-and-modules/contributing-packages-to-the-registry).
+To publish your component to npm, [see the instructions on contributing npm packages](https://docs.npmjs.com/packages-and-modules/contributing-packages-to-the-registry).
 
-Your package.json configuration must have both `main` and `module`:
+Your package.json configuration should have both the `main` and `module` fields:
 
 **package.json**
 
@@ -32,11 +27,11 @@ Your package.json configuration must have both `main` and `module`:
 }
 ```
 
-Also, make a README telling people how to consume your element
+You should also create a README describing how to consume your component. A basic guide to consuming LitElement components is documented at [Use a component](use).
 
-### if typescript
+## Transpiling TypeScript
 
-To transpile TypeScript, conigure tsconfig.josn. eg
+To transpile element code from TypeScript, conigure tsconfig.json. Make sure you include the `"downlevelIteration": true` option.
 
 **tsconfig.json**
 
@@ -54,10 +49,10 @@ To transpile TypeScript, conigure tsconfig.josn. eg
 }
 ```
 
-Run `tsc`:
+Run the TypeScript compiler: 
 
 ```bash
 tsc 
 ```
 
-Publish `lib` as well as `src`. Users would consume `lib`.
+Publish your `lib` folder as well as your component's `src` files. Users of your element would consume it from `lib`.
