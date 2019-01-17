@@ -1499,21 +1499,23 @@ suite('UpdatingElement', () => {
     assert.equal(el.getAttribute('id'), 'id2');
   });
 
-  test('user accessors correctly wrapped', async () => {
+  test('user accessors can be extended', async () => {
     // Sup implements an accessor that clamps to a maximum in the setter
     class Sup extends UpdatingElement {
       _supSetCount?: number;
       _oldFoo?: any;
       _foo?: number;
       updatedText = '';
-      static get properties() { return {foo : {type : Number}}; }
+      static get properties() { return {foo : {type : Number, noAccessor: true}}; }
       constructor() {
         super();
         this.foo = 0;
       }
       set foo(v: number) {
         this._supSetCount = (this._supSetCount || 0) + 1;
+        const old = this.foo;
         this._foo = Math.min(v, 10);
+        this.requestUpdate('foo', old);
       }
       get foo(): number { return this._foo as number; }
       update(changedProperties: PropertyValues) {
@@ -1527,7 +1529,7 @@ suite('UpdatingElement', () => {
     // Sub implements an accessor that rounds down in the getter
     class Sub extends Sup {
       _subSetCount?: number;
-      static get properties() { return {foo : {type : Number}}; }
+      static get properties() { return {foo : {type : Number, noAccessor: true}}; }
       set foo(v: number) {
         this._subSetCount = (this._subSetCount || 0) + 1;
         super.foo = v;
@@ -1674,11 +1676,11 @@ suite('UpdatingElement', () => {
       _updateCount = 0;
       updatedText = '';
       static get properties() {
-        return {foo : {type : String}, bar : {type : String}};
+        return {foo : {type : String, noAccessor: true}, bar : {type : String, noAccessor: true}};
       }
-      set foo(value: string|null) { this.setAttribute('foo', value as string); }
+      set foo(value: string|null) { this.setAttribute('foo', value as string); this.requestUpdate(); }
       get foo() { return this.getAttribute('foo') || 'defaultFoo'; }
-      set bar(value: string|null) { this.setAttribute('bar', value as string); }
+      set bar(value: string|null) { this.setAttribute('bar', value as string); this.requestUpdate(); }
       get bar() { return this.getAttribute('bar') || 'defaultBar'; }
       update(changedProperties: PropertyValues) {
         this._updateCount++;

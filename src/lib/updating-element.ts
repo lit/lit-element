@@ -21,24 +21,6 @@
 const JSCompiler_renameProperty = (prop: PropertyKey, _obj: any) => prop;
 
 /**
- * Returns the property descriptor for a property on this prototype by walking
- * up the prototype chain. Note that we stop just before Object.prototype, which
- * also avoids issues with Symbol polyfills (core-js, get-own-property-symbols),
- * which create accessors for the symbols on Object.prototype.
- */
-const descriptorFromPrototype = (name: PropertyKey, proto: UpdatingElement) => {
-  if (name in proto) {
-    while (proto !== Object.prototype) {
-      if (proto.hasOwnProperty(name)) {
-        return Object.getOwnPropertyDescriptor(proto, name);
-      }
-      proto = Object.getPrototypeOf(proto);
-    }
-  }
-  return undefined;
-};
-
-/**
  * Converts property values to and from attribute values.
  */
 export interface ComplexAttributeConverter<Type = any, TypeHint = any> {
@@ -289,34 +271,17 @@ export abstract class UpdatingElement extends HTMLElement {
     this._ensureClassProperties();
     this._classProperties!.set(name, options);
     if (!options.noAccessor) {
-      const superDesc = descriptorFromPrototype(name, this.prototype);
-      let desc;
-      // If there is a super accessor, capture it and "super" to it
-      if (superDesc !== undefined && (superDesc.set && superDesc.get)) {
-        const {set, get} = superDesc;
-        desc = {
-          get() { return get.call(this); },
-          set(value: any) {
-            const oldValue = this[name];
-            set.call(this, value);
-            this.requestUpdate(name, oldValue);
-          },
-          configurable : true,
-          enumerable : true
-        };
-      } else {
         const key = typeof name === 'symbol' ? Symbol() : `__${name}`;
-        desc = {
-          get() { return this[key]; },
-          set(value: any) {
-            const oldValue = this[name];
-            this[key] = value;
+      const desc = {
+        get(): any { return (this as any)[key]; },
+        set(this: UpdatingElement, value: any) {
+          const oldValue = (this as any)[name];
+          (this as any)[key] = value;
             this.requestUpdate(name, oldValue);
           },
           configurable : true,
           enumerable : true
         };
-      }
       Object.defineProperty(this.prototype, name, desc);
     }
   }
