@@ -12,7 +12,7 @@ class MyElement extends LitElement {
   render() {
     return html`
       <style>
-        :host[hidden] { display: none; }
+        :host([hidden]) { display: none; }
         :host { display: block;
           color: var(--myColor);
           font-family: var(--myFont);

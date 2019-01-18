@@ -22,7 +22,7 @@ _my-element.js_
 render() {
   return html`
     <style>
-      :host[hidden] { display: none; }
+      :host([hidden]) { display: none; }
       :host { display: block; 
         border: 1px solid black;
       }
@@ -46,7 +46,7 @@ Two best practices for working with custom elements are:
 
 ```html
 <style>
-  :host[hidden] { display: none; }
+  :host([hidden]) { display: none; }
   :host { display: block; }
 </style>
 ```
@@ -248,7 +248,7 @@ _my-element.js_
 render() {
   return html`
     <style>
-      :host[hidden] { display: none; }
+      :host([hidden]) { display: none; }
       :host { display: block; 
         color: var(--myColor, aliceblue);
         font-family: var(--myFont, Verdana);
