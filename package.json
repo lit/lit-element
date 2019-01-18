@@ -1,6 +1,6 @@
 {
   "name": "lit-element",
-  "version": "2.0.0-rc.2",
+  "version": "2.0.0-rc-dev.23e305d",
   "description": "Polymer based lit-html custom element",
   "license": "BSD-3-Clause",
   "repository": "Polymer/lit-element",
