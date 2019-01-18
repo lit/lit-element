@@ -270,6 +270,11 @@ export abstract class UpdatingElement extends HTMLElement {
     // metadata.
     this._ensureClassProperties();
     this._classProperties!.set(name, options);
+    // Do not generate an accessor if the prototype already has one, since
+    // it would be lost otherwise and that would never be the user's intention;
+    // Instead, we expect users to call `requestUpdate` themselves from
+    // user-defined accessors. Note that if the super has an accessor we will
+    // still overwrite it
     if (!options.noAccessor && !this.prototype.hasOwnProperty(name)) {
         const key = typeof name === 'symbol' ? Symbol() : `__${name}`;
       const desc = {
