@@ -16,12 +16,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [2.0.0-rc.3] - 2019-01-18
 ### Fixed
-* README: Fixed jsfiddle reference.
+* README: Fixed jsfiddle reference ([#435](https://github.com/Polymer/lit-element/pull/435)).
+* Compile with Closure Compiler cleanly ([#436](https://github.com/Polymer/lit-element/pull/436)).
+* Opt `@property` decorators out of Closure Compiler renaming ([#448](https://github.com/Polymer/lit-element/pull/448)).
 
 ### Changed
 * [Breaking] Property accessors are no longer wrapped when they already exist. Instead the `noAccessor` flag should be set when a user-defined accessor exists on the prototype (and in this case, user-defined accessors must call `requestUpdate` themselves). ([#454](https://github.com/Polymer/lit-element/pull/454)).
-
 * Class fields can now be used to define styles, e.g. `static styles = css` and `styles` correctly compose when elements are extended ([#456](https://github.com/Polymer/lit-element/pull/456)).
+* Styles returned via `static styles` are automatically flattend ([#437](https://github.com/Polymer/lit-element/pull/437)).
+* Replace use of for/of loops over Maps with forEach ([#455](https://github.com/Polymer/lit-element/pull/455))
 
 ## [2.0.0-rc.2] - 2019-01-11
 ### Fixed
