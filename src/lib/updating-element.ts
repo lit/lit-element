@@ -276,19 +276,20 @@ export abstract class UpdatingElement extends HTMLElement {
     // user-defined accessors. Note that if the super has an accessor we will
     // still overwrite it
     if (!options.noAccessor && !this.prototype.hasOwnProperty(name)) {
-        const key = typeof name === 'symbol' ? Symbol() : `__${name}`;
-      const desc = {
-        get(): any { return (this as any)[key]; },
-        set(this: UpdatingElement, value: any) {
-          const oldValue = (this as any)[name];
-          (this as any)[key] = value;
-            this.requestUpdate(name, oldValue);
-          },
-          configurable : true,
-          enumerable : true
-        };
-      Object.defineProperty(this.prototype, name, desc);
+      return;
     }
+    const key = typeof name === 'symbol' ? Symbol() : `__${name}`;
+    Object.defineProperty(this.prototype, name, {
+      get(): any { return (this as any)[key]; },
+      set(this: UpdatingElement, value: any) {
+        const oldValue = (this as any)[name];
+        (this as any)[key] = value;
+          this.requestUpdate(name, oldValue);
+        },
+        configurable : true,
+        enumerable : true
+      }
+    );
   }
 
   /**

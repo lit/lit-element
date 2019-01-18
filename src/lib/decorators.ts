@@ -102,33 +102,33 @@ const standardProperty =
             clazz.createProperty(element.key, options);
           }
         };
+      } else {
         // createProperty() takes care of defining the property, but we still
         // must return some kind of descriptor, so return a descriptor for an
         // unused prototype field. The finisher calls createProperty().
-      } else {
-      return {
-        kind : 'field',
-        key : Symbol(),
-        placement : 'own',
-        descriptor : {},
-        // When @babel/plugin-proposal-decorators implements initializers,
-        // do this instead of the initializer below. See:
-        // https://github.com/babel/babel/issues/9260 extras: [
-        //   {
-        //     kind: 'initializer',
-        //     placement: 'own',
-        //     initializer: descriptor.initializer,
-        //   }
-        // ],
-        initializer(this: any) {
-          if (typeof element.initializer === 'function') {
-            this[element.key] = element.initializer!.call(this);
+        return {
+          kind : 'field',
+          key : Symbol(),
+          placement : 'own',
+          descriptor : {},
+          // When @babel/plugin-proposal-decorators implements initializers,
+          // do this instead of the initializer below. See:
+          // https://github.com/babel/babel/issues/9260 extras: [
+          //   {
+          //     kind: 'initializer',
+          //     placement: 'own',
+          //     initializer: descriptor.initializer,
+          //   }
+          // ],
+          initializer(this: any) {
+            if (typeof element.initializer === 'function') {
+              this[element.key] = element.initializer!.call(this);
+            }
+          },
+          finisher(clazz: typeof UpdatingElement) {
+            clazz.createProperty(element.key, options);
           }
-        },
-        finisher(clazz: typeof UpdatingElement) {
-          clazz.createProperty(element.key, options);
-        }
-      };
+        };
       }
     };
 
