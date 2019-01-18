@@ -91,32 +91,45 @@ export const customElement = (tagName: string) => (
 
 const standardProperty =
     (options: PropertyDeclaration, element: ClassElement) => {
-      // createProperty() takes care of defining the property, but we still must
-      // return some kind of descriptor, so return a descriptor for an unused
-      // prototype field. The finisher calls createProperty().
-      return {
-        kind : 'field',
-        key : Symbol(),
-        placement : 'own',
-        descriptor : {},
-        // When @babel/plugin-proposal-decorators implements initializers,
-        // do this instead of the initializer below. See:
-        // https://github.com/babel/babel/issues/9260 extras: [
-        //   {
-        //     kind: 'initializer',
-        //     placement: 'own',
-        //     initializer: descriptor.initializer,
-        //   }
-        // ],
-        initializer(this: any) {
-          if (typeof element.initializer === 'function') {
-            this[element.key] = element.initializer!.call(this);
+      // When decorating an accessor, pass it through and add property metadata.
+      // Note, the `hasOwnProperty` check in `createProperty` ensures we don't
+      // stomp over the user's accessor.
+      if (element.kind === 'method' && element.descriptor &&
+          !('value' in element.descriptor)) {
+        return {
+          ...element,
+          finisher(clazz: typeof UpdatingElement) {
+            clazz.createProperty(element.key, options);
           }
-        },
-        finisher(clazz: typeof UpdatingElement) {
-          clazz.createProperty(element.key, options);
-        }
-      };
+        };
+      } else {
+        // createProperty() takes care of defining the property, but we still
+        // must return some kind of descriptor, so return a descriptor for an
+        // unused prototype field. The finisher calls createProperty().
+        return {
+          kind : 'field',
+          key : Symbol(),
+          placement : 'own',
+          descriptor : {},
+          // When @babel/plugin-proposal-decorators implements initializers,
+          // do this instead of the initializer below. See:
+          // https://github.com/babel/babel/issues/9260 extras: [
+          //   {
+          //     kind: 'initializer',
+          //     placement: 'own',
+          //     initializer: descriptor.initializer,
+          //   }
+          // ],
+          initializer(this: any) {
+            if (typeof element.initializer === 'function') {
+              this[element.key] = element.initializer!.call(this);
+            }
+          },
+          finisher(clazz: typeof UpdatingElement) {
+            clazz.createProperty(element.key, options);
+          }
+        };
+      }
     };
 
 const legacyProperty = (options: PropertyDeclaration, proto: Object,
