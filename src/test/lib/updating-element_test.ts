@@ -2047,13 +2047,16 @@ suite('UpdatingElement', () => {
   });
 
   test('can override performUpdate()', async () => {
+
+    let resolve: (() => void)|undefined;
+
     class A extends UpdatingElement {
       performUpdateCalled = false;
       updateCalled = false;
 
       async performUpdate() {
         this.performUpdateCalled = true;
-        await new Promise((r) => setTimeout(r, 10));
+        await new Promise((r) => resolve = r);
         await super.performUpdate();
       }
 
@@ -2074,12 +2077,13 @@ suite('UpdatingElement', () => {
     await 0;
     assert.isFalse(a.updateCalled);
 
-    // update is not called after short timeout
-    await new Promise((r) => setTimeout(r));
+    // update is not called after a small amount of time
+    await new Promise((r) => setTimeout(r, 10));
     assert.isFalse(a.updateCalled);
 
-    // update is called after long timeout
-    await new Promise((r) => setTimeout(r, 20));
+    // update is called after performUpdate allowed to complete
+    resolve!();
+    await a.updateComplete;
     assert.isTrue(a.updateCalled);
   });
 
