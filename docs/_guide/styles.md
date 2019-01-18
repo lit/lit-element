@@ -113,12 +113,23 @@ _index.html_
 <my-element></my-element>
 ```
 
-**The :host CSS pseudo-class has higher specificity than the element's type selector.** Styles set for your host with the `:host` pseudo-class from inside its own template will override styles set in the main document. For example:
+**The element's type selector has higher specificity than the :host CSS pseudo-class.** Styles set in the main document will override styles set for your host with the `:host` pseudo-class from inside its own template. For example:
+
+_my-element.js_
+
+```html
+<style>
+  :host {
+    color: red;
+  }
+</style>
+```
 
 _index.html_ 
 
 ```html
 <style>
+  /* Overrides styles set with the `:host` */
   my-element { 
     color: blue;
   }
@@ -127,16 +138,6 @@ _index.html_
 <my-element></my-element>
 ```
 
-_my-element.js_
-
-```html
-<style>
-  /* Overrides styles set for my-element in index.html */
-  :host {
-    color: red;
-  }
-</style>
-```
 
 ### Use custom properties
 
