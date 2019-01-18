@@ -387,68 +387,46 @@ Generated accessors automatically call `requestUpdate`, initiating an update if 
 
 ### Create custom property accessors {#accessors-custom}
 
-To specify how getting and setting works for a property, create custom accessors:
+To specify how getting and setting works for a property, create custom accessors instead of using automatically generated accessors:
 
 ```js
 // Declare a property
 static get properties() { return { myProp: { type: String } }; }
 
 // Custom accessors
-set myProp(value) { ... /* Custom setter */ } 
+set myProp(value) {
+  // Capture old value
+  const oldValue = this.myProp;
+  // Implement custom setter logic
+  ...
+  // Pass the old value to request an update
+  this.requestUpdate('myProp', oldValue);
+} 
 get myProp() { ... /* Custom getter */ }
 
 ...
 
 // Later, set the property
-this.myProp = 'hi'; // Invokes generated accessor, which calls custom accessor
+this.myProp = 'hi'; // Invokes custom accessor
 ```
 
-When you create custom property accessors for a property, LitElement still generates its own accessors unless you specify otherwise ([see below](#accessors-noaccessor)). The generated setter:
-
-* Saves the previous property value.
-* Calls your custom setter.
-* Requests an update, supplying the property name and its old value to the update lifecycle.
+If your class defines custom property accessors for a declared property directly on its prototype (i.e., not inherited from a superclass), LitElement will not overwrite them with generated accessors.  Such custom setters must manually request an update, supplying the property name and its old value to the update lifecycle by calling `requestUpdate`.
 
 ### Prevent LitElement from generating a property accessor {#accessors-noaccessor}
 
-To prevent LitElement from generating property accessors, set `noAccessors` to `true` in the property declaration:
+To prevent LitElement from generating property accessors, set `noAccessor` to `true` in the property declaration:
 
 ```js
 static get properties() { return { 
   // Don't generate accessors for myProp
-  myProp: { type: Number, noAccessors: true } 
+  myProp: { type: Number, noAccessor: true } 
 
   // Do generate accessors for aProp
   aProp: { type: String }
 }; }
-
-// Create custom accessors for myProp
-set myProp(value) { this._myProp = Math.floor(value); } 
-get myProp() { return this._myProp; }
-
-updated(changedProperties) { ... /* no changedProperties entry for myProp */ }
-
-...
-// later...
-this.myProp = Math.random()*10; // Invokes custom setter; no generated setter
-this.aProp = 'hi'; // Invokes generated setter
 ```
 
-In the example above: 
-
-* No update request will be made when `this.myProp = ...` is executed.
-* The update requested as a result of `this.aProp = ...` will still capture `myProp`'s new value.
-* The change to `myProp` won't register in the element update lifecycle.
-
-To handle update requests and property options in a custom setter, call `this.requestUpdate('propertyName', oldValue)`:
-
-```js
-set myProp(value) { 
-  let oldValue = this._myProp;
-  this._myProp = Math.floor(value); 
-  this.requestUpdate('myProp', oldValue);
-} 
-```
+In rare cases, a subclass may need to change or add property options for a custom property accessor that exists on its superclass. In these cases, setting `noAccessor` to `true` will prevent LitElement from creating a generated accessor on the subclass that overwrites the superclass's custom accessor.
 
 **Example: Custom property accessors** 
 
