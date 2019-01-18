@@ -18,7 +18,7 @@
  * alias this function, so we have to use a small shim that has the same
  * behavior when not compiling.
  */
-const JSCompiler_renameProperty = (prop: PropertyKey, _obj: any) => prop;
+export const JSCompiler_renameProperty = (prop: PropertyKey, _obj: any) => prop;
 
 /**
  * Converts property values to and from attribute values.

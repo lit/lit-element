@@ -14,7 +14,7 @@
 import {TemplateResult} from 'lit-html';
 import {render} from 'lit-html/lib/shady-render';
 
-import {PropertyValues, UpdatingElement} from './lib/updating-element.js';
+import {PropertyValues, UpdatingElement, JSCompiler_renameProperty} from './lib/updating-element.js';
 
 export * from './lib/updating-element.js';
 export * from './lib/decorators.js';
@@ -66,32 +66,44 @@ export class LitElement extends UpdatingElement {
    * Array of styles to apply to the element. The styles should be defined
    * using the `css` tag function.
    */
-  static get styles(): CSSResult | CSSResultArray { return []; }
+  static styles?: CSSResult | CSSResultArray;
 
   private static _styles: CSSResult[]|undefined;
 
   private static get _uniqueStyles(): CSSResult[] {
-    if (this._styles === undefined) {
-      if (Array.isArray(this.styles)) {
-        const styles = flattenStyles(this.styles);
-        // As a performance optimization to avoid duplicated styling that can
-        // occur especially when composing via subclassing, de-duplicate styles
-        // preserving the last item in the list. The last item is kept to
-        // try to preserve cascade order with the assumption that it's most
-        // important that last added styles override previous styles.
-        const styleSet = styles.reduceRight((set, s) => {
-          set.add(s);
-          // on IE set.add does not return the set.
-          return set;
-        }, new Set<CSSResult>());
-        // Array.from does not work on Set in IE
-        this._styles = [];
-        styleSet.forEach((v) => this._styles!.unshift(v));
+    if (!this.hasOwnProperty(JSCompiler_renameProperty('_styles', this))) {
+      // Inherit styles from superclass if none have been set.
+      if (!this.hasOwnProperty(JSCompiler_renameProperty('styles', this))) {
+        this._styles = this._styles !== undefined ? this._styles : [];
       } else {
-        this._styles = [this.styles];
+        // Take care not to call `this.styles` multiple times since this generates
+        // new CSSResults each time.
+        // TODO(sorvell): Since we do not cache CSSResults by input, any
+        // shared styles will generate new stylesheet objects, which is wasteful.
+        // This should be addressed when a browser ships constructable
+        // stylesheets.
+        const userStyles = this.styles;
+        if (Array.isArray(userStyles)) {
+          const styles = flattenStyles(userStyles);
+          // As a performance optimization to avoid duplicated styling that can
+          // occur especially when composing via subclassing, de-duplicate styles
+          // preserving the last item in the list. The last item is kept to
+          // try to preserve cascade order with the assumption that it's most
+          // important that last added styles override previous styles.
+          const styleSet = styles.reduceRight((set, s) => {
+            set.add(s);
+            // on IE set.add does not return the set.
+            return set;
+          }, new Set<CSSResult>());
+          // Array.from does not work on Set in IE
+          this._styles = [];
+          styleSet.forEach((v) => this._styles!.unshift(v));
+        } else {
+          this._styles = userStyles ? [userStyles] : [];
+        }
       }
     }
-    return this._styles;
+    return this._styles as CSSResult[];
   }
 
   private _needsShimAdoptedStyleSheets?: boolean;
