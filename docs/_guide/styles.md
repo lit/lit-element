@@ -12,9 +12,14 @@ slug: styles
 * ToC
 {:toc}
 
-## Use the :host CSS pseudo-class 
+## Use the :host and :host() CSS pseudo-classes
 
-In a style block, use the `:host` CSS pseudo-class to select the host element:
+When styling your custom element, you can use the `:host` and `:host()` CSS pseudo-classes in a `<style>` block to select the host element (the element hosting the root of your shadow DOM). The two pseudo-classes slightly differ in usage:
+
+* Use `:host(...)` when you need to apply a CSS selector (e.g. a class or attribute selector).
+* Use `:host` to refer to the host element, wihout further selection.
+
+Please note, that `:host` and `:host()` (with empty parentheses) do not behave the same. Here's a simple example:
 
 _my-element.js_
 
@@ -23,7 +28,8 @@ render() {
   return html`
     <style>
       :host([hidden]) { display: none; }
-      :host { display: block; 
+      :host {
+        display: block; 
         border: 1px solid black;
       }
     </style>
@@ -34,15 +40,15 @@ render() {
 
 {% include project.html folder="docs/style/hostselector" openFile="my-element.js" %}
 
-See the MDN documentation on [:host](https://developer.mozilla.org/en-US/docs/Web/CSS/:host()) and [pseudo-classes](https://developer.mozilla.org/en-US/docs/Web/CSS/Pseudo-classes) for more information.
+See the MDN documentation on [:host](https://developer.mozilla.org/en-US/docs/Web/CSS/:host), [:host()](https://developer.mozilla.org/en-US/docs/Web/CSS/:host()), and [pseudo-classes](https://developer.mozilla.org/en-US/docs/Web/CSS/Pseudo-classes) for more information.
 
-### Set :host display styles
+### Set host element display styles
 
 Two best practices for working with custom elements are:
 
 * Set a `:host` display style such as `block` or `inline-block` so that your component's `width` and `height` can be set.
 
-* Set a `:host` display style that respects the `hidden` attribute.
+* Set a `:host()` display style that respects the `hidden` attribute.
 
 ```html
 <style>
