@@ -18,7 +18,17 @@
  * alias this function, so we have to use a small shim that has the same
  * behavior when not compiling.
  */
-export const JSCompiler_renameProperty = (prop: PropertyKey, _obj: any) => prop;
+window.JSCompiler_renameProperty =
+    <P extends PropertyKey>(prop: P, _obj: unknown): P => prop;
+
+declare global {
+  var JSCompiler_renameProperty: <P extends PropertyKey>(
+      prop: P, _obj: unknown) => P;
+
+  interface Window {
+    JSCompiler_renameProperty: typeof JSCompiler_renameProperty;
+  }
+}
 
 /**
  * Converts property values to and from attribute values.

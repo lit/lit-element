@@ -14,7 +14,7 @@
 import {TemplateResult} from 'lit-html';
 import {render} from 'lit-html/lib/shady-render';
 
-import {PropertyValues, UpdatingElement, JSCompiler_renameProperty} from './lib/updating-element.js';
+import {PropertyValues, UpdatingElement} from './lib/updating-element.js';
 
 export * from './lib/updating-element.js';
 export * from './lib/decorators.js';
