@@ -16,8 +16,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## Unreleased
 
 ### Fixed
-* Fixed a bug where we broke compatibility with closure compiler's property
-  renaming optimizations. JSCompiler_renameProperty can't be a module export.
+* Fixed a bug where we broke compatibility with closure compiler's property renaming optimizations. JSCompiler_renameProperty can't be a module export ([#465](https://github.com/Polymer/lit-element/pull/465)).
 
 ## [2.0.0-rc.3] - 2019-01-18
 ### Fixed
