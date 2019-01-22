@@ -690,6 +690,26 @@ suite('Static get styles', () => {
     assert.equal(getComputedStyleValue(div!, 'border-top-width').trim(),
                  '4px');
   });
+
+  test('elements should inherit `styles` by default', async () => {
+    const base = generateElementName();
+    customElements.define(base, class extends LitElement {
+      static styles = css`div {border: 4px solid black;}`;
+    });
+
+    const sub = generateElementName();
+    customElements.define(sub, class extends customElements.get(base) {
+      render() {
+        return htmlWithStyles`<div></div>`;
+      }
+    });
+
+    const el = document.createElement(sub);
+    container.appendChild(el);
+    await (el as LitElement).updateComplete;
+    const div = el.shadowRoot!.querySelector('div');
+    assert.equal(getComputedStyle(div!).getPropertyValue('border-top-width').trim(), '4px');
+  });
 });
 
 suite('ShadyDOM', () => {
