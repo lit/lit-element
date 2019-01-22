@@ -73,8 +73,8 @@ export class LitElement extends UpdatingElement {
   private static get _uniqueStyles(): CSSResult[] {
     if (!this.hasOwnProperty(JSCompiler_renameProperty('_styles', this))) {
       // Inherit styles from superclass if none have been set.
-      if (!this.hasOwnProperty(JSCompiler_renameProperty('styles', this))) {
-        this._styles = this._styles !== undefined ? this._styles : [];
+      if (!this[JSCompiler_renameProperty('styles', this)]) {
+        this._styles = [];
       } else {
         // Take care not to call `this.styles` multiple times since this generates
         // new CSSResults each time.

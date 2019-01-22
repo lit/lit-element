@@ -690,6 +690,30 @@ suite('Static get styles', () => {
     assert.equal(getComputedStyleValue(div!, 'border-top-width').trim(),
                  '4px');
   });
+
+  test('inherits `styles` from constructor chain', async () => {
+    const base = generateElementName();
+    customElements.define(base, class extends LitElement {
+      static get styles() { return css`div {
+          border: 2px solid blue;
+        }`;
+      }
+
+      render() {
+        return htmlWithStyles`
+        <div>Testing1</div>`;
+      }
+    });
+
+    const sub = generateElementName();
+    customElements.define(sub, class extends customElements.get(base) {});
+
+    const el = document.createElement(sub);
+    container.appendChild(el);
+    await (el as LitElement).updateComplete;
+    const div = el.shadowRoot!.querySelector('div');
+    assert.equal(getComputedStyleValue(div!, 'border-top-width').trim(), '2px');
+  });
 });
 
 suite('ShadyDOM', () => {
