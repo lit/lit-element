@@ -12,13 +12,20 @@ found at http://polymer.github.io/PATENTS.txt
 export const supportsAdoptingStyleSheets =
     ('adoptedStyleSheets' in Document.prototype);
 
+const constructionToken = Symbol();
+
 export class CSSResult {
 
   _styleSheet?: CSSStyleSheet|null;
 
   readonly cssText: string;
 
-  constructor(cssText: string) { this.cssText = cssText; }
+  constructor(cssText: string, safeToken: symbol) {
+    if (safeToken !== constructionToken) {
+      throw new Error('CSSResult is not constructable. Use `unsafeCss` or `css` instead.');
+    }
+    this.cssText = cssText;
+  }
 
   // Note, this is a getter so that it's lazy. In practice, this means
   // stylesheets are not created until the first element instance is made.
@@ -37,6 +44,10 @@ export class CSSResult {
   }
 }
 
+export const unsafeCss = (value: any) => {
+  return new CSSResult(String(value), constructionToken);
+};
+
 const textFromCSSResult = (value: CSSResult) => {
   if (value instanceof CSSResult) {
     return value.cssText;
@@ -48,9 +59,9 @@ const textFromCSSResult = (value: CSSResult) => {
 };
 
 export const css =
-    (strings: TemplateStringsArray, ...values: CSSResult[]): CSSResult => {
+    (strings: TemplateStringsArray, ...values: CSSResult[]) => {
       const cssText = values.reduce(
           (acc, v, idx) => acc + textFromCSSResult(v) + strings[idx + 1],
           strings[0]);
-      return new CSSResult(cssText);
+      return new CSSResult(cssText, constructionToken);
     };

@@ -16,6 +16,8 @@ import '@webcomponents/shadycss/apply-shim.min.js';
 
 import {
   css,
+  unsafeCss,
+  CSSResult,
   html as htmlWithStyles,
   LitElement,
 } from '../lit-element.js';
@@ -430,6 +432,33 @@ suite('Static get styles', () => {
 
   test('`css` get styles throws when unsafe values are used', async () => {
     assert.throws(() => { css`div { border: ${`2px solid blue;` as any}}`; });
+  });
+
+  test('`CSSResult` cannot be constructed', async () => {
+    // Note, this is done for security, instead use `css` or `unsafeCss`
+    assert.throws(() => { new CSSResult('throw', Symbol()); });
+  });
+
+  test('Any value can be used in `css` when included with `unsafeCss`', async () => {
+    const name = generateElementName();
+    const someVar = `2px solid blue`;
+    customElements.define(name, class extends LitElement {
+      static get styles() {
+        return css`div {
+          border: ${unsafeCss(someVar)};
+        }`;
+      }
+
+      render() {
+        return htmlWithStyles`
+        <div>Testing</div>`;
+      }
+    });
+    const el = document.createElement(name);
+    container.appendChild(el);
+    await (el as LitElement).updateComplete;
+    const div = el.shadowRoot!.querySelector('div');
+    assert.equal(getComputedStyleValue(div!, 'border-top-width').trim(), '2px');
   });
 
   test('styles in render compose with `static get styles`', async () => {
