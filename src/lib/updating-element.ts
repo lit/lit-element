@@ -593,7 +593,6 @@ export abstract class UpdatingElement extends HTMLElement {
     if (!this._hasRequestedUpdate && shouldRequestUpdate) {
       this._enqueueUpdate();
     }
-    return this.updateComplete;
   }
 
   /**
