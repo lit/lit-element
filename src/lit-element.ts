@@ -89,7 +89,7 @@ export class LitElement extends UpdatingElement {
     const userStyles = this.styles;
     let styles: CSSResult[] = [];
     if (Array.isArray(userStyles)) {
-      const styles = flattenStyles(userStyles);
+      styles = flattenStyles(userStyles);
       // As a performance optimization to avoid duplicated styling that can
       // occur especially when composing via subclassing, de-duplicate styles
       // preserving the last item in the list. The last item is kept to
