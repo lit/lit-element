@@ -70,6 +70,7 @@ export class LitElement extends UpdatingElement {
 
   private static _styles: CSSResult[]|undefined;
 
+  /** @nocollapse */
   protected static finalize() {
     super.finalize();
     // Prepare styling that is stamped at first render time. Styling
@@ -79,6 +80,7 @@ export class LitElement extends UpdatingElement {
       this._styles || [];
   }
 
+  /** @nocollapse */
   private static _getUniqueStyles(): CSSResult[] {
     // Take care not to call `this.styles` multiple times since this generates
     // new CSSResults each time.
