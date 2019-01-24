@@ -44,7 +44,14 @@ export class CSSResult {
   }
 }
 
-export const unsafeCss = (value: any) => {
+/**
+ * Wrap a value for interpolation in a css tagged template literal.
+ *
+ * This is unsafe because untrusted CSS text can be used to phone home
+ * or exfiltrate data to an attacker controlled site. Take care to only use
+ * this with trusted input.
+ */
+export const unsafeCss = (value: unknown) => {
   return new CSSResult(String(value), constructionToken);
 };
 
@@ -54,10 +61,17 @@ const textFromCSSResult = (value: CSSResult) => {
   } else {
     throw new Error(
         `Value passed to 'css' function must be a 'css' function result: ${
-            value}.`);
+            value}. Use 'unsafeCss' to pass non-literal values, but
+            take care to ensure page security.` );
   }
 };
 
+/**
+ * Template tag which which can be used with LitElement's `style` property to
+ * set element styles. For security reasons, only literal string values may be
+ * used. To incorporate non-literal values `unsafeCss` may be used inside a
+ * template string part.
+ */
 export const css =
     (strings: TemplateStringsArray, ...values: CSSResult[]) => {
       const cssText = values.reduce(
