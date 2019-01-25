@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- ### Fixed -->
 ## Unreleased
 
+## [2.0.0-rc.5] - 2019-01-24
 ### Fixed
 * Fixed a bug causing duplicate styles when an array was returned from `static get styles` ([#480](https://github.com/Polymer/lit-element/issues/480)).
 
