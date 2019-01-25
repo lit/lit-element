@@ -378,6 +378,35 @@ suite('Static get styles', () => {
                  '3px');
   });
 
+  // Test this in Shadow DOM without `adoptedStyleSheets` only since it's easily detectable in that case.
+  const testShadowDOMStyleCount = (!window.ShadyDOM || !window.ShadyDOM.inUse) && !('adoptedStyleSheets' in Document.prototype);
+  (testShadowDOMStyleCount ? test : test.skip)('when an array is returned from `static get styles`, one style is generated per array item', async () => {
+    const name = generateElementName();
+    customElements.define(name, class extends LitElement {
+      static get styles() {
+        return [
+          css`div {
+            border: 2px solid blue;
+          }`,
+          css`span {
+            display: block;
+            border: 3px solid blue;
+          }`
+        ];
+      }
+
+      render() {
+        return htmlWithStyles`
+        <div>Testing1</div>
+        <span>Testing2</span>`;
+      }
+    });
+    const el = document.createElement(name);
+    container.appendChild(el);
+    await (el as LitElement).updateComplete;
+    assert.equal(el.shadowRoot!.querySelectorAll('style').length, 2);
+  });
+
   test('static get styles can be a single CSSResult', async () => {
     const name = generateElementName();
     customElements.define(name, class extends LitElement {

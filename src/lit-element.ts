@@ -89,15 +89,15 @@ export class LitElement extends UpdatingElement {
     // This should be addressed when a browser ships constructable
     // stylesheets.
     const userStyles = this.styles;
-    let styles: CSSResult[] = [];
+    const styles: CSSResult[] = [];
     if (Array.isArray(userStyles)) {
-      styles = flattenStyles(userStyles);
+      const flatStyles = flattenStyles(userStyles);
       // As a performance optimization to avoid duplicated styling that can
       // occur especially when composing via subclassing, de-duplicate styles
       // preserving the last item in the list. The last item is kept to
       // try to preserve cascade order with the assumption that it's most
       // important that last added styles override previous styles.
-      const styleSet = styles.reduceRight((set, s) => {
+      const styleSet = flatStyles.reduceRight((set, s) => {
         set.add(s);
         // on IE set.add does not return the set.
         return set;
@@ -105,7 +105,7 @@ export class LitElement extends UpdatingElement {
       // Array.from does not work on Set in IE
       styleSet.forEach((v) => styles!.unshift(v));
     } else if (userStyles) {
-      styles = [userStyles];
+      styles.push(userStyles);
     }
     return styles;
   }
