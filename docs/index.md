@@ -64,7 +64,7 @@ Define a component
 It's easy to define a Web Component with LitElement:
 
 ```js
-{% include projects/index/custom-greeting.js %}
+{% include projects/index-typescript/custom-greeting.js %}
 ```
 
 <h2 style="margin-top: 40px;">Use a component</h2>
@@ -77,7 +77,11 @@ Then use it anywhere you use HTML:
 
 Click **Launch code editor** to see a live sample.
 
-{% include project.html folder="index" openFile="custom-greeting.js" %}
+{% include project.html folder="index-typescript" openFile="custom-greeting.js" %}
+
+See the sample in JavaScript:
+
+{% include project.html folder="index-typescript" openFile="custom-greeting.js" %}
 
 </div>
 </section>
