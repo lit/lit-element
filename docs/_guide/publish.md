@@ -31,33 +31,52 @@ You should also create a README describing how to consume your component. A basi
 
 ## Transpiling with TypeScript
 
-To transpile element code from TypeScript to JavaScript, conigure tsconfig.json. Make sure you include the `"downlevelIteration": true` option.
+When compiling your code from TypeScript to JavaScript, we recommend targeting ES2017 with Node.js module resolution. See the examples below for suggested options in tsconfig.json.
 
-**tsconfig.json**
+### Targeting ES2017 (Recommended)
+
+The following JSON sample is a partial tsconfig.json that uses recommended options for targeting ES2017:
 
 ```json
-{
-  "include": ["src/*.ts"],
   "compilerOptions": {
-    "downlevelIteration": true,
-    "target": "es2017",
-    "module": "es2017",
+    "target": "ES2017",
+    "module": "ES2017",
     "moduleResolution": "node",
-    "lib": ["es2017"],
-    "experimentalDecorators": true
+    "lib": ["ES2017", "DOM"],
+    "experimentalDecorators": true,
+    "outDir": "path/to/your-output-dir"
   }
-}
 ```
 
-Run the TypeScript compiler: 
+See the 
 
-```bash
-tsc 
+### ES5
+
+The following JSON sample is a partial tsconfig.json for those who need to target ES5:
+
+```json
+  "compilerOptions": {
+    "downLevelIteration": true,
+    "target": "ES5",
+    "module": "ES2015",
+    "moduleResolution": "node",
+    "lib": ["ES5", "DOM", "ScriptHost" ],
+    "experimentalDecorators": true,
+    "outDir": "path/to/your-output-dir"
+  }
 ```
+
+<div class="alert alert-info">
+
+**You may need the compiler option `downlevelIteration` when targeting ES5**. The `downlevelIteration` option enables full support for [generators and the Iterator protocol](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Iterators_and_Generators#Generator_functions) when compiling to ES5. You need this option if your own code iterates over, for example, a `Set` or `Map`. 
+
+The LitElement library is distributed as JavaScript and won't be passing through your TypeScript compiler.
+
+</div>
 
 ## Transpiling with Babel
 
-To transpile a LitElement component that uses proposed JavaScript features like class properties and decorators, use Babel. 
+To transpile a LitElement component that uses proposed JavaScript features, use Babel. 
 
 Install Babel and the Babel plugins you need. For example:
 

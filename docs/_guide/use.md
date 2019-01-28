@@ -52,9 +52,11 @@ To use a LitElement component in your code:
 
 ## Build for production {#build}
 
-LitElement is published on npm using JavaScript Modules. This means it can take advantage of the standard native JavaScript module loader available in all current major browsers. 
+Elements built with LitElement are published to npm as standard JavaScript modules so that they can be loaded with the native module loader available in all current major browsers.
 
-You will need a light transform to resolve LitElement's npm dependencies. This can be done with a bundler such as WebPack or Rollup.
+However, LitElement and elements built with it import their dependencies using bare module specifiers. In order to be loaded by a Web browser, a light transform is required to resolve the bare specifiers.
+
+This can be done with a bundler such as WebPack or Rollup.
 
 The following example configuration for [Rollup](https://rollupjs.org/guide/en) resolves modules and dependencies, and bundles the output.
 
@@ -81,6 +83,10 @@ export default {
 See a [sample build configuration for LitElement with Babel and Rollup](https://github.com/PolymerLabs/lit-element-build-rollup/blob/master/src/index.html).
 
 ## Load the WebComponents polyfills {#polyfills}
+
+Elements built with LitElement use the Web Components set of standards, which are currently supported by all major browsers with the exception of Edge. 
+
+For compatibility with older browsers and Edge, load the Web Components polyfills.
 
 To load the WebComponents polyfills:
 
