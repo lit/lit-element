@@ -64,7 +64,7 @@ Define a component
 It's easy to define a Web Component with LitElement:
 
 ```js
-{% include projects/index-typescript/custom-greeting.js %}
+{% include projects/index-typescript/custom-greeting.ts %}
 ```
 
 <h2 style="margin-top: 40px;">Use a component</h2>
