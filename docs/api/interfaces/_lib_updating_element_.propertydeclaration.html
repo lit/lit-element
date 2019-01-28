@@ -156,7 +156,7 @@
 					<div class="tsd-signature tsd-kind-icon">attribute<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/0dce05f/src/lib/updating-element.ts#L56">lib/updating-element.ts:56</a></li>
+							<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/6e51e69/src/lib/updating-element.ts#L56">lib/updating-element.ts:56</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -175,7 +175,7 @@
 					<div class="tsd-signature tsd-kind-icon">converter<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">AttributeConverter</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Type</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">TypeHint</span><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/0dce05f/src/lib/updating-element.ts#L77">lib/updating-element.ts:77</a></li>
+							<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/6e51e69/src/lib/updating-element.ts#L77">lib/updating-element.ts:77</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -199,7 +199,7 @@
 					<div class="tsd-signature tsd-kind-icon">no<wbr>Accessor<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">true</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">false</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/0dce05f/src/lib/updating-element.ts#L103">lib/updating-element.ts:103</a></li>
+							<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/6e51e69/src/lib/updating-element.ts#L103">lib/updating-element.ts:103</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -219,7 +219,7 @@
 					<div class="tsd-signature tsd-kind-icon">reflect<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">true</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">false</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/0dce05f/src/lib/updating-element.ts#L86">lib/updating-element.ts:86</a></li>
+							<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/6e51e69/src/lib/updating-element.ts#L86">lib/updating-element.ts:86</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -238,7 +238,7 @@
 					<div class="tsd-signature tsd-kind-icon">type<span class="tsd-signature-symbol">:</span> <a href="" class="tsd-signature-type">TypeHint</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/0dce05f/src/lib/updating-element.ts#L63">lib/updating-element.ts:63</a></li>
+							<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/6e51e69/src/lib/updating-element.ts#L63">lib/updating-element.ts:63</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -262,7 +262,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/0dce05f/src/lib/updating-element.ts#L93">lib/updating-element.ts:93</a></li>
+									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/6e51e69/src/lib/updating-element.ts#L93">lib/updating-element.ts:93</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -437,7 +437,8 @@
   searchBox.addEventListener('keypress', function(event) {
     if (event.keyCode === 13 /* enter */) {
       const site = window.location.hostname;
-      const query = searchBox.value;
+      const query = encodeURIComponent(searchBox.value);
+      ga('send', 'pageview', '/search?q='+query);
       window.location = 'https://www.google.com/search?q=site%3A'+site+'+'+query;
       event.preventDefault();
     }

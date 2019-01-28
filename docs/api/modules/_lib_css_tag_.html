@@ -129,7 +129,7 @@
 					<div class="tsd-signature tsd-kind-icon">supports<wbr>Adopting<wbr>Style<wbr>Sheets<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> =&nbsp;(&#x27;adoptedStyleSheets&#x27; in Document.prototype)</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/0dce05f/src/lib/css-tag.ts#L12">lib/css-tag.ts:12</a></li>
+							<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/6e51e69/src/lib/css-tag.ts#L12">lib/css-tag.ts:12</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -159,7 +159,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/0dce05f/src/lib/css-tag.ts#L50">lib/css-tag.ts:50</a></li>
+									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/6e51e69/src/lib/css-tag.ts#L50">lib/css-tag.ts:50</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -285,7 +285,8 @@
   searchBox.addEventListener('keypress', function(event) {
     if (event.keyCode === 13 /* enter */) {
       const site = window.location.hostname;
-      const query = searchBox.value;
+      const query = encodeURIComponent(searchBox.value);
+      ga('send', 'pageview', '/search?q='+query);
       window.location = 'https://www.google.com/search?q=site%3A'+site+'+'+query;
       event.preventDefault();
     }

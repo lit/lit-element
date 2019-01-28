@@ -145,7 +145,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/0dce05f/src/lib/css-tag.ts#L19">lib/css-tag.ts:19</a></li>
+									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/6e51e69/src/lib/css-tag.ts#L19">lib/css-tag.ts:19</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -167,7 +167,7 @@
 					<div class="tsd-signature tsd-kind-icon">_style<wbr>Sheet<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">CSSStyleSheet</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/0dce05f/src/lib/css-tag.ts#L17">lib/css-tag.ts:17</a></li>
+							<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/6e51e69/src/lib/css-tag.ts#L17">lib/css-tag.ts:17</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -177,7 +177,7 @@
 					<div class="tsd-signature tsd-kind-icon">css<wbr>Text<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/0dce05f/src/lib/css-tag.ts#L19">lib/css-tag.ts:19</a></li>
+							<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/6e51e69/src/lib/css-tag.ts#L19">lib/css-tag.ts:19</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -194,7 +194,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/0dce05f/src/lib/css-tag.ts#L25">lib/css-tag.ts:25</a></li>
+									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/6e51e69/src/lib/css-tag.ts#L25">lib/css-tag.ts:25</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">CSSStyleSheet</span>
@@ -332,7 +332,8 @@
   searchBox.addEventListener('keypress', function(event) {
     if (event.keyCode === 13 /* enter */) {
       const site = window.location.hostname;
-      const query = searchBox.value;
+      const query = encodeURIComponent(searchBox.value);
+      ga('send', 'pageview', '/search?q='+query);
       window.location = 'https://www.google.com/search?q=site%3A'+site+'+'+query;
       event.preventDefault();
     }

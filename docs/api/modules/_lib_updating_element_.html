@@ -163,7 +163,7 @@
 					<div class="tsd-signature tsd-kind-icon">Property<wbr>Values<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">PropertyKey</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/0dce05f/src/lib/updating-element.ts#L119">lib/updating-element.ts:119</a></li>
+							<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/6e51e69/src/lib/updating-element.ts#L119">lib/updating-element.ts:119</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -180,7 +180,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/0dce05f/src/lib/updating-element.ts#L21">lib/updating-element.ts:21</a></li>
+									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/6e51e69/src/lib/updating-element.ts#L21">lib/updating-element.ts:21</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -219,7 +219,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/0dce05f/src/lib/updating-element.ts#L159">lib/updating-element.ts:159</a></li>
+									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/6e51e69/src/lib/updating-element.ts#L159">lib/updating-element.ts:159</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -250,7 +250,7 @@
 					<div class="tsd-signature tsd-kind-icon">default<wbr>Converter<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/0dce05f/src/lib/updating-element.ts#L121">lib/updating-element.ts:121</a></li>
+							<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/6e51e69/src/lib/updating-element.ts#L121">lib/updating-element.ts:121</a></li>
 						</ul>
 					</aside>
 					<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-object-literal">
@@ -263,7 +263,7 @@
 							<li class="tsd-description">
 								<aside class="tsd-sources">
 									<ul>
-										<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/0dce05f/src/lib/updating-element.ts#L136">lib/updating-element.ts:136</a></li>
+										<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/6e51e69/src/lib/updating-element.ts#L136">lib/updating-element.ts:136</a></li>
 									</ul>
 								</aside>
 								<h4 class="tsd-parameters-title">Parameters</h4>
@@ -289,7 +289,7 @@
 							<li class="tsd-description">
 								<aside class="tsd-sources">
 									<ul>
-										<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/0dce05f/src/lib/updating-element.ts#L123">lib/updating-element.ts:123</a></li>
+										<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/6e51e69/src/lib/updating-element.ts#L123">lib/updating-element.ts:123</a></li>
 									</ul>
 								</aside>
 								<h4 class="tsd-parameters-title">Parameters</h4>
@@ -434,7 +434,8 @@
   searchBox.addEventListener('keypress', function(event) {
     if (event.keyCode === 13 /* enter */) {
       const site = window.location.hostname;
-      const query = searchBox.value;
+      const query = encodeURIComponent(searchBox.value);
+      ga('send', 'pageview', '/search?q='+query);
       window.location = 'https://www.google.com/search?q=site%3A'+site+'+'+query;
       event.preventDefault();
     }

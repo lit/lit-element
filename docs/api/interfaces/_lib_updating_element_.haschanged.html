@@ -116,7 +116,7 @@
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/0dce05f/src/lib/updating-element.ts#L151">lib/updating-element.ts:151</a></li>
+								<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/6e51e69/src/lib/updating-element.ts#L151">lib/updating-element.ts:151</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -263,7 +263,8 @@
   searchBox.addEventListener('keypress', function(event) {
     if (event.keyCode === 13 /* enter */) {
       const site = window.location.hostname;
-      const query = searchBox.value;
+      const query = encodeURIComponent(searchBox.value);
+      ga('send', 'pageview', '/search?q='+query);
       window.location = 'https://www.google.com/search?q=site%3A'+site+'+'+query;
       event.preventDefault();
     }

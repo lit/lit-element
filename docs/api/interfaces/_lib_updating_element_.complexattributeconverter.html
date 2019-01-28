@@ -151,7 +151,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/0dce05f/src/lib/updating-element.ts#L32">lib/updating-element.ts:32</a></li>
+									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/6e51e69/src/lib/updating-element.ts#L32">lib/updating-element.ts:32</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -183,7 +183,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/0dce05f/src/lib/updating-element.ts#L38">lib/updating-element.ts:38</a></li>
+									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/6e51e69/src/lib/updating-element.ts#L38">lib/updating-element.ts:38</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -348,7 +348,8 @@
   searchBox.addEventListener('keypress', function(event) {
     if (event.keyCode === 13 /* enter */) {
       const site = window.location.hostname;
-      const query = searchBox.value;
+      const query = encodeURIComponent(searchBox.value);
+      ga('send', 'pageview', '/search?q='+query);
       window.location = 'https://www.google.com/search?q=site%3A'+site+'+'+query;
       event.preventDefault();
     }
