@@ -56,7 +56,7 @@ The following JSON sample is a partial tsconfig.json for those who need to targe
 
 ```json
   "compilerOptions": {
-    "downLevelIteration": true,
+    "downlevelIteration": true,
     "target": "ES5",
     "module": "ES2015",
     "moduleResolution": "node",
