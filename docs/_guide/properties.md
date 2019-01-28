@@ -410,23 +410,9 @@ get myProp() { ... /* Custom getter */ }
 this.myProp = 'hi'; // Invokes custom accessor
 ```
 
-If your class defines custom property accessors for a declared property directly on its prototype (i.e., not inherited from a superclass), LitElement will not overwrite them with generated accessors.  Such custom setters must manually request an update, supplying the property name and its old value to the update lifecycle by calling `requestUpdate`.
+If your class defines custom property accessors for a declared property directly on its prototype (i.e., not inherited from a superclass), LitElement will not overwrite them with generated accessors. 
 
-### Prevent LitElement from generating a property accessor {#accessors-noaccessor}
-
-To prevent LitElement from generating property accessors, set `noAccessor` to `true` in the property declaration:
-
-```js
-static get properties() { return { 
-  // Don't generate accessors for myProp
-  myProp: { type: Number, noAccessor: true } 
-
-  // Do generate accessors for aProp
-  aProp: { type: String }
-}; }
-```
-
-In rare cases, a subclass may need to change or add property options for a custom property accessor that exists on its superclass. In these cases, setting `noAccessor` to `true` will prevent LitElement from creating a generated accessor on the subclass that overwrites the superclass's custom accessor.
+A custom setter must manually request an update, supplying the property name and its old value to the update lifecycle by calling `requestUpdate`.
 
 **Example: Custom property accessors** 
 
@@ -435,6 +421,29 @@ In rare cases, a subclass may need to change or add property options for a custo
 ```
 
 {% include project.html folder="properties/customsetter" openFile="my-element.js" %}
+
+### Prevent LitElement from generating a property accessor {#accessors-noaccessor}
+
+In rare cases, a subclass may need to change or add property options for a custom property that exists on its superclass.
+
+To prevent LitElement from generating a property accessor that overwrites the superclass's custom accessor, set `noAccessor` to `true` in the property declaration:
+
+```js
+static get properties() { return { 
+  // Don't generate accessor for myProp
+  myProp: { type: Number, noAccessor: true } 
+}; }
+```
+
+**Example: Custom property accessors with subclassing** 
+
+**Subclass element**
+
+```js
+{% include projects/properties/accessorssubclassing/sub-element.js %}
+```
+
+{% include project.html folder="properties/accessorssubclassing" openFile="sub-element.js" %}
 
 ## Configure property changes
 
