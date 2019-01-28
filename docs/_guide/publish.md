@@ -10,9 +10,9 @@ slug: publish
 
 This page describes how to publish a LitElement component to npm.
 
-We recommend publishing JavaScript modules in standard ES2017. If you're writing your element in standard ES2017, you don't need to transpile for publication. If you're using decorators, class fields, or other ES2017+ features, you will need to transpile your element for publication.
+We recommend publishing JavaScript modules in standard ES2017. If you're writing your element in standard ES2017, you don't need to transpile for publication. If you're using TypeScript, or ES2017+ features such as decorators or class fields, you will need to transpile your element for publication.
 
-## Publish to npm
+## Publishing to npm
 
 To publish your component to npm, [see the instructions on contributing npm packages](https://docs.npmjs.com/packages-and-modules/contributing-packages-to-the-registry).
 
@@ -31,7 +31,7 @@ You should also create a README describing how to consume your component. A basi
 
 ## Transpiling with TypeScript
 
-When compiling your code from TypeScript to JavaScript, we recommend targeting ES2017 with Node.js module resolution. See the examples below for suggested options in tsconfig.json.
+When compiling your code from TypeScript to JavaScript, we recommend targeting ES2017 with Node.js module resolution. See the examples below for suggested options in tsconfig.json, and see also the [tsconfig.json documentation](https://www.typescriptlang.org/docs/handbook/tsconfig-json.html) for more information.
 
 ### Targeting ES2017 (Recommended)
 
@@ -48,9 +48,7 @@ The following JSON sample is a partial tsconfig.json that uses recommended optio
   }
 ```
 
-See the 
-
-### ES5
+### Targeting ES5
 
 The following JSON sample is a partial tsconfig.json for those who need to target ES5:
 
