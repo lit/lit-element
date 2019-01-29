@@ -53,13 +53,9 @@ LitElement is brought to you by developers on the Google Chrome team with the in
 <section>
 <div class="wrapper">
 
-<h1 class="title">
-Get started
-</h1>
+<h1 class="title">Get started</h1>
 
-<h2>
-Define a component
-</h2>
+<h2>Define a component</h2>
 
 It's easy to define a Web Component with LitElement:
 
@@ -79,7 +75,7 @@ Click **Launch code editor** to see a live sample.
 
 {% include project.html folder="index-typescript" openFile="custom-greeting.js" %}
 
-See the same sample with JavaScript instead of TypeScript:
+The example above uses TypeScript and decorators. You can also easily write LitElements in plain JavaScript. Click **Launch code editor** for an example.
 
 {% include project.html folder="index" openFile="custom-greeting.js" %}
 
