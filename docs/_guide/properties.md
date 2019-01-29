@@ -410,7 +410,7 @@ get myProp() { ... /* Custom getter */ }
 this.myProp = 'hi'; // Invokes custom accessor
 ```
 
-If your class defines custom property accessors for a declared property directly on its prototype (i.e., not inherited from a superclass), LitElement will not overwrite them with generated accessors. 
+If your class defines its own accessors for a property, LitElement will not overwrite them with generated accessors. If your class does not define accessors for a property, LitElement will generate them, even if a superclass has defined the property or accessors.```
 
 A custom setter must manually request an update, supplying the property name and its old value to the update lifecycle by calling `requestUpdate`.
 
