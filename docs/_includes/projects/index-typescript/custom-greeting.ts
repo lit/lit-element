@@ -1,10 +1,9 @@
-import { LitElement, html, property } from 'lit-element';
+import { LitElement, html, property, customElement } from 'lit-element';
 
-export class CustomGreeting extends LitElement {
+@customElement('custom-greeting')
+export class CustomGreeting extends LitElement { 
   @property() name = 'World';
   render() {
     return html`<p>Hello, ${this.name}!</p>`;
   }
 }
-
-customElements.define('custom-greeting', CustomGreeting);
