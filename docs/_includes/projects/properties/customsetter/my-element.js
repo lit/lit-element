@@ -9,7 +9,8 @@ class MyElement extends LitElement {
   set prop1(newVal) {
     let oldVal = this._prop1;
     this._prop1 = Math.floor(newVal);
-    // Must
+    // Property setter must call requestUpdate for
+    // property changes to trigger an update cycle
     this.requestUpdate('prop1', oldVal);
   }
 

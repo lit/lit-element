@@ -385,36 +385,36 @@ this.myProp = 'hi'; // invokes myProp's generated property accessor
 
 Generated accessors automatically call `requestUpdate`, initiating an update if one has not already begun.
 
-### Create custom property accessors {#accessors-custom}
+### Create your own property accessors {#accessors-custom}
 
-To specify how getting and setting works for a property, create custom accessors instead of using automatically generated accessors:
+To specify how getting and setting works for a property, you can define your own property accessors. For example:
 
 ```js
 // Declare a property
 static get properties() { return { myProp: { type: String } }; }
 
-// Custom accessors
+// Define accessors
 set myProp(value) {
   // Capture old value
   const oldValue = this.myProp;
-  // Implement custom setter logic
+  // Implement setter logic
   ...
   // Pass the old value to request an update
   this.requestUpdate('myProp', oldValue);
 } 
-get myProp() { ... /* Custom getter */ }
+get myProp() { ... }
 
 ...
 
 // Later, set the property
-this.myProp = 'hi'; // Invokes custom accessor
+this.myProp = 'hi'; // Invokes your accessor
 ```
 
-If your class defines its own accessors for a property, LitElement will not overwrite them with generated accessors. If your class does not define accessors for a property, LitElement will generate them, even if a superclass has defined the property or accessors.```
+If your class defines its own accessors for a property, LitElement will not overwrite them with generated accessors. If your class does not define accessors for a property, LitElement will generate them, even if a superclass has defined the property or accessors.
 
 The setters that LitElement generates automatically call `requestUpdate`. If you write your own setter you must call `requestUpdate` manually, supplying the property name and its old value.
 
-**Example: Custom property accessors** 
+**Example: Define your own property accessors** 
 
 ```js
 {% include projects/properties/customsetter/my-element.js %}
@@ -424,9 +424,9 @@ The setters that LitElement generates automatically call `requestUpdate`. If you
 
 ### Prevent LitElement from generating a property accessor {#accessors-noaccessor}
 
-In rare cases, a subclass may need to change or add property options for a custom property that exists on its superclass.
+In rare cases, a subclass may need to change or add property options for a property that exists on its superclass.
 
-To prevent LitElement from generating a property accessor that overwrites the superclass's custom accessor, set `noAccessor` to `true` in the property declaration:
+To prevent LitElement from generating a property accessor that overwrites the superclass's defined accessor, set `noAccessor` to `true` in the property declaration:
 
 ```js
 static get properties() { return { 
@@ -435,7 +435,7 @@ static get properties() { return {
 }; }
 ```
 
-**Example: Custom property accessors with subclassing** 
+**Example: Property accessors with subclassing** 
 
 **Subclass element**
 
