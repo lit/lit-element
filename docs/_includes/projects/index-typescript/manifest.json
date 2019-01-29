@@ -4,7 +4,7 @@
     "index.html",
     "index.ts"
   ],
-  "title": "lit-element code sample",
+  "title": "LitElement Example",
   "description": "lit-element code sample",
   "template": "typescript",
   "dependencies": {
