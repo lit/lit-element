@@ -79,9 +79,9 @@ Click **Launch code editor** to see a live sample.
 
 {% include project.html folder="index-typescript" openFile="custom-greeting.js" %}
 
-See the sample in JavaScript:
+See the same sample with JavaScript instead of TypeScript:
 
-{% include project.html folder="index-typescript" openFile="custom-greeting.js" %}
+{% include project.html folder="index" openFile="custom-greeting.js" %}
 
 </div>
 </section>
