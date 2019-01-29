@@ -5,7 +5,7 @@
     "index.ts"
   ],
   "title": "LitElement Example",
-  "description": "lit-element code sample",
+  "description": "LitElement Example",
   "template": "typescript",
   "dependencies": {
     "lit-element": "latest",
