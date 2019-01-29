@@ -14,12 +14,22 @@ slug: styles
 
 ## Use the :host and :host() CSS pseudo-classes
 
-When styling your custom element, you can use the `:host` and `:host()` CSS pseudo-classes in a `<style>` block to select the host element (the element hosting the root of your shadow DOM). The two pseudo-classes slightly differ in usage:
+When styling your custom element, you can use the `:host` and `:host()` CSS pseudo-classes in a `<style>` block to select the host element (the element hosting the root of your shadow DOM).
 
-* Use `:host(...)` when you need to apply a CSS selector (e.g. a class or attribute selector).
-* Use `:host` to refer to the host element, wihout further selection.
+To select the host element, use `:host`:
 
-Please note, that `:host` and `:host()` (with empty parentheses) do not behave the same. Here's a simple example:
+```css
+:host {
+  display: block; 
+  border: 1px solid black;
+}
+```
+
+To select the host element when another CSS selector applies, use `:host()`:
+
+```css
+:host([hidden]) { display: none; }
+```
 
 _my-element.js_
 
@@ -48,7 +58,7 @@ Two best practices for working with custom elements are:
 
 * Set a `:host` display style such as `block` or `inline-block` so that your component's `width` and `height` can be set.
 
-* Set a `:host()` display style that respects the `hidden` attribute.
+* Set a `:host([hidden])` display style that respects the `hidden` attribute.
 
 ```html
 <style>
@@ -119,12 +129,15 @@ _index.html_
 <my-element></my-element>
 ```
 
-**The :host CSS pseudo-class has higher specificity than the element's type selector.** Styles set for your host with the `:host` pseudo-class from inside its own template will override styles set in the main document. For example:
+<div class="alert alert-info">
+
+**An element type selector has higher specificity than the :host pseudo-class selector.** Styles set for your host from the main document will override styles set with the `:host` or `:host()` pseudo-class selectors from inside the element's own template. For example:
 
 _index.html_ 
 
 ```html
 <style>
+  /* Overrides styles set for my-element with :host in my-element.js */
   my-element { 
     color: blue;
   }
@@ -137,7 +150,6 @@ _my-element.js_
 
 ```html
 <style>
-  /* Overrides styles set for my-element in index.html */
   :host {
     color: red;
   }
