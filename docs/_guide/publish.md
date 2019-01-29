@@ -31,9 +31,7 @@ You should also create a README describing how to consume your component. A basi
 
 ## Transpiling with TypeScript
 
-When compiling your code from TypeScript to JavaScript, we recommend targeting ES2017 with Node.js module resolution. See the examples below for suggested options in tsconfig.json, and see also the [tsconfig.json documentation](https://www.typescriptlang.org/docs/handbook/tsconfig-json.html) for more information.
-
-### Targeting ES2017 (Recommended)
+When compiling your code from TypeScript to JavaScript, we recommend targeting ES2017 with Node.js module resolution. 
 
 The following JSON sample is a partial tsconfig.json that uses recommended options for targeting ES2017:
 
@@ -43,34 +41,11 @@ The following JSON sample is a partial tsconfig.json that uses recommended optio
     "module": "ES2017",
     "moduleResolution": "node",
     "lib": ["ES2017", "DOM"],
-    "experimentalDecorators": true,
-    "outDir": "path/to/your-output-dir"
+    "experimentalDecorators": true
   }
 ```
 
-### Targeting ES5
-
-The following JSON sample is a partial tsconfig.json for those who need to target ES5:
-
-```json
-  "compilerOptions": {
-    "downlevelIteration": true,
-    "target": "ES5",
-    "module": "ES2015",
-    "moduleResolution": "node",
-    "lib": ["ES5", "DOM", "ScriptHost" ],
-    "experimentalDecorators": true,
-    "outDir": "path/to/your-output-dir"
-  }
-```
-
-<div class="alert alert-info">
-
-**You may need the compiler option `downlevelIteration` when targeting ES5**. The `downlevelIteration` option enables full support for [generators and the Iterator protocol](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Iterators_and_Generators#Generator_functions) when compiling to ES5. You need this option if your own code iterates over, for example, a `Set` or `Map`. 
-
-The LitElement library is distributed as JavaScript and won't be passing through your TypeScript compiler.
-
-</div>
+See the [tsconfig.json documentation](https://www.typescriptlang.org/docs/handbook/tsconfig-json.html) for more information.
 
 ## Transpiling with Babel
 
@@ -98,5 +73,3 @@ module.exports = { plugins };
 ```
 
 You can run Babel via a bundler plugin such as [rollup-plugin-babel](https://www.npmjs.com/package/rollup-plugin-babel), or from the command line. See the [Babel documentation](https://babeljs.io/docs/en/) for more information.
-
-See a [sample build configuration for LitElement with Babel and Rollup](https://github.com/PolymerLabs/lit-element-build-rollup/blob/master/src/index.html).
