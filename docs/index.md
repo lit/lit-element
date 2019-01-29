@@ -92,14 +92,16 @@ index.html
 <div class="responsive-row">
 <div style="flex: 1">
 
-<h2 class="caption">Made to share</h2>
+<h2 class="caption">Fast and light</h2>
 
-Web components built with LitElement are made to share with the world and with others across your organization, no matter what libraries or frameworks they use.
+Whether your end users are in emerging markets or Silicon Valley, they’ll appreciate that LitElement is extremely fast.
+
+LitElement uses [lit-html](https://github.com/Polymer/lit-html) to define and render HTML templates. DOM updates are lightning-fast, because lit-html only re-renders the data that changes.
 
 </div>
 <div style="flex: 1">
 
-<h2 class="caption">Interoperable</h2>
+<h2 class="caption">Standards-based</h2>
 
 LitElement follows the [web components standards](https://developer.mozilla.org/en-US/docs/Web/Web_Components), so your components will work with any framework.
 
@@ -108,11 +110,9 @@ LitElement uses custom elements for easy inclusion in web pages, and shadow DOM 
 </div>
 <div style="flex: 1">
 
-<h2 class="caption">Fast and light</h2>
+<h2 class="caption">Made to share</h2>
 
-Whether your end users are in emerging markets or Silicon Valley, they’ll appreciate that LitElement is extremely fast.
-
-LitElement uses [lit-html](https://github.com/Polymer/lit-html) to define and render HTML templates. DOM updates are lightning-fast, because lit-html only re-renders the data that changes.
+Web components built with LitElement are made to share with the world and with others across your organization, no matter what libraries or frameworks they use.
 
 </div>
 </div>
