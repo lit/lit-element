@@ -4,7 +4,7 @@ class MyElement extends LitElement {
   render() {
     return html`
       <style>
-        :host[hidden] { display: none; }
+        :host([hidden]) { display: none; }
         :host { display: block;
           background-color: var(--myBackground, yellow);
           color: var(--myColor, black);
