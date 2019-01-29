@@ -50,13 +50,17 @@ To use a LitElement component in your code:
     <some-component></some-component>
     ```
 
-## Build for production {#build}
+## Develop {#develop}
 
 Elements built with LitElement are published to npm as standard JavaScript modules so that they can be loaded with the native module loader available in all current major browsers.
 
 However, LitElement and elements built with it import their dependencies using bare module specifiers. In order to be loaded by a Web browser, a light transform is required to resolve the bare specifiers.
 
-This can be done with a bundler such as WebPack or Rollup.
+For a local server that does this automatically, try the [Open Web Components development server](https://open-wc.org/developing/owc-dev-server.html).
+
+## Build for production {#build}
+
+To build for production, you can use a bundler such as WebPack or Rollup.
 
 The following example configuration for [Rollup](https://rollupjs.org/guide/en) resolves modules and dependencies, and bundles the output.
 
