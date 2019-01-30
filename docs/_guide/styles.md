@@ -4,9 +4,17 @@ title: Styles
 slug: styles
 ---
 
-## Shadow DOM
+{::options toc_levels="1..3" /}
+* ToC
+{:toc}
 
-LitElement uses [Shadow DOM](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_shadow_DOM) by default for DOM and style encapsulation. Shadow DOM scopes CSS so that styles defined in a shadow root only apply to DOM inside the shadow root and do not leak to outside DOM. Shadow roots are also isolated from styles defined outside the shadow root, whether in the main page or an outer shadow root.
+## Overview
+
+This page describes how to style a web component built with LitElement and using shadow DOM.
+
+By default, LitElement creates a shadow root and renders into [shadow DOM](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_shadow_DOM).
+
+Shadow DOM scopes CSS so that styles defined in a shadow root only apply to DOM inside the shadow root, and do not "leak" to outside DOM. Shadow roots are also isolated from styles defined outside the shadow root, whether in the main page or an outer shadow root.
 
 **This guide applies only if you use the default (shadow DOM) render root.** If you [modify your element's render root](templates#renderroot) to render into the main DOM tree instead of a shadow root, these instructions won't apply.
 {.alert-info}
@@ -14,27 +22,15 @@ LitElement uses [Shadow DOM](https://developer.mozilla.org/en-US/docs/Web/Web_Co
 **If you're using the Shady CSS polyfill, be aware that it has some limitations.** See the [Shady CSS README](https://github.com/webcomponents/shadycss/blob/master/README.md#limitations) for more information.
 {.alert-info}
 
-{::options toc_levels="1..3" /}
-* ToC
-{:toc}
+## Where to put your styles
 
-## Styling shadow DOM
+There are three main places from which you can define CSS styles for a LitElement component:
 
-You can define your styles:
+* [In the static `styles` property of a LitElement class (recomended)](#staticstyles).
+* [Inline, inside a `<style>` element within the HTML template defined in your `render` function](#inline).
+* [In an external stylesheet, linked from your LitElement template with `<link rel="stylesheet" href="...">`](#linkedstylesheet).
 
-* [In the static `styles` property of a LitElement class (reccomended)](#staticstyles).
-* [In a `<style>` element within the template of a LitElement component](#styleelement).
-* [In a `<link rel="stylesheet">` element within the template of a LitElement component](#linkedstylesheet).
-
-From inside the shadow root styles, you can style:
-
-* The host element itself 
-* Elements in the shadow root
-* Slotted elements that are defined outside the shadow root and rendered in shadow DOM with the [`<slot>` element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/slot).
-
-You can't style things outside your own element because encapsulation.
-
-## Define static styles
+### Define static styles
 
 LitElement lets you define static styles that apply to all instances of a component. 
 
@@ -91,7 +87,7 @@ To define static styles for a component:
         }
         ```
 
-### Expressions in styles
+#### Expressions in styles
 
 Static styles apply to all instances of an element. Any expressions in your CSS are evaluated and included **once**, then reused for all instances. 
 
@@ -112,7 +108,7 @@ class MyElement extends LitElement {
 }
 ```
 
-### Styling elements per-instance
+#### Styling elements per-instance
 
 To define styles for an element instance, you can use CSS custom properties. E.g.
 
@@ -154,7 +150,7 @@ In html where your element is used:
 
 Or use inline styles.
 
-## Inline styles
+### Inline styles
 
 You can also style a shadow root by including inline styles in your element template. We still recommend static styles, but in some cases you may want to vary the CSS per-element. One way to do this is with bindings in `<style>` elements. 
 
@@ -181,7 +177,7 @@ class MyElement extends LitElement {
 }
 ```
 
-## External stylesheets
+### External stylesheets
 
 You can load an external stylesheet into a shadow root with a `<link>` element:
 
@@ -204,7 +200,15 @@ There are some important caveats though:
 * External styles can cause a flash-of-unstyled-content (FOUC) while they load.
 * The URL in the `href` attribute is relative to the _main document_, making this technique mostly useful for application elements where asset URLs are well known, and not for reusable elements published publicly.
 
-## Styling the host element
+## What you can style
+
+* [Styling the host element](#host).
+* [Styling elements in the host's shadow root](#children).
+* [Styling slotted elements](#slot). Slotted elements are rendered in shadow DOM via the `slot` element - see MDN for more info. 
+
+You can't style other stuff because encapsulation
+ 
+### Styling the host element {#host}
 
 An element can apply styles to itself with the `:host` and `:host()` CSS psuedo-classes used inside the element's ShadowRoot. The tern "host" is used because an element is the host of its own shadow root.
 
@@ -254,7 +258,7 @@ _my-element.js_
 
 See the MDN documentation on [:host](https://developer.mozilla.org/en-US/docs/Web/CSS/:host) and [:host()](https://developer.mozilla.org/en-US/docs/Web/CSS/:host()) for more information.
 
-### Host styling best practices
+#### Host styling best practices
 
 Two best practices for working with custom elements are:
 
@@ -280,7 +284,7 @@ Two best practices for working with custom elements are:
 
 See [Custom Element Best Practices](https://developers.google.com/web/fundamentals/web-components/best-practices) for more information.
 
-## Styling elements in a shadow root
+### Styling elements in the host's shadow root
 
 To style elements in a shadow root, use standard CSS selectors.
 
