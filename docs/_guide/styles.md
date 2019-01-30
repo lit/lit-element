@@ -18,10 +18,10 @@ LitElement uses [Shadow DOM](https://developer.mozilla.org/en-US/docs/Web/Web_Co
 * ToC
 {:toc}
 
-## Styling shadow DOM
+### Styling shadow DOM
 
 Styles can be added to a shadow root in three different ways:
-* With styles defined in the static `styles` property of a LitElement class (reccomended).
+* With styles defined in the static `styles` property of a LitElement class (recommended).
 * With a `<style>` element in the shadow root
 * With a `<link rel="stylesheet">` element in the shadow root
 
@@ -66,13 +66,13 @@ class MySubElement extends MyElement {
 
 Here the subclass is explicitly inheriting the superclass styles, then adding its own.
 
-Static styles are the reccomended way to style LitElements because on browsers that support it, they generate and use a new standard called _[Constuctible Stylesheets](https://wicg.github.io/construct-stylesheets/)_, with a fallback for browsers that don't.
+Static styles are the recommended way to style LitElements because on browsers that support it, they generate and use a new standard called _[Constuctible Stylesheets](https://wicg.github.io/construct-stylesheets/)_, with a fallback for browsers that don't.
 
-Constuctible Stylesheets allow LitElement to parse styles exactly once and reuse the resulting Stylesheet object for maximum efficiency.
+Constructible Stylesheets allow LitElement to parse styles exactly once and reuse the resulting Stylesheet object for maximum efficiency.
 
 ### Limitations
 
-Static styles apply to all instances of an element. Any expressions in the style text are evaluated and included once, then reused for all instances. If you need to vary styles per-instance we reccomend using CSS custom properties, or inline styles.
+Static styles apply to all instances of an element. Any expressions in the style text are evaluated and included once, then reused for all instances. If you need to vary styles per-instance we recommend using CSS custom properties, or inline styles.
 
 For security reasons, the only types of values that can be interpolated into static styles are values returned by the `cssLiteral` and `unsafeCSS` template tags.
 
@@ -91,7 +91,7 @@ class MyElement extends LitElement {
 
 ## Inline styles
 
-You can also style a shadow root with inline styles right in your element template. We still reccomend static styles, but in some cases you may want to vary the CSS per-element. One way to do this is with bindings in `<style>` elements. It's important to note that this will not work with shadow DOM polyfills like ShadyCSS.
+You can also style a shadow root with inline styles right in your element template. We still recommend static styles, but in some cases you may want to vary the CSS per-element. One way to do this is with bindings in `<style>` elements. It's important to note that this will not work with shadow DOM polyfills like ShadyCSS.
 
 ```js
 import {LitElement, property} from 'lit-element';
@@ -110,7 +110,7 @@ class MyElement extends LitElement {
 }
 ```
 
-We strongly reccomend static styles, CSS custom properties, or [lit-html's `classMap` or `styleMap` directives](TODO) if you're stying non-host shadow root contents.
+We strongly recommend static styles, CSS custom properties, or [lit-html's `classMap` or `styleMap` directives](TODO) if you're stying non-host shadow root contents.
 
 ## External stylesheets
 
@@ -238,7 +238,7 @@ h1 {
 }
 ```
 
-## Inherited properties
+### Inherited properties
 
 [Inherited CSS properties](https://developer.mozilla.org/en-US/docs/Web/CSS/inheritance), like `color`, `font-family`, and all CSS custom properties (`--*`) _do_ inherit through shadow root boundaries.
 
