@@ -9,7 +9,7 @@ layout: default
     <button id="toggleNavButton">Menu</button>
     <ul>
       {%- for item in site.data.try.toc -%}
-      <li>
+      <li class="{% if page.url == item[1].url %}active{% endif %}">
         <a href="{{site.baseurl}}{{item[1].url}}">{{item[1].title}}</a>
       </li>
       {%- endfor -%}      
