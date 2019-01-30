@@ -91,9 +91,28 @@ To define static styles for a component:
         }
         ```
 
-### Styling elements per-instance
+### Expressions in styles
 
-Static styles apply to all instances of an element. Any expressions in the style text are evaluated and included **once**, then reused for all instances. 
+Static styles apply to all instances of an element. Any expressions in your CSS are evaluated and included **once**, then reused for all instances. 
+
+For security reasons, the only types of values that can be interpolated into static styles are values returned by the `cssLiteral` and `unsafeCSS` template tags. 
+
+To do an expression:
+
+```js
+const mainColor = cssLiteral`red`;
+
+class MyElement extends LitElement {
+  static styles = css`
+    :host {
+      display: block;
+      color: ${mainColor}
+    }
+  `;
+}
+```
+
+### Styling elements per-instance
 
 To define styles for an element instance, you can use CSS custom properties. E.g.
 
@@ -115,46 +134,35 @@ In html where your element is used:
 
 ```html
 <style>
+  html {
+    --theme-primary: green;
+    --theme-secondary: aliceblue;
+    --theme-warning: red;
+  }
   my-element { 
-    --my-element-text-color: var(--app-theme-warning); 
+    --my-element-text-color: var(--theme-primary); 
+    --my-element-background-color: var(--theme-secondary); 
   } 
-  my-element.warning { --my-element-background-color: var(--theme-color); } 
+  my-element.warning {
+    --my-element-text-color: var(--theme-warning); 
+  }
 </style>
 ...
-
-<my-element class="a"></my-element>
-<my-element class="b"></my-element>
-
+<my-element></my-element>
+<my-element class="warning"></my-element>
 ```
 
-
-Or inline styles:
-
-```js
-class MyElement extends LitElement {
-  static styles = css`p { color: var(--mycolor); }`;
-}
-```
-
-
-For security reasons, the only types of values that can be interpolated into static styles are values returned by the `cssLiteral` and `unsafeCSS` template tags.
-
-```js
-const mainColor = cssLiteral`red`;
-
-class MyElement extends LitElement {
-  static styles = css`
-    :host {
-      display: block;
-      color: ${mainColor}
-    }
-  `;
-}
-```
+Or use inline styles.
 
 ## Inline styles
 
-You can also style a shadow root with inline styles right in your element template. We still reccomend static styles, but in some cases you may want to vary the CSS per-element. One way to do this is with bindings in `<style>` elements. It's important to note that this will not work with shadow DOM polyfills like ShadyCSS.
+You can also style a shadow root by including inline styles in your element template. We still recommend static styles, but in some cases you may want to vary the CSS per-element. One way to do this is with bindings in `<style>` elements. 
+
+<div class="alert alert-warning">
+
+**this will not work with shadow DOM polyfills like ShadyCSS** this won't work with shadyCsss.
+
+</div>
 
 ```js
 import {LitElement, property} from 'lit-element';
@@ -172,8 +180,6 @@ class MyElement extends LitElement {
   }
 }
 ```
-
-We strongly reccomend static styles, CSS custom properties, or [lit-html's `classMap` or `styleMap` directives](TODO) if you're stying non-host shadow root contents.
 
 ## External stylesheets
 
@@ -196,14 +202,13 @@ This can be a good way to load CSS generated from tools like SASS/LESS.
 There are some important caveats though:
 
 * External styles can cause a flash-of-unstyled-content (FOUC) while they load.
-* The URL in the `href` attribute is relative to the _main document_, making this technique mostly useful for application elements where asset URLs are well known, and not for reusable elements published publically.
-
+* The URL in the `href` attribute is relative to the _main document_, making this technique mostly useful for application elements where asset URLs are well known, and not for reusable elements published publicly.
 
 ## Styling the host element
 
 An element can apply styles to itself with the `:host` and `:host()` CSS psuedo-classes used inside the element's ShadowRoot. The tern "host" is used because an element is the host of its own shadow root.
 
-* `:host` selects the host element of the shadow root
+* `:host` selects the host element of the shadow root:
 
   ```css
   :host {
@@ -212,7 +217,7 @@ An element can apply styles to itself with the `:host` and `:host()` CSS psuedo-
   }
   ```
 
-* `:host(...)` selects the host element, but only if the selector inside the parentheses matches the host element.
+* `:host(...)` selects the host element, but only if the selector inside the parentheses matches the host element:
 
   ```css
   :host([.important]) {
@@ -249,7 +254,6 @@ _my-element.js_
 
 See the MDN documentation on [:host](https://developer.mozilla.org/en-US/docs/Web/CSS/:host) and [:host()](https://developer.mozilla.org/en-US/docs/Web/CSS/:host()) for more information.
 
-
 ### Host styling best practices
 
 Two best practices for working with custom elements are:
@@ -278,7 +282,11 @@ See [Custom Element Best Practices](https://developers.google.com/web/fundamenta
 
 ## Styling elements in a shadow root
 
-Styling elements a shadow root is very straight forward: just use selectors that match your known content.
+To style elements in a shadow root, use standard CSS selectors.
+
+```css
+
+```
 
 Since CSS selectors in a shadow root only apply to elements in the shadow root, you don't need to be defensive against accidentally styling other elements in the page. This means you can generally write much simpler selectors, that are easier to reason about, and faster, than without shadow DOM.
 
