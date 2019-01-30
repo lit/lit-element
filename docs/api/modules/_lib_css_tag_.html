@@ -10,6 +10,7 @@
 	<link rel="stylesheet" href="../../css/main.css">
 	<link rel="stylesheet" href="../../css/pygments.css">
 	<link rel="stylesheet" href="../../css/theme.css">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
 	<style>
     body {
         position: relative;
@@ -116,6 +117,7 @@
 							<h3>Functions</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_lib_css_tag_.html#css" class="tsd-kind-icon">css</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_lib_css_tag_.html#unsafecss" class="tsd-kind-icon">unsafe<wbr>Css</a></li>
 							</ul>
 						</section>
 					</div>
@@ -129,7 +131,7 @@
 					<div class="tsd-signature tsd-kind-icon">supports<wbr>Adopting<wbr>Style<wbr>Sheets<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> =&nbsp;(&#x27;adoptedStyleSheets&#x27; in Document.prototype)</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/517f2a5/src/lib/css-tag.ts#L12">lib/css-tag.ts:12</a></li>
+							<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/58cc92f/src/lib/css-tag.ts#L12">lib/css-tag.ts:12</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -159,9 +161,17 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/517f2a5/src/lib/css-tag.ts#L50">lib/css-tag.ts:50</a></li>
+									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/58cc92f/src/lib/css-tag.ts#L75">lib/css-tag.ts:75</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Template tag which which can be used with LitElement&#39;s <code>style</code> property to
+										set element styles. For security reasons, only literal string values may be
+										used. To incorporate non-literal values <code>unsafeCss</code> may be used inside a
+									template string part.</p>
+								</div>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -169,6 +179,37 @@
 								</li>
 								<li>
 									<h5><span class="tsd-flag ts-flagRest">Rest</span> <span class="tsd-signature-symbol">...</span>values: <a href="../classes/_lib_css_tag_.cssresult.html" class="tsd-signature-type">CSSResult</a><span class="tsd-signature-symbol">[]</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="../classes/_lib_css_tag_.cssresult.html" class="tsd-signature-type">CSSResult</a></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
+					<a name="unsafecss" class="tsd-anchor"></a>
+					<h3>unsafe<wbr>Css</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
+						<li class="tsd-signature tsd-kind-icon">unsafe<wbr>Css<span class="tsd-signature-symbol">(</span>value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../classes/_lib_css_tag_.cssresult.html" class="tsd-signature-type">CSSResult</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/58cc92f/src/lib/css-tag.ts#L54">lib/css-tag.ts:54</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Wrap a value for interpolation in a css tagged template literal.</p>
+								</div>
+								<p>This is unsafe because untrusted CSS text can be used to phone home
+									or exfiltrate data to an attacker controlled site. Take care to only use
+								this with trusted input.</p>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>value: <span class="tsd-signature-type">unknown</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="../classes/_lib_css_tag_.cssresult.html" class="tsd-signature-type">CSSResult</a></h4>
@@ -210,6 +251,9 @@
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-external-module">
 						<a href="_lib_css_tag_.html#css" class="tsd-kind-icon">css</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module">
+						<a href="_lib_css_tag_.html#unsafecss" class="tsd-kind-icon">unsafe<wbr>Css</a>
 					</li>
 				</ul>
 			</nav>
