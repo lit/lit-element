@@ -6,7 +6,7 @@ slug: styles
 
 ## Shadow DOM
 
-LitElement uses [Shadow DOM](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_shadow_DOM) by default for DOM and style encapsulation. Shadow DOM scopes CSS so that styles defind in a shadow root only apply to DOM inside the shadow root and do not leak to outside DOM. Shadow roots are also isolated from styles defined outside the shadow root, whether in the main page or a outer shadow root.
+LitElement uses [Shadow DOM](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_shadow_DOM) by default for DOM and style encapsulation. Shadow DOM scopes CSS so that styles defined in a shadow root only apply to DOM inside the shadow root and do not leak to outside DOM. Shadow roots are also isolated from styles defined outside the shadow root, whether in the main page or an outer shadow root.
 
 **This guide applies only if you use the default (shadow DOM) render root.** If you modify your element's render root to render into the main DOM tree instead of a shadow root, these instructions won't apply.
 {.alert-info}
