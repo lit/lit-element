@@ -6,9 +6,9 @@ slug: styles
 
 ## Shadow DOM
 
-LitElement uses [Shadow DOM](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_shadow_DOM) by default for DOM and style encapsulation. Shadow DOM scopes CSS so that styles defind in a shadow root only apply to DOM inside the shadow root and do not leak to outside DOM. Shadow roots are also isolated from styles defined outside the shadow root, whether in the main page or a outer shadow root.
+LitElement uses [Shadow DOM](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_shadow_DOM) by default for DOM and style encapsulation. Shadow DOM scopes CSS so that styles defined in a shadow root only apply to DOM inside the shadow root and do not leak to outside DOM. Shadow roots are also isolated from styles defined outside the shadow root, whether in the main page or an outer shadow root.
 
-**This guide applies only if you use the default (shadow DOM) render root.** If you modify your element's render root to render into the main DOM tree instead of a shadow root, these instructions won't apply.
+**This guide applies only if you use the default (shadow DOM) render root.** If you [modify your element's render root](templates#renderroot) to render into the main DOM tree instead of a shadow root, these instructions won't apply.
 {.alert-info}
 
 **If you're using the Shady CSS polyfill, be aware that it has some limitations.** See the [Shady CSS README](https://github.com/webcomponents/shadycss/blob/master/README.md#limitations) for more information.
@@ -20,59 +20,122 @@ LitElement uses [Shadow DOM](https://developer.mozilla.org/en-US/docs/Web/Web_Co
 
 ## Styling shadow DOM
 
-Styles can be added to a shadow root in three different ways:
-* With styles defined in the static `styles` property of a LitElement class (reccomended).
-* With a `<style>` element in the shadow root
-* With a `<link rel="stylesheet">` element in the shadow root
+You can define your styles:
 
-These styles in turn can apply to different groups of elements:
-* The host element itself
+* [In the static `styles` property of a LitElement class (reccomended)](#staticstyles).
+* [In a `<style>` element within the template of a LitElement component](#styleelement).
+* [In a `<link rel="stylesheet">` element within the template of a LitElement component](#linkedstylesheet).
+
+From inside the shadow root styles, you can style:
+
+* The host element itself 
 * Elements in the shadow root
-* Slotted elements: usually light DOM children that are projected into a `<slot>` element.
+* Slotted elements that are defined outside the shadow root and rendered in shadow DOM with the [`<slot>` element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/slot).
 
-## Static styles
+You can't style things outside your own element because encapsulation.
 
-LitElements lets you define styles that apply to all instances with a static `styles` property on your element class.
+## Define static styles
 
-The value of the `styles` property must be created with the `css` template literal tag provided by the `lit-element` module. `styles` can either be a single value, or an array.
+LitElement lets you define static styles that apply to all instances of a component. 
 
-An example of a single style:
+<div class="alert alert-info">
+
+**Use static styles for optimal performance.** LitElement uses [Constructable Stylesheets](https://wicg.github.io/construct-stylesheets/) in browsers that support this new standard, with a fallback for browsers that don't. Constructable Stylesheets allow LitElement to parse styles exactly once and reuse the resulting Stylesheet object for maximum efficiency.
+
+</div>
+
+To define static styles for a component:
+
+1.  Import the `css` helper function from the `lit-element` module:
+
+    ```js
+    import {LitElement, css} from 'lit-element';
+    ```
+
+2.  Create a static `styles` property and define your styles in plain CSS.
+
+    The value of the static `styles` property can be:
+    
+    *   A single tagged template literal:
+    
+        ```js
+        class MyElement extends LitElement {
+          static styles = css`
+            :host {
+              display: block;
+            }
+          `;
+        }
+        ```
+
+    *   Or an array of tagged template literals:
+
+        ```js
+        class MyElement extends LitElement {
+          static styles = [ css`:host { display: block; }`, ...];
+        }
+        ```
+
+        Using an array of tagged template literals lets you inherit the styles from a LitElement superclass, and add more:
+
+        ```js
+        class MySubElement extends MyElement {
+          static styles = [
+            super.styles,
+            css`
+              :host([.important]) {
+                color: red;
+              }
+            `
+          ];
+        }
+        ```
+
+### Styling elements per-instance
+
+Static styles apply to all instances of an element. Any expressions in the style text are evaluated and included **once**, then reused for all instances. 
+
+To define styles for an element instance, you can use CSS custom properties. E.g.
+
+In your element:
+
 ```js
-import {LitElement, css} from 'lit-element';
-
 class MyElement extends LitElement {
   static styles = css`
-    :host {
+    :host { 
       display: block;
+      color: var(--my-element-text-color); 
+      background: var(--my-element-background-color);  
     }
   `;
 }
 ```
 
-Multiple values are useful for inheritance:
+In html where your element is used:
+
+```html
+<style>
+  my-element { 
+    --my-element-text-color: var(--app-theme-warning); 
+  } 
+  my-element.warning { --my-element-background-color: var(--theme-color); } 
+</style>
+...
+
+<my-element class="a"></my-element>
+<my-element class="b"></my-element>
+
+```
+
+
+Or inline styles:
 
 ```js
-class MySubElement extends MyElement {
-  static styles = [
-    super.styles,
-    css`
-      :host([.important]) {
-        color: red;
-      }
-    `
-  ];
+class MyElement extends LitElement {
+  static styles = css`p { color: var(--mycolor); }`;
 }
 ```
 
-Here the subclass is explicitly inheriting the superclass styles, then adding its own.
-
-Static styles are the reccomended way to style LitElements because on browsers that support it, they generate and use a new standard called _[Constuctible Stylesheets](https://wicg.github.io/construct-stylesheets/)_, with a fallback for browsers that don't.
-
-Constuctible Stylesheets allow LitElement to parse styles exactly once and reuse the resulting Stylesheet object for maximum efficiency.
-
-### Limitations
-
-Static styles apply to all instances of an element. Any expressions in the style text are evaluated and included once, then reused for all instances. If you need to vary styles per-instance we reccomend using CSS custom properties, or inline styles.
 
 For security reasons, the only types of values that can be interpolated into static styles are values returned by the `cssLiteral` and `unsafeCSS` template tags.
 
