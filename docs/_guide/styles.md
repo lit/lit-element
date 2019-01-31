@@ -4,7 +4,7 @@ title: Styles
 slug: styles
 ---
 
-{::options toc_levels="1..3" /}
+{::options toc_levels="1..4" /}
 * ToC
 {:toc}
 
@@ -30,7 +30,7 @@ Shadow DOM scopes CSS so that styles defined in a shadow root only apply to DOM 
 **If you're using the Shady CSS polyfill, be aware that it has some limitations.** See the [Shady CSS README](https://github.com/webcomponents/shadycss/blob/master/README.md#limitations) for more information.
 {.alert-info}
 
-## Developing a component
+## Developing a LitElement component
 
 ### Where to put your styles
 
@@ -178,13 +178,13 @@ There are some important caveats though:
 
 ### What you can style
 
-This section covers:
+You can style:
 
-* [Styling the host element](#host).
-* [Styling elements in the host's shadow root](#children).
-* [Styling slotted elements](#slot). Slotted elements are rendered in shadow DOM via the `slot` element - see MDN for more info. 
+* [The host element](#host). The host element is your component. It is called the "host" because it hosts shadow DOM. You can style the element itself with special CSS selectors `:host` and `:host()`.
+* [Elements in the host's shadow root](#children).
+* [Slotted elements](#slot). Slotted elements are rendered in shadow DOM via the `slot` element - see MDN for more info. You can style slotted content with `::slotted()`.
 
-You can't style other stuff because encapsulation.
+Because of encapsulation, you can't (and shouldn't) style anything else from within your element.
  
 #### Styling the host element {#host}
 
@@ -209,6 +209,10 @@ An element can apply styles to itself with the `:host` and `:host()` CSS psuedo-
   ```
 
 {% include project.html folder="docs/style/hostselector" openFile="my-element.js" %}
+
+COMPLETE NONSENSE, CORRECTED IN SEPARATE PR 
+
+------ start nonsense -----
 
 **The :host CSS pseudo-class has higher specificity than the element's type selector.** Styles set for your host with the `:host` pseudo-class from inside its own shadow root will override styles set from outside its shadow root. For example:
 
@@ -235,6 +239,8 @@ _my-element.js_
 ```
 
 See the MDN documentation on [:host](https://developer.mozilla.org/en-US/docs/Web/CSS/:host) and [:host()](https://developer.mozilla.org/en-US/docs/Web/CSS/:host()) for more information.
+
+------ end nonsense -----
 
 ##### Host styling best practices
 
@@ -288,7 +294,7 @@ h1 {
 }
 ```
 
-#### Styling slotted elements
+#### Styling slotted elements {#slotted}
 
 Use the `::slotted()` CSS pseudo-element to select light DOM elements that have been included in shadow DOM via the `<slot>` element.
 
@@ -304,7 +310,7 @@ Use the `::slotted()` CSS pseudo-element to select light DOM elements that have 
 
 {% include project.html folder="docs/style/slotted" openFile="my-element.js" %}
 
-### Inheritance
+### Inheritance and shadow DOM
 
 [Inherited CSS properties](https://developer.mozilla.org/en-US/docs/Web/CSS/inheritance), like `color`, `font-family`, and all CSS custom properties (`--*`) _do_ inherit through shadow root boundaries.
 
@@ -345,9 +351,9 @@ If your host element itself inherits properties from another element, the host's
 
 {% include project.html folder="docs/style/inherited2" openFile="my-element.js" %}
 
-## Consuming a lit-element
+## Consuming a LitElement component
 
-You can set styles for the host from the main document by using its custom element tag as a selector. For example:
+When you use a LitElement component, you can set styles from the main document by using its custom element tag as a selector. For example:
 
 _index.html_ 
 
@@ -363,11 +369,13 @@ _index.html_
 <my-element></my-element>
 ```
 
-## Theming
+Inheritance also a thing. Custom props too. We recommend custom CSS properties, see [Custom props](#customprops).
 
-### Custom props
+## Theming an app
 
-Custom properties inherit down the DOM tree, and through shadow root boundaries You can use this to let your users apply styles and themes to your elements.
+### Custom CSS properties {#customprops}
+
+Custom properties inherit down the DOM tree, and through shadow root boundaries. You can use this to let your users apply styles and themes to your elements.
 
 For example, the following element sets its background color to a CSS variable that uses the value of the custom property `--myBackground` if it is available, and uses `yellow` otherwise:
 
