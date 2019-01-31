@@ -2,9 +2,9 @@ import { LitElement, html } from 'lit-element';
 
 class MyElement extends LitElement {
   static get properties() { return {
-    prop1: { type: Number, noAccessors: true },
+    prop1: { type: Number, noAccessor: true },
     prop2: { type: Number },
-    prop3: { type: Number, noAccessors: true },
+    prop3: { type: Number, noAccessor: true },
   };}
 
   set prop1(newVal) { this._prop1 = Math.floor(newVal); }
