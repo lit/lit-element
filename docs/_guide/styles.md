@@ -322,6 +322,8 @@ h1 {
 
 #### Styling slotted elements {#slotted}
 
+TODO Explain projection somewhere here
+
 Use the `::slotted()` CSS pseudo-element to select light DOM children that have been included in shadow DOM via the `<slot>` element.
 
 * `::slotted(*)` matches all slotted elements.
