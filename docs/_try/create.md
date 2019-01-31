@@ -23,9 +23,9 @@ Click **Launch Code Editor** to edit the starting code. When you're ready to see
     In my-element.js, replace the existing `import` statement with the following code:
 
     ```js
-    import { LitElement, html } from '@polymer/lit-element'; 
+    import { LitElement, html } from 'lit-element';
     ```
-    
+
 2.  **Create a class for your element that extends the LitElement base class.**
 
     In my-element.js, replace the existing class definition with the following code:
@@ -37,10 +37,10 @@ Click **Launch Code Editor** to edit the starting code. When you're ready to see
           <p>Hello world! From my-element</p>
         `;
       }
-    }    
+    }
     ```
 
-    The `render` function defines your component's template. You must implement `render` for every LitElement component.  
+    The `render` function defines your component's template. You must implement `render` for every LitElement component.
 
 3.  **Register the new element with the browser.**
 

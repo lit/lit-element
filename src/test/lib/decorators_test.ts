@@ -185,6 +185,39 @@ suite('decorators', () => {
       assert.equal(el.updateCount, 6);
     });
 
+    test('can decorate user accessor with @property', async () => {
+      class E extends LitElement {
+
+        _foo?: number;
+        updatedContent?: number;
+
+        @property({reflect : true, type: Number})
+        get foo() {
+          return this._foo as number;
+        }
+
+        set foo(v: number) {
+          const old = this.foo;
+          this._foo = v;
+          this.requestUpdate('foo', old);
+        }
+
+        updated() { this.updatedContent = this.foo; }
+      }
+      customElements.define(generateElementName(), E);
+      const el = new E();
+      container.appendChild(el);
+      await el.updateComplete;
+      assert.equal(el._foo, undefined);
+      assert.equal(el.updatedContent, undefined);
+      assert.isFalse(el.hasAttribute('foo'));
+      el.foo = 5;
+      await el.updateComplete;
+      assert.equal(el._foo, 5);
+      assert.equal(el.updatedContent, 5);
+      assert.equal(el.getAttribute('foo'), '5');
+    });
+
     test('can mix property options via decorator and via getter', async () => {
       const hasChanged = (value: any, old: any) =>
           old === undefined || value > old;

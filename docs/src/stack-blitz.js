@@ -1,4 +1,4 @@
-import { LitElement, html } from '@polymer/lit-element';
+import { LitElement, html, css } from 'lit-element';
 import StackBlitzSDK from '@stackblitz/sdk';
 
 class StackBlitz extends LitElement {
@@ -17,9 +17,9 @@ class StackBlitz extends LitElement {
     this._vm = null;
   }
 
-  render() {
-    return html`
-      <style>
+  static get styles() {
+    return [
+      css`
         .pretty-button {
           cursor: pointer;
           display: inline-block;
@@ -56,7 +56,12 @@ class StackBlitz extends LitElement {
           border: none;
           min-height: 50vh;
         }
-      </style>
+      `
+    ];
+  }
+
+  render() {
+    return html`
       <div id="container">
         <button class="pretty-button" @click="${this.loadProject}"
             .disabled="${this._loading}">

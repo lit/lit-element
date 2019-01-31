@@ -18,9 +18,31 @@ import {PropertyValues, UpdatingElement} from './lib/updating-element.js';
 
 export * from './lib/updating-element.js';
 export * from './lib/decorators.js';
-export {html, svg} from 'lit-html/lit-html';
+export {html, svg, TemplateResult, SVGTemplateResult} from 'lit-html/lit-html';
 import {supportsAdoptingStyleSheets, CSSResult} from './lib/css-tag.js';
 export * from './lib/css-tag.js';
+
+export interface CSSResultArray extends Array<CSSResult | CSSResultArray> {}
+
+/**
+ * Minimal implementation of Array.prototype.flat
+ * @param arr the array to flatten
+ * @param result the accumlated result
+ */
+function arrayFlat(styles: CSSResultArray, result: CSSResult[] = []): CSSResult[] {
+  for (let i = 0, length = styles.length; i < length; i++) {
+    const value = styles[i];
+    if (Array.isArray(value)) {
+      arrayFlat(value, result);
+    } else {
+      result.push(value);
+    }
+  }
+  return result;
+}
+
+/** Deeply flattens styles array. Uses native flat if available. */
+const flattenStyles = (styles: CSSResultArray): CSSResult[] => styles.flat ? styles.flat(Infinity) : arrayFlat(styles);
 
 export class LitElement extends UpdatingElement {
 
@@ -44,28 +66,48 @@ export class LitElement extends UpdatingElement {
    * Array of styles to apply to the element. The styles should be defined
    * using the `css` tag function.
    */
-  static get styles(): CSSResult[] { return []; }
+  static styles?: CSSResult | CSSResultArray;
 
   private static _styles: CSSResult[]|undefined;
 
-  private static get _uniqueStyles(): CSSResult[] {
-    if (this._styles === undefined) {
-      const styles = this.styles;
+  /** @nocollapse */
+  protected static finalize() {
+    super.finalize();
+    // Prepare styling that is stamped at first render time. Styling
+    // is built from user provided `styles` or is inherited from the superclass.
+    this._styles = this.hasOwnProperty(JSCompiler_renameProperty('styles', this)) ?
+      this._getUniqueStyles() :
+      this._styles || [];
+  }
+
+  /** @nocollapse */
+  private static _getUniqueStyles(): CSSResult[] {
+    // Take care not to call `this.styles` multiple times since this generates
+    // new CSSResults each time.
+    // TODO(sorvell): Since we do not cache CSSResults by input, any
+    // shared styles will generate new stylesheet objects, which is wasteful.
+    // This should be addressed when a browser ships constructable
+    // stylesheets.
+    const userStyles = this.styles;
+    const styles: CSSResult[] = [];
+    if (Array.isArray(userStyles)) {
+      const flatStyles = flattenStyles(userStyles);
       // As a performance optimization to avoid duplicated styling that can
       // occur especially when composing via subclassing, de-duplicate styles
       // preserving the last item in the list. The last item is kept to
       // try to preserve cascade order with the assumption that it's most
       // important that last added styles override previous styles.
-      const styleSet = styles.reduceRight((set, s) => {
+      const styleSet = flatStyles.reduceRight((set, s) => {
         set.add(s);
         // on IE set.add does not return the set.
         return set;
-      }, new Set());
-      // Array.form does not work on Set in IE
-      this._styles = [];
-      styleSet.forEach((v) => this._styles!.unshift(v));
+      }, new Set<CSSResult>());
+      // Array.from does not work on Set in IE
+      styleSet.forEach((v) => styles!.unshift(v));
+    } else if (userStyles) {
+      styles.push(userStyles);
     }
-    return this._styles;
+    return styles;
   }
 
   private _needsShimAdoptedStyleSheets?: boolean;
@@ -113,7 +155,7 @@ export class LitElement extends UpdatingElement {
    * behavior](https://wicg.github.io/construct-stylesheets/#using-constructed-stylesheets).
    */
   protected adoptStyles() {
-    const styles = (this.constructor as typeof LitElement)._uniqueStyles;
+    const styles = (this.constructor as typeof LitElement)._styles!;
     if (styles.length === 0) {
       return;
     }
@@ -163,7 +205,7 @@ export class LitElement extends UpdatingElement {
     // priority.
     if (this._needsShimAdoptedStyleSheets) {
       this._needsShimAdoptedStyleSheets = false;
-      (this.constructor as typeof LitElement)._uniqueStyles.forEach((s) => {
+      (this.constructor as typeof LitElement)._styles!.forEach((s) => {
         const style = document.createElement('style');
         style.textContent = s.cssText;
         this.renderRoot!.appendChild(style);

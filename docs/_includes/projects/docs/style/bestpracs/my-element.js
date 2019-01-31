@@ -1,10 +1,10 @@
-import { LitElement, html } from '@polymer/lit-element'; 
+import { LitElement, html } from 'lit-element';
 
 class MyElement extends LitElement {
   render() {
     return html`
       <style>
-        :host[hidden] { display: none; }
+        :host([hidden]) { display: none; }
         :host { display: block; }
       </style>
       <p>Hello world</p>

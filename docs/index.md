@@ -53,31 +53,29 @@ LitElement is brought to you by developers on the Google Chrome team with the in
 <section>
 <div class="wrapper">
 
-<h1 class="title">
-Get started
-</h1>
+<h1 class="title">Get started</h1>
 
-<h2>
-Define a component in JavaScript:
-</h2>
+<h2>Define a component</h2>
 
-<h3 style="margin: 12px 0 0 0;">
-custom-greeting.js
-</h3>
+It's easy to define a Web Component with LitElement:
 
 ```js
-{% include projects/index/custom-greeting.js %}
+{% include projects/index-typescript/custom-greeting.ts %}
 ```
 
-<h2 style="margin-top: 40px;">Include the component in your web page:</h2>
+<h2 style="margin-top: 40px;">Use a component</h2>
 
-<h3 style="margin: 12px 0 0 0;">
-index.html
-</h3>
+Then use it anywhere you use HTML:
 
 ```html
 <custom-greeting></custom-greeting>
 ```
+
+Click **Launch code editor** to see a live sample.
+
+{% include project.html folder="index-typescript" openFile="custom-greeting.js" %}
+
+The example above uses TypeScript and decorators. You can also easily write LitElements in plain JavaScript. Click **Launch code editor** for an example.
 
 {% include project.html folder="index" openFile="custom-greeting.js" %}
 
@@ -92,14 +90,16 @@ index.html
 <div class="responsive-row">
 <div style="flex: 1">
 
-<h2 class="caption">Made to share</h2>
+<h2 class="caption">Fast and light</h2>
 
-Web components built with LitElement are made to share with the world and with others across your organization, no matter what libraries or frameworks they use.
+Whether your end users are in emerging markets or Silicon Valley, they’ll appreciate that LitElement is extremely fast.
+
+LitElement uses [lit-html](https://github.com/Polymer/lit-html) to define and render HTML templates. DOM updates are lightning-fast, because lit-html only re-renders the data that changes.
 
 </div>
 <div style="flex: 1">
 
-<h2 class="caption">Interoperable</h2>
+<h2 class="caption">Standards-based</h2>
 
 LitElement follows the [web components standards](https://developer.mozilla.org/en-US/docs/Web/Web_Components), so your components will work with any framework.
 
@@ -108,11 +108,9 @@ LitElement uses custom elements for easy inclusion in web pages, and shadow DOM 
 </div>
 <div style="flex: 1">
 
-<h2 class="caption">Fast and light</h2>
+<h2 class="caption">Made to share</h2>
 
-Whether your end users are in emerging markets or Silicon Valley, they’ll appreciate that LitElement is extremely fast.
-
-LitElement uses [lit-html](https://github.com/Polymer/lit-html) to define and render HTML templates. DOM updates are lightning-fast, because lit-html only re-renders the data that changes.
+Web components built with LitElement are made to share with the world and with others across your organization, no matter what libraries or frameworks they use.
 
 </div>
 </div>

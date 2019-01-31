@@ -21,6 +21,24 @@ export type Constructor<T> = {
   new (...args: any[]): T
 };
 
+// From the TC39 Decorators proposal
+interface ClassDescriptor {
+  kind: 'class';
+  elements: ClassElement[];
+  finisher?: <T>(clazz: Constructor<T>) => undefined | Constructor<T>;
+}
+
+// From the TC39 Decorators proposal
+interface ClassElement {
+  kind: 'field'|'method';
+  key: PropertyKey;
+  placement: 'static'|'prototype'|'own';
+  initializer?: Function;
+  extras?: ClassElement[];
+  finisher?: <T>(clazz: Constructor<T>) => undefined | Constructor<T>;
+  descriptor?: PropertyDescriptor;
+}
+
 const legacyCustomElement =
     (tagName: string, clazz: Constructor<HTMLElement>) => {
       window.customElements.define(tagName, clazz);
@@ -49,20 +67,6 @@ const standardCustomElement =
  * Class decorator factory that defines the decorated class as a custom element.
  *
  * @param tagName the name of the custom element to define
- *
- * In TypeScript, the `tagName` passed to `customElement` should be a key of the
- * `HTMLElementTagNameMap` interface. To add your element to the interface,
- * declare the interface in this module:
- *
- *     @customElement('my-element')
- *     export class MyElement extends LitElement {}
- *
- *     declare global {
- *       interface HTMLElementTagNameMap {
- *         'my-element': MyElement;
- *       }
- *     }
- *
  */
 export const customElement = (tagName: string) => (
     classOrDescriptor: Constructor<HTMLElement>|ClassDescriptor) =>
@@ -73,32 +77,45 @@ export const customElement = (tagName: string) => (
 
 const standardProperty =
     (options: PropertyDeclaration, element: ClassElement) => {
-      // createProperty() takes care of defining the property, but we still must
-      // return some kind of descriptor, so return a descriptor for an unused
-      // prototype field. The finisher calls createProperty().
-      return {
-        kind : 'field',
-        key : Symbol(),
-        placement : 'own',
-        descriptor : {},
-        // When @babel/plugin-proposal-decorators implements initializers,
-        // do this instead of the initializer below. See:
-        // https://github.com/babel/babel/issues/9260 extras: [
-        //   {
-        //     kind: 'initializer',
-        //     placement: 'own',
-        //     initializer: descriptor.initializer,
-        //   }
-        // ],
-        initializer(this: any) {
-          if (typeof element.initializer === 'function') {
-            this[element.key] = element.initializer!.call(this);
+      // When decorating an accessor, pass it through and add property metadata.
+      // Note, the `hasOwnProperty` check in `createProperty` ensures we don't
+      // stomp over the user's accessor.
+      if (element.kind === 'method' && element.descriptor &&
+          !('value' in element.descriptor)) {
+        return {
+          ...element,
+          finisher(clazz: typeof UpdatingElement) {
+            clazz.createProperty(element.key, options);
           }
-        },
-        finisher(clazz: typeof UpdatingElement) {
-          clazz.createProperty(element.key, options);
-        }
-      };
+        };
+      } else {
+        // createProperty() takes care of defining the property, but we still
+        // must return some kind of descriptor, so return a descriptor for an
+        // unused prototype field. The finisher calls createProperty().
+        return {
+          kind : 'field',
+          key : Symbol(),
+          placement : 'own',
+          descriptor : {},
+          // When @babel/plugin-proposal-decorators implements initializers,
+          // do this instead of the initializer below. See:
+          // https://github.com/babel/babel/issues/9260 extras: [
+          //   {
+          //     kind: 'initializer',
+          //     placement: 'own',
+          //     initializer: descriptor.initializer,
+          //   }
+          // ],
+          initializer(this: any) {
+            if (typeof element.initializer === 'function') {
+              this[element.key] = element.initializer!.call(this);
+            }
+          },
+          finisher(clazz: typeof UpdatingElement) {
+            clazz.createProperty(element.key, options);
+          }
+        };
+      }
     };
 
 const legacyProperty = (options: PropertyDeclaration, proto: Object,
@@ -110,12 +127,16 @@ const legacyProperty = (options: PropertyDeclaration, proto: Object,
  * A property decorator which creates a LitElement property which reflects a
  * corresponding attribute value. A `PropertyDeclaration` may optionally be
  * supplied to configure property features.
+ *
+ * @ExportDecoratedItems
  */
-export const property = (options?: PropertyDeclaration) =>
-    (protoOrDescriptor: Object|ClassElement, name?: PropertyKey): any =>
-        (name !== undefined)
-            ? legacyProperty(options!, protoOrDescriptor as Object, name)
-            : standardProperty(options!, protoOrDescriptor as ClassElement);
+export function property(options?: PropertyDeclaration) {
+  return (protoOrDescriptor: Object|ClassElement, name?: PropertyKey): any =>
+             (name !== undefined)
+                 ? legacyProperty(options!, protoOrDescriptor as Object, name)
+                 : standardProperty(options!,
+                                    protoOrDescriptor as ClassElement);
+}
 
 /**
  * A property decorator that converts a class property into a getter that
@@ -148,6 +169,8 @@ const standardQuery = (descriptor: PropertyDescriptor, element: ClassElement) =>
  *
  * @param queryFn exectute a `selector` (ie, querySelector or querySelectorAll)
  * against `target`.
+ * @suppress {visibility} The descriptor accesses an internal field on the
+ * element.
  */
 function _query<T>(queryFn: (target: NodeSelector, selector: string) => T) {
   return (selector: string) => (protoOrDescriptor: Object|ClassElement,

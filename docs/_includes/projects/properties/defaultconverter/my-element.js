@@ -1,7 +1,7 @@
-import { LitElement, html } from '@polymer/lit-element';
+import { LitElement, html } from 'lit-element';
 
-class MyElement extends LitElement { 
-  static get properties() { return {  
+class MyElement extends LitElement {
+  static get properties() { return {
     prop1: { type: String, reflect: true },
     prop2: { type: Number, reflect: true },
     prop3: { type: Boolean, reflect: true },
@@ -28,13 +28,13 @@ class MyElement extends LitElement {
       <p>prop1 ${this.prop1}</p>
       <p>prop2 ${this.prop2}</p>
       <p>prop3 ${this.prop3}</p>
-      
-      <p>prop4: ${this.prop4.map((item, index) => 
+
+      <p>prop4: ${this.prop4.map((item, index) =>
         html`<span>[${index}]:${item}&nbsp;</span>`)}
       </p>
-      
-      <p>prop5: 
-        ${Object.keys(this.prop5).map(item => 
+
+      <p>prop5:
+        ${Object.keys(this.prop5).map(item =>
           html`<span>${item}: ${this.prop5[item]}&nbsp;</span>`)}
       </p>
 
@@ -50,9 +50,9 @@ class MyElement extends LitElement {
     this.setAttribute('prop1', randy.toString);
     this.setAttribute('prop2', randy.toString);
     this.setAttribute('prop3', myBool? '' : null);
-    this.setAttribute('prop4', 
+    this.setAttribute('prop4',
       JSON.stringify(Object.assign([], [...this.prop4], randy)));
-    this.setAttribute('prop5', 
+    this.setAttribute('prop5',
       JSON.stringify(Object.assign({}, this.prop5, {[randy]: randy})));
     this.requestUpdate();
   }
@@ -62,14 +62,14 @@ class MyElement extends LitElement {
     let myBool = this.prop3;
 
     this.prop1 = randy.toString();
-    this.prop2 = randy; 
+    this.prop2 = randy;
     this.prop3 = !myBool;
     this.prop4 = Object.assign([], [...this.prop4], randy);
     this.prop5 = Object.assign({}, this.prop5, {[randy]: randy});
   }
 
   updated(changedProperties) {
-    changedProperties.forEach((oldValue, propName) => { 
+    changedProperties.forEach((oldValue, propName) => {
       console.log(`${propName} changed. oldValue: ${oldValue}`);
     });
   }

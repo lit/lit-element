@@ -1,6 +1,6 @@
-import { LitElement, html } from '@polymer/lit-element';
+import { LitElement, html } from 'lit-element';
 
-class MyElement extends LitElement {  
+class MyElement extends LitElement {
   static get properties() {
     return {
       prop1: { type: Number },
@@ -21,17 +21,17 @@ class MyElement extends LitElement {
       <button @click="${() => this.prop2=this.change()}">Change prop2</button>
     `;
   }
-  
+
   /**
-   * Only update element if prop1 changed. 
+   * Only update element if prop1 changed.
    */
   shouldUpdate(changedProperties) {
-    changedProperties.forEach((oldValue, propName) => { 
+    changedProperties.forEach((oldValue, propName) => {
       console.log(`${propName} changed. oldValue: ${oldValue}`);
     });
     return changedProperties.has('prop1');
   }
-  
+
   change() {
     return Math.floor(Math.random()*10);
   }

@@ -1,10 +1,10 @@
 /**
  * Import LitElement base class, html helper function,
- * and TypeScript decorators 
+ * and TypeScript decorators
  **/
-import { 
-  LitElement, html, customElement, property 
-} from '@polymer/lit-element';
+import {
+  LitElement, html, customElement, property
+} from 'lit-element';
 
 /**
  * Use the customElement decorator to define your class as
@@ -12,7 +12,7 @@ import {
  */
 @customElement('my-element')
 export class MyElement extends LitElement {
-  
+
   /**
    * Create an observed property. Triggers update on change.
    */
@@ -25,7 +25,7 @@ export class MyElement extends LitElement {
   render(){
     /**
      * Use JavaScript expressions to include property values in
-     * the element template. 
+     * the element template.
      */
     return html`<p>${this.foo}</p>`;
   }

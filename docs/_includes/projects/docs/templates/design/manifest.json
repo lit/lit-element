@@ -9,7 +9,7 @@
   "description": "lit-element code sample",
   "template": "typescript",
   "dependencies": {
-    "@polymer/lit-element": "latest",
+    "lit-element": "latest",
     "@webcomponents/webcomponentsjs": "latest"
   }
 }

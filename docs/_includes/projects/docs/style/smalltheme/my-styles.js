@@ -1,8 +1,8 @@
-import { html } from '@polymer/lit-element'; 
+import { html } from 'lit-element';
 
 export const navStyles = html`
   ul {
-    list-style-type: none; 
+    list-style-type: none;
     margin: 0;
     padding: 0;
   }

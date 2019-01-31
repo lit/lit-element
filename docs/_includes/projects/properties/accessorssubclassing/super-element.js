@@ -1,7 +1,7 @@
-import { LitElement, html } from '@polymer/lit-element';
+import { LitElement, html } from 'lit-element';
 
-export class SuperElement extends LitElement {  
-  static get properties() { return { 
+export class SuperElement extends LitElement {
+  static get properties() { return {
     prop1: { type: Number }
   };}
 

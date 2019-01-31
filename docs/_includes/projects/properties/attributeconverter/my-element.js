@@ -1,10 +1,10 @@
-import { LitElement, html } from '@polymer/lit-element';
+import { LitElement, html } from 'lit-element';
 
-class MyElement extends LitElement { 
-  static get properties() { return {  
-    myProp: { 
+class MyElement extends LitElement {
+  static get properties() { return {
+    myProp: {
       reflect: true,
-      converter: { 
+      converter: {
         toAttribute(value) {
           console.log('myProp\'s toAttribute.');
           console.log('Processing:', value, typeof(value));
@@ -22,8 +22,8 @@ class MyElement extends LitElement {
         }
       }
     },
-    
-    theProp: { 
+
+    theProp: {
       reflect: true,
       converter(value) {
         console.log('theProp\'s converter.');
@@ -38,7 +38,7 @@ class MyElement extends LitElement {
   constructor() {
     super();
     this.myProp = 'myProp';
-    this.theProp = 'theProp'; 
+    this.theProp = 'theProp';
   }
 
   attributeChangedCallback(name, oldval, newval) {

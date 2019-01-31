@@ -3,7 +3,7 @@
  * Starting code for 3. Properties
  */
 
-import { LitElement, html } from '@polymer/lit-element'; 
+import { LitElement, html } from 'lit-element';
 
 class MyElement extends LitElement {
   /**
@@ -18,7 +18,7 @@ class MyElement extends LitElement {
    */
   constructor() {
     // Always call superconstructor first
-    super(); 
+    super();
   }
 
   /**

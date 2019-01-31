@@ -1,6 +1,7 @@
 ---
 layout: try
 title: Try LitElement
+permalink: /try
 ---
 
 Try LitElement in live-editable code without installing anything. Build your first component, use it in a web page, and add style with CSS. 
@@ -18,4 +19,4 @@ Click **Preview** at any time to see your code in action.
 
 </div>
 
-[Next: 1. Create a component](create)
+[Next: 1. Create a component](/try/create)

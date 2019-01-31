@@ -3,7 +3,7 @@
  * Starting code for 6. Style
  */
 
-import { LitElement, html } from '@polymer/lit-element'; 
+import { LitElement, html } from 'lit-element';
 
 class MyElement extends LitElement {
   static get properties() {
@@ -13,7 +13,7 @@ class MyElement extends LitElement {
       myBool: { type: Boolean }
     };
   }
-  
+
   constructor() {
     super();
     this.message='Hello world! From my-element';

@@ -1,13 +1,13 @@
-import { LitElement, html } from '@polymer/lit-element';
+import { LitElement, html } from 'lit-element';
 
-class MyElement extends LitElement {  
+class MyElement extends LitElement {
   static get properties() { return {
     myProp: {
       type: Number,
 
       /**
-       * Compare myProp's new value with its old value. 
-       * 
+       * Compare myProp's new value with its old value.
+       *
        * Only consider myProp to have changed if newVal is larger than
        * oldVal.
        */
@@ -23,7 +23,7 @@ class MyElement extends LitElement {
       }
     }};
   }
-  
+
   constructor() {
     super();
     this.myProp = 1;
@@ -35,7 +35,7 @@ class MyElement extends LitElement {
       <button @click="${this.getNewVal}">get new value</button>
     `;
   }
-  
+
   updated() {
     console.log('updated');
   }

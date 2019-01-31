@@ -3,14 +3,14 @@
  * Completed code for 3. Properties
  */
 
-import { LitElement, html } from '@polymer/lit-element'; 
+import { LitElement, html } from 'lit-element';
 
 class MyElement extends LitElement {
   /**
    * DONE: Declare a property.
    */
   static get properties() {
-    return { 
+    return {
       // Property declaration
       message: { type: String }
     };
@@ -21,7 +21,7 @@ class MyElement extends LitElement {
    */
   constructor() {
     // Always call superconstructor first
-    super(); 
+    super();
 
     // Initialize property
     this.message='Hello world! From my-element';

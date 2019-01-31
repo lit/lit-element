@@ -6,7 +6,7 @@
 /**
  * DONE: Import the LitElement base class and html helper function.
  */
-import { LitElement, html } from '@polymer/lit-element'; 
+import { LitElement, html } from 'lit-element';
 
 /**
  * DONE: Create a class for your element that extends the LitElement
