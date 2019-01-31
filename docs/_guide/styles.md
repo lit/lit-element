@@ -24,11 +24,17 @@ By default, LitElement creates a shadow root and renders into [shadow DOM](https
 
 Shadow DOM scopes CSS so that styles defined in a shadow root only apply to DOM inside the shadow root, and do not "leak" to outside DOM. Shadow roots are also isolated from styles defined outside the shadow root, whether in the main page or an outer shadow root.
 
+<div class="alert alert-info">
+
 **This guide applies only if you use the default (shadow DOM) render root.** If you [modify your element's render root](templates#renderroot) to render into the main DOM tree instead of a shadow root, these instructions won't apply.
-{.alert-info}
+
+</div>
+
+<div class="alert alert-info">
 
 **If you're using the Shady CSS polyfill, be aware that it has some limitations.** See the [Shady CSS README](https://github.com/webcomponents/shadycss/blob/master/README.md#limitations) for more information.
-{.alert-info}
+
+</div>
 
 ## Developing a LitElement component
 
@@ -52,7 +58,11 @@ LitElement lets you define static styles that apply to all instances of a compon
 
 </div>
 
-SStatic styles are evaluated once only, they apply to all instances & never re-evaluated. To define styles per instance, we recommend CSS custom properties. See [theming](#theming). Or you cam use inline styles. See [inline styles](#inline).
+<div class="alert alert-info">
+
+Static styles apply to all instances of an element, and are evaluated once only. To define styles per instance, we recommend using [CSS custom properties](#cssprops); however, you can also apply styles per-instance by [defining your styles inline](#inline) and using LitElement properties to...
+
+</div>
 
 To define a static `styles` property:
 
@@ -105,7 +115,7 @@ To define a static `styles` property:
 
 Static styles apply to all instances of an element. Any expressions in your CSS are evaluated and included **once**, then reused for all instances. 
 
-For security reasons, you need to tag expressions with the `cssLiteral` tag:
+For security reasons, expressions must be tagged with the `cssLiteral` template literal tag:
 
 ```js
 import { LitElement, css, cssLiteral } from 'lit-element';
@@ -122,7 +132,7 @@ class MyElement extends LitElement {
 }
 ```
 
-The `unsafeCSS` tag is for...?
+TODO: The `unsafeCSS` tag is for...?
 
 #### Define styles inline in a style block
 
