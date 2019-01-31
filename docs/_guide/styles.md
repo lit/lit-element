@@ -60,7 +60,7 @@ LitElement lets you define static styles that apply to all instances of a compon
 
 <div class="alert alert-info">
 
-**Use static styles for optimal performance.** LitElement uses [Constructable Stylesheets](https://wicg.github.io/construct-stylesheets/) in browsers that support this new standard, with a fallback for browsers that don't. Constructable Stylesheets allow LitElement to parse styles exactly once and reuse the resulting Stylesheet object for maximum efficiency.
+**Use static styles for optimal performance.** LitElement uses [Constructable Stylesheets](https://wicg.github.io/construct-stylesheets/) in browsers that support this new standard, with a fallback for browsers that don't. Constructable Stylesheets allow the browser to parse styles exactly once and reuse the resulting Stylesheet object for maximum efficiency.
 
 </div>
 
@@ -300,7 +300,7 @@ To style elements in a shadow root, simply use standard CSS selectors.
 
 Since CSS selectors in a shadow root only apply to elements in the shadow root, you don't need to be defensive against accidentally styling other elements in the page. This means you can generally write much simpler selectors, that are easier to reason about, and faster, than without shadow DOM.
 
-Simple selectors, like `*`, tagname, id and class selectors, are fine in a shadow root because they don't match outside the root:
+Simple selectors, like `*`, tagname, id, and class selectors, are fine in a shadow root because they don't match outside the root:
 
 ```css
 * {
@@ -322,7 +322,7 @@ h1 {
 
 #### Styling slotted elements {#slotted}
 
-Use the `::slotted()` CSS pseudo-element to select light DOM elements that have been included in shadow DOM via the `<slot>` element.
+Use the `::slotted()` CSS pseudo-element to select light DOM children that have been included in shadow DOM via the `<slot>` element.
 
 * `::slotted(*)` matches all slotted elements.
 
