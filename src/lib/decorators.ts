@@ -67,20 +67,6 @@ const standardCustomElement =
  * Class decorator factory that defines the decorated class as a custom element.
  *
  * @param tagName the name of the custom element to define
- *
- * In TypeScript, the `tagName` passed to `customElement` should be a key of the
- * `HTMLElementTagNameMap` interface. To add your element to the interface,
- * declare the interface in this module:
- *
- *     @customElement('my-element')
- *     export class MyElement extends LitElement {}
- *
- *     declare global {
- *       interface HTMLElementTagNameMap {
- *         'my-element': MyElement;
- *       }
- *     }
- *
  */
 export const customElement = (tagName: string) => (
     classOrDescriptor: Constructor<HTMLElement>|ClassDescriptor) =>
