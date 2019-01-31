@@ -1,6 +1,6 @@
 {
   "files": [
-    "custom-greeting.js",
+    "custom-greeting.ts",
     "index.html",
     "index.ts"
   ],
