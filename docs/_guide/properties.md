@@ -411,12 +411,12 @@ When you create custom property accessors for a property, LitElement still gener
 
 ### Prevent LitElement from generating a property accessor {#accessors-noaccessor}
 
-To prevent LitElement from generating property accessors, set `noAccessors` to `true` in the property declaration:
+To prevent LitElement from generating property accessors, set `noAccessor` to `true` in the property declaration:
 
 ```js
 static get properties() { return { 
   // Don't generate accessors for myProp
-  myProp: { type: Number, noAccessors: true } 
+  myProp: { type: Number, noAccessor: true } 
 
   // Do generate accessors for aProp
   aProp: { type: String }
