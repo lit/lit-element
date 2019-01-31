@@ -140,6 +140,10 @@ class MyElement extends LitElement {
 
 TODO: The `unsafeCSS` tag is for...?
 
+sorvell: The intention of unsafeCss is to allow you to use any value. To be clear, the function is named this way so that it's clear that you may be incurring some risk.
+
+See also https://github.com/Polymer/lit-element/issues/488 
+
 #### Define styles inline in a style block {#inline}
 
 We recommend using static styles to style LitElement components. However, in some cases you may want to evaluate and apply styles per instance, rather than to all instances 
