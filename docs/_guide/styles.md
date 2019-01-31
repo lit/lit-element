@@ -101,7 +101,7 @@ To define a static `styles` property:
         }
         ```
 
-##### Include expressions in static styles
+##### Expressions in static styles
 
 Static styles apply to all instances of an element. Any expressions in your CSS are evaluated and included **once**, then reused for all instances. 
 
@@ -124,7 +124,7 @@ class MyElement extends LitElement {
 
 The `unsafeCSS` tag is for...?
 
-#### Inline styles
+#### Define styles inline in a style block
 
 You can also style a shadow root by including inline styles in your element template. We still recommend static styles, but in some cases you may want to vary the CSS per-element. One way to do this is with bindings in `<style>` elements. 
 
@@ -153,7 +153,7 @@ class MyElement extends LitElement {
 
 TODO: Does changing `this.mainColro` reevaluate and restyle dynamically whenever `render()` is called? (my tests suggest no)
 
-#### External stylesheets
+#### Define styles in an external stylesheet
 
 You can load an external stylesheet into a shadow root with a `<link>` element:
 
@@ -178,11 +178,13 @@ There are some important caveats though:
 
 ### What you can style
 
+This section covers:
+
 * [Styling the host element](#host).
 * [Styling elements in the host's shadow root](#children).
 * [Styling slotted elements](#slot). Slotted elements are rendered in shadow DOM via the `slot` element - see MDN for more info. 
 
-You can't style other stuff because encapsulation
+You can't style other stuff because encapsulation.
  
 #### Styling the host element {#host}
 
@@ -260,17 +262,14 @@ Two best practices for working with custom elements are:
 
 See [Custom Element Best Practices](https://developers.google.com/web/fundamentals/web-components/best-practices) for more information.
 
-#### Styling elements in the host's shadow root
+#### Styling elements in the host's shadow root {#children}
 
-To style elements in a shadow root, use standard CSS selectors.
-
-```css
-
-```
+To style elements in a shadow root, simply use standard CSS selectors.
 
 Since CSS selectors in a shadow root only apply to elements in the shadow root, you don't need to be defensive against accidentally styling other elements in the page. This means you can generally write much simpler selectors, that are easier to reason about, and faster, than without shadow DOM.
 
 Simple selectors, like `*`, tagname, id and class selectors, are fine in a shadow root because they don't match outside the root:
+
 ```css
 * {
   color: black;
@@ -289,7 +288,23 @@ h1 {
 }
 ```
 
-#### Inherited properties
+#### Styling slotted elements
+
+Use the `::slotted()` CSS pseudo-element to select light DOM elements that have been included in shadow DOM via the `<slot>` element.
+
+* `::slotted(*)` matches all slotted elements.
+
+* `::slotted(p)` matches slotted paragraphs.
+
+* `p ::slotted(*)` matches slotted elements in a paragraph element.
+
+```js
+{% include projects/docs/style/slotted/my-element.js %}
+```
+
+{% include project.html folder="docs/style/slotted" openFile="my-element.js" %}
+
+### Inheritance
 
 [Inherited CSS properties](https://developer.mozilla.org/en-US/docs/Web/CSS/inheritance), like `color`, `font-family`, and all CSS custom properties (`--*`) _do_ inherit through shadow root boundaries.
 
@@ -330,23 +345,7 @@ If your host element itself inherits properties from another element, the host's
 
 {% include project.html folder="docs/style/inherited2" openFile="my-element.js" %}
 
-#### Styling slotted elements
-
-Use the `::slotted()` CSS pseudo-element to select light DOM elements that have been included in shadow DOM via the `<slot>` element.
-
-* `::slotted(*)` matches all slotted elements.
-
-* `::slotted(p)` matches slotted paragraphs.
-
-* `p ::slotted(*)` matches slotted elements in a paragraph element.
-
-```js
-{% include projects/docs/style/slotted/my-element.js %}
-```
-
-{% include project.html folder="docs/style/slotted" openFile="my-element.js" %}
-
-## Consuming a lit-elemetn
+## Consuming a lit-element
 
 You can set styles for the host from the main document by using its custom element tag as a selector. For example:
 
@@ -415,7 +414,6 @@ If the user has an existing app theme, they can easily apply their theme propert
 {% include project.html folder="docs/style/customproperties" openFile="my-element.js" %}
 
 See [CSS Custom Properties on MDN](https://developer.mozilla.org/en-US/docs/Web/CSS/--*) for more information.
-
 
 In your element:
 
