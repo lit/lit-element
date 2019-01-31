@@ -146,15 +146,19 @@ See also https://github.com/Polymer/lit-element/issues/488
 
 #### Define styles inline in a style block {#inline}
 
-We recommend using static styles to style LitElement components. However, in some cases you may want to evaluate and apply styles per instance, rather than to all instances 
-
-You can also style a shadow root by including inline styles in your element template. 
-
-We still recommend static styles, but in some cases you may want to vary the CSS per-element. One way to do this is with bindings in an inline `<style>` element. 
+We recommend using static styles to style LitElement components. However, in some cases you may want to evaluate and apply styles per instance, rather than to all instances of a LitElement component. One way to do this is to include inline styles in a `<style>` element in your template, and use your element's properties in your CSS rules to evaluate styles per instance.
 
 <div class="alert alert-warning">
 
-**Inline styles won't update in ShadyCSS**. The limitations of the ShadyCSS polyfill this won't work with shadyCsss.
+**TODO**
+
+- wanted to clarify original statements by Justin, which i found ambiguous -- however my edits could be garbage
+- what exactly won't work in shady css vs not shady css
+- if you're not using shady css, will changing the prop arbitrarily at runtime cause the styles to update? I am thinking no
+
+https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/style#Setting_styles https://developer.mozilla.org/en-US/docs/Web/API/Window/getComputedStyle 
+
+**Inline styles won't update per instance in ShadyCSS**. Due to limitations of the ShadyCSS polyfill, you can't use element properties in CSS rules as the expressions won't be evaluated.
 
 </div>
 
@@ -174,8 +178,6 @@ class MyElement extends LitElement {
   }
 }
 ```
-
-TODO: Does changing `this.mainColro` reevaluate and restyle dynamically whenever `render()` is called? (my tests suggest no)
 
 #### Define styles in an external stylesheet {#external}
 
