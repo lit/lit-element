@@ -4,25 +4,21 @@ title: Styles
 slug: styles
 ---
 
-{::options toc_levels="1..4" /}
+{::options toc_levels="1..3" /}
 * ToC
 {:toc}
 
 ## Overview
 
-This page describes how to apply styles to LitElement components. 
-
-The info is in 3 sections:
-
-  * Developing a LitElement component.
-  * Consuming a LitElement component.
-  * Theming an app.
-
-### Shadow DOM
-
-By default, LitElement creates a shadow root and renders into [shadow DOM](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_shadow_DOM).
+LitElement provides flexibility in how you style your components. By default, LitElement creates a shadow root and renders into [shadow DOM](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_shadow_DOM), the browser's built-in way of encapsulating native UI components.
 
 Shadow DOM scopes CSS so that styles defined in a shadow root only apply to DOM inside the shadow root, and do not "leak" to outside DOM. Shadow roots are also isolated from styles defined outside the shadow root, whether in the main page or an outer shadow root.
+
+This page describes how to apply styles to LitElement components and is divided into three sections: 
+
+  * [Developing a LitElement component](#developing): Where to put CSS styling rules when developing your own LitElement components; how to apply CSS styles to your element and its template.
+  * [Consuming a LitElement component](#consuming): How to apply styles to a LitElement component when you import and use it in HTML.
+  * [Theming an app](#theming): How to make a cohesive CSS app theme, and apply it to the LitElement components in your app.
 
 <div class="alert alert-info">
 
@@ -52,13 +48,11 @@ In this section:
 
 ### Where to put your styles {#where}
 
-When developing a component there are 3 main places you can define its styles:
+When developing a LitElement component, there are three main places you can define its styles:
 
-* In the static `styles` property of a LitElement class (recomended).
-* Inline, inside a `<style>` element within the HTML template defined in your `render` function.
-* In an external stylesheet, linked from your LitElement template with `<link rel="stylesheet" href="...">`.
-
-In addition, some CSS properties are inherited. Inheritance does flow down the shadow DOM tree.
+* [In the static `styles` property of a LitElement class (recomended)](#static).
+* [Inline, inside a `<style>` element within the HTML template defined in your `render` function](#inline).
+* [In an external stylesheet, linked from your LitElement template with `<link rel="stylesheet" href="...">`](#external).
 
 #### Define styles in a static styles property {#static}
 
@@ -148,11 +142,15 @@ TODO: The `unsafeCSS` tag is for...?
 
 #### Define styles inline in a style block {#inline}
 
-You can also style a shadow root by including inline styles in your element template. We still recommend static styles, but in some cases you may want to vary the CSS per-element. One way to do this is with bindings in `<style>` elements. 
+We recommend using static styles to style LitElement components. However, in some cases you may want to evaluate and apply styles per instance, rather than to all instances 
+
+You can also style a shadow root by including inline styles in your element template. 
+
+We still recommend static styles, but in some cases you may want to vary the CSS per-element. One way to do this is with bindings in an inline `<style>` element. 
 
 <div class="alert alert-warning">
 
-**this will not work with shadow DOM polyfills like ShadyCSS** this won't work with shadyCsss.
+**Inline styles won't update in ShadyCSS**. The limitations of the ShadyCSS polyfill this won't work with shadyCsss.
 
 </div>
 
