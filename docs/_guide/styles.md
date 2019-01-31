@@ -38,7 +38,19 @@ Shadow DOM scopes CSS so that styles defined in a shadow root only apply to DOM 
 
 ## Developing a LitElement component
 
-### Where to put your styles
+In this section:
+
+* [Where to put your styles](#where)
+  * [Define styles in a static styles property](#static)
+  * [Define styles inline](#inline)
+  * [Define styles in an external stylesheet](#external)
+* [What you can style](#what)
+  * [Styling the host element](#host)
+  * [Styling elements in the thing](#children)
+  * [Styling slotted](#slotted)
+* [Inheritance and shadow DOM](#inheritance)
+
+### Where to put your styles {#where}
 
 When developing a component there are 3 main places you can define its styles:
 
@@ -48,7 +60,7 @@ When developing a component there are 3 main places you can define its styles:
 
 In addition, some CSS properties are inherited. Inheritance does flow down the shadow DOM tree.
 
-#### Define styles in a static styles property
+#### Define styles in a static styles property {#static}
 
 LitElement lets you define static styles that apply to all instances of a component.
 
@@ -134,7 +146,7 @@ class MyElement extends LitElement {
 
 TODO: The `unsafeCSS` tag is for...?
 
-#### Define styles inline in a style block
+#### Define styles inline in a style block {#inline}
 
 You can also style a shadow root by including inline styles in your element template. We still recommend static styles, but in some cases you may want to vary the CSS per-element. One way to do this is with bindings in `<style>` elements. 
 
@@ -163,7 +175,7 @@ class MyElement extends LitElement {
 
 TODO: Does changing `this.mainColro` reevaluate and restyle dynamically whenever `render()` is called? (my tests suggest no)
 
-#### Define styles in an external stylesheet
+#### Define styles in an external stylesheet {#external}
 
 You can load an external stylesheet into a shadow root with a `<link>` element:
 
@@ -186,7 +198,7 @@ There are some important caveats though:
 * External styles can cause a flash-of-unstyled-content (FOUC) while they load.
 * The URL in the `href` attribute is relative to the _main document_, making this technique mostly useful for application elements where asset URLs are well known, and not for reusable elements published publicly.
 
-### What you can style
+### What you can style {#what}
 
 You can style:
 
