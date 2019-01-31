@@ -42,6 +42,10 @@ export class CSSResult {
     }
     return this._styleSheet;
   }
+
+  toString(): String {
+    return this.cssText;
+  }
 }
 
 /**
