@@ -322,7 +322,7 @@ h1 {
 
 #### Styling slotted elements {#slotted}
 
-Use the `::slotted()` CSS pseudo-element to select light DOM elements that have been included in shadow DOM via the `<slot>` element.
+Use the `::slotted()` CSS pseudo-element to select light DOM children that have been included in shadow DOM via the `<slot>` element.
 
 * `::slotted(*)` matches all slotted elements.
 
