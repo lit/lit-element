@@ -300,7 +300,7 @@ To style elements in a shadow root, simply use standard CSS selectors.
 
 Since CSS selectors in a shadow root only apply to elements in the shadow root, you don't need to be defensive against accidentally styling other elements in the page. This means you can generally write much simpler selectors, that are easier to reason about, and faster, than without shadow DOM.
 
-Simple selectors, like `*`, tagname, id and class selectors, are fine in a shadow root because they don't match outside the root:
+Simple selectors, like `*`, tagname, id, and class selectors, are fine in a shadow root because they don't match outside the root:
 
 ```css
 * {
