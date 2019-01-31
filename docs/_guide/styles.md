@@ -42,7 +42,7 @@ In this section:
   * [Define styles in an external stylesheet](#external)
 * [What you can style](#what)
   * [Styling the host element](#host)
-  * [Styling elements in the thing](#children)
+  * [Styling elements in the thing](#shadowdom)
   * [Styling slotted](#slotted)
 * [Inheritance and shadow DOM](#inheritance)
 
@@ -207,7 +207,7 @@ There are some important caveats though:
 You can style:
 
 * [The host element](#host). The host element is your component. It is called the "host" because it hosts shadow DOM. You can style the element itself with special CSS selectors `:host` and `:host()`.
-* [Elements in the host's shadow root](#children).
+* [Elements in the host's shadow root](#shadowdom).
 * [Slotted elements](#slot). Slotted elements are rendered in shadow DOM via the `slot` element - see MDN for more info. You can style slotted content with `::slotted()`.
 
 Because of encapsulation, you can't (and shouldn't) style anything else from within your element.
@@ -294,7 +294,7 @@ Two best practices for working with custom elements are:
 
 See [Custom Element Best Practices](https://developers.google.com/web/fundamentals/web-components/best-practices) for more information.
 
-#### Styling elements in the host's shadow root {#children}
+#### Styling elements in the shadow root {#shadowdom}
 
 To style elements in a shadow root, simply use standard CSS selectors.
 
