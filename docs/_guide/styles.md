@@ -236,38 +236,6 @@ An element can apply styles to itself with the `:host` and `:host()` CSS psuedo-
 
 {% include project.html folder="docs/style/hostselector" openFile="my-element.js" %}
 
-COMPLETE NONSENSE, CORRECTED IN SEPARATE PR 
-
------- start nonsense -----
-
-**The :host CSS pseudo-class has higher specificity than the element's type selector.** Styles set for your host with the `:host` pseudo-class from inside its own shadow root will override styles set from outside its shadow root. For example:
-
-_index.html_ 
-
-```html
-<style>
-  my-element { 
-    color: blue;
-  }
-</style>
-<my-element></my-element>
-```
-
-_my-element.js_
-
-```html
-<style>
-  /* Overrides styles set for my-element in index.html */
-  :host {
-    color: red;
-  }
-</style>
-```
-
-See the MDN documentation on [:host](https://developer.mozilla.org/en-US/docs/Web/CSS/:host) and [:host()](https://developer.mozilla.org/en-US/docs/Web/CSS/:host()) for more information.
-
------- end nonsense -----
-
 ##### Host styling best practices
 
 Two best practices for working with custom elements are:
@@ -397,7 +365,37 @@ _index.html_
 <my-element></my-element>
 ```
 
-Inheritance also a thing. Custom props too. We recommend custom CSS properties, see [Custom props](#customprops).
+An element type selector has higher specificity than the :host pseudo-class selector. 
+
+Styles set for a host element from outside its shadow DOM will override styles set with the `:host` or `:host()` pseudo-class selectors inside shadow DOM. For example:
+
+_index.html_ 
+
+```html
+<style>
+  /* Overrides the `color` property of the `:host` styles in my-element.js */
+  my-element { 
+    color: blue;
+  }
+</style>
+...
+<my-element></my-element>
+```
+
+_my-element.js_
+
+```html
+<style>
+  :host {
+    color: red;
+    background-color: aliceblue;
+  }
+</style>
+```
+
+Inheritance also a thing. 
+
+Custom props too. We recommend custom CSS properties, see [Custom props](#customprops).
 
 ## Theming an app
 
