@@ -1,5 +1,5 @@
 # LitElement
-A simple base class for creating fast, lightweight web components.
+A simple base class for creating fast, lightweight web components with [lit-html](https://lit-html.polymer-project.org/).
 
 [![Build Status](https://travis-ci.org/Polymer/lit-element.svg?branch=master)](https://travis-ci.org/Polymer/lit-element)
 [![Published on npm](https://img.shields.io/npm/v/lit-element.svg)](https://www.npmjs.com/package/lit-element)
@@ -10,18 +10,16 @@ A simple base class for creating fast, lightweight web components.
 
 Full documentation is available at [lit-element.polymer-project.org](https://lit-element.polymer-project.org).
 
-Docs source is in the `docs` folder. To build the site youself, see the instructions in [docs/README.md](docs/README.md).
-
 ## Overview
 
-LitElement uses [lit-html](https://github.com/Polymer/lit-html) to render into the
+LitElement uses [lit-html](https://lit-html.polymer-project.org/) to render into the
 element's [Shadow DOM](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_shadow_DOM)
 and adds API to help manage element properties and attributes. LitElement reacts to changes in properties
 and renders declaratively using `lit-html`. See the [lit-html guide](https://lit-html.polymer-project.org/guide)
 for additional information on how to create templates for lit-element.
 
 ```ts
-    import {LitElement, html, css} from 'lit-element';
+    import {LitElement, html, css, customElement, property} from 'lit-element';
 
     // This decorator defines the element.
     @customElement('my-element');
@@ -32,12 +30,14 @@ for additional information on how to create templates for lit-element.
       @property()
       mood = 'great';
 
-      // Provide styling for the element.
-      static styles = css`.mood { color: green; }`;
+      static styles = css`
+        span {
+          color: green;
+        }`;
 
       // Render element DOM by returning a `lit-html` template.
       render() {
-        return html`Web Components are <span class="mood">${this.mood}</span>!`;
+        return html`Web Components are <span>${this.mood}</span>!`;
       }
 
     }
@@ -60,6 +60,8 @@ standard currently available in [TypeScript](https://www.typescriptlang.org/) or
   * You can also copy [this HTML file](https://gist.githubusercontent.com/sorvell/48f4b7be35c8748e8f6db5c66d36ee29/raw/67346e4e8bc4c81d5a7968d18f0a6a8bc00d792e/index.html) into a local file and run it in any browser that supports [JavaScript Modules]((https://caniuse.com/#search=modules)).
 
 ## Installation
+
+From inside your project folder, run:
 
 ```bash
 $ npm install lit-element
