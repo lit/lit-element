@@ -131,7 +131,7 @@ _index.html_
 
 <div class="alert alert-info">
 
-**An element type selector has higher specificity than the :host pseudo-class selector.** Styles set for your host from the main document will override styles set with the `:host` or `:host()` pseudo-class selectors from inside the element's own template. For example:
+**An element type selector has higher specificity than the :host pseudo-class selector.** Styles set for your host from outside an element's shadow DOM will override styles set with the `:host` or `:host()` pseudo-class selectors inside shadow DOM. For example:
 
 _index.html_ 
 
