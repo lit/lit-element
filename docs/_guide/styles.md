@@ -137,7 +137,7 @@ _index.html_
 
 ```html
 <style>
-  /* Overrides styles set for my-element with :host in my-element.js */
+  /* Overrides the `color` property of the `:host` styles in my-element.js */
   my-element { 
     color: blue;
   }
@@ -152,6 +152,7 @@ _my-element.js_
 <style>
   :host {
     color: red;
+    background-color: aliceblue;
   }
 </style>
 ```
