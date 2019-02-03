@@ -4,9 +4,9 @@ class MyElement extends LitElement {
   static styles = css`
     :host { 
       display: block;
-      color: var(--my-element-text-color, 'black'); 
-      background: var(--my-element-background-color, 'white');  
-      font-family: var(--my-element-font-family, 'Times New Roman');
+      color: var(--my-element-text-color); 
+      background: var(--my-element-background-color);  
+      font-family: var(--my-element-font-family);
     }
     :host([hidden]) {
       display: none;
