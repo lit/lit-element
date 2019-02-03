@@ -448,16 +448,16 @@ See [CSS Custom Properties on MDN](https://developer.mozilla.org/en-US/docs/Web/
 
 ### A simple example theme {#example-theme}
 
-```css
-{% include projects/style/theming/theme.css %}
-```
-
-```js
-{% include projects/style/theming/my-element.js %}
-```
+_index.html_
 
 ```html
 {% include projects/style/theming/index.html %}
+```
+
+_my-element.js_
+
+```js
+{% include projects/style/theming/my-element.js %}
 ```
 
 {% include project.html folder="style/theming" openFile="theme.css" %}
