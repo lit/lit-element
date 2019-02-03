@@ -502,7 +502,7 @@ Since LitElement uses lit-html's `html` and `render` functions to render your te
 of the entire lit-html featureset for writing your templates:
 For example you can use the `nothing` sentinel value in case you want nothing to be rendered or you can use directives.
 You can find more information on writing templates with lit-html in the lit-html documentation:
-[Template Reference](https://github.com/Polymer/lit-html/blob/master/docs/_guide/05-template-reference.md)
+[Template Reference](https://lit-html.polymer-project.org/guide/template-reference)
 
 
 To use features of lit-html thar are not part of the template syntax itself, but require an import such as `nothing` or directives you need to have lit-html installed as a dependency along side LitElement in your package.json. You can then use these features as specified in
