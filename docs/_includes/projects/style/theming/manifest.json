@@ -3,7 +3,7 @@
   "description": "lit-element code sample",
   "files": [
     "my-element.js",
-    "my-styles.js",
+    "theme.css",
     "index.html",
     "index.ts"
   ],

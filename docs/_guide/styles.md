@@ -8,65 +8,44 @@ slug: styles
 * ToC
 {:toc}
 
-## Overview
-
-LitElement provides flexibility in how you style your components. By default, LitElement creates a shadow root and renders into [shadow DOM](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_shadow_DOM), the browser's built-in way of encapsulating native UI components.
-
-Shadow DOM scopes CSS so that styles defined in a shadow root only apply to DOM inside the shadow root, and do not "leak" to outside DOM. Shadow roots are also isolated from styles defined outside the shadow root, whether in the main page or an outer shadow root.
-
-This page describes how to apply styles to LitElement components and is divided into three sections: 
-
-  * [Developing a LitElement component](#developing): Where to put CSS styling rules when developing your own LitElement components; how to apply CSS styles to your element and its template.
-  * [Consuming a LitElement component](#consuming): How to apply styles to a LitElement component when you import and use it in HTML.
-  * [Theming an app](#theming): How to make a cohesive CSS app theme, and apply it to the LitElement components in your app.
-
-<div class="alert alert-info">
-
-**This guide applies only if you use the default (shadow DOM) render root.** If you [modify your element's render root](templates#renderroot) to render into the main DOM tree instead of a shadow root, these instructions won't apply.
-
-</div>
-
 <div class="alert alert-info">
 
 **If you're using the Shady CSS polyfill, be aware that it has some limitations.** See the [Shady CSS README](https://github.com/webcomponents/shadycss/blob/master/README.md#limitations) for more information.
 
 </div>
 
-## Developing a LitElement component
+## Styling options for component developers {#styling-for-developers}
 
-In this section:
+The [shadow DOM](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_shadow_DOM) API allows the creation of encapsulated DOM trees that are attached to a custom element. 
 
-* [Where to put your styles](#where)
-  * [Define styles in a static styles property](#static)
-  * [Define styles inline](#inline)
-  * [Define styles in an external stylesheet](#external)
-* [What you can style](#what)
-  * [Styling the host element](#host)
-  * [Styling elements in the thing](#shadowdom)
-  * [Styling slotted](#slotted)
-* [Inheritance and shadow DOM](#inheritance)
+The root node of a shadow DOM tree is called the **shadow root**. The element in the main document that has a shadow root attached to it is called the **host element**, or **host**.
 
-### Where to put your styles {#where}
+By default, LitElement creates a shadow root for your host element. LitElement renders the DOM structure described in your element template into this shadow root. 
 
-When developing a LitElement component, there are three main places you can define its styles:
+Shadow DOM scopes CSS so that styles defined in a shadow root only apply to DOM inside the shadow root, and do not "leak" to outside DOM. With the exception of inherited CSS properties, shadow roots are also isolated from styles defined outside the shadow root, whether in the main page or an outer shadow root.
+
+This section describes how to create styles in your shadow root to style your host element and its shadow DOM.
+
+### Where to define your styles {#where}
+
+There are three main places in which you can define styles for your host element and its shadow DOM:
 
 * [In the static `styles` property of a LitElement class (recomended)](#static).
-* [Inline, inside a `<style>` element within the HTML template defined in your `render` function](#inline).
-* [In an external stylesheet, linked from your LitElement template with `<link rel="stylesheet" href="...">`](#external).
+* [Inside a `<style>` element in the HTML template defined in your `render` function](#styleelement).
+* [In an external stylesheet, linked to from your LitElement template with `<link rel="stylesheet" href="...">`](#external).
 
-#### Define styles in a static styles property {#static}
+### Define styles in a static styles property {#static-styles}
 
 LitElement lets you define static styles that apply to all instances of a component.
 
-<div class="alert alert-info">
+We recommend using static styles for optimal performance. LitElement uses [Constructable Stylesheets](https://wicg.github.io/construct-stylesheets/) in browsers that support it, with a fallback for browsers that don't. Constructable Stylesheets allow the browser to parse styles exactly once and reuse the resulting Stylesheet object for maximum efficiency.
 
-**Use static styles for optimal performance.** LitElement uses [Constructable Stylesheets](https://wicg.github.io/construct-stylesheets/) in browsers that support this new standard, with a fallback for browsers that don't. Constructable Stylesheets allow the browser to parse styles exactly once and reuse the resulting Stylesheet object for maximum efficiency.
+The styles in the static `styles` property are evaluated once only and applied to all instances of the element. You can modify styles per element instance by using [CSS custom properties](#cssprops):
 
-</div>
+*   The element **developer** defines a style rule inside shadow DOM that uses CSS variables to apply a custom CSS property to a particular style property.
+*   The element **consumer** defines the value of the custom CSS property outside shadow DOM in a CSS rule that is inherited by the host element.
 
-<div class="alert alert-info">
-
-Static styles apply to all instances of an element, and are evaluated once only. To define styles per instance, we recommend using [CSS custom properties](#cssprops); however, you can also apply styles per-instance by [defining your styles inline](#inline) and using LitElement properties to...
+If you don't want to use custom properties, you can define per-instance styles in a `<style>` element inside shadow DOM. See the section on [Defining your styles in a style element](#styleelement) for more information.
 
 </div>
 
@@ -117,7 +96,7 @@ To define a static `styles` property:
         }
         ```
 
-##### Expressions in static styles
+#### Expressions in static styles
 
 Static styles apply to all instances of an element. Any expressions in your CSS are evaluated and included **once**, then reused for all instances. 
 
@@ -138,13 +117,7 @@ class MyElement extends LitElement {
 }
 ```
 
-TODO: The `unsafeCSS` tag is for...?
-
-sorvell: The intention of unsafeCss is to allow you to use any value. To be clear, the function is named this way so that it's clear that you may be incurring some risk.
-
-See also https://github.com/Polymer/lit-element/issues/488 
-
-#### Define styles inline in a style block {#inline}
+### Define styles in a style element {#style-element} 
 
 We recommend using static styles to style LitElement components. However, in some cases you may want to evaluate and apply styles per instance, rather than to all instances of a LitElement component. One way to do this is to include inline styles in a `<style>` element in your template, and use your element's properties in your CSS rules to evaluate styles per instance.
 
@@ -179,7 +152,7 @@ class MyElement extends LitElement {
 }
 ```
 
-#### Define styles in an external stylesheet {#external}
+### Define styles in an external stylesheet {#external-stylesheet}
 
 You can load an external stylesheet into a shadow root with a `<link>` element:
 
@@ -202,7 +175,7 @@ There are some important caveats though:
 * External styles can cause a flash-of-unstyled-content (FOUC) while they load.
 * The URL in the `href` attribute is relative to the _main document_, making this technique mostly useful for application elements where asset URLs are well known, and not for reusable elements published publicly.
 
-### What you can style {#what}
+### Write CSS styles for a host element and its shadow DOM {#shadow-dom-styles}
 
 You can style:
 
@@ -212,7 +185,7 @@ You can style:
 
 Because of encapsulation, you can't (and shouldn't) style anything else from within your element.
  
-#### Styling the host element {#host}
+#### Write CSS styles for a host element {#host-styles}
 
 An element can apply styles to itself with the `:host` and `:host()` CSS psuedo-classes used inside the element's ShadowRoot. The tern "host" is used because an element is the host of its own shadow root.
 
@@ -234,9 +207,7 @@ An element can apply styles to itself with the `:host` and `:host()` CSS psuedo-
   }
   ```
 
-{% include project.html folder="docs/style/hostselector" openFile="my-element.js" %}
-
-##### Host styling best practices
+{% include project.html folder="style/hostselector" openFile="my-element.js" %}
 
 Two best practices for working with custom elements are:
 
@@ -258,11 +229,11 @@ Two best practices for working with custom elements are:
     }
   ```
 
-{% include project.html folder="docs/style/bestpracs" openFile="my-element.js" %}
+{% include project.html folder="style/bestpracs" openFile="my-element.js" %}
 
 See [Custom Element Best Practices](https://developers.google.com/web/fundamentals/web-components/best-practices) for more information.
 
-#### Styling elements in the shadow root {#shadowdom}
+#### Write CSS styles for elements in shadow DOM {#shadow-dom-styles}
 
 To style elements in a shadow root, simply use standard CSS selectors.
 
@@ -288,7 +259,7 @@ h1 {
 }
 ```
 
-#### Styling slotted elements {#slotted}
+#### Write CSS styles for slotted children {#slotted-styles}
 
 TODO Explain projection somewhere here
 
@@ -301,18 +272,52 @@ Use the `::slotted()` CSS pseudo-element to select light DOM children that have 
 * `p ::slotted(*)` matches slotted elements in a paragraph element.
 
 ```js
-{% include projects/docs/style/slotted/my-element.js %}
+{% include projects/style/slotted/my-element.js %}
 ```
 
-{% include project.html folder="docs/style/slotted" openFile="my-element.js" %}
+{% include project.html folder="style/slotted" openFile="my-element.js" %}
 
-### Inheritance and shadow DOM
+## Styling options for component consumers {#styling-for-consumers}
 
-[Inherited CSS properties](https://developer.mozilla.org/en-US/docs/Web/CSS/inheritance), like `color`, `font-family`, and all CSS custom properties (`--*`) _do_ inherit through shadow root boundaries.
+When you use a LitElement component, you can set styles from the main document by using its custom element tag as a selector. For example:
 
-This means by default your elements will share some important styles from their outside context.
+_index.html_ 
 
-You can take advantage of this to style all of a shadow root's contents by setting inherited properties on the host with the `:host` CSS pseudo-class:
+```html
+<style>
+  my-element { 
+    font-family: Roboto;
+    font-size: 20;
+    color: blue;
+  }
+</style>
+...
+<my-element></my-element>
+```
+
+
+<div class="alert alert-info">
+
+An element type selector has higher specificity than the `:host` pseudo-class selector. 
+
+Styles set for a host element from outside its shadow DOM will override styles set with the `:host` or `:host()` pseudo-class selectors inside shadow DOM. See Inheritance. 
+
+</div>
+
+## Theming
+
+This section describes how to use CSS inheritance and custom CSS properties to:
+
+* Create easily stylable LitElement components.
+* Create a style theme that can easily be applied to imported LitElement components.
+
+### CSS Inheritance and shadow DOM {#inheritance}
+
+[Inherited CSS properties](https://developer.mozilla.org/en-US/docs/Web/CSS/inheritance) like `color`, `font-family`, and all CSS custom properties (`--*`) inherit through shadow root boundaries.
+
+This means that by default an element will share some important styles from its outside context.
+
+Component authors can take advantage of this to style all of a shadow root's contents by setting inherited properties on the host with the `:host` CSS pseudo-class:
 
 _my-element.js_
 
@@ -332,9 +337,9 @@ render() {
 }
 ```
 
-{% include project.html folder="docs/style/inherited" openFile="my-element.js" %}
+{% include project.html folder="style/inherited" openFile="my-element.js" %}
 
-If your host element itself inherits properties from another element, the host's shadow DOM children will inherit those properties in turn:
+If a host element itself inherits properties from another element, the host's shadow DOM children will inherit those properties in turn:
 
 ```html
   <style>
@@ -345,11 +350,9 @@ If your host element itself inherits properties from another element, the host's
   </div>
 ```
 
-{% include project.html folder="docs/style/inherited2" openFile="my-element.js" %}
+{% include project.html folder="style/inherited2" openFile="my-element.js" %}
 
-## Consuming a LitElement component
-
-When you use a LitElement component, you can set styles from the main document by using its custom element tag as a selector. For example:
+A LitElement component can be styled by using its custom element tag as a selector. For example:
 
 _index.html_ 
 
@@ -365,7 +368,7 @@ _index.html_
 <my-element></my-element>
 ```
 
-An element type selector has higher specificity than the :host pseudo-class selector. 
+An element type selector has higher specificity than the `:host` pseudo-class selector. 
 
 Styles set for a host element from outside its shadow DOM will override styles set with the `:host` or `:host()` pseudo-class selectors inside shadow DOM. For example:
 
@@ -393,13 +396,7 @@ _my-element.js_
 </style>
 ```
 
-Inheritance also a thing. 
-
-Custom props too. We recommend custom CSS properties, see [Custom props](#customprops).
-
-## Theming an app
-
-### Custom CSS properties {#customprops}
+### Custom CSS Properties {#css-properties}
 
 Custom properties inherit down the DOM tree, and through shadow root boundaries. You can use this to let your users apply styles and themes to your elements.
 
@@ -442,45 +439,25 @@ If the user has an existing app theme, they can easily apply their theme propert
 ```
 
 ```js
-{% include projects/docs/style/customproperties/my-element.js %}
+{% include projects/style/customproperties/my-element.js %}
 ```
 
-{% include project.html folder="docs/style/customproperties" openFile="my-element.js" %}
+{% include project.html folder="style/customproperties" openFile="my-element.js" %}
 
 See [CSS Custom Properties on MDN](https://developer.mozilla.org/en-US/docs/Web/CSS/--*) for more information.
 
-In your element:
+### A simple example theme {#example-theme}
+
+```css
+{% include projects/style/theming/theme.css %}
+```
 
 ```js
-class MyElement extends LitElement {
-  static styles = css`
-    :host { 
-      display: block;
-      color: var(--my-element-text-color); 
-      background: var(--my-element-background-color);  
-    }
-  `;
-}
+{% include projects/style/theming/my-element.js %}
 ```
-
-In html where your element is used:
 
 ```html
-<style>
-  html {
-    --theme-primary: green;
-    --theme-secondary: aliceblue;
-    --theme-warning: red;
-  }
-  my-element { 
-    --my-element-text-color: var(--theme-primary); 
-    --my-element-background-color: var(--theme-secondary); 
-  } 
-  my-element.warning {
-    --my-element-text-color: var(--theme-warning); 
-  }
-</style>
-...
-<my-element></my-element>
-<my-element class="warning"></my-element>
+{% include projects/style/theming/index.html %}
 ```
+
+{% include project.html folder="style/theming" openFile="theme.css" %}
