@@ -458,7 +458,7 @@ set myProp(value) {
 
 {% include project.html folder="properties/customsetter" openFile="my-element.js" %}
 
-## Configure property changes
+## Configure property changes {#haschanged}
 
 All declared properties have a function, `hasChanged`, which is called whenever the property is set. 
 
