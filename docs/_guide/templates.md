@@ -496,3 +496,10 @@ render() { return html`<slot name="thing"></slot>`; }
   <p slot="thing">stuff</p>
 </my-element>
 ```
+
+## Advanced features
+Since LitElement uses lit-html's `html` and `render` functions to render your template you can take advantage 
+of the entire lit-html featureset for writing your templates:
+For example you can use the `nothing` sentinel value in case you want nothing to be rendered or you can use directives.
+You can find more information on writing templates with lit-html here:
+<!-- add link to https://github.com/Polymer/lit-html/blob/master/docs/_guide/05-template-reference.md once it is published --!>
