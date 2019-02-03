@@ -177,14 +177,12 @@ There are some important caveats though:
 
 ### Write CSS styles for a host element and its shadow DOM {#shadow-dom-styles}
 
-You can style:
+In this section: 
 
-* [The host element](#host). The host element is your component. It is called the "host" because it hosts shadow DOM. You can style the element itself with special CSS selectors `:host` and `:host()`.
-* [Elements in the host's shadow root](#shadowdom).
-* [Slotted elements](#slot). Slotted elements are rendered in shadow DOM via the `slot` element - see MDN for more info. You can style slotted content with `::slotted()`.
+* [Write CSS styles for a host element](#host-styles). The host element is your component. It is called the "host" because it hosts shadow DOM. You can style the element itself with the special CSS selectors `:host` and `:host()`.
+* [Write CSS styles for elements in shadow DOM](#shadow-dom-styles).
+* [Write CSS styles for slotted children](#slotted-styles). Light DOM children of your host element can be rendered in shadow DOM via the `slot` element. You can style slotted content with the `::slotted()` CSS selector.
 
-Because of encapsulation, you can't (and shouldn't) style anything else from within your element.
- 
 #### Write CSS styles for a host element {#host-styles}
 
 An element can apply styles to itself with the `:host` and `:host()` CSS psuedo-classes used inside the element's ShadowRoot. The tern "host" is used because an element is the host of its own shadow root.
@@ -261,8 +259,6 @@ h1 {
 
 #### Write CSS styles for slotted children {#slotted-styles}
 
-TODO Explain projection somewhere here
-
 Use the `::slotted()` CSS pseudo-element to select light DOM children that have been included in shadow DOM via the `<slot>` element.
 
 * `::slotted(*)` matches all slotted elements.
@@ -294,7 +290,6 @@ _index.html_
 ...
 <my-element></my-element>
 ```
-
 
 <div class="alert alert-info">
 
