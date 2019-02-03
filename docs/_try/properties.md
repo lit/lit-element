@@ -4,7 +4,7 @@ slug: properties
 title: Use properties
 ---
 
-In this step, you'll declare a property for your component, and use the value in the component's template. LitElement components update automatically when their properties change.
+In this step, you'll declare a property for your component, initialize the property, and use the value in the component's template. 
 
 **Starting code**
 
@@ -18,34 +18,34 @@ _my-element.js_
 
 1. **Declare a property.**
 
-    In my-element.js, replace the existing `properties` getter with the following code: 
+    In my-element.js, add the following `properties` getter to the `MyElement` class: 
     
     ```js
     static get properties() {
-      return {
-        // Property declaration
-        message: { type: String }
-      };
+      return { message: { type: String } };
     }
     ```
+
+    The code snippet above adds a string property called `message` to your element class.
 
 2. **Initialize the property.**
 
-    You should initialize property values in a component's constructor. 
-    
-    In my-element.js, replace the existing constructor with the following code:
+    A good place to initialize property values is in your element constructor. 
+        
+    In my-element.js, add the following method to the `MyElement` class: 
     
     ```js
     constructor() {
-      // Always call superconstructor first
       super();
-
-      // Initialize property
-      this.message='Hello world! From my-element';
+      this.message = 'Hello world! From my-element';
     }
     ```
 
-3. **Add the property to your template with a JavaScript expression.**
+    The first line of code in the constructor (`super();`) calls the parent class constructor.
+
+3. **Add the property to your template.**
+
+    You can add properties to your LitElement templates with JavaScript expressions.
 
     In my-element.js, replace the existing `render` function with the following code:
 
@@ -57,8 +57,14 @@ _my-element.js_
     }
     ``` 
 
-If you're stuck, click **Launch Code Editor** below to see the completed code for Step 3.
+LitElement components update automatically when their properties change. 
 
-{% include project.html folder="try/properties/after" openFile="my-element.js" %}
+Here's the completed code for this step:
 
-[Next: 4. Logic](logic)
+_my-element.js_
+
+```js
+{% include projects/try/properties/after/my-element.js %}
+```
+
+[Next: 3. Logic](logic)

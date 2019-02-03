@@ -6,19 +6,15 @@ toc:
   create: 
     title: 1. Create
     url: /try/create
-  import: 
-    title: 2. Import
-    url: /try/import
   properties: 
-    title: 3. Properties
+    title: 2. Properties
     url: /try/properties
   logic: 
-    title: 4. Logic
+    title: 3. Logic
     url: /try/logic
   events: 
-    title: 5. Events
+    title: 4. Events
     url: /try/events
   style: 
-    title: 6. Style
+    title: 5. Style
     url: /try/style
-            
