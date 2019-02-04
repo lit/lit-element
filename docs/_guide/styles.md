@@ -18,6 +18,7 @@ slug: styles
 
 The [shadow DOM](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_shadow_DOM) API allows the creation of encapsulated DOM trees that are attached to a custom element. 
 
+
 The root node of a shadow DOM tree is called the **shadow root**. The element in the main document that has a shadow root attached to it is called the **host element**, or **host**.
 
 By default, LitElement creates a shadow root for your host element. LitElement renders the DOM structure described in your element template into this shadow root. 
@@ -123,15 +124,7 @@ We recommend using static styles to style LitElement components. However, in som
 
 <div class="alert alert-warning">
 
-**TODO**
-
-- wanted to clarify original statements by Justin, which i found ambiguous -- however my edits could be garbage
-- what exactly won't work in shady css vs not shady css
-- if you're not using shady css, will changing the prop arbitrarily at runtime cause the styles to update? I am thinking no
-
-https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/style#Setting_styles https://developer.mozilla.org/en-US/docs/Web/API/Window/getComputedStyle 
-
-**Inline styles won't update per instance in ShadyCSS**. Due to limitations of the ShadyCSS polyfill, you can't use element properties in CSS rules as the expressions won't be evaluated.
+**Expressions inside a `<style>` element won't update per instance in ShadyCSS**. Due to limitations of the ShadyCSS polyfill, you can't use element properties in CSS rules as the expressions won't be evaluated.
 
 </div>
 
@@ -154,7 +147,9 @@ class MyElement extends LitElement {
 
 ### Define styles in an external stylesheet {#external-stylesheet}
 
-You can load an external stylesheet into a shadow root with a `<link>` element:
+We strongly recommend static styles, CSS custom properties, or [lit-html's `classMap` or `styleMap` directives](TODO) if you're stying non-host shadow root contents.
+
+However, you can load an external stylesheet into a shadow root with a `<link>` element:
 
 ```js
 import {LitElement} from 'lit-element';
