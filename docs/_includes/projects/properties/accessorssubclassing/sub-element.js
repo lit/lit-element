@@ -1,9 +1,9 @@
-import { MyElement } from './my-element.js';
+import { SuperElement } from './super-element.js';
 
-class SubElement extends MyElement {  
-  static get properties() { return {
-    prop1: { reflectToAttribute: true, noAccessor: true }
-  }; }
+class SubElement extends SuperElement {  
+  static get properties() { 
+    return { prop: { reflectToAttribute: true, noAccessor: true } };
+  }
 }
 
 customElements.define('sub-element', SubElement);

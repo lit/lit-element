@@ -1,7 +1,7 @@
 import { LitElement, html } from 'lit-element';
 
-class MyElement extends LitElement {
-  static get properties() { 
+export class SuperElement extends LitElement {
+  static get properties() {
     return { prop: { type: Number } };
   }
 
@@ -19,12 +19,12 @@ class MyElement extends LitElement {
   }
 
   render() {
-    return html`
+    return html`  
       <p>prop: ${this.prop}</p>
-      <button @click="${() =>  { this.prop = Math.random()*10; }}">
+      <button @click="${() => { this.prop = Math.random()*10; }}">
         change prop
       </button>
-    `;
+  `;
   }
 }
-customElements.define('my-element', MyElement);
+customElements.define('super-element', SuperElement);
