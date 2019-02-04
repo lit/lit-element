@@ -768,6 +768,14 @@ suite('Static get styles', () => {
     const div = el.shadowRoot!.querySelector('div');
     assert.equal(getComputedStyle(div!).getPropertyValue('border-top-width').trim(), '4px');
   });
+
+  test('`CSSResult` allows for String type coercion via toString()', async () => {
+    const cssModule = css`.my-module { color: yellow; }`;
+    // Coercion allows for reusage of css-tag outcomes in regular strings.
+    // Example use case: apply cssModule as global page styles at document.body level.
+    const bodyStyles = `${cssModule}`;
+    assert.equal(bodyStyles, '.my-module { color: yellow; }');
+  });
 });
 
 suite('ShadyDOM', () => {
