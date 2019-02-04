@@ -16,7 +16,7 @@ import '@webcomponents/shadycss/apply-shim.min.js';
 
 import {
   css,
-  unsafeCss,
+  unsafeCSS,
   CSSResult,
   html as htmlWithStyles,
   LitElement,
@@ -464,17 +464,17 @@ suite('Static get styles', () => {
   });
 
   test('`CSSResult` cannot be constructed', async () => {
-    // Note, this is done for security, instead use `css` or `unsafeCss`
+    // Note, this is done for security, instead use `css` or `unsafeCSS`
     assert.throws(() => { new CSSResult('throw', Symbol()); });
   });
 
-  test('Any value can be used in `css` when included with `unsafeCss`', async () => {
+  test('Any value can be used in `css` when included with `unsafeCSS`', async () => {
     const name = generateElementName();
     const someVar = `2px solid blue`;
     customElements.define(name, class extends LitElement {
       static get styles() {
         return css`div {
-          border: ${unsafeCss(someVar)};
+          border: ${unsafeCSS(someVar)};
         }`;
       }
 

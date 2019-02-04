@@ -14,6 +14,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- ### Removed -->
 <!-- ### Fixed -->
 ## Unreleased
+### Changed
+* [Breaking] Renamed `unsafeCss` to `unsafeCSS` for consistency with lit-html's `unsafeHTML`
 
 ## [2.0.0-rc.5] - 2019-01-24
 ### Fixed
