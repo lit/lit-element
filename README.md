@@ -48,7 +48,7 @@ for additional information on how to create templates for lit-element.
 ```
 
 Note, this example uses decorators to create properties. Decorators are a proposed
-standard currently available in [TypeScript](https://www.typescriptlang.org/) or [Babel](https://babeljs.io/docs/en/babel-plugin-proposal-decorators).
+standard currently available in [TypeScript](https://www.typescriptlang.org/) or [Babel](https://babeljs.io/docs/en/babel-plugin-proposal-decorators). LitElement also supports a [vanilla JavaScript method](https://lit-element.polymer-project.org/guide/properties#declare) of declaring reactive properties.
 
 ## Examples
 
