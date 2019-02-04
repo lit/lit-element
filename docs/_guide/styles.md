@@ -174,9 +174,9 @@ There are some important caveats though:
 
 In this section: 
 
-* [Write CSS styles for a host element](#host-styles). The host element is your component. It is called the "host" because it hosts shadow DOM. You can style the element itself with the special CSS selectors `:host` and `:host()`.
+* [Write CSS styles for a host element](#host-styles).
 * [Write CSS styles for elements in shadow DOM](#shadow-dom-styles).
-* [Write CSS styles for slotted children](#slotted-styles). Light DOM children of your host element can be rendered in shadow DOM via the `slot` element. You can style slotted content with the `::slotted()` CSS selector.
+* [Write CSS styles for slotted children](#slotted-styles). Light DOM children of your host element can be rendered in shadow DOM via the `slot` element.
 
 #### Write CSS styles for a host element {#host-styles}
 
