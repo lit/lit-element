@@ -10,7 +10,7 @@ found at http://polymer.github.io/PATENTS.txt
 */
 
 export const supportsAdoptingStyleSheets =
-    ('adoptedStyleSheets' in Document.prototype);
+    ('adoptedStyleSheets' in Document.prototype) && ('replace' in CSSStyleSheet.prototype);
 
 const constructionToken = Symbol();
 
