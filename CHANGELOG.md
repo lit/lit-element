@@ -17,6 +17,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 * [Breaking] Renamed `unsafeCss` to `unsafeCSS` for consistency with lit-html's `unsafeHTML`
 
+### Fixed
+* Adds a check to ensure `CSSStyleSheet` is constructable ([#525](https://github.com/Polymer/lit-element/issues/525)).
+
 ## [2.0.0-rc.5] - 2019-01-24
 ### Fixed
 * Fixed a bug causing duplicate styles when an array was returned from `static get styles` ([#480](https://github.com/Polymer/lit-element/issues/480)).
