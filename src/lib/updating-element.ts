@@ -18,7 +18,17 @@
  * alias this function, so we have to use a small shim that has the same
  * behavior when not compiling.
  */
-export const JSCompiler_renameProperty = (prop: PropertyKey, _obj: any) => prop;
+window.JSCompiler_renameProperty =
+    <P extends PropertyKey>(prop: P, _obj: unknown): P => prop;
+
+declare global {
+  var JSCompiler_renameProperty: <P extends PropertyKey>(
+      prop: P, _obj: unknown) => P;
+
+  interface Window {
+    JSCompiler_renameProperty: typeof JSCompiler_renameProperty;
+  }
+}
 
 /**
  * Converts property values to and from attribute values.
@@ -222,8 +232,8 @@ export abstract class UpdatingElement extends HTMLElement {
    * @nocollapse
    */
   static get observedAttributes() {
-    // note: piggy backing on this to ensure we're _finalized.
-    this._finalize();
+    // note: piggy backing on this to ensure we're finalized.
+    this.finalize();
     const attributes: string[] = [];
     // Use forEach so this works even if for/of loops are compiled to for loops
     // expecting arrays
@@ -239,7 +249,7 @@ export abstract class UpdatingElement extends HTMLElement {
 
   /**
    * Ensures the private `_classProperties` property metadata is created.
-   * In addition to `_finalize` this is also called in `createProperty` to
+   * In addition to `finalize` this is also called in `createProperty` to
    * ensure the `@property` decorator can add property metadata.
    */
   /** @nocollapse */
@@ -268,7 +278,7 @@ export abstract class UpdatingElement extends HTMLElement {
                         options:
                             PropertyDeclaration = defaultPropertyDeclaration) {
     // Note, since this can be called by the `@property` decorator which
-    // is called before `_finalize`, we ensure storage exists for property
+    // is called before `finalize`, we ensure storage exists for property
     // metadata.
     this._ensureClassProperties();
     this._classProperties!.set(name, options);
@@ -299,15 +309,15 @@ export abstract class UpdatingElement extends HTMLElement {
    * any superclasses are also finalized.
    * @nocollapse
    */
-  private static _finalize() {
+  protected static finalize() {
     if (this.hasOwnProperty(JSCompiler_renameProperty('finalized', this)) &&
         this.finalized) {
       return;
     }
     // finalize any superclasses
     const superCtor = Object.getPrototypeOf(this);
-    if (typeof superCtor._finalize === 'function') {
-      superCtor._finalize();
+    if (typeof superCtor.finalize === 'function') {
+      superCtor.finalize();
     }
     this.finalized = true;
     this._ensureClassProperties();

@@ -13,17 +13,41 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- ### Changed -->
 <!-- ### Removed -->
 <!-- ### Fixed -->
-
 ## Unreleased
+### Changed
+* [Breaking] Renamed `unsafeCss` to `unsafeCSS` for consistency with lit-html's `unsafeHTML`
+
 ### Fixed
-* Fix jsfiddle reference.
+* Adds a check to ensure `CSSStyleSheet` is constructable ([#525](https://github.com/Polymer/lit-element/issues/525)).
+
+## [2.0.0-rc.5] - 2019-01-24
+### Fixed
+* Fixed a bug causing duplicate styles when an array was returned from `static get styles` ([#480](https://github.com/Polymer/lit-element/issues/480)).
+
+## [2.0.0-rc.4] - 2019-01-24
+### Added
+* [Maintenance] Added script to publish dev releases automatically ([#476](https://github.com/Polymer/lit-element/pull/476)).
+* Adds `unsafeCss` for composing "unsafe" values into `css`. Note, `CSSResult` is no longer constructable. ([#451](https://github.com/Polymer/lit-element/issues/451) and [#471](https://github.com/Polymer/lit-element/issues/471)).
+
+### Fixed
+* Fixed a bug where we broke compatibility with closure compiler's property renaming optimizations. JSCompiler_renameProperty can't be a module export ([#465](https://github.com/Polymer/lit-element/pull/465)).
+* Fixed an issue with inheriting from `styles` property when extending a superclass that is never instanced. ([#470](https://github.com/Polymer/lit-element/pull/470)).
+* Fixed an issue with Closure Compiler and ([#470](https://github.com/Polymer/lit-element/pull/470)) ([#476](https://github.com/Polymer/lit-element/pull/476)).
+
+## [2.0.0-rc.3] - 2019-01-18
+### Fixed
+* README: Fixed jsfiddle reference ([#435](https://github.com/Polymer/lit-element/pull/435)).
+* Compile with Closure Compiler cleanly ([#436](https://github.com/Polymer/lit-element/pull/436)).
+* Opt `@property` decorators out of Closure Compiler renaming ([#448](https://github.com/Polymer/lit-element/pull/448)).
 
 ### Changed
-* [Breaking] Property accessors are no longer wrapped when they already exist. Instead the `noAccessor` flag should be set when a user-defined accessor exists on the prototype (and in this case, user-defined accessors must call `requestUpdate` themselves). ([#450](https://github.com/Polymer/lit-element/issues/450)).
+* [Breaking] Property accessors are no longer wrapped when they already exist. Instead the `noAccessor` flag should be set when a user-defined accessor exists on the prototype (and in this case, user-defined accessors must call `requestUpdate` themselves). ([#454](https://github.com/Polymer/lit-element/pull/454)).
+* Class fields can now be used to define styles, e.g. `static styles = css` and `styles` correctly compose when elements are extended ([#456](https://github.com/Polymer/lit-element/pull/456)).
+* Styles returned via `static styles` are automatically flattend ([#437](https://github.com/Polymer/lit-element/pull/437)).
+* Replace use of for/of loops over Maps with forEach ([#455](https://github.com/Polymer/lit-element/pull/455))
 
 ## [2.0.0-rc.2] - 2019-01-11
 ### Fixed
-* Class fields can now be used to define styles, e.g. `static styles = css` and `styles` correctly compose when elements are extended ([#456](https://github.com/Polymer/lit-element/pull/456)).
 * Fix references to `@polymer/lit-element` in README and docs ([#427](https://github.com/Polymer/lit-element/pull/427)).
 * Fix decorator types causing compiler errors for TypeScript users. ([#431](https://github.com/Polymer/lit-element/pull/431)).
 

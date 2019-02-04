@@ -34,6 +34,10 @@ If you've already signed a CLA but are still getting bothered by the awfully ins
 
 ## Contributing
 
+### Contributing documentation
+
+Docs source is in the `docs` folder. To build the site yourself, see the instructions in [docs/README.md](docs/README.md).
+
 ### Filing bugs
 
 The Polymer team heavily uses (and loves!) GitHub for all of our software management. We use GitHub issues to track all bugs and features.

@@ -390,16 +390,11 @@ Generated accessors automatically call `requestUpdate`, initiating an update if 
 To specify how getting and setting works for a property, you can define your own property accessors. For example:
 
 ```js
-// Declare a property
 static get properties() { return { myProp: { type: String } }; }
 
-// Define accessors
 set myProp(value) {
-  // Capture old value
   const oldValue = this.myProp;
-  // Implement setter logic
-  ...
-  // Pass the old value to request an update
+  // Implement setter logic here... 
   this.requestUpdate('myProp', oldValue);
 } 
 get myProp() { ... }
@@ -414,13 +409,11 @@ If your class defines its own accessors for a property, LitElement will not over
 
 The setters that LitElement generates automatically call `requestUpdate`. If you write your own setter you must call `requestUpdate` manually, supplying the property name and its old value.
 
-**Example: Define your own property accessors** 
+**Example** 
 
 ```js
 {% include projects/properties/customsetter/my-element.js %}
 ```
-
-{% include project.html folder="properties/customsetter" openFile="my-element.js" %}
 
 ### Prevent LitElement from generating a property accessor {#accessors-noaccessor}
 
@@ -429,13 +422,14 @@ In rare cases, a subclass may need to change or add property options for a prope
 To prevent LitElement from generating a property accessor that overwrites the superclass's defined accessor, set `noAccessor` to `true` in the property declaration:
 
 ```js
-static get properties() { return { 
-  // Don't generate accessor for myProp
-  myProp: { type: Number, noAccessor: true } 
-}; }
+static get properties() { 
+  return { myProp: { type: Number, noAccessor: true } }; 
+}
 ```
 
-**Example: Property accessors with subclassing** 
+You don't need to set `noAccessor` when defining your own accessors. 
+
+**Example** 
 
 **Subclass element**
 
@@ -445,7 +439,7 @@ static get properties() { return {
 
 {% include project.html folder="properties/accessorssubclassing" openFile="sub-element.js" %}
 
-## Configure property changes
+## Configure property changes {#haschanged}
 
 All declared properties have a function, `hasChanged`, which is called whenever the property is set. 
 

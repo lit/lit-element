@@ -4,7 +4,7 @@ class MyElement extends LitElement {
   render() {
     return html`
       <style>
-        :host[hidden] { display: none; }
+        :host([hidden]) { display: none; }
         :host { display: block; }
         ::slotted(*) { font-family: Roboto; }
         ::slotted(span) { color: blue; }
