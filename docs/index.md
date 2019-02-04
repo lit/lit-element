@@ -11,74 +11,47 @@ layout: default
 </div>
 </header>
 
-<section>
+<section id="section-snippet">
 <div class="wrapper">
 <h1 class="title">
-About
+Easily Create Fast, Lightweight Web Components
 </h1>
 
 <div class="responsive-row">
 
-<div style="flex:1;">
-<h2>
-Fast, lightweight web components
-</h2>
-<p>
-LitElement is a simple base class for creating fast, lightweight web components that work in any web page with any framework.
-</p>
-</div>
+<h3 class="description" style="flex: 1; margin-bottom: 0; max-width: 600px;">It's easy to define a Web Component with LitElement...</h3>
 
-<div style="flex:1;">
-<h2>
-Using lit-html
-</h2>
-<p>
-For rendering, LitElement uses [lit-html](https://lit-html.polymer-project.org/)—a fast HTML templating library. To build an app out of LitElement components, check out [PWA Starter Kit](https://pwa-starter-kit.polymer-project.org/).
-</p>
-</div>
-
-<div style="flex:1;">
-<h2>
-Who are we?
-</h2>
-<p>
-LitElement is brought to you by developers on the Google Chrome team with the input of web developers at organizations big and small around the world.
-</p>
-</div>
-
-</div>
-</div>
-</section>
-
-<section>
-<div class="wrapper">
-
-<h1 class="title">Get started</h1>
-
-<h2>Define a component</h2>
-
-It's easy to define a Web Component with LitElement:
-
+<div style="flex: 2 2 50%">
 ```js
 {% include projects/index-typescript/custom-greeting.ts %}
 ```
 
-<h2 style="margin-top: 40px;">Use a component</h2>
+</div>
 
-Then use it anywhere you use HTML:
+</div>
+<div class="responsive-row">
 
+<h3 class="description" style="flex: 1; margin-bottom: 0; max-width: 600px;">And use it anywhere you use HTML!</h3>
+
+<div style="flex: 2 2 50%">
 ```html
-<custom-greeting></custom-greeting>
+<custom-greeting name="Everyone"></custom-greeting>
 ```
 
-Click **Launch code editor** to see a live sample.
+</div>
 
-{% include project.html folder="index-typescript" openFile="custom-greeting.js" %}
+</div>
+<div class="responsive-row">
 
-The example above uses TypeScript and decorators. You can also easily write LitElements in plain JavaScript. Click **Launch code editor** for an example.
+<h3 class="description" style="flex: 1; margin-bottom: 0; max-width: 600px;">Try it now:</h3>
 
-{% include project.html folder="index" openFile="custom-greeting.js" %}
+<div style="flex: 2 2 50%">
+{% include project.html label="Launch Code Editor (TypeScript)" folder="index-typescript" openFile="custom-greeting.ts" %}
+{% include project.html label="Launch Code Editor (JavaScript)" folder="index" openFile="custom-greeting.js" %}
 
+</div>
+
+</div>
 </div>
 </section>
 
