@@ -192,5 +192,4 @@ suite('LitElement', () => {
   test('adds a version number', () => {
     assert.equal(window['litElementVersions'].length, 1);
   });
-
 });
