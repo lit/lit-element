@@ -38,12 +38,18 @@ Read on to create a component, or [download a sample LitElement project](https:/
 
 To create a new class based on LitElement: 
 
-* Import the `LitElement` base class and the `html` helper function.
-* Create a new class that extends the `LitElement` base class.
-* Implement `render` to define a template for your web component.
-* Register your component's HTML tag with the browser.
+1.  In your project folder, install the `lit-element` package from npm: 
 
-For example:
+    `npm install lit-element`
+
+2.  Write your new element:
+
+    * Import the `LitElement` base class and the `html` helper function.
+    * Create a new class that extends the `LitElement` base class.
+    * Implement `render` to define a template for your web component.
+    * Register your component's HTML tag with the browser.
+
+**Example**
 
 _my-element.js_
 
