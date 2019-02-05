@@ -44,7 +44,7 @@ To use a LitElement component in your code:
     <script type="module" src="./path-to/some-package-name/some-component.js"></script>
     ```
 
-3.  Add the component to the page via markup:
+3.  Add the component to your application or component:
 
     ```html
     <some-component></some-component>
