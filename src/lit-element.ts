@@ -32,7 +32,7 @@ declare global {
 // This line will be used in regexes to search for LitElement usage.
 // TODO(justinfagnani): inject version number at build time
 (window['litElementVersions'] || (window['litElementVersions'] = []))
-    .push('2.0.0');
+    .push('2.0.1');
 
 export interface CSSResultArray extends Array<CSSResult|CSSResultArray> {}
 
