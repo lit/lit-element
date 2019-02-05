@@ -26,7 +26,6 @@ This page is a guide to the styling options available for LitElement components.
 
 The [shadow DOM](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_shadow_DOM) API allows the creation of encapsulated DOM trees that are attached to a custom element. 
 
-
 The root node of a shadow DOM tree is called the **shadow root**. The element in the main document that has a shadow root attached to it is called the **host element**, or **host**.
 
 By default, LitElement creates a shadow root for your host element. LitElement renders the DOM structure described in your element template into this shadow root. 
