@@ -21,23 +21,23 @@ Easily Create Fast, Lightweight Web Components
 
 <div class="fixed-width-caption">
 <h3 class="description">LitElement makes it easy to define Web Components – ideal for sharing elements across your organization or building a UI design system.</h3>
-<h3 class="description">Use your components anywhere you use HTML: in your main document, in a CMS, in Markdown, or in views built with frameworks like React and Vue.</h3>
+<h3 class="description">Use your components anywhere you use HTML: in your main document, a CMS, Markdown, or a framework like React or Vue.</h3>
 </div>
 
 
 <div>
 ```js
-{% include projects/index-typescript/custom-greeting.ts %}
+{% include projects/index-typescript/simple-greeting.ts %}
 ```
 ```html
-<custom-greeting name="Everyone"></custom-greeting>
+<simple-greeting name="Everyone"></simple-greeting>
 ```
 </div>
 </div>
 
 <div class="inline-action-buttons">
-{% include project.html label="Launch Code Editor (TypeScript)" folder="index-typescript" openFile="custom-greeting.ts" %}
-{% include project.html label="Launch Code Editor (JavaScript)" folder="index" openFile="custom-greeting.js" %}
+{% include project.html label="Launch Code Editor (TypeScript)" folder="index-typescript" openFile="simple-greeting.ts" %}
+{% include project.html label="Launch Code Editor (JavaScript)" folder="index" openFile="simple-greeting.js" %}
 </div>
 
 </div>
@@ -55,7 +55,7 @@ Easily Create Fast, Lightweight Web Components
 
 LitElement's simple, familiar development model makes it easier than ever to build Web Components.
 
-Express your UI declaratively, as a function of state. There's no need to learn a custom templating language – you can use the full power of JavaScript in your templates. Elements update automatically when their properties change.
+Express your UI declaratively, as a function of state. No need to learn a custom templating language – you can use the full power of JavaScript in your templates. Elements update automatically when their properties change.
 
 </div>
 <div style="flex: 1">

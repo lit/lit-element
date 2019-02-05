@@ -1,1 +1,1 @@
-import './custom-greeting.ts';
+import './simple-greeting.ts';
