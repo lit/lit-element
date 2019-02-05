@@ -41,8 +41,8 @@ export interface CSSResultArray extends Array<CSSResult|CSSResultArray> {}
  * @param arr the array to flatten
  * @param result the accumlated result
  */
-function arrayFlat(styles: CSSResultArray,
-                   result: CSSResult[] = []): CSSResult[] {
+function arrayFlat(
+    styles: CSSResultArray, result: CSSResult[] = []): CSSResult[] {
   for (let i = 0, length = styles.length; i < length; i++) {
     const value = styles[i];
     if (Array.isArray(value)) {
@@ -59,7 +59,6 @@ const flattenStyles = (styles: CSSResultArray): CSSResult[] =>
     styles.flat ? styles.flat(Infinity) : arrayFlat(styles);
 
 export class LitElement extends UpdatingElement {
-
   /**
    * Ensure this class is marked as `finalized` as an optimization ensuring
    * it will not needlessly try to `finalize`.
@@ -90,9 +89,9 @@ export class LitElement extends UpdatingElement {
     // Prepare styling that is stamped at first render time. Styling
     // is built from user provided `styles` or is inherited from the superclass.
     this._styles =
-        this.hasOwnProperty(JSCompiler_renameProperty('styles', this))
-            ? this._getUniqueStyles()
-            : this._styles || [];
+        this.hasOwnProperty(JSCompiler_renameProperty('styles', this)) ?
+        this._getUniqueStyles() :
+        this._styles || [];
   }
 
   /** @nocollapse */
@@ -157,7 +156,7 @@ export class LitElement extends UpdatingElement {
    * @returns {Element|DocumentFragment} Returns a node into which to render.
    */
   protected createRenderRoot(): Element|ShadowRoot {
-    return this.attachShadow({mode : 'open'});
+    return this.attachShadow({mode: 'open'});
   }
 
   /**
@@ -212,8 +211,10 @@ export class LitElement extends UpdatingElement {
     const templateResult = this.render() as any;
     if (templateResult instanceof TemplateResult) {
       (this.constructor as typeof LitElement)
-          .render(templateResult, this.renderRoot!,
-                  {scopeName : this.localName!, eventContext : this});
+          .render(
+              templateResult,
+              this.renderRoot!,
+              {scopeName: this.localName!, eventContext: this});
     }
     // When native Shadow DOM is used but adoptedStyles are not supported,
     // insert styling after rendering to ensure adoptedStyles have highest
@@ -233,5 +234,6 @@ export class LitElement extends UpdatingElement {
    * a lit-html TemplateResult. Setting properties inside this method will *not*
    * trigger the element to update.
    */
-  protected render(): TemplateResult|void {}
+  protected render(): TemplateResult|void {
+  }
 }

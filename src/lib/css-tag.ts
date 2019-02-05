@@ -16,7 +16,6 @@ export const supportsAdoptingStyleSheets =
 const constructionToken = Symbol();
 
 export class CSSResult {
-
   _styleSheet?: CSSStyleSheet|null;
 
   readonly cssText: string;
@@ -45,7 +44,9 @@ export class CSSResult {
     return this._styleSheet;
   }
 
-  toString(): String { return this.cssText; }
+  toString(): String {
+    return this.cssText;
+  }
 }
 
 /**
@@ -55,9 +56,9 @@ export class CSSResult {
  * or exfiltrate data to an attacker controlled site. Take care to only use
  * this with trusted input.
  */
-export const unsafeCSS =
-    (value:
-         unknown) => { return new CSSResult(String(value), constructionToken);};
+export const unsafeCSS = (value: unknown) => {
+  return new CSSResult(String(value), constructionToken);
+};
 
 const textFromCSSResult = (value: CSSResult) => {
   if (value instanceof CSSResult) {
@@ -77,8 +78,8 @@ const textFromCSSResult = (value: CSSResult) => {
  * template string part.
  */
 export const css = (strings: TemplateStringsArray, ...values: CSSResult[]) => {
-  const cssText = values.reduce((acc, v, idx) => acc + textFromCSSResult(v) +
-                                                 strings[idx + 1],
-                                strings[0]);
+  const cssText = values.reduce(
+      (acc, v, idx) => acc + textFromCSSResult(v) + strings[idx + 1],
+      strings[0]);
   return new CSSResult(cssText, constructionToken);
 };

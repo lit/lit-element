@@ -20,7 +20,7 @@ interface ShadowRoot {
   adoptedStyleSheets: CSSStyleSheet[];
 }
 
-declare var ShadowRoot: {prototype: ShadowRoot; new () : ShadowRoot;}
+declare var ShadowRoot: {prototype: ShadowRoot; new (): ShadowRoot;}
 
 interface CSSStyleSheet {
   replaceSync(cssText: string): void;

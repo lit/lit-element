@@ -1,11 +1,10 @@
 import {html, LitElement, property} from '../lit-element.js';
 
 class TSElement extends LitElement {
-
   @property() message = 'Hi';
 
   @property(
-      {attribute : 'more-info', converter: (value: string) => `[${value}]`})
+      {attribute: 'more-info', converter: (value: string) => `[${value}]`})
   extra = '';
 
   render() {
