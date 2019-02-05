@@ -51,7 +51,7 @@ Easily Create Fast, Lightweight Web Components
 <div class="responsive-row">
 <div style="flex: 1">
 
-<h2 class="caption">Delightfully Declarative</h2>
+<h2 class="caption">Delightfully declarative</h2>
 
 Express your UI declaratively, as a function of state. Levergage the full expressiveness of JavaScript in your templates – no custom syntax required.
 
@@ -69,7 +69,7 @@ LitElement uses [lit-html](https://github.com/Polymer/lit-html) to define and re
 </div>
 <div style="flex: 1">
 
-<h2 class="caption">Seamlessly Interoperable</h2>
+<h2 class="caption">Seamlessly interoperable</h2>
 
 LitElement follows the [Web Components standards](https://developer.mozilla.org/en-US/docs/Web/Web_Components), so your components will work with any framework.
 
