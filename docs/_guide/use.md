@@ -16,7 +16,7 @@ This is a general guide to using third-party LitElement components. Refer to a c
 
 To use a LitElement component in your code:
 
-1.  Install the component from npm.
+1.  From your project folder, install the component from npm.
 
     ```
     npm install --save some-package-name
@@ -96,7 +96,7 @@ For compatibility with older browsers and Edge, load the Web Components polyfill
 
 To load the WebComponents polyfills:
 
-1.  Install the `@webcomponents/webcomponentsjs` package:
+1.  From your project folder, install the `@webcomponents/webcomponentsjs` package:
 
     ```
     npm install --save-dev @webcomponents/webcomponentsjs
