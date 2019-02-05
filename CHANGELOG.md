@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- ### Changed -->
 <!-- ### Removed -->
 <!-- ### Fixed -->
+## [2.0.1] - 2019-02-05
+### Fixed
+* Use `lit-html` 1.0 ([#543](https://github.com/Polymer/lit-element/pull/543)).
+
 ## [2.0.0] - 2019-02-05
 ### Added
 * Add `toString()` function to `CSSResult` ([#508](https://github.com/Polymer/lit-element/pull/508))
