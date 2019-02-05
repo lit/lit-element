@@ -208,7 +208,7 @@ export class LitElement extends UpdatingElement {
    */
   protected update(changedProperties: PropertyValues) {
     super.update(changedProperties);
-    const templateResult = this.render() as any;
+    const templateResult = this.render() as unknown;
     if (templateResult instanceof TemplateResult) {
       (this.constructor as typeof LitElement)
           .render(

@@ -13,6 +13,8 @@
     "noUnusedParameters": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
+    "noImplicitAny": true,
+    "noImplicitThis": true,
     "outDir": "./",
     // Only necessary because @types/uglify-js can't find types for source-map
     "skipLibCheck": true,
