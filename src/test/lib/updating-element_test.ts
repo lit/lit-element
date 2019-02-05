@@ -2047,7 +2047,6 @@ suite('UpdatingElement', () => {
   });
 
   test('can override performUpdate()', async () => {
-
     let resolve: (() => void)|undefined;
 
     class A extends UpdatingElement {

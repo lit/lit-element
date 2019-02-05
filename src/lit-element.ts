@@ -55,7 +55,8 @@ function arrayFlat(styles: CSSResultArray,
 }
 
 /** Deeply flattens styles array. Uses native flat if available. */
-const flattenStyles = (styles: CSSResultArray): CSSResult[] => styles.flat ? styles.flat(Infinity) : arrayFlat(styles);
+const flattenStyles = (styles: CSSResultArray): CSSResult[] =>
+    styles.flat ? styles.flat(Infinity) : arrayFlat(styles);
 
 export class LitElement extends UpdatingElement {
 
@@ -79,7 +80,7 @@ export class LitElement extends UpdatingElement {
    * Array of styles to apply to the element. The styles should be defined
    * using the `css` tag function.
    */
-  static styles?: CSSResult | CSSResultArray;
+  static styles?: CSSResult|CSSResultArray;
 
   private static _styles: CSSResult[]|undefined;
 
@@ -88,9 +89,10 @@ export class LitElement extends UpdatingElement {
     super.finalize();
     // Prepare styling that is stamped at first render time. Styling
     // is built from user provided `styles` or is inherited from the superclass.
-    this._styles = this.hasOwnProperty(JSCompiler_renameProperty('styles', this)) ?
-      this._getUniqueStyles() :
-      this._styles || [];
+    this._styles =
+        this.hasOwnProperty(JSCompiler_renameProperty('styles', this))
+            ? this._getUniqueStyles()
+            : this._styles || [];
   }
 
   /** @nocollapse */

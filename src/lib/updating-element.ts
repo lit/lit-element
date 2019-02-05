@@ -22,8 +22,8 @@ window.JSCompiler_renameProperty =
     <P extends PropertyKey>(prop: P, _obj: unknown): P => prop;
 
 declare global {
-  var JSCompiler_renameProperty: <P extends PropertyKey>(
-      prop: P, _obj: unknown) => P;
+  var JSCompiler_renameProperty: <P extends PropertyKey>(prop: P,
+                                                         _obj: unknown) => P;
 
   interface Window {
     JSCompiler_renameProperty: typeof JSCompiler_renameProperty;
@@ -292,16 +292,15 @@ export abstract class UpdatingElement extends HTMLElement {
     }
     const key = typeof name === 'symbol' ? Symbol() : `__${name}`;
     Object.defineProperty(this.prototype, name, {
-      get(): any { return (this as any)[key]; },
+      get() : any { return (this as any)[key]; },
       set(this: UpdatingElement, value: any) {
         const oldValue = (this as any)[name];
         (this as any)[key] = value;
-          this.requestUpdate(name, oldValue);
-        },
-        configurable : true,
-        enumerable : true
-      }
-    );
+        this.requestUpdate(name, oldValue);
+      },
+      configurable : true,
+      enumerable : true
+    });
   }
 
   /**
