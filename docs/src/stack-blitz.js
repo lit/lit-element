@@ -73,6 +73,7 @@ class StackBlitz extends LitElement {
   }
 
   async loadProject() {
+    this.style.display = 'block';
     const folder = this.folder;
     if (folder && !this._loading) {
       try {

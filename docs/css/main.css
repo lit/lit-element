@@ -292,6 +292,17 @@ section p {
   padding: 0 20px;
 }
 
+.fixed-width-caption {
+  min-width: 300px;
+  max-width: 300px;
+  margin-bottom: 0;
+}
+
+.inline-action-buttons > * {
+  display: inline-block;
+  margin-right: 20px;
+}
+
 .center {
   align-items: center;
   justify-content: center;
@@ -628,6 +639,12 @@ th, td {
   .responsive-row {
     flex-direction: column;
   }
+
+  .fixed-width-caption {
+    min-width: unset;
+    max-width: unset;
+  }
+    
   #logo-lockup {
     margin-bottom: -20px;
   }
