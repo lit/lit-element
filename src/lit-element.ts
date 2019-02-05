@@ -22,14 +22,27 @@ export {html, svg, TemplateResult, SVGTemplateResult} from 'lit-html/lit-html';
 import {supportsAdoptingStyleSheets, CSSResult} from './lib/css-tag.js';
 export * from './lib/css-tag.js';
 
-export interface CSSResultArray extends Array<CSSResult | CSSResultArray> {}
+declare global {
+  interface Window {
+    litElementVersions: string[];
+  }
+}
+
+// IMPORTANT: do not change the property name or the assignment expression.
+// This line will be used in regexes to search for LitElement usage.
+// TODO(justinfagnani): inject version number at build time
+(window['litElementVersions'] || (window['litElementVersions'] = []))
+    .push('2.0.0');
+
+export interface CSSResultArray extends Array<CSSResult|CSSResultArray> {}
 
 /**
  * Minimal implementation of Array.prototype.flat
  * @param arr the array to flatten
  * @param result the accumlated result
  */
-function arrayFlat(styles: CSSResultArray, result: CSSResult[] = []): CSSResult[] {
+function arrayFlat(
+    styles: CSSResultArray, result: CSSResult[] = []): CSSResult[] {
   for (let i = 0, length = styles.length; i < length; i++) {
     const value = styles[i];
     if (Array.isArray(value)) {
@@ -42,10 +55,10 @@ function arrayFlat(styles: CSSResultArray, result: CSSResult[] = []): CSSResult[
 }
 
 /** Deeply flattens styles array. Uses native flat if available. */
-const flattenStyles = (styles: CSSResultArray): CSSResult[] => styles.flat ? styles.flat(Infinity) : arrayFlat(styles);
+const flattenStyles = (styles: CSSResultArray): CSSResult[] =>
+    styles.flat ? styles.flat(Infinity) : arrayFlat(styles);
 
 export class LitElement extends UpdatingElement {
-
   /**
    * Ensure this class is marked as `finalized` as an optimization ensuring
    * it will not needlessly try to `finalize`.
@@ -66,7 +79,7 @@ export class LitElement extends UpdatingElement {
    * Array of styles to apply to the element. The styles should be defined
    * using the `css` tag function.
    */
-  static styles?: CSSResult | CSSResultArray;
+  static styles?: CSSResult|CSSResultArray;
 
   private static _styles: CSSResult[]|undefined;
 
@@ -75,9 +88,10 @@ export class LitElement extends UpdatingElement {
     super.finalize();
     // Prepare styling that is stamped at first render time. Styling
     // is built from user provided `styles` or is inherited from the superclass.
-    this._styles = this.hasOwnProperty(JSCompiler_renameProperty('styles', this)) ?
-      this._getUniqueStyles() :
-      this._styles || [];
+    this._styles =
+        this.hasOwnProperty(JSCompiler_renameProperty('styles', this)) ?
+        this._getUniqueStyles() :
+        this._styles || [];
   }
 
   /** @nocollapse */
@@ -142,7 +156,7 @@ export class LitElement extends UpdatingElement {
    * @returns {Element|DocumentFragment} Returns a node into which to render.
    */
   protected createRenderRoot(): Element|ShadowRoot {
-    return this.attachShadow({mode : 'open'});
+    return this.attachShadow({mode: 'open'});
   }
 
   /**
@@ -197,8 +211,10 @@ export class LitElement extends UpdatingElement {
     const templateResult = this.render() as any;
     if (templateResult instanceof TemplateResult) {
       (this.constructor as typeof LitElement)
-          .render(templateResult, this.renderRoot!,
-                  {scopeName : this.localName!, eventContext : this});
+          .render(
+              templateResult,
+              this.renderRoot!,
+              {scopeName: this.localName!, eventContext: this});
     }
     // When native Shadow DOM is used but adoptedStyles are not supported,
     // insert styling after rendering to ensure adoptedStyles have highest
@@ -218,5 +234,6 @@ export class LitElement extends UpdatingElement {
    * a lit-html TemplateResult. Setting properties inside this method will *not*
    * trigger the element to update.
    */
-  protected render(): TemplateResult|void {}
+  protected render(): TemplateResult|void {
+  }
 }

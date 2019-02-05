@@ -10,19 +10,20 @@ found at http://polymer.github.io/PATENTS.txt
 */
 
 export const supportsAdoptingStyleSheets =
-    ('adoptedStyleSheets' in Document.prototype) && ('replace' in CSSStyleSheet.prototype);
+    ('adoptedStyleSheets' in Document.prototype) &&
+    ('replace' in CSSStyleSheet.prototype);
 
 const constructionToken = Symbol();
 
 export class CSSResult {
-
   _styleSheet?: CSSStyleSheet|null;
 
   readonly cssText: string;
 
   constructor(cssText: string, safeToken: symbol) {
     if (safeToken !== constructionToken) {
-      throw new Error('CSSResult is not constructable. Use `unsafeCSS` or `css` instead.');
+      throw new Error(
+          'CSSResult is not constructable. Use `unsafeCSS` or `css` instead.');
     }
     this.cssText = cssText;
   }
@@ -66,7 +67,7 @@ const textFromCSSResult = (value: CSSResult) => {
     throw new Error(
         `Value passed to 'css' function must be a 'css' function result: ${
             value}. Use 'unsafeCSS' to pass non-literal values, but
-            take care to ensure page security.` );
+            take care to ensure page security.`);
   }
 };
 
@@ -76,10 +77,9 @@ const textFromCSSResult = (value: CSSResult) => {
  * used. To incorporate non-literal values `unsafeCSS` may be used inside a
  * template string part.
  */
-export const css =
-    (strings: TemplateStringsArray, ...values: CSSResult[]) => {
-      const cssText = values.reduce(
-          (acc, v, idx) => acc + textFromCSSResult(v) + strings[idx + 1],
-          strings[0]);
-      return new CSSResult(cssText, constructionToken);
-    };
+export const css = (strings: TemplateStringsArray, ...values: CSSResult[]) => {
+  const cssText = values.reduce(
+      (acc, v, idx) => acc + textFromCSSResult(v) + strings[idx + 1],
+      strings[0]);
+  return new CSSResult(cssText, constructionToken);
+};

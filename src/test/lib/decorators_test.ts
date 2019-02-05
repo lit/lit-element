@@ -13,14 +13,7 @@
  */
 
 import {eventOptions, property} from '../../lib/decorators.js';
-import {
-  customElement,
-  html,
-  LitElement,
-  PropertyValues,
-  query,
-  queryAll
-} from '../../lit-element.js';
+import {customElement, html, LitElement, PropertyValues, query, queryAll} from '../../lit-element.js';
 import {generateElementName} from '../test-helpers.js';
 
 let hasOptions;
@@ -61,8 +54,8 @@ const supportsPassive = (function() {
     }
   };
   f.contentDocument!.addEventListener(event, fn, options);
-  f.contentDocument!.removeEventListener(event, fn,
-                                         options as AddEventListenerOptions);
+  f.contentDocument!.removeEventListener(
+      event, fn, options as AddEventListenerOptions);
   document.body.removeChild(f);
   return hasPassive;
 })();
@@ -103,16 +96,15 @@ suite('decorators', () => {
       const fromAttribute = (value: any) => parseInt(value);
       const toAttribute = (value: any) => `${value}-attr`;
       class E extends LitElement {
-
-        @property({attribute : false}) noAttr = 'noAttr';
-        @property({attribute : true}) atTr = 'attr';
-        @property({attribute : 'custom', reflect: true})
+        @property({attribute: false}) noAttr = 'noAttr';
+        @property({attribute: true}) atTr = 'attr';
+        @property({attribute: 'custom', reflect: true})
         customAttr = 'customAttr';
         @property({hasChanged}) hasChanged = 10;
-        @property({converter : fromAttribute}) fromAttribute = 1;
-        @property({reflect : true, converter: {toAttribute}}) toAttribute = 1;
+        @property({converter: fromAttribute}) fromAttribute = 1;
+        @property({reflect: true, converter: {toAttribute}}) toAttribute = 1;
         @property({
-          attribute : 'all-attr',
+          attribute: 'all-attr',
           hasChanged,
           converter: {fromAttribute, toAttribute},
           reflect: true
@@ -126,7 +118,9 @@ suite('decorators', () => {
           super.update(changed);
         }
 
-        render() { return html``; }
+        render() {
+          return html``;
+        }
       }
       customElements.define(generateElementName(), E);
       const el = new E();
@@ -187,11 +181,10 @@ suite('decorators', () => {
 
     test('can decorate user accessor with @property', async () => {
       class E extends LitElement {
-
         _foo?: number;
         updatedContent?: number;
 
-        @property({reflect : true, type: Number})
+        @property({reflect: true, type: Number})
         get foo() {
           return this._foo as number;
         }
@@ -202,7 +195,9 @@ suite('decorators', () => {
           this.requestUpdate('foo', old);
         }
 
-        updated() { this.updatedContent = this.foo; }
+        updated() {
+          this.updatedContent = this.foo;
+        }
       }
       customElements.define(generateElementName(), E);
       const el = new E();
@@ -224,12 +219,11 @@ suite('decorators', () => {
       const fromAttribute = (value: any) => parseInt(value);
       const toAttribute = (value: any) => `${value}-attr`;
       class E extends LitElement {
-
         @property({hasChanged}) hasChanged = 10;
-        @property({converter : fromAttribute}) fromAttribute = 1;
-        @property({reflect : true, converter: {toAttribute}}) toAttribute = 1;
+        @property({converter: fromAttribute}) fromAttribute = 1;
+        @property({reflect: true, converter: {toAttribute}}) toAttribute = 1;
         @property({
-          attribute : 'all-attr',
+          attribute: 'all-attr',
           hasChanged,
           converter: {fromAttribute, toAttribute},
           reflect: true
@@ -240,9 +234,9 @@ suite('decorators', () => {
 
         static get properties() {
           return {
-            noAttr : {attribute : false},
-            atTr : {attribute : true},
-            customAttr : {attribute : 'custom', reflect : true},
+            noAttr: {attribute: false},
+            atTr: {attribute: true},
+            customAttr: {attribute: 'custom', reflect: true},
           };
         }
 
@@ -262,7 +256,9 @@ suite('decorators', () => {
           super.update(changed);
         }
 
-        render() { return html``; }
+        render() {
+          return html``;
+        }
       }
       customElements.define(generateElementName(), E);
       const el = new E();
@@ -325,7 +321,6 @@ suite('decorators', () => {
   suite('@query', () => {
     @customElement(generateElementName() as keyof HTMLElementTagNameMap)
     class C extends LitElement {
-
       @query('#blah') blah?: HTMLDivElement;
 
       @query('span') nope?: HTMLSpanElement;
@@ -359,7 +354,6 @@ suite('decorators', () => {
   suite('@queryAll', () => {
     @customElement(generateElementName() as keyof HTMLElementTagNameMap)
     class C extends LitElement {
-
       @queryAll('div') divs!: NodeList;
 
       @queryAll('span') spans!: NodeList;
@@ -408,7 +402,7 @@ suite('decorators', () => {
           `;
         }
 
-        @eventOptions({capture : true})
+        @eventOptions({capture: true})
         onClick(e: Event) {
           this.eventPhase = e.eventPhase;
         }
@@ -428,7 +422,6 @@ suite('decorators', () => {
       }
       @customElement(generateElementName() as keyof HTMLElementTagNameMap)
       class C extends LitElement {
-
         clicked = 0;
 
         render() {
@@ -437,7 +430,7 @@ suite('decorators', () => {
           `;
         }
 
-        @eventOptions({once : true})
+        @eventOptions({once: true})
         onClick() {
           this.clicked++;
         }
@@ -458,7 +451,6 @@ suite('decorators', () => {
       }
       @customElement(generateElementName() as keyof HTMLElementTagNameMap)
       class C extends LitElement {
-
         defaultPrevented?: boolean;
 
         render() {
@@ -467,7 +459,7 @@ suite('decorators', () => {
           `;
         }
 
-        @eventOptions({passive : true})
+        @eventOptions({passive: true})
         onClick(e: Event) {
           try {
             e.preventDefault();

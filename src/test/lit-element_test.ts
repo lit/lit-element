@@ -12,15 +12,9 @@
  * http://polymer.github.io/PATENTS.txt
  */
 
-import {
-  html,
-  LitElement,
-} from '../lit-element.js';
+import {html, LitElement} from '../lit-element.js';
 
-import {
-  generateElementName,
-  stripExpressionDelimeters
-} from './test-helpers.js';
+import {generateElementName, stripExpressionDelimeters} from './test-helpers.js';
 
 const assert = chai.assert;
 
@@ -42,15 +36,17 @@ suite('LitElement', () => {
     const rendered = `hello world`;
     const name = generateElementName();
     customElements.define(name, class extends LitElement {
-      render() { return html`${rendered}`; }
+      render() {
+        return html`${rendered}`;
+      }
     });
     const el = document.createElement(name);
     container.appendChild(el);
     await new Promise((resolve) => {
       setTimeout(() => {
         assert.ok(el.shadowRoot);
-        assert.equal(stripExpressionDelimeters(el.shadowRoot!.innerHTML),
-                     rendered);
+        assert.equal(
+            stripExpressionDelimeters(el.shadowRoot!.innerHTML), rendered);
         resolve();
       });
     });
@@ -60,9 +56,13 @@ suite('LitElement', () => {
     const rendered = `hello world`;
     const name = generateElementName();
     customElements.define(name, class extends LitElement {
-      render() { return html`${rendered}`; }
+      render() {
+        return html`${rendered}`;
+      }
 
-      createRenderRoot() { return this; }
+      createRenderRoot() {
+        return this;
+      }
     });
     const el = document.createElement(name);
     container.appendChild(el);
@@ -74,7 +74,9 @@ suite('LitElement', () => {
   test('renders when created via constructor', async () => {
     const rendered = `hello world`;
     class E extends LitElement {
-      render() { return html`${rendered}`; }
+      render() {
+        return html`${rendered}`;
+      }
     }
     customElements.define(generateElementName(), E);
     const el = new E();
@@ -93,7 +95,9 @@ suite('LitElement', () => {
           render() {
             const attr = 'attr';
             const prop = 'prop';
-            const event = function(this: E, e: Event) { this._event = e; };
+            const event = function(this: E, e: Event) {
+              this._event = e;
+            };
             return html
             `<div attr="${attr}" .prop="${prop}" @zug="${event}"></div>`;
           }
@@ -114,9 +118,13 @@ suite('LitElement', () => {
     class E extends LitElement {
       event?: Event;
 
-      render() { return html`<div @test=${this.onTest}></div>`; }
+      render() {
+        return html`<div @test=${this.onTest}></div>`;
+      }
 
-      onTest(e: Event) { this.event = e; }
+      onTest(e: Event) {
+        this.event = e;
+      }
     }
     customElements.define(generateElementName(), E);
     const el = new E();
@@ -130,22 +138,24 @@ suite('LitElement', () => {
 
   test('can set properties and attributes on sub-element', async () => {
     class E extends LitElement {
-
       static get properties() {
-        return {foo : {}, attr : {}, bool : {type : Boolean}};
+        return {foo: {}, attr: {}, bool: {type: Boolean}};
       }
       foo = 'hi';
       bool = false;
 
-      render() { return html`${this.foo}`; }
+      render() {
+        return html`${this.foo}`;
+      }
     }
     customElements.define('x-2448', E);
 
     class F extends LitElement {
-
       inner: E|null = null;
 
-      static get properties() { return {bar : {}, bool : {type : Boolean}}; }
+      static get properties() {
+        return {bar: {}, bool: {type: Boolean}};
+      }
       bar = 'outer';
       bool = false;
 
@@ -154,7 +164,9 @@ suite('LitElement', () => {
             this.bool}"></x-2448>`;
       }
 
-      firstUpdated() { this.inner = this.shadowRoot!.querySelector('x-2448'); }
+      firstUpdated() {
+        this.inner = this.shadowRoot!.querySelector('x-2448');
+      }
 
       get updateComplete() {
         return super.updateComplete.then(() => this.inner!.updateComplete);
@@ -175,5 +187,9 @@ suite('LitElement', () => {
     assert.equal((el.inner! as any).attr, 'test');
     assert.equal(el.inner!.getAttribute('attr'), 'test');
     assert.equal(el.inner!.bool, true);
+  });
+
+  test('adds a version number', () => {
+    assert.equal(window['litElementVersions'].length, 1);
   });
 });
