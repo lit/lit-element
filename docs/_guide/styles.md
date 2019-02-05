@@ -8,6 +8,14 @@ slug: styles
 * ToC
 {:toc}
 
+This page is a guide to the styling options available for LitElement components. 
+
+* [Styling options for component developers](#styling-for-developers) describes how to apply styles internally to a component that you're building.
+
+* [Styling options for component consumers](#styling-for-consumers) describes how to style an element that you're importing and using. 
+
+* [Theming](#theming) is relevant to both developers and consumers of a LitElement-based component. It describes how to create easily stylable LitElement components, and how to create a style theme that can easily be applied to imported LitElement components.
+
 <div class="alert alert-info">
 
 **If you're using the Shady CSS polyfill, be aware that it has some limitations.** See the [Shady CSS README](https://github.com/webcomponents/shadycss/blob/master/README.md#limitations) for more information.
