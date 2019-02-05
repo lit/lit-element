@@ -6,6 +6,7 @@ class StackBlitz extends LitElement {
     return {
       folder: { type: String },
       openFile: { type: String },
+      label: { type: String },
       _loading: { type: Boolean },
     };
   }
@@ -13,6 +14,7 @@ class StackBlitz extends LitElement {
   constructor() {
     super();
     this.openFile = 'index.html';
+    this.label = 'Launch Code Editor';
     this._loading = false;
     this._vm = null;
   }
@@ -65,12 +67,13 @@ class StackBlitz extends LitElement {
       <div id="container">
         <button class="pretty-button" @click="${this.loadProject}"
             .disabled="${this._loading}">
-          ${this._loading ? 'Loading Code Editor...' : 'Launch Code Editor'}
+          ${this._loading ? 'Loading Code Editor...' : this.label}
         </button>
       </div>`;
   }
 
   async loadProject() {
+    this.style.display = 'block';
     const folder = this.folder;
     if (folder && !this._loading) {
       try {
