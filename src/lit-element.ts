@@ -22,14 +22,27 @@ export {html, svg, TemplateResult, SVGTemplateResult} from 'lit-html/lit-html';
 import {supportsAdoptingStyleSheets, CSSResult} from './lib/css-tag.js';
 export * from './lib/css-tag.js';
 
-export interface CSSResultArray extends Array<CSSResult | CSSResultArray> {}
+declare global {
+  interface Window {
+    litElementVersions: string[];
+  }
+}
+
+// IMPORTANT: do not change the property name or the assignment expression.
+// This line will be used in regexes to search for lit-html usage.
+// TODO: inject version number
+(window['litElementVersions'] || (window['litElementVersions'] = []))
+    .push('2.0.0');
+
+export interface CSSResultArray extends Array<CSSResult|CSSResultArray> {}
 
 /**
  * Minimal implementation of Array.prototype.flat
  * @param arr the array to flatten
  * @param result the accumlated result
  */
-function arrayFlat(styles: CSSResultArray, result: CSSResult[] = []): CSSResult[] {
+function arrayFlat(styles: CSSResultArray,
+                   result: CSSResult[] = []): CSSResult[] {
   for (let i = 0, length = styles.length; i < length; i++) {
     const value = styles[i];
     if (Array.isArray(value)) {
