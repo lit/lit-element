@@ -53,9 +53,9 @@ Easily Create Fast, Lightweight Web Components
 
 <h2 class="caption">Delightfully declarative</h2>
 
-Express your UI declaratively, as a function of state. Levergage the full expressiveness of JavaScript in your templates – no custom syntax required.
+LitElement's simple, familiar development model makes it easier than ever to build Web Components.
 
-Elements update automatically when their properties change. And they update fast, without diffing.
+Express your UI declaratively, as a function of state. There's no need to learn a custom templating language – you can use the full power of JavaScript in your templates. Elements update automatically when their properties change.
 
 </div>
 <div style="flex: 1">
@@ -64,7 +64,7 @@ Elements update automatically when their properties change. And they update fast
 
 Whether your end users are in emerging markets or Silicon Valley, they’ll appreciate that LitElement is extremely fast.
 
-LitElement uses [lit-html](https://github.com/Polymer/lit-html) to define and render HTML templates. DOM updates are lightning-fast, because lit-html only re-renders the dynamic parts of your UI.
+LitElement uses [lit-html](https://github.com/Polymer/lit-html) to define and render HTML templates. DOM updates are lightning-fast, because lit-html only re-renders the dynamic parts of your UI – no diffing required.
 
 </div>
 <div style="flex: 1">
