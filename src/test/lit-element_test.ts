@@ -188,4 +188,9 @@ suite('LitElement', () => {
     assert.equal(el.inner!.getAttribute('attr'), 'test');
     assert.equal(el.inner!.bool, true);
   });
+
+  test('adds a version number', () => {
+    assert.equal(window['litElementVersions'].length, 1);
+  });
+
 });
