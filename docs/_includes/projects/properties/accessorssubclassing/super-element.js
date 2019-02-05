@@ -1,37 +1,30 @@
 import { LitElement, html } from 'lit-element';
 
 export class SuperElement extends LitElement {
-  static get properties() { return {
-    prop1: { type: Number }
-  };}
-
-  get prop1() {
-    console.log('custom getter');
-    return this._prop1;
+  static get properties() {
+    return { prop: { type: Number } };
   }
 
-  set prop1(value) {
-    console.log('custom setter');
-    this._prop1 = Math.floor(value/10);
+  set prop(val) {
+    let oldVal = this._prop;
+    this._prop = Math.floor(val);
+    this.requestUpdate('prop', oldVal);
   }
+
+  get prop() { return this._prop; }
 
   constructor() {
     super();
-    this.prop1 = 0;
+    this._prop = 0;
   }
 
   render() {
-    return html`
-      <p>prop1: ${this.prop1}</p>
-      <button @click="${this.changeProperty}">change property</button>
-    `;
-  }
-
-  changeProperty() {
-    let randy = Math.floor(Math.random()*100);
-    console.log('Setting to:', randy);
-    this.prop1 = randy;
+    return html`  
+      <p>prop: ${this.prop}</p>
+      <button @click="${() => { this.prop = Math.random()*10; }}">
+        change prop
+      </button>
+  `;
   }
 }
-
 customElements.define('super-element', SuperElement);

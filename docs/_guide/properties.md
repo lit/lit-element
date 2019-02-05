@@ -385,78 +385,59 @@ this.myProp = 'hi'; // invokes myProp's generated property accessor
 
 Generated accessors automatically call `requestUpdate`, initiating an update if one has not already begun.
 
-### Create custom property accessors {#accessors-custom}
+### Create your own property accessors {#accessors-custom}
 
-To specify how getting and setting works for a property, create custom accessors:
+To specify how getting and setting works for a property, you can define your own property accessors. For example:
 
 ```js
-// Declare a property
 static get properties() { return { myProp: { type: String } }; }
 
-// Custom accessors
-set myProp(value) { ... /* Custom setter */ } 
-get myProp() { ... /* Custom getter */ }
+set myProp(value) {
+  const oldValue = this.myProp;
+  // Implement setter logic here... 
+  this.requestUpdate('myProp', oldValue);
+} 
+get myProp() { ... }
 
 ...
 
 // Later, set the property
-this.myProp = 'hi'; // Invokes generated accessor, which calls custom accessor
+this.myProp = 'hi'; // Invokes your accessor
 ```
 
-When you create custom property accessors for a property, LitElement still generates its own accessors unless you specify otherwise ([see below](#accessors-noaccessor)). The generated setter:
+If your class defines its own accessors for a property, LitElement will not overwrite them with generated accessors. If your class does not define accessors for a property, LitElement will generate them, even if a superclass has defined the property or accessors.
 
-* Saves the previous property value.
-* Calls your custom setter.
-* Requests an update, supplying the property name and its old value to the update lifecycle.
+The setters that LitElement generates automatically call `requestUpdate`. If you write your own setter you must call `requestUpdate` manually, supplying the property name and its old value.
 
-### Prevent LitElement from generating a property accessor {#accessors-noaccessor}
-
-To prevent LitElement from generating property accessors, set `noAccessor` to `true` in the property declaration:
-
-```js
-static get properties() { return { 
-  // Don't generate accessors for myProp
-  myProp: { type: Number, noAccessor: true } 
-
-  // Do generate accessors for aProp
-  aProp: { type: String }
-}; }
-
-// Create custom accessors for myProp
-set myProp(value) { this._myProp = Math.floor(value); } 
-get myProp() { return this._myProp; }
-
-updated(changedProperties) { ... /* no changedProperties entry for myProp */ }
-
-...
-// later...
-this.myProp = Math.random()*10; // Invokes custom setter; no generated setter
-this.aProp = 'hi'; // Invokes generated setter
-```
-
-In the example above: 
-
-* No update request will be made when `this.myProp = ...` is executed.
-* The update requested as a result of `this.aProp = ...` will still capture `myProp`'s new value.
-* The change to `myProp` won't register in the element update lifecycle.
-
-To handle update requests and property options in a custom setter, call `this.requestUpdate('propertyName', oldValue)`:
-
-```js
-set myProp(value) { 
-  let oldValue = this._myProp;
-  this._myProp = Math.floor(value); 
-  this.requestUpdate('myProp', oldValue);
-} 
-```
-
-**Example: Custom property accessors** 
+**Example** 
 
 ```js
 {% include projects/properties/customsetter/my-element.js %}
 ```
 
-{% include project.html folder="properties/customsetter" openFile="my-element.js" %}
+### Prevent LitElement from generating a property accessor {#accessors-noaccessor}
+
+In rare cases, a subclass may need to change or add property options for a property that exists on its superclass.
+
+To prevent LitElement from generating a property accessor that overwrites the superclass's defined accessor, set `noAccessor` to `true` in the property declaration:
+
+```js
+static get properties() { 
+  return { myProp: { type: Number, noAccessor: true } }; 
+}
+```
+
+You don't need to set `noAccessor` when defining your own accessors. 
+
+**Example** 
+
+**Subclass element**
+
+```js
+{% include projects/properties/accessorssubclassing/sub-element.js %}
+```
+
+{% include project.html folder="properties/accessorssubclassing" openFile="sub-element.js" %}
 
 ## Configure property changes {#haschanged}
 
