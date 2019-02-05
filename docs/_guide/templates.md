@@ -374,7 +374,7 @@ class MyPage extends LitElement {
 
 {% include project.html folder="docs/templates/composeimports" openFile="my-page.js" %}
 
-## Specify the render root
+## Specify the render root {#renderroot}
 
 The node into which your component's template will render is called its **render root**.
 
