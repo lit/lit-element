@@ -184,7 +184,7 @@ render() { ... }
 
 Uses lit-html to render the element template. You must implement `render` for any component that extends the LitElement base class.
 
-See the documentation on [Templates](/templates) for more information.
+See the documentation on [Templates](/guide/templates) for more information.
 
 ### firstUpdated {#firstupdated}
 
