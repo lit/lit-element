@@ -96,7 +96,7 @@ class StackBlitz extends LitElement {
         const container = this.shadowRoot.getElementById('container');
         this._vm = await StackBlitzSDK.embedProject(container, project, {
           forceEmbedLayout: true,
-          view: 'editor',
+          view: 'both',
           openFile: this.openFile
         });
       } finally {
