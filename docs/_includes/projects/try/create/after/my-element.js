@@ -1,17 +1,5 @@
-/**
- * Try LitElement https://lit-element.polymer-project.org/try
- * Completed code for 1. Create
- */
-
-/**
- * DONE: Import the LitElement base class and html helper function.
- */
 import { LitElement, html } from 'lit-element';
 
-/**
- * DONE: Create a class for your element that extends the LitElement
- * base class.
- */
 class MyElement extends LitElement {
   render() {
     return html`
@@ -20,7 +8,4 @@ class MyElement extends LitElement {
   }
 }
 
-/**
- * DONE: Register the new element with the browser.
- */
 customElements.define('my-element', MyElement);

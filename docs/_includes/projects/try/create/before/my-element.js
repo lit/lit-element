@@ -1,9 +1,4 @@
 /**
- * Try LitElement https://lit-element.polymer-project.org/try
- * Starting code for 1. Create
- */
-
-/**
  * TODO: Import the LitElement base class and html helper function.
  */
 import { } from ''; 

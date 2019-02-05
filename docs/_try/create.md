@@ -50,8 +50,20 @@ Click **Launch Code Editor** to edit the starting code. When you're ready to see
     customElements.define('my-element', MyElement);
     ```
 
-If you're stuck, click **Launch Code Editor** below to see the completed code for Step 1.
+Here's the completed code for this step:
 
-{% include project.html folder="try/create/after" openFile="my-element.js" %}
+_my-element.js_
 
-[Next: 2. Import your component](import)
+```js
+{% include projects/try/create/before/my-element.js %}
+```
+
+Your code sample should be working now. LitElement components are added to a page with simple HTML tags, like this:
+
+```html
+<my-element></my-element>
+```
+
+See [Use a LitElement component](/use) for more information about local setup.
+
+[Next: 2. Properties](properties)

@@ -1,8 +1,3 @@
-/**
- * Try LitElement https://lit-element.polymer-project.org/try
- * Completed code for 5. Events
- */
-
 import { LitElement, html } from 'lit-element';
 
 class MyElement extends LitElement {
@@ -15,29 +10,20 @@ class MyElement extends LitElement {
   }
   constructor() {
     super();
-    this.message='Hello world! From my-element';
+    this.message = 'Hello world! From my-element';
     this.myArray = ['an','array','of','test','data'];
     this.myBool = true;
   }
-
   render() {
     return html`
       <p>${this.message}</p>
-      <ul>
-        ${this.myArray.map(item => html`<li>${item}</li>`)}
-      </ul>
-      ${this.myBool?
-        html`<p>Render some HTML if myBool is true</p>`:
+      <ul>${this.myArray.map(item => html`<li>${item}</li>`)}</ul>
+      ${this.myBool ?
+        html`<p>Render some HTML if myBool is true</p>` :
         html`<p>Render some other HTML if myBool is false</p>`}
-
-      <!-- DONE: Add an event listener. -->
-      <button @click="${this.clickHandler}">Click</button>
+      <button @click=${this.clickHandler}>Click</button>
     `;
   }
-
-  /**
-   * DONE: Implement an event handler.
-   */
   clickHandler(event) {
     console.log(event.target);
     this.myBool = !this.myBool;

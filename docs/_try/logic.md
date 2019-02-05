@@ -4,7 +4,19 @@ slug: logic
 title: Logic in templates
 ---
 
-In this step, you'll add a loop and a conditional to your LitElement template.
+In this step, you'll add a loop and a conditional to your LitElement template. 
+
+To repeat a part of your HTML template, you can use a JavaScript expression to iterate over an array property:
+
+```js
+${this.myArray.map(item => html`<li>${item}</li>`)}
+```
+
+Similarly, to conditionally render some part of your template, you can use a JavaScript expression to examine a boolean property:
+
+```js
+${this.myBool ? html`<p>something</p>` : html`<p>something else</p>`}
+```
 
 **Starting code**
 
@@ -16,28 +28,57 @@ _my-element.js_
 
 {% include project.html folder="try/logic/before" openFile="my-element.js" %}
 
-1. **Add a loop to your template.**
+1.  **Add a boolean property and an array property to your properties getter.**
 
-    We've added an array property, `myArray`, to my-element.js. To loop over `myArray`, add the following code to your template:
+    Replace the static properties getter with the following code:
 
-    ```html
-    <ul>
-      ${this.myArray.map(i => html`<li>${i}</li>`)}
-    </ul>
+    ```js
+    static get properties() {
+      return {
+        message: { type: String },
+        myBool: { type: Boolean },
+        myArray: { type: Array }
+      };
+    }
     ```
 
-2. **Add a conditional to your template.**
+2.  **Initialize the boolean and array properties.**
 
-    We've added a boolean property, `myBool`, to my-element.js. To render conditionally on `myBool`, add the following code to your template:
+    Replace the constructor with the following code:
 
-    ```html
-    ${this.myBool?
-      html`<p>Render some HTML if myBool is true</p>`:
+    ```js
+    constructor() {
+      super();
+      this.message = 'Hello world! From my-element';
+      this.myBool = true;
+      this.myArray = ['an','array','of','test','data'];
+    }
+    ```
+
+3.  **Add a loop to your template.**
+    
+    To loop over the new `myArray` property, add the following code to your template:
+
+    ```js
+    <ul>${this.myArray.map(item => html`<li>${item}</li>`)}</ul>
+    ```
+
+3.  **Add a conditional to your template.**
+
+    To render conditionally based on the value of `myBool`, add the following code to your template:
+
+    ```js
+    ${this.myBool ?
+      html`<p>Render some HTML if myBool is true</p>` :
       html`<p>Render some other HTML if myBool is false</p>`}
     ```
 
-If you're stuck, click **Launch Code Editor** below to see the completed code for Step 4.
+Here's the completed code for this step:
 
-{% include project.html folder="try/logic/after" openFile="my-element.js" %}
+_my-element.js_
 
-[Next: 5. Events](events)
+```js
+{% include projects/try/logic/after/my-element.js %}
+```
+
+[Next: 4. Events](events)
