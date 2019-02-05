@@ -29,8 +29,8 @@ declare global {
 }
 
 // IMPORTANT: do not change the property name or the assignment expression.
-// This line will be used in regexes to search for lit-html usage.
-// TODO: inject version number
+// This line will be used in regexes to search for LitElement usage.
+// TODO(justinfagnani): inject version number at build time
 (window['litElementVersions'] || (window['litElementVersions'] = []))
     .push('2.0.0');
 
