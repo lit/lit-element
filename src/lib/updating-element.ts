@@ -668,7 +668,6 @@ export abstract class UpdatingElement extends HTMLElement {
     if (this.shouldUpdate(this._changedProperties)) {
       const changedProperties = this._changedProperties;
       this.update(changedProperties);
-      this._markUpdated();
       if (!(this._updateState & STATE_HAS_UPDATED)) {
         this._updateState = this._updateState | STATE_HAS_UPDATED;
         this.firstUpdated(changedProperties);
@@ -728,6 +727,7 @@ export abstract class UpdatingElement extends HTMLElement {
           (v, k) => this._propertyToAttribute(k, this[k as keyof this], v));
       this._reflectingProperties = undefined;
     }
+    this._markUpdated();
   }
 
   /**

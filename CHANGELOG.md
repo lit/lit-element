@@ -13,6 +13,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- ### Changed -->
 <!-- ### Removed -->
 <!-- ### Fixed -->
+
+## Unreleased
+
+### Fixed
+* Ensure `UpdatingElement` allows updates when properties are set after calling `super.update()`.
+`LitElement` renders when updates are triggered as a result of rendering ([#549](https://github.com/Polymer/lit-element/issues/549)).
+
 ## [2.0.1] - 2019-02-05
 ### Fixed
 * Use `lit-html` 1.0 ([#543](https://github.com/Polymer/lit-element/pull/543)).
