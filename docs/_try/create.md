@@ -55,7 +55,7 @@ Here's the completed code for this step:
 _my-element.js_
 
 ```js
-{% include projects/try/create/before/my-element.js %}
+{% include projects/try/create/after/my-element.js %}
 ```
 
 Your code sample should be working now. LitElement components are added to a page with simple HTML tags, like this:
