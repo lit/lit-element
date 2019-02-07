@@ -64,7 +64,7 @@ class MyElement extends LitElement {
     this.prop1 = randy.toString();
     this.prop2 = randy;
     this.prop3 = !myBool;
-    this.prop4 = Object.assign([], [...this.prop4], randy);
+    this.prop4 = Object.assign([...this.prop4, randy]);
     this.prop5 = Object.assign({}, this.prop5, {[randy]: randy});
   }
 
