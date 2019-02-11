@@ -22,7 +22,7 @@ for additional information on how to create templates for lit-element.
     import {LitElement, html, css, customElement, property} from 'lit-element';
 
     // This decorator defines the element.
-    @customElement('my-element');
+    @customElement('my-element')
     export class MyElement extends LitElement {
 
       // This decorator creates a property accessor that triggers rendering and
