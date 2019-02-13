@@ -1,4 +1,3 @@
-
 /**
  * @license
  * Copyright (c) 2017 The Polymer Project Authors. All rights reserved.
@@ -144,17 +143,48 @@ export function property(options?: PropertyDeclaration) {
 /**
  * A property decorator that converts a class property into a getter that
  * executes a querySelector on the element's renderRoot.
+ *
+ * @ExportDecoratedItems
  */
-export const query = _query(
-    (target: NodeSelector, selector: string) => target.querySelector(selector));
+export function query(selector: string) {
+  return (protoOrDescriptor: Object|ClassElement,
+          // tslint:disable-next-line:no-any decorator
+          name?: PropertyKey): any => {
+    const descriptor = {
+      get(this: LitElement) {
+        return this.renderRoot.querySelector(selector);
+      },
+      enumerable: true,
+      configurable: true,
+    };
+    return (name !== undefined) ?
+        legacyQuery(descriptor, protoOrDescriptor as Object, name) :
+        standardQuery(descriptor, protoOrDescriptor as ClassElement);
+  };
+}
 
 /**
  * A property decorator that converts a class property into a getter
  * that executes a querySelectorAll on the element's renderRoot.
+ *
+ * @ExportDecoratedItems
  */
-export const queryAll = _query(
-    (target: NodeSelector, selector: string) =>
-        target.querySelectorAll(selector));
+export function queryAll(selector: string) {
+  return (protoOrDescriptor: Object|ClassElement,
+          // tslint:disable-next-line:no-any decorator
+          name?: PropertyKey): any => {
+    const descriptor = {
+      get(this: LitElement) {
+        return this.renderRoot.querySelectorAll(selector);
+      },
+      enumerable: true,
+      configurable: true,
+    };
+    return (name !== undefined) ?
+        legacyQuery(descriptor, protoOrDescriptor as Object, name) :
+        standardQuery(descriptor, protoOrDescriptor as ClassElement);
+  };
+}
 
 const legacyQuery =
     (descriptor: PropertyDescriptor, proto: Object, name: PropertyKey) => {
@@ -168,32 +198,6 @@ const standardQuery = (descriptor: PropertyDescriptor, element: ClassElement) =>
       key: element.key,
       descriptor,
     });
-
-/**
- * Base-implementation of `@query` and `@queryAll` decorators.
- *
- * @param queryFn exectute a `selector` (ie, querySelector or querySelectorAll)
- * against `target`.
- * @suppress {visibility} The descriptor accesses an internal field on the
- * element.
- */
-function _query<T>(queryFn: (target: NodeSelector, selector: string) => T) {
-  return (selector: string) =>
-             (protoOrDescriptor: Object|ClassElement,
-              // tslint:disable-next-line:no-any decorator
-              name?: PropertyKey): any => {
-               const descriptor = {
-                 get(this: LitElement) {
-                   return queryFn(this.renderRoot!, selector);
-                 },
-                 enumerable: true,
-                 configurable: true,
-               };
-               return (name !== undefined) ?
-                   legacyQuery(descriptor, protoOrDescriptor as Object, name) :
-                   standardQuery(descriptor, protoOrDescriptor as ClassElement);
-             };
-}
 
 const standardEventOptions =
     (options: AddEventListenerOptions, element: ClassElement) => {

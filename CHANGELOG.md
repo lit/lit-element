@@ -13,6 +13,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- ### Changed -->
 <!-- ### Removed -->
 <!-- ### Fixed -->
+
+## Unreleased
+### Changed
+* `LitElement.renderRoot` is now `public readonly` instead of `protected`.
+
+### Fixed
+* Properties annotated with the `@query` and `@queryAll` decorators will now
+  survive property renaming optimizations when used with tsickle and Closure JS
+  Compiler.
+
 ## [2.0.1] - 2019-02-05
 ### Fixed
 * Use `lit-html` 1.0 ([#543](https://github.com/Polymer/lit-element/pull/543)).
