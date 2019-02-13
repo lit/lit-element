@@ -242,7 +242,7 @@ await this.updateComplete;
 | **Type** | `Promise` | Resolves with a `Boolean` when the element has finished updating. |
 | **Resolves** <br/><br/>| `true` if there are no more pending updates.<br/><br/> `false` if this update cycle triggered another update. |
 
-The `updateComplete` Promise resolves when the element has finished updating. Use `updateComplete` to to wait for an update:
+The `updateComplete` Promise resolves when the element has finished updating. Use `updateComplete` to wait for an update:
 
   ```js
   await this.updateComplete;
