@@ -154,7 +154,7 @@ class MyElement extends LitElement {
 
 ### Define styles in an external stylesheet {#external-stylesheet}
 
-We strongly recommend static styles, CSS custom properties, or [lit-html's `classMap` or `styleMap` directives](TODO) if you're stying non-host shadow root contents.
+We strongly recommend static styles, CSS custom properties, or [lit-html's `classMap` or `styleMap` directives](TODO) if you're styling non-host shadow root contents.
 
 However, you can load an external stylesheet into a shadow root with a `<link>` element:
 
