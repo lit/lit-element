@@ -130,7 +130,7 @@ export class LitElement extends UpdatingElement {
    * Node or ShadowRoot into which element DOM should be rendered. Defaults
    * to an open shadowRoot.
    */
-  protected renderRoot?: Element|DocumentFragment;
+  readonly renderRoot!: Element|DocumentFragment;
 
   /**
    * Performs element initialization. By default this calls `createRenderRoot`
@@ -139,7 +139,8 @@ export class LitElement extends UpdatingElement {
    */
   protected initialize() {
     super.initialize();
-    this.renderRoot = this.createRenderRoot();
+    (this as {renderRoot: Element | DocumentFragment}).renderRoot =
+        this.createRenderRoot();
     // Note, if renderRoot is not a shadowRoot, styles would/could apply to the
     // element's getRootNode(). While this could be done, we're choosing not to
     // support this now since it would require different logic around de-duping.
