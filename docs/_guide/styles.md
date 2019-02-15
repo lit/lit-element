@@ -96,7 +96,7 @@ To define a static `styles` property:
           static styles = [
             super.styles,
             css`
-              :host([.important]) {
+              :host(.important) {
                 color: red;
               }
             `
@@ -201,7 +201,7 @@ An element can apply styles to itself with the `:host` and `:host()` CSS psuedo-
 * `:host(...)` selects the host element, but only if the selector inside the parentheses matches the host element:
 
   ```css
-  :host([.important]) {
+  :host(.important) {
     color: red;
     font-weight: bold;
   }
