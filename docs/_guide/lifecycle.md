@@ -33,6 +33,20 @@ You can change this behavior so that Step 3 awaits a Promise before performing t
 
 For a more detailed explanation of the browser event loop, see [Jake Archibald's article](https://jakearchibald.com/2015/tasks-microtasks-queues-and-schedules/).
 
+#### Lifecycle callbacks
+
+LitElement also inherits the default [lifecycle callbacks](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements#Using_the_lifecycle_callbacks) from the Web Component standard:
+* `connectedCallback`: Invoked when a component is removed from the document's DOM.
+* `disconnectedCallback`: Invoked when a component is removed from the document's DOM.
+* `adoptedCallback`: Invoked when a component is moved to a new document.
+* `attributeChangedCallback`: Invoked when component attribute changes.
+
+<div class="alert alert-info">
+
+**Be aware that adoptedCallback is not polyfilled.** 
+
+</div>
+
 #### Promises and asynchronous functions
 
 LitElement uses [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) objects to schedule and respond to element updates.
