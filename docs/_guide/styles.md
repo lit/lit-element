@@ -73,11 +73,12 @@ To define a static `styles` property:
     
         ```js
         class MyElement extends LitElement {
-          static styles = css`
+          static get styles() {
+            return css`
             :host {
               display: block;
-            }
-          `;
+            }`;
+          } 
         }
         ```
 
@@ -85,7 +86,9 @@ To define a static `styles` property:
 
         ```js
         class MyElement extends LitElement {
-          static styles = [ css`:host { display: block; }`, ...];
+          static get styles() {
+            return [ css`:host { display: block; }`, ...];
+          }
         }
         ```
 
@@ -93,14 +96,16 @@ To define a static `styles` property:
 
         ```js
         class MySubElement extends MyElement {
-          static styles = [
-            super.styles,
-            css`
-              :host(.important) {
-                color: red;
-              }
-            `
-          ];
+          static get styles() {
+            return [
+              super.styles,
+              css`
+                :host(.important) {
+                  color: red;
+                }
+              `
+            ];
+          }
         }
         ```
 
@@ -116,12 +121,13 @@ import { LitElement, css, cssLiteral } from 'lit-element';
 const mainColor = cssLiteral`red`;
 
 class MyElement extends LitElement {
-  static styles = css`
+  static get styles() {
+    return css`
     :host {
       display: block;
       color: ${mainColor}
-    }
-  `;
+    }`;
+  } 
 }
 ```
 
