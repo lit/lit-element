@@ -340,13 +340,13 @@ class MyPage extends LitElement {
       ${this.footerTemplate}
     `;
   }
-  static get headerTemplate() {
+  get headerTemplate() {
     return html`<header>header</header>`;
   }
-  static get articleTemplate() {
+  get articleTemplate() {
     return html`<article>article</article>`;
   }
-  static get footerTemplate() {
+  get footerTemplate() {
     return html`<footer>footer</footer>`;
   }
 }
@@ -466,7 +466,7 @@ render() {
     <article>article</article>
   `;
 }
-static get headerTemplate() {
+get headerTemplate() {
   return html`<header>header</header>`;
 }
 ```
