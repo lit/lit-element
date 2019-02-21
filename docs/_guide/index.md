@@ -16,26 +16,9 @@ LitElement uses [lit-html](https://lit-html.polymer-project.org/) to render into
 
 To build an app out of LitElement components, check out [PWA Starter Kit](https://pwa-starter-kit.polymer-project.org/).
 
-## Quick start
-
-Install:
-
-```bash
-npm install --save lit-element
-```
-
-Import:
-
-```js
-import { LitElement, html } from 'lit-element';
-```
-
-[Download a sample LitElement project](https://github.com/PolymerLabs/start-lit-element).
-
 ## Next steps
 
 * [Getting Started](/guide/start): Set up LitElement and create a component.
 * [Templates](/guide/templates): Write templates with lit-html syntax.
 * [Properties](/guide/properties): Manage properties and attributes.
 * [Lifecycle](/guide/lifecycle): Work with the LitElement lifecycle API.
-
