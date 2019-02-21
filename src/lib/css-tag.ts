@@ -44,7 +44,7 @@ export class CSSResult {
     return this._styleSheet;
   }
 
-  toString(): String {
+  toString(): string {
     return this.cssText;
   }
 }
