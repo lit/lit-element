@@ -497,12 +497,11 @@ render() { return html`<slot name="thing"></slot>`; }
 </my-element>
 ```
 
-## Advanced features
-Since LitElement uses lit-html's `html` and `render` functions to render your template you can take advantage 
-of the entire lit-html featureset for writing your templates:
-For example you can use the `nothing` sentinel value in case you want nothing to be rendered or you can use directives.
-You can find more information on writing templates with lit-html in the lit-html documentation:
-[Template Reference](https://lit-html.polymer-project.org/guide/template-reference)
+## Further reading
+Since LitElement uses lit-html's `html` and `render` functions to render templates you can take advantage
+of the entire lit-html feature-set for writing your templates. You can find further information
+* [on the lit-html homepage](https://lit-html.polymer-project.org)
+* [in the Template Reference](https://lit-html.polymer-project.org/guide/template-reference)
 
 Note: Since lit-html is a dependency of LitElement it is installed into node_modules folder when you install LitElement. You do not have to install
 lit-html yourself. It is recommended that you only use the version of lit-html that comes as a dependency of your version of LitElement to avoid
