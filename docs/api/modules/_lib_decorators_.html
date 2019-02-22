@@ -104,14 +104,7 @@
 						<section class="tsd-index-section ">
 							<h3>Type aliases</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-type-alias tsd-parent-kind-external-module tsd-has-type-parameter"><a href="_lib_decorators_.html#constructor" class="tsd-kind-icon">Constructor</a></li>
-							</ul>
-						</section>
-						<section class="tsd-index-section ">
-							<h3>Variables</h3>
-							<ul class="tsd-index-list">
-								<li class="tsd-kind-variable tsd-parent-kind-external-module"><a href="_lib_decorators_.html#query" class="tsd-kind-icon">query</a></li>
-								<li class="tsd-kind-variable tsd-parent-kind-external-module"><a href="_lib_decorators_.html#queryall" class="tsd-kind-icon">query<wbr>All</a></li>
+								<li class="tsd-kind-type-alias tsd-parent-kind-external-module"><a href="_lib_decorators_.html#constructor" class="tsd-kind-icon">Constructor</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
@@ -120,6 +113,8 @@
 								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_lib_decorators_.html#customelement" class="tsd-kind-icon">custom<wbr>Element</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_lib_decorators_.html#eventoptions" class="tsd-kind-icon">event<wbr>Options</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_lib_decorators_.html#property" class="tsd-kind-icon">property</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_lib_decorators_.html#query" class="tsd-kind-icon">query</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_lib_decorators_.html#queryall" class="tsd-kind-icon">query<wbr>All</a></li>
 							</ul>
 						</section>
 					</div>
@@ -127,13 +122,13 @@
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Type aliases</h2>
-				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-parent-kind-external-module tsd-has-type-parameter">
+				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-parent-kind-external-module">
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>Constructor</h3>
 					<div class="tsd-signature tsd-kind-icon">Constructor<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/a7148bc/src/lib/decorators.ts#L20">lib/decorators.ts:20</a></li>
+							<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/36e1991/src/lib/decorators.ts#L19">lib/decorators.ts:19</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-type-declaration">
@@ -144,45 +139,10 @@
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Variables</h2>
-				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-external-module">
-					<a name="query" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagConst">Const</span> query</h3>
-					<div class="tsd-signature tsd-kind-icon">query<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">(Anonymous function)</span><span class="tsd-signature-symbol"> =&nbsp;_query((target: NodeSelector, selector: string) &#x3D;&gt;target.querySelector(selector))</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/a7148bc/src/lib/decorators.ts#L145">lib/decorators.ts:145</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>A property decorator that converts a class property into a getter that
-							executes a querySelector on the element&#39;s renderRoot.</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-external-module">
-					<a name="queryall" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagConst">Const</span> query<wbr>All</h3>
-					<div class="tsd-signature tsd-kind-icon">query<wbr>All<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">(Anonymous function)</span><span class="tsd-signature-symbol"> =&nbsp;_query((target: NodeSelector, selector: string) &#x3D;&gt;target.querySelectorAll(selector))</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/a7148bc/src/lib/decorators.ts#L152">lib/decorators.ts:152</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>A property decorator that converts a class property into a getter
-							that executes a querySelectorAll on the element&#39;s renderRoot.</p>
-						</div>
-					</div>
-				</section>
-			</section>
-			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Functions</h2>
 				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
 					<a name="customelement" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagConst">Const</span> custom<wbr>Element</h3>
+					<h3>custom<wbr>Element</h3>
 					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
 						<li class="tsd-signature tsd-kind-icon">custom<wbr>Element<span class="tsd-signature-symbol">(</span>tagName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">(Anonymous function)</span></li>
 					</ul>
@@ -190,7 +150,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/a7148bc/src/lib/decorators.ts#L71">lib/decorators.ts:71</a></li>
+									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/36e1991/src/lib/decorators.ts#L71">lib/decorators.ts:71</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -215,7 +175,7 @@
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
 					<a name="eventoptions" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagConst">Const</span> event<wbr>Options</h3>
+					<h3>event<wbr>Options</h3>
 					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
 						<li class="tsd-signature tsd-kind-icon">event<wbr>Options<span class="tsd-signature-symbol">(</span>options<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">AddEventListenerOptions</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
 					</ul>
@@ -223,7 +183,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/a7148bc/src/lib/decorators.ts#L230">lib/decorators.ts:230</a></li>
+									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/36e1991/src/lib/decorators.ts#L245">lib/decorators.ts:245</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -260,7 +220,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/a7148bc/src/lib/decorators.ts#L133">lib/decorators.ts:133</a></li>
+									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/36e1991/src/lib/decorators.ts#L135">lib/decorators.ts:135</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -284,6 +244,72 @@
 						</li>
 					</ul>
 				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
+					<a name="query" class="tsd-anchor"></a>
+					<h3>query</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
+						<li class="tsd-signature tsd-kind-icon">query<span class="tsd-signature-symbol">(</span>selector<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">(Anonymous function)</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/36e1991/src/lib/decorators.ts#L149">lib/decorators.ts:149</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>A property decorator that converts a class property into a getter that
+									executes a querySelector on the element&#39;s renderRoot.</p>
+								</div>
+								<dl class="tsd-comment-tags">
+									<dt>exportdecorateditems</dt>
+									<dd></dd>
+								</dl>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>selector: <span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">(Anonymous function)</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
+					<a name="queryall" class="tsd-anchor"></a>
+					<h3>query<wbr>All</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
+						<li class="tsd-signature tsd-kind-icon">query<wbr>All<span class="tsd-signature-symbol">(</span>selector<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">(Anonymous function)</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/36e1991/src/lib/decorators.ts#L172">lib/decorators.ts:172</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>A property decorator that converts a class property into a getter
+									that executes a querySelectorAll on the element&#39;s renderRoot.</p>
+								</div>
+								<dl class="tsd-comment-tags">
+									<dt>exportdecorateditems</dt>
+									<dd></dd>
+								</dl>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>selector: <span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">(Anonymous function)</span></h4>
+						</li>
+					</ul>
+				</section>
 			</section>
 		</div>
 		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
@@ -291,9 +317,6 @@
 				<ul>
 					<li class="globals  ">
 						<a href="../globals.html"><em>Globals</em></a>
-					</li>
-					<li class="label tsd-is-external">
-						<span>Internals</span>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="_demo_ts_element_.html">"demo/ts-<wbr>element"</a>
@@ -308,32 +331,14 @@
 						<a href="_lib_updating_element_.html">"lib/updating-<wbr>element"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="_test_lit_element_styling_test_.html">"test/lit-<wbr>element_<wbr>styling_<wbr>test"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="_test_lit_element_test_.html">"test/lit-<wbr>element_<wbr>test"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="_test_test_helpers_.html">"test/test-<wbr>helpers"</a>
-					</li>
-					<li class="label tsd-is-external">
-						<span>Externals</span>
-					</li>
-					<li class=" tsd-kind-external-module tsd-is-external">
 						<a href="_lit_element_.html">"lit-<wbr>element"</a>
 					</li>
 				</ul>
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
-					<li class=" tsd-kind-type-alias tsd-parent-kind-external-module tsd-has-type-parameter">
+					<li class=" tsd-kind-type-alias tsd-parent-kind-external-module">
 						<a href="_lib_decorators_.html#constructor" class="tsd-kind-icon">Constructor</a>
-					</li>
-					<li class=" tsd-kind-variable tsd-parent-kind-external-module">
-						<a href="_lib_decorators_.html#query" class="tsd-kind-icon">query</a>
-					</li>
-					<li class=" tsd-kind-variable tsd-parent-kind-external-module">
-						<a href="_lib_decorators_.html#queryall" class="tsd-kind-icon">query<wbr>All</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-external-module">
 						<a href="_lib_decorators_.html#customelement" class="tsd-kind-icon">custom<wbr>Element</a>
@@ -343,6 +348,12 @@
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-external-module">
 						<a href="_lib_decorators_.html#property" class="tsd-kind-icon">property</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module">
+						<a href="_lib_decorators_.html#query" class="tsd-kind-icon">query</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module">
+						<a href="_lib_decorators_.html#queryall" class="tsd-kind-icon">query<wbr>All</a>
 					</li>
 				</ul>
 			</nav>
