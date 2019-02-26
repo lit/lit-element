@@ -35,7 +35,7 @@ export class PartGChild extends PartStyledElement {
   render() {
     return html`
       <div part="bar">part-gchild: bar!</div>
-      <part-ggchild part="b" exportparts="zot: top, b"></part-ggchild>
+      <part-ggchild part="b" exportparts="zot: gchild-zot, b"></part-ggchild>
     `;
   }
 }
@@ -51,7 +51,7 @@ export class PartChild extends PartStyledElement {
   render() {
     return html`
       <div part="foo">part-child: foo!</div>
-      <part-gchild part="b" exportparts="bar: nug, top, b"></part-gchild>
+      <part-gchild part="b" exportparts="bar: nug, gchild-zot: child-zot, b"></part-gchild>
     `;
   }
 }
@@ -84,7 +84,7 @@ export class PartHost extends PartStyledElement {
       border-color: blue;
     `)}
 
-    ${this.partRule('.special', 'top', `
+    ${this.partRule('.special', 'child-zot', `
       border: 2px dashed blue;
     `)}
 

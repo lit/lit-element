@@ -82,12 +82,14 @@ export class PartStyledElement extends LitElement {
     return super.observedAttributes.concat(['class']);
   }
 
-  private _exportPartsChildren = new Set();
-
   @property({attribute: 'exportparts', converter: exportPartsConverter})
   exportParts: Map<string, string>|null = null;
 
+  private _styleHost?: PartStyledElement|null;
+  private _exportPartsChildren = new Set();
   private _partsDirty = true;
+  private _exportedPartRules: Map<CSSPartRule, string> = new Map();
+  private _dynamicPartRuleMap?: Map<string, CSSPartRuleSet>;
 
   attributeChangedCallback(name: string, old: string|null, value: string|null) {
     if (old !== value) {
@@ -122,7 +124,7 @@ export class PartStyledElement extends LitElement {
     return this.__cssParts;
   }
 
-  private _exportedPartRules: CSSPartRuleSet = new Set();
+
 
   addPartStyle(part: string, rule: CSSPartRule, forward = false) {
     //console.log('addPartStyle', this.localName, part, rule, forward);
@@ -136,7 +138,7 @@ export class PartStyledElement extends LitElement {
       let hostSelector = `:host(${selector})`;
       let partSelector = `[part=${part}]`;
       if (window.ShadyDOM) {
-        const host = (this.getRootNode() as ShadowRoot).host;
+        const host = this._styleHost;
         const hostScope = `${this.localName}${host ? `.${STYLE_SCOPE}.${host.localName}` : ''}`;
         hostSelector = `${hostScope}${selector.replace(new RegExp(`${this.localName}|\\*`), '')}`;
         partSelector = `.${STYLE_SCOPE}.${this.localName}${partSelector}`;
@@ -152,7 +154,7 @@ export class PartStyledElement extends LitElement {
     this._exportPartsChildren.forEach((child) => {
       const exports = (child as PartStyledElement).exportParts;
       if (exports && exports.get(part)) {
-        this._exportedPartRules.add(rule);
+        this._exportedPartRules.set(rule, part);
         child.classList.add(rule.guid);
       }
     });
@@ -177,10 +179,10 @@ export class PartStyledElement extends LitElement {
   }
 
   connectedCallback() {
-    const host = (this.getRootNode() as ShadowRoot).host as PartStyledElement || null;
+    this._styleHost = (this.getRootNode() as ShadowRoot).host as PartStyledElement || null;
     // Note, dynamically adding `exportParts` is not supported.
-    if (host && host.addExportPartsChild && this.exportParts) {
-      host.addExportPartsChild(this);
+    if (this._styleHost && this._styleHost.addExportPartsChild && this.exportParts) {
+      this._styleHost.addExportPartsChild(this);
     }
     super.connectedCallback();
   }
@@ -189,9 +191,9 @@ export class PartStyledElement extends LitElement {
     if (super.connectedCallback) {
       super.connectedCallback();
     }
-    const host = (this.getRootNode() as ShadowRoot).host as PartStyledElement || null;
-    if (host && host.removeExportPartsChild) {
-      host.removeExportPartsChild(this);
+    if (this._styleHost && this._styleHost.removeExportPartsChild) {
+      this._styleHost.removeExportPartsChild(this);
+      this._styleHost = null;
     }
   }
 
@@ -204,11 +206,9 @@ export class PartStyledElement extends LitElement {
     }
   }
 
-  _dynamicPartRuleMap?: Map<string, CSSPartRuleSet>;
 
   private _updateStaticParts() {
-    const host = (this.getRootNode() as ShadowRoot).host;
-    const map = host && (host.constructor as typeof PartStyledElement).partRuleMap;
+    const map = this._styleHost && (this._styleHost.constructor as typeof PartStyledElement).partRuleMap;
     // process static part rules here and store dynamic rules for runtime updates.
     if (map) {
       this._dynamicPartRuleMap = new Map();
@@ -263,7 +263,8 @@ export class PartStyledElement extends LitElement {
         }
       // guid class: forward this rule if we have an export for it.
       } else if (exports && forwardRule) {
-        const inner = exports && exports.get(forwardRule.part);
+        const part = this._styleHost && this._styleHost._exportedPartRules.get(forwardRule);
+        const inner = exports && exports.get(part!);
         if (inner !== undefined) {
           this.addPartStyle(inner, forwardRule, true);
         }
@@ -275,7 +276,7 @@ export class PartStyledElement extends LitElement {
     removedClasses.forEach((value) => {
       if (this._exportedPartRules !== undefined) {
         const forwardRule = partRulesByGuid.get(value);
-        this._exportedPartRules.forEach((rule) => {
+        this._exportedPartRules.forEach((_part, rule) => {
           if ((forwardRule && rule.guid === value) || (rule!.dynamic === value)) {
             this.removePartStyle(rule);
           }
