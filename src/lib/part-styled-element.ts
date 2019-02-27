@@ -97,7 +97,12 @@ export class PartStyledElement extends LitElement {
       // When the class attribute changes, update dynamic part at next update.
       if (name === 'class') {
         this._partsDirty = true;
-        this.requestUpdate();
+        this.updateComplete.then(() => {
+          if (this._partsDirty) {
+            this._updateDynamicParts();
+          }
+
+        });
       }
     }
   }
