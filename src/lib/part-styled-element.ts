@@ -74,20 +74,22 @@ export class PartStyledElement extends LitElement {
   private _partStyledChildren = new Set();
 
   addPartStyle(part: string, rule: CSSPartRule) {
-    const {propertySet, pseudo} = rule;
-    let partStyle = this._cssParts.get(rule);
-    if (partStyle === undefined) {
-      partStyle = document.createElement('style');
-      this._cssParts.set(rule, partStyle);
+    if (this._partNames.has(part)) {
+      const {propertySet, pseudo} = rule;
+      let partStyle = this._cssParts.get(rule);
+      if (partStyle === undefined) {
+        partStyle = document.createElement('style');
+        this._cssParts.set(rule, partStyle);
+      }
+      /**
+       * Using a GUID the rule might be something like this.
+       * :host(.guid) [part=partName] {...}
+       * The descendant selector here is (1) maybe slow, (2) needs scoping to
+       * not overly match when ShadyDOM is in use.
+       */
+      partStyle.textContent = `:host(${this.localName}) [part=${part}]${pseudo ? `:${pseudo}` : ''} { ${propertySet} }`;
+      this.shadowRoot!.appendChild(partStyle);
     }
-    /**
-     * Using a GUID the rule might be something like this.
-     * :host(.guid) [part=partName] {...}
-     * The descendant selector here is (1) maybe slow, (2) needs scoping to
-     * not overly match when ShadyDOM is in use.
-     */
-    partStyle.textContent = `:host(${this.localName}) [part=${part}]${pseudo ? `:${pseudo}` : ''} { ${propertySet} }`;
-    this.shadowRoot!.appendChild(partStyle);
     // forwarding
     this._partStyledChildren.forEach(async (child) => {
       await child.updateComplete;
@@ -100,9 +102,11 @@ export class PartStyledElement extends LitElement {
   }
 
   removePartStyle(part: string, rule: CSSPartRule) {
-    const partStyle = this._cssParts.get(rule);
-    if (partStyle) {
-      partStyle.parentNode.removeChild(partStyle);
+    if (this._partNames.has(part)) {
+      const partStyle = this._cssParts.get(rule);
+      if (partStyle) {
+        partStyle.parentNode.removeChild(partStyle);
+      }
     }
     // forwarding
     this._partStyledChildren.forEach(async (child) => {
@@ -140,6 +144,28 @@ export class PartStyledElement extends LitElement {
     if (host && host.removePartChild) {
       host.removePartChild(this);
     }
+  }
+
+  /**
+   * By default, this queries for elements with a part attribute in the initially
+   * rendered DOM. If parts are needed that are not initially rendered,
+   * override and provide the additional part names.
+   *
+   * Returns an array of part names rendered in this element.
+   */
+  protected get cssPartNames() {
+    return Array.from(this.shadowRoot!.querySelectorAll('[part]'))
+        .map((e) => e.getAttribute('part'));
+  }
+
+  __partNames?: Set<string>|null;
+  private get _partNames() {
+    if (!this.__partNames) {
+      const parts = this.cssPartNames;
+      this.__partNames = new Set();
+      parts.forEach((p) => this.__partNames!.add(p as string));
+    }
+    return this.__partNames;
   }
 
   updated(changedProperties: PropertyValues) {
