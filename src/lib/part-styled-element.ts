@@ -26,8 +26,6 @@ export * from '../lit-element.js';
  * extending a class with private fields.
  */
 
-const supportsCssPart = false && 'part' in Element.prototype;
-
 interface CSSPartRule {
   selector: string;
   part: string;
@@ -52,6 +50,8 @@ export class PartStyledElement extends LitElement {
   @property({attribute: 'exportparts', converter: exportPartsConverter})
   exportParts: Map<string, string>|null = null;
 
+  static useNativePart = 'part' in Element.prototype;
+
   private static _cssPartRules: Map<string, CSSPartRule>;
 
   static partRule(selector: string, part: string, propertySet: string, pseudo = '') {
@@ -59,7 +59,7 @@ export class PartStyledElement extends LitElement {
       this._cssPartRules = new Map();
     }
     let rule;
-    if (supportsCssPart) {
+    if (this.useNativePart) {
       rule = `${selector}::part(${part})${pseudo ? `:${pseudo}` : ''} { ${propertySet} }`;
     } else {
       this._cssPartRules.set(part, {selector, part, propertySet, pseudo});
@@ -86,7 +86,7 @@ export class PartStyledElement extends LitElement {
      * The descendant selector here is (1) maybe slow, (2) needs scoping to
      * not overly match when ShadyDOM is in use.
      */
-    partStyle.textContent = `[part=${part}]${pseudo ? `:${pseudo}` : ''} { ${propertySet} }`;
+    partStyle.textContent = `:host(${this.localName}) [part=${part}]${pseudo ? `:${pseudo}` : ''} { ${propertySet} }`;
     this.shadowRoot!.appendChild(partStyle);
     // forwarding
     this._partStyledChildren.forEach(async (child) => {
