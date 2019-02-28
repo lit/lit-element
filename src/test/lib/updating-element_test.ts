@@ -729,7 +729,7 @@ suite('UpdatingElement', () => {
     assert.equal(el.getAttribute('custom'), '3');
     assert.equal(el.fromAttribute, 6);
     assert.equal(el.toAttribute, '7');
-    assert.equal(el.getAttribute('toattribute'), '7-attr');
+    assert.equal(el.getAttribute('toattribute'), '7');
     assert.equal(el.all, 11);
     assert.equal(el.getAttribute('all-attr'), '11-attr');
     assert.deepEqual(el.obj, {foo: true, bar: 5, baz: 'hi'});
@@ -2218,5 +2218,38 @@ suite('UpdatingElement', () => {
     container.appendChild(a);
     await a.updateComplete;
     assert.equal(a.updatedCalledCount, 1);
+  });
+
+  test('attribute change after a property change', async () => {
+    class E extends UpdatingElement {
+      static get properties() {
+        return {
+          disabled: {
+            type: Boolean,
+            reflect: true,
+            attribute: true
+          }
+        };
+      }
+      disabled = false;
+    }
+    const name = generateElementName();
+    customElements.define(name, E);
+    container.innerHTML = `<${name}></${name}>`;
+    const el = container.firstChild as E;
+    await el.updateComplete;
+    el.setAttribute('disabled', '');
+    el.removeAttribute('disabled');
+    el.disabled = true;
+    await el.updateComplete;
+    assert.isTrue(el.disabled);
+    assert.isTrue(el.hasAttribute('disabled'));
+    el.disabled = false;
+    await el.updateComplete;
+    el.setAttribute('disabled', '');
+    el.disabled = false;
+    await el.updateComplete;
+    assert.isFalse(el.disabled);
+    assert.isFalse(el.hasAttribute('disabled'));
   });
 });
