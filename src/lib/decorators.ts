@@ -71,8 +71,7 @@ const standardCustomElement =
 export const customElement = (tagName: string) =>
     (classOrDescriptor: Constructor<HTMLElement>|ClassDescriptor) =>
         (typeof classOrDescriptor === 'function') ?
-    legacyCustomElement(
-        tagName, classOrDescriptor) :
+    legacyCustomElement(tagName, classOrDescriptor) :
     standardCustomElement(tagName, classOrDescriptor);
 
 const standardProperty =
