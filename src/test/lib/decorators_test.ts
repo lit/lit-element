@@ -372,7 +372,7 @@ suite('decorators', () => {
       const c = new C();
       container.appendChild(c);
       await c.updateComplete;
-      const divs = c.divs!;
+      const divs = c.divs;
       // This is not true in ShadyDOM:
       // assert.instanceOf(divs, NodeList);
       assert.lengthOf(divs, 2);
