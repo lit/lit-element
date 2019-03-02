@@ -296,8 +296,7 @@ export abstract class UpdatingElement extends HTMLElement {
     Object.defineProperty(this.prototype, name, {
       // tslint:disable-next-line:no-any no symbol in index
       get(): any {
-        // tslint:disable-next-line:no-any no symbol in index
-        return (this as any)[key];
+        return this[key];
       },
       set(this: UpdatingElement, value: unknown) {
         // tslint:disable-next-line:no-any no symbol in index
@@ -632,6 +631,8 @@ export abstract class UpdatingElement extends HTMLElement {
         typeof (result as PromiseLike<unknown>).then === 'function') {
       await result;
     }
+    // TypeScript can't tell that we've initialized resolve.
+    // tslint:disable-next-line:no-unnecessary-type-assertion
     resolve!(!this._hasRequestedUpdate);
   }
 
