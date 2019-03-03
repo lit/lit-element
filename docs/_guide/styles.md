@@ -113,7 +113,7 @@ To define a static `styles` property:
 
 Static styles apply to all instances of an element. Any expressions in your CSS are evaluated and included **once**, then reused for all instances. 
 
-For security reasons, you must use unsafeCSS to pass non-literal values:
+For security reasons, use unsafeCSS to pass non-literal values using only trusted sources:
 
 ```js
 import { unsafeCSS } from 'lit-element';
