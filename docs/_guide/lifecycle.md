@@ -79,7 +79,7 @@ In call order, the methods and properties in the update lifecycle are:
 
 All declared properties have a function, `hasChanged`, which is called whenever the property is set; if `hasChanged` returns true, an update is scheduled.
 
-See the Properties documentation for information on [configuring `hasChanged` to customize what constitutes a property change](/properties#configure-property-changes).
+See the Properties documentation for information on [configuring `hasChanged` to customize what constitutes a property change](/guide/properties#haschanged).
 
 ### requestUpdate {#requestupdate}
 
