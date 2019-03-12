@@ -2219,4 +2219,32 @@ suite('UpdatingElement', () => {
     await a.updateComplete;
     assert.equal(a.updatedCalledCount, 1);
   });
+
+  test('property reflects after setting attribute in same update cycle', async () => {
+    class A extends UpdatingElement {
+
+      foo?: boolean;
+      bar?: string;
+
+      static get properties() {
+        return {
+          foo: {type: Boolean, reflect: true},
+          bar: {type: String, reflect: true}
+        };
+      }
+
+    }
+    customElements.define(generateElementName(), A);
+    const a = new A();
+    container.appendChild(a);
+    a.setAttribute('foo', '');
+    a.removeAttribute('foo');
+    a.foo = true;
+    await a.updateComplete;
+    assert.isTrue(a.hasAttribute('foo'));
+    a.setAttribute('bar', 'hi');
+    a.bar = 'yo';
+    await a.updateComplete;
+    assert.equal(a.getAttribute('bar'), 'yo');
+  });
 });

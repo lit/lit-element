@@ -19,6 +19,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 * `LitElement.renderRoot` is now `public readonly` instead of `protected`.
 
 ### Fixed
+* A reflecting property set immediately after a corresponding attribute
+now reflects properly ([#592](https://github.com/Polymer/lit-element/issues/592)).
 * Properties annotated with the `@query` and `@queryAll` decorators will now
   survive property renaming optimizations when used with tsickle and Closure JS
   Compiler.

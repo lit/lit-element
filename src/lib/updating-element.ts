@@ -579,16 +579,21 @@ export abstract class UpdatingElement extends HTMLElement {
    */
   requestUpdate(name?: PropertyKey, oldValue?: unknown) {
     let shouldRequestUpdate = true;
-    // if we have a property key, perform property update steps.
-    if (name !== undefined && !this._changedProperties.has(name)) {
+    // If we have a property key, perform property update steps.
+    if (name !== undefined) {
       const ctor = this.constructor as typeof UpdatingElement;
       const options =
           ctor._classProperties!.get(name) || defaultPropertyDeclaration;
       if (ctor._valueHasChanged(
               this[name as keyof this], oldValue, options.hasChanged)) {
-        // track old value when changing.
-        this._changedProperties.set(name, oldValue);
-        // add to reflecting properties set
+        // Track old value when changing.
+        if (!this._changedProperties.has(name)) {
+          this._changedProperties.set(name, oldValue);
+        }
+        // Add to reflecting properties set.
+        // Note, it's important that every change has a chance to add the
+        // property to `_reflectingProperties`. This ensures setting
+        // attribute + property reflects correctly.
         if (options.reflect === true &&
             !(this._updateState & STATE_IS_REFLECTING_TO_PROPERTY)) {
           if (this._reflectingProperties === undefined) {
@@ -596,7 +601,7 @@ export abstract class UpdatingElement extends HTMLElement {
           }
           this._reflectingProperties.set(name, options);
         }
-        // abort the request if the property should not be considered changed.
+        // Abort the request if the property should not be considered changed.
       } else {
         shouldRequestUpdate = false;
       }
