@@ -2232,9 +2232,8 @@ suite('UpdatingElement', () => {
     });
     await new Promise((r) => setTimeout(r, 20));
     assert.isFalse(updated);
-    document.body.appendChild(a);
+    container.appendChild(a);
     await a.updateComplete;
     assert.isTrue(updated);
-    document.body.removeChild(a);
   });
 });
