@@ -20,6 +20,10 @@ interface ShadowRoot {
   adoptedStyleSheets: CSSStyleSheet[];
 }
 
+interface Document {
+  adoptedStyleSheets: CSSStyleSheet[];
+}
+
 declare var ShadowRoot: {prototype: ShadowRoot; new (): ShadowRoot;}
 
 interface CSSStyleSheet {

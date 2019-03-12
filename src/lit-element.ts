@@ -90,12 +90,12 @@ export class LitElement extends UpdatingElement {
     // is built from user provided `styles` or is inherited from the superclass.
     this._styles =
         this.hasOwnProperty(JSCompiler_renameProperty('styles', this)) ?
-        this._getUniqueStyles() :
+        this.getUniqueStyles() :
         this._styles || [];
   }
 
   /** @nocollapse */
-  private static _getUniqueStyles(): CSSResult[] {
+  static getUniqueStyles(): CSSResult[] {
     // Take care not to call `this.styles` multiple times since this generates
     // new CSSResults each time.
     // TODO(sorvell): Since we do not cache CSSResults by input, any

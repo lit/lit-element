@@ -14,6 +14,36 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     //ShadyDOM = {force: true};
   </script>
   <script src="../node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
+  <script type="module">
+    import {documentStyle, part, css} from '../lib/document-style.js';
+    documentStyle(css`
+
+        body {
+          background: beige;
+          padding: 8px;
+          margin: 0;
+        }
+
+        ${part('part-host::part(header)', css`
+          font-size: 2em;
+          padding: 8px;
+          background: orange;
+        `)}
+
+        ${part(['body', 'part-host::part(header)'], css`
+          border: 1px solid magenta;
+        `)}
+
+        ${part('part-host2.special::part(header)', css`
+          background: gray;
+        `)}
+
+        ${part('part-host2.special::part(b)', css`
+          background: gray;
+        `)}
+
+      `);
+  </script>
   <script type="module" src="./part-styled.js"></script>
 </head>
 <body>

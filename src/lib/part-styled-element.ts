@@ -11,21 +11,13 @@
  * subject to an additional IP rights grant found at
  * http://polymer.github.io/PATENTS.txt
  */
+import {CSSPartRule, addPartRules, useNativePart} from './css-part.js';
+import {documentPartRules} from './document-style.js';
 import {LitElement, PropertyValues, property} from '../lit-element.js';
-import {unsafeCSS} from './css-tag.js';
+
+export {part} from './css-part.js';
 
 export * from '../lit-element.js';
-
-interface CSSPartRule {
-  selector: string;
-  part: string;
-  propertySet: string;
-  pseudo: string;
-  guid: string;
-  dynamic: string;
-}
-
-type CSSPartRuleSet = Set<CSSPartRule>;
 
 // converts "inner:outer, ..." to a Map<outer: inner>
 const exportPartsConverter = (value: string) => {
@@ -39,69 +31,108 @@ const exportPartsConverter = (value: string) => {
   return map;
 };
 
-let guid = 0;
-const partRulesByGuid: Map<string, CSSPartRule> = new Map();
+const usingShadyDom = !!window.ShadyDOM;
 
-const GUID_PREFIX = 'pr-';
+const PART_ATTR = 'part-guid';
+
 const STYLE_SCOPE = 'style-scope';
-const dynamicSelector = (value: string) => /^\.[^\s\]\[#~+>()]*$/.test(value) ? value.substring(1) : '';
 
+type StyleOrdering = Array<Array<HTMLStyleElement|null>>;
+/**
+ * Place this style into the `ordering` map at sorted location and return a
+ * reference node to insert the style before.
+ */
+const orderStyle = (style: HTMLStyleElement, ordering: StyleOrdering, distance: number, order: number) => {
+  let ref = null;
+  // ensure order array for this `distance`
+  let list = ordering[distance] || (ordering[distance] = []);
+  // place style at ordered location.
+  list[order] = style;
+  // at the current distance, return any style after this one.
+  for (let i = order + 1; i < list.length; i++) {
+    ref = list[i];
+    if (ref !== null) {
+      break;
+    }
+  }
+  if (ref === null) {
+    // if no style is returned, search greater distances and just get the first style.
+    for (let i = distance + 1; i < ordering.length; i++) {
+      list = ordering[i];
+      if (list) {
+        // get the first style in this list
+        list.some((style) => !!(ref = style));
+        if (ref !== null) {
+          break;
+        }
+      }
+    }
+  }
+  return ref;
+};
+
+const removeStyles = (list: Array<HTMLStyleElement|null>) =>
+  list.forEach((style) => {
+    if (style !== null) {
+      style.parentNode!.removeChild(style);
+    }
+  });
+
+// Set of style cssText added to document in ShadyDOM case.
+const appliedShadyStyles: Set<string> = new Set();
+
+// TODO(sorvell): if not polyfiling part, just use LitElement.
 export class PartStyledElement extends LitElement {
 
   static useNativePart = 'part' in Element.prototype;
 
-  static partRuleMap: Map<string, CSSPartRuleSet>;
-
-  static partRule(selector: string, part: string, propertySet: string, pseudo = '') {
-    let rule;
-    if (this.useNativePart && !window.ShadyDOM) {
-      rule = `${selector}::part(${part})${pseudo ? `:${pseudo}` : ''} { ${propertySet} }`;
-    } else {
-      const dynamic = dynamicSelector(selector);
-      this._addToPartRuleMap({selector, part, propertySet, pseudo, guid: `${GUID_PREFIX}${++guid}`, dynamic});
-      rule = '';
-    }
-    // TODO(sorvell): avoid using this but require only literals in these arguments
-    return unsafeCSS(rule);
-  }
-
-  static _addToPartRuleMap(rule: CSSPartRule) {
-    if (!this.hasOwnProperty('partRuleMap')) {
-        this.partRuleMap = new Map();
+  // overridden to establish part context
+  static getUniqueStyles() {
+    const cssResults = super.getUniqueStyles();
+    cssResults.forEach((s) => {
+      if (s.parts!.length) {
+        if (!this.hasOwnProperty('cssPartRules')) {
+          this.cssPartRules = new Set();
+        }
+        addPartRules(this.cssPartRules!, s.parts!);
       }
-      let rules = this.partRuleMap.get(rule.selector);
-      if (!rules) {
-        rules = new Set();
-        this.partRuleMap.set(rule.selector, rules);
-      }
-      rules.add(rule);
-      partRulesByGuid.set(rule.guid, rule);
+    });
+    return cssResults;
   }
 
   static get observedAttributes() {
-    return super.observedAttributes.concat(['class']);
+    return [...super.observedAttributes, 'class'];
   }
 
   @property({attribute: 'exportparts', converter: exportPartsConverter})
   exportParts: Map<string, string>|null = null;
 
-  private _styleHost?: PartStyledElement|null;
-  private _exportPartsChildren = new Set();
-  private _partsDirty = true;
-  private _exportedPartRules: Map<CSSPartRule, string> = new Map();
-  private _dynamicPartRuleMap?: Map<string, CSSPartRuleSet>;
+  static cssPartRules?: Set<CSSPartRule>;
+
+  private _staticPartsDirty = true;
+  private _dynamicPartsDirty = true;
+  private _partParent?: PartStyledElement|null;
+  private _exportPartChildren = new Set();
+  private _dynamicParts?: Set<CSSPartRule>|null;
+  private _partOrder: StyleOrdering = [];
+
+  private _partGuid: Set<string> = new Set();
+  private _updatePartGuid() {
+    const v: string[] = [];
+    this._partGuid.forEach((g) => v.push(g));
+    this.setAttribute(PART_ATTR, v.join(' '));
+  }
 
   attributeChangedCallback(name: string, old: string|null, value: string|null) {
     if (old !== value) {
       super.attributeChangedCallback(name, old, value);
       // When the class attribute changes, update dynamic part at next update.
-      if (name === 'class') {
-        this._partsDirty = true;
+      if (name === 'class' && !this._dynamicPartsDirty) {
+        this._dynamicPartsDirty = true;
         this.updateComplete.then(() => {
-          if (this._partsDirty) {
+          if (this._dynamicPartsDirty) {
             this._updateDynamicParts();
           }
-
         });
       }
     }
@@ -114,180 +145,191 @@ export class PartStyledElement extends LitElement {
    *
    * Returns an array of part names rendered in this element.
    */
+  // TODO(sorvell): can we avoid this since it depends on rendering state?
+  // TODO(sorvell): qsa'ing here costs about 5%.
+  _cssPartNames?: Set<string>;
   protected get cssPartNames() {
-    return Array.from(this.shadowRoot!.querySelectorAll('[part]'))
-        .map((e) => e.getAttribute('part'));
+    if (!this.hasOwnProperty('_cssPartNames')) {
+      this._cssPartNames = new Set();
+      Array.from(this.shadowRoot!.querySelectorAll('[part]'))
+        .map((e) =>
+        e.getAttribute('part')).forEach((part) =>
+        this._cssPartNames!.add(part!));
+    }
+    return this._cssPartNames;
   }
 
-  __cssParts?: Map<string, CSSPartRuleSet|null>;
-  private get _cssParts() {
-    if (!this.__cssParts) {
-      const parts = this.cssPartNames;
-      this.__cssParts = new Map();
-      parts.forEach((p) => this.__cssParts!.set(p as string, new Set()));
-    }
-    return this.__cssParts;
+  _appliedParts = new Set();
+
+  addPartStyle(part: string, rule: CSSPartRule) {
+    // console.log('addPartStyle', this.localName, part, rule);
+    this._ensurePartRule(part, rule.selector, rule);
+    this.addExportPartStyle(part, rule);
   }
 
-
-
-  addPartStyle(part: string, rule: CSSPartRule, forward = false) {
-    //console.log('addPartStyle', this.localName, part, rule, forward);
-    const rules = this._cssParts.get(part);
-    // if we are interested in this part and don't have have a rule for it, add it.
-    if (rules !== undefined && !rules!.has(rule)) {
-      rules!.add(rule);
-      const {propertySet, pseudo} = rule;
-      const selector = forward ? `.${rule.guid}` : rule.selector;
-      const partStyle = document.createElement('style');
-      let hostSelector = `:host(${selector})`;
-      let partSelector = `[part=${part}]`;
-      if (window.ShadyDOM) {
-        const host = this._styleHost;
-        const hostScope = `${this.localName}${host ? `.${STYLE_SCOPE}.${host.localName}` : ''}`;
-        hostSelector = `${hostScope}${selector.replace(new RegExp(`${this.localName}|\\*`), '')}`;
-        partSelector = `.${STYLE_SCOPE}.${this.localName}${partSelector}`;
-      }
-      partStyle.textContent = `${hostSelector} ${partSelector}${pseudo ? `:${pseudo}` : ''} { ${propertySet} }`;
-      if (window.ShadyDOM) {
-        document.head.appendChild(partStyle);
-      } else {
-        this.shadowRoot!.appendChild(partStyle);
-      }
+  addExportPartStyle(part: string, rule: CSSPartRule, distance: number = 0) {
+    if (distance > 0) {
+      // TODO(sorvell): setting attribute and using attr selector costs ~8%
+      this._ensurePartRule(part, `[${PART_ATTR}~=${rule.guid}]`, rule, distance);
+      //this._ensurePartRule(part, this.localName, rule, distance);
+      this._partGuid.add(rule.guid);
+      this._updatePartGuid();
     }
-    // forward
-    this._exportPartsChildren.forEach((child) => {
-      const exports = (child as PartStyledElement).exportParts;
-      if (exports && exports.get(part)) {
-        this._exportedPartRules.set(rule, part);
-        child.classList.add(rule.guid);
+    // TODO(sorvell): could filter by `cssPartNames` to avoid trying to export
+    // parts that are not needed.
+    // TODO(sorvell): we should either send these as a block or just
+    // set guids and let the system pull.
+    this._exportPartChildren.forEach(async (child) => {
+      const inner = (child as PartStyledElement).exportParts!.get(part);
+      if (inner) {
+        await child.updateComplete;
+        child.addExportPartStyle(inner, rule, ++distance);
       }
     });
   }
 
-  removePartStyle(rule: CSSPartRule) {
+  removePartStyle(part: string, rule: CSSPartRule) {
+    this.removeExportPartStyle(part, rule);
+  }
+
+  removeExportPartStyle(part: string, rule: CSSPartRule, distance: number = 0) {
+    if (distance > 0) {
+      this._partGuid.delete(rule.guid);
+      this._updatePartGuid();
+    }
     //console.log('removePartStyle', this.localName, rule);
-    this._exportPartsChildren.forEach((child) => {
-      const exports = (child as PartStyledElement).exportParts;
-      if (exports) {
-        child.classList.remove(rule.guid);
+    this._exportPartChildren.forEach(async (child) => {
+      const inner = (child as PartStyledElement).exportParts!.get(part);
+      if (inner) {
+        await child.updateComplete;
+        child.removeExportPartStyle(inner, rule, ++distance);
       }
     });
   }
 
-  addExportPartsChild(child: Element) {
-    this._exportPartsChildren.add(child);
+  private _ensurePartRule(part: string, selector: string, rule: CSSPartRule, distance: number = 0) {
+    // Bail if we don't care about this part or have already applied it.
+    if (!this.cssPartNames!.has(part) || this._appliedParts.has(rule)) {
+      return;
+    }
+    this._appliedParts.add(rule);
+    const {selectorPseudo, partPseudo, propertySet} = rule;
+    let hostSelector = `:host(${selector}${selectorPseudo ? `:${selectorPseudo}` : ''})`;
+    let partSelector = `[part=${part}]`;
+    if (usingShadyDom) {
+      const hostScope = `${this.localName}${this._partParent ?
+        `.${STYLE_SCOPE}.${this._partParent.localName}` : ''}`;
+      hostSelector = `${hostScope}${selector.replace(new RegExp(`${this.localName}|\\*`), '')}`;
+      partSelector = `.${STYLE_SCOPE}.${this.localName}${partSelector}`;
+    }
+    const cssText = `${hostSelector} ${partSelector}${partPseudo ? `:${partPseudo}` : ''} { ${propertySet} }`;
+    // Bail if already added in ShadyDOM case.
+    if (usingShadyDom && appliedShadyStyles.has(cssText)) {
+      return;
+    }
+    const partStyle = document.createElement('style');
+    const refNode = orderStyle(partStyle, this._partOrder, distance, rule.order!);
+    partStyle.textContent = cssText;
+    if (usingShadyDom) {
+      appliedShadyStyles.add(cssText);
+      document.head.insertBefore(partStyle, refNode);
+    } else {
+      this.shadowRoot!.insertBefore(partStyle, refNode);
+    }
   }
 
-  removeExportPartsChild(child: Element) {
-    this._exportPartsChildren.delete(child);
+  addExportPartChild(child: Element) {
+    this._exportPartChildren.add(child);
+  }
+
+  removeExportPartChild(child: Element) {
+    this._exportPartChildren.delete(child);
   }
 
   connectedCallback() {
-    this._styleHost = (this.getRootNode() as ShadowRoot).host as PartStyledElement || null;
+    this._partParent = (this.getRootNode() as ShadowRoot).host as PartStyledElement;
     // Note, dynamically adding `exportParts` is not supported.
-    if (this._styleHost && this._styleHost.addExportPartsChild && this.exportParts) {
-      this._styleHost.addExportPartsChild(this);
+    if (this._partParent && this._partParent.addExportPartChild && this.exportParts) {
+      this._partParent.addExportPartChild(this);
+    }
+    if (this.hasUpdated) {
+      this.updateComplete.then(() => this._updateParts());
     }
     super.connectedCallback();
   }
 
   disconnectedCallback() {
-    if (super.connectedCallback) {
-      super.connectedCallback();
+    if (super.disconnectedCallback) {
+      super.disconnectedCallback();
     }
-    if (this._styleHost && this._styleHost.removeExportPartsChild) {
-      this._styleHost.removeExportPartsChild(this);
-      this._styleHost = null;
+    // remove all part rules.
+    this._dynamicParts = null;
+    this._appliedParts = new Set();
+    // TODO(sorvell): This could remove styles only if there is no parentNode.
+    // In that case, export children would need to remove any styling
+    // at a distances greater than or equal to this element's distance to the child.
+    // This would require being able to remove rules associated with styles
+    // which would mean keeping a map of style => rule.
+    // TODO(sorvell): This work could also be debounced to avoid doing it if the
+    // node is immediately re-connected (to the same host).
+    // Remove all part styles; note, exported styles will be auto
+    // removed via disconnect. We avoid doing this for ShadyDOM since they
+    // may be used for other elements and will no longer match this element.
+    if (!usingShadyDom) {
+      this._partOrder.forEach((list) => removeStyles(list));
     }
-  }
-
-  firstUpdated(changedProperties: PropertyValues) {
-    if (super.firstUpdated) {
-      super.firstUpdated(changedProperties);
+    this._partOrder = [];
+    this._staticPartsDirty = true;
+    this._dynamicPartsDirty = true;
+    if (this._partParent && this._partParent.removeExportPartChild) {
+      this._partParent.removeExportPartChild(this);
     }
-    if (!(this.constructor as typeof PartStyledElement).useNativePart ||  window.ShadyDOM) {
-      this._updateStaticParts();
-    }
-  }
-
-
-  private _updateStaticParts() {
-    const map = this._styleHost && (this._styleHost.constructor as typeof PartStyledElement).partRuleMap;
-    // process static part rules here and store dynamic rules for runtime updates.
-    if (map) {
-      this._dynamicPartRuleMap = new Map();
-      map.forEach((rules: CSSPartRuleSet, selector: string) => {
-        if (dynamicSelector(selector) !== '') {
-          this._dynamicPartRuleMap!.set(selector, rules);
-        } else {
-          rules.forEach((rule) => {
-            if (this.matches(rule.selector)) {
-              this.addPartStyle(rule.part, rule);
-            }
-          });
-        }
-      });
-    }
+    this._partParent = null;
   }
 
   updated(changedProperties: PropertyValues) {
     if (super.updated) {
       super.updated(changedProperties);
     }
-    if ((!(this.constructor as typeof PartStyledElement).useNativePart || window.ShadyDOM) && this._partsDirty) {
+    this._updateParts();
+  }
+
+  private _updateParts() {
+    if (!useNativePart() && this._dynamicPartsDirty) {
+      if (this._staticPartsDirty) {
+        this._updateStaticParts();
+      }
       this._updateDynamicParts();
     }
   }
 
-  _previousClassList = new Set();
+  private _updateStaticParts() {
+    this._staticPartsDirty = false;
+    const map = this._partParent ?
+      (this._partParent.constructor as typeof PartStyledElement).cssPartRules : documentPartRules;
+    // process static part rules here and store dynamic rules for runtime updates.
+    if (map) {
+      this._dynamicParts = new Set();
+      map.forEach((rule: CSSPartRule) => {
+        if (rule.dynamic) {
+          this._dynamicParts!.add(rule);
+        } else {
+          if (this.matches(rule.selector)) {
+            this.addPartStyle(rule.part!, rule);
+          }
+        }
+      });
+    }
+  }
 
   private _updateDynamicParts() {
-    //console.log('_updatePartsByClass', this.localName, this.className);
-    this._partsDirty = false;
-    const map = this._dynamicPartRuleMap!;
-    const exports = this.exportParts;
-    const classList = new Set();
-    this.classList.forEach((value) => {
-      // build a set of existing classes
-      // (build this up instead of constructing Set with classList for IE compat)
-      classList.add(value);
-      // if this class is a `guid`, then this class is only for forwarding.
-      const forwardRule = partRulesByGuid.get(value);
-      // create a list of removed classes while iterating
-      if (this._previousClassList.has(value)) {
-        this._previousClassList.delete(value);
-      // non-guid class, get the dynamic part rules matching this class
-      // and ensure they are added.
-      } else if (map && !forwardRule) {
-        const ruleSet = map.get(`.${value}`);
-        if (ruleSet !== undefined) {
-          ruleSet.forEach((rule) => {
-            this.addPartStyle(rule.part, rule);
-          });
-        }
-      // guid class: forward this rule if we have an export for it.
-      } else if (exports && forwardRule) {
-        const part = this._styleHost && this._styleHost._exportedPartRules.get(forwardRule);
-        const inner = exports && exports.get(part!);
-        if (inner !== undefined) {
-          this.addPartStyle(inner, forwardRule, true);
-        }
-      }
-    });
-    // process removed classes: this is needed only for forwards
-    const removedClasses = this._previousClassList;
-    this._previousClassList = classList;
-    removedClasses.forEach((value) => {
-      if (this._exportedPartRules !== undefined) {
-        const forwardRule = partRulesByGuid.get(value);
-        this._exportedPartRules.forEach((_part, rule) => {
-          if ((forwardRule && rule.guid === value) || (rule!.dynamic === value)) {
-            this.removePartStyle(rule);
-          }
-        });
-      }
-    });
+    this._dynamicPartsDirty = false;
+    if (this._dynamicParts) {
+      this._dynamicParts.forEach((rule) => this.matches(rule.selector) ?
+        this.addPartStyle(rule.part!, rule) :
+        this.removePartStyle(rule.part!, rule)
+      );
+    }
   }
 
 }

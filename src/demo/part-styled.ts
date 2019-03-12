@@ -1,7 +1,5 @@
-import {PartStyledElement, html, css, property, customElement, unsafeCSS} from '../lib/part-styled-element.js';
+import {PartStyledElement, html, css, part, property, customElement, unsafeCSS} from '../lib/part-styled-element.js';
 import {classMap} from 'lit-html/directives/class-map.js';
-
-PartStyledElement.useNativePart = false;
 
 const margin = '12px';
 
@@ -42,11 +40,15 @@ export class PartGChild extends PartStyledElement {
 
 @customElement('part-child')
 export class PartChild extends PartStyledElement {
-  static styles = css`
+  static get styles() { return css`
     :host {
       display: block;
     }
-  `;
+
+    ${part('.noApply::part(bar)', css`
+      border-color: orange;
+    `)}
+  `; }
 
   render() {
     return html`
@@ -63,36 +65,32 @@ export class PartHost extends PartStyledElement {
   special = false;
 
   static get styles() { return css`
-    :host {
+     :host {
       display: block;
     }
 
-    ${this.partRule('part-child', 'foo', `
+    ${part('part-child::part(foo)', css`
       border: 2px solid orange;
       padding: 4px;
     `)}
 
-    ${this.partRule('.special', 'foo', `
+    ${part('.special::part(foo)', css`
       border-color: blue;
     `)}
 
-    ${this.partRule('part-child', 'nug', `
+    ${part('part-child::part(nug)', css`
       border: 10px solid red;
     `)}
 
-    ${this.partRule('.special', 'nug', `
+    ${part('.special::part(nug)', css`
       border-color: blue;
     `)}
 
-    ${this.partRule('.special', 'child-zot', `
+    ${part('.special::part(child-zot)', css`
       border: 2px dashed blue;
     `)}
 
-    part-child {
-      margin: ${unsafeCSS(margin)};
-    }
-
-    ${this.partRule('*', 'b', `margin: ${margin}`)}
+    ${part(['part-child', '*::part(b)'], css`margin: ${unsafeCSS(margin)}`)}
 
   `; }
 
@@ -100,7 +98,7 @@ export class PartHost extends PartStyledElement {
     const special = this.special;
     return html`
       <div @click="${this._handleClick}">
-        <header>part-host</header>
+        <header part="header">part-host</header>
         <part-child exportparts="b" class=${classMap({special})}></part-child>
         <part-child exportparts="b"></part-child>
       </div>
@@ -119,25 +117,22 @@ export class PartHost2 extends PartStyledElement {
       display: block;
     }
 
-    ${this.partRule('part-child', 'foo', `
+    ${part('part-child::part(foo)', css`
       border: 4px dashed gray;
       padding: 4px;
     `)}
 
-    ${this.partRule('part-child', 'nug', `
+    ${part('part-child::part(nug):hover', css`
       border: 10px solid yellow;
-    `, 'hover')}
+    `)}
 
-    part-child {
-      margin: ${unsafeCSS(margin)};
-    }
-
-    ${this.partRule('*', 'b', `margin: ${margin}`)}
+    ${part(['part-child', '*::part(b)'], css`margin: ${unsafeCSS(margin)}`)}
 
   `; }
 
   render() {
     return html`
+      <header part="header">part-host2</header>
       <part-child exportparts="b"></part-child>
     `;
   }

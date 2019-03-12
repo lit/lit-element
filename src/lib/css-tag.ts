@@ -9,6 +9,8 @@ part of the polymer project is also subject to an additional IP rights grant
 found at http://polymer.github.io/PATENTS.txt
 */
 
+import {CSSPartRuleSet} from './css-part.js';
+
 export const supportsAdoptingStyleSheets =
     ('adoptedStyleSheets' in Document.prototype) &&
     ('replace' in CSSStyleSheet.prototype);
@@ -20,11 +22,14 @@ export class CSSResult {
 
   readonly cssText: string;
 
-  constructor(cssText: string, safeToken: symbol) {
+  parts?: CSSPartRuleSet[];
+
+  constructor(cssText: string, safeToken: symbol, parts?: CSSPartRuleSet[]) {
     if (safeToken !== constructionToken) {
       throw new Error(
           'CSSResult is not constructable. Use `unsafeCSS` or `css` instead.');
     }
+    this.parts = parts;
     this.cssText = cssText;
   }
 
@@ -60,9 +65,9 @@ export const unsafeCSS = (value: unknown) => {
   return new CSSResult(String(value), constructionToken);
 };
 
-const textFromCSSResult = (value: CSSResult) => {
-  if (value instanceof CSSResult) {
-    return value.cssText;
+const textFromCSS = (value: CSSResult|CSSPartRuleSet) => {
+  if (value instanceof CSSResult || value instanceof CSSPartRuleSet) {
+    return value.toString();
   } else {
     throw new Error(
         `Value passed to 'css' function must be a 'css' function result: ${
@@ -77,9 +82,15 @@ const textFromCSSResult = (value: CSSResult) => {
  * used. To incorporate non-literal values `unsafeCSS` may be used inside a
  * template string part.
  */
-export const css = (strings: TemplateStringsArray, ...values: CSSResult[]) => {
+export const css = (strings: TemplateStringsArray, ...values: (CSSResult|CSSPartRuleSet)[]) => {
+  const parts: CSSPartRuleSet[] = [];
   const cssText = values.reduce(
-      (acc, v, idx) => acc + textFromCSSResult(v) + strings[idx + 1],
+      (acc, v, idx) => {
+        if (v instanceof CSSPartRuleSet) {
+          parts.push(v as CSSPartRuleSet);
+        }
+        return `${acc}${textFromCSS(v)}${strings[idx + 1]}`;
+      },
       strings[0]);
-  return new CSSResult(cssText, constructionToken);
+  return new CSSResult(cssText, constructionToken, parts);
 };
