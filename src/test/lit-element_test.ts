@@ -212,7 +212,7 @@ suite('LitElement', () => {
     }
     customElements.define(generateElementName(), A);
     const a = new A();
-    document.body.appendChild(a);
+    container.appendChild(a);
     await a.updateComplete;
     assert.equal(a.shadowRoot!.textContent, '5');
     shouldThrow = true;
@@ -231,6 +231,5 @@ suite('LitElement', () => {
     await a.updateComplete;
     assert.equal(a.foo, 20);
     assert.equal(a.shadowRoot!.textContent, '20');
-    document.body.removeChild(a);
   });
 });

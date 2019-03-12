@@ -1570,7 +1570,7 @@ suite('UpdatingElement', () => {
 
     const el = new E();
     el.foo = 'foo1';
-    document.body.appendChild(el);
+    container.appendChild(el);
     await el.updateComplete;
     assert.equal(el.foo, 'foo1');
     assert.equal(el.bar, 'defaultBar');
@@ -1804,7 +1804,7 @@ suite('UpdatingElement', () => {
 
     const el = new E();
     el.foo = 'foo1';
-    document.body.appendChild(el);
+    container.appendChild(el);
     await el.updateComplete;
     assert.equal(el.foo, 'foo1');
     assert.equal(el.bar, 'defaultBar');
@@ -1865,7 +1865,7 @@ suite('UpdatingElement', () => {
 
     const el = new E();
     el.foo = 'foo1';
-    document.body.appendChild(el);
+    container.appendChild(el);
     await el.updateComplete;
     assert.equal(el.foo, 'foo1');
     assert.equal(el.bar, 'defaultBar');
@@ -2240,7 +2240,7 @@ suite('UpdatingElement', () => {
     }
     customElements.define(generateElementName(), A);
     const a = new A();
-    document.body.appendChild(a);
+    container.appendChild(a);
     await a.updateComplete;
     assert.equal(a.updatedFoo, 5);
     shouldThrow = true;
@@ -2259,7 +2259,6 @@ suite('UpdatingElement', () => {
     await a.updateComplete;
     assert.equal(a.foo, 20);
     assert.equal(a.updatedFoo, 20);
-    document.body.removeChild(a);
   });
 
   test('exceptions in `updated` throw but do not prevent further updates', async () => {
@@ -2278,7 +2277,7 @@ suite('UpdatingElement', () => {
     }
     customElements.define(generateElementName(), A);
     const a = new A();
-    document.body.appendChild(a);
+    container.appendChild(a);
     await a.updateComplete;
     assert.equal(a.updatedFoo, 5);
     shouldThrow = true;
@@ -2297,7 +2296,6 @@ suite('UpdatingElement', () => {
     await a.updateComplete;
     assert.equal(a.foo, 20);
     assert.equal(a.updatedFoo, 20);
-    document.body.removeChild(a);
   });
 
   test('exceptions in `shouldUpdate` throw but do not prevent further updates', async () => {
@@ -2320,7 +2318,7 @@ suite('UpdatingElement', () => {
     }
     customElements.define(generateElementName(), A);
     const a = new A();
-    document.body.appendChild(a);
+    container.appendChild(a);
     await a.updateComplete;
     assert.equal(a.updatedFoo, 5);
     shouldThrow = true;
@@ -2339,7 +2337,6 @@ suite('UpdatingElement', () => {
     await a.updateComplete;
     assert.equal(a.foo, 20);
     assert.equal(a.updatedFoo, 20);
-    document.body.removeChild(a);
   });
 
   test('exceptions in `performUpdate` throw but do not prevent further updates', async () => {
@@ -2366,7 +2363,7 @@ suite('UpdatingElement', () => {
     }
     customElements.define(generateElementName(), A);
     const a = new A();
-    document.body.appendChild(a);
+    container.appendChild(a);
     await a.updateComplete;
     assert.equal(a.updatedFoo, 5);
     shouldThrow = true;
@@ -2385,6 +2382,5 @@ suite('UpdatingElement', () => {
     await a.updateComplete;
     assert.equal(a.foo, 20);
     assert.equal(a.updatedFoo, 20);
-    document.body.removeChild(a);
   });
 });
