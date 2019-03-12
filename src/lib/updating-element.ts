@@ -614,22 +614,45 @@ export abstract class UpdatingElement extends HTMLElement {
     // Mark state updating...
     this._updateState = this._updateState | STATE_UPDATE_REQUESTED;
     let resolve: (r: boolean) => void;
+    let reject: (e: Error) => void;
     const previousUpdatePromise = this._updatePromise;
-    this._updatePromise = new Promise((res) => resolve = res);
+    this._updatePromise = new Promise((res, rej) => {
+      resolve = res;
+      reject = rej;
+    });
     // Ensure any previous update has resolved before updating.
     // This `await` also ensures that property changes are batched.
-    await previousUpdatePromise;
+    try {
+      await previousUpdatePromise;
+    } catch (e) {
+      // Ignore any previous errors. We only care that the previous cycle is
+      // done. Any error should have been handled in the previous update.
+    }
     // Make sure the element has connected before updating.
     if (!this._hasConnected) {
       await new Promise((res) => this._hasConnectedResolver = res);
     }
-    // Allow `performUpdate` to be asynchronous to enable scheduling of updates.
-    const result = this.performUpdate();
+    let result = null;
+    // Trap errors in updating so that element is not in a non-functional state.
+    try {
+      // Allow `performUpdate` to be asynchronous to enable scheduling of updates.
+      result = this.performUpdate();
+    } catch (e) {
+      // Ensure subsequent updates are ok but reject this update.
+      this._markUpdated();
+      reject!(e);
+    }
     // Note, this is to avoid delaying an additional microtask unless we need
     // to.
     if (result != null &&
         typeof (result as PromiseLike<unknown>).then === 'function') {
-      await result;
+      try {
+        await result;
+      } catch (e) {
+        // Ensure subsequent updates are ok but reject this update.
+        this._markUpdated();
+        reject!(e);
+      }
     }
     // TypeScript can't tell that we've initialized resolve.
     // tslint:disable-next-line:no-unnecessary-type-assertion

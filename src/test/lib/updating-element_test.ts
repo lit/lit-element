@@ -2219,4 +2219,172 @@ suite('UpdatingElement', () => {
     await a.updateComplete;
     assert.equal(a.updatedCalledCount, 1);
   });
+
+  test('exceptions in `update` throw but do not prevent further updates', async () => {
+    let shouldThrow = false;
+    class A extends UpdatingElement {
+
+      @property() foo = 5;
+      updatedFoo = 0;
+
+      update(changedProperties: Map<PropertyKey, unknown>) {
+        if (shouldThrow) {
+          throw new Error('test error');
+        }
+        super.update(changedProperties);
+      }
+
+      updated(_changedProperties: Map<PropertyKey, unknown>) {
+        this.updatedFoo = this.foo;
+      }
+    }
+    customElements.define(generateElementName(), A);
+    const a = new A();
+    document.body.appendChild(a);
+    await a.updateComplete;
+    assert.equal(a.updatedFoo, 5);
+    shouldThrow = true;
+    a.foo = 10;
+    let threw = false;
+    try {
+      await a.updateComplete;
+    } catch (e) {
+      threw = true;
+    }
+    assert.isTrue(threw);
+    assert.equal(a.foo, 10);
+    assert.equal(a.updatedFoo, 5);
+    shouldThrow = false;
+    a.foo = 20;
+    await a.updateComplete;
+    assert.equal(a.foo, 20);
+    assert.equal(a.updatedFoo, 20);
+    document.body.removeChild(a);
+  });
+
+  test('exceptions in `updated` throw but do not prevent further updates', async () => {
+    let shouldThrow = false;
+    class A extends UpdatingElement {
+
+      @property() foo = 5;
+      updatedFoo = 0;
+
+      updated(_changedProperties: Map<PropertyKey, unknown>) {
+        if (shouldThrow) {
+          throw new Error('test error');
+        }
+        this.updatedFoo = this.foo;
+      }
+    }
+    customElements.define(generateElementName(), A);
+    const a = new A();
+    document.body.appendChild(a);
+    await a.updateComplete;
+    assert.equal(a.updatedFoo, 5);
+    shouldThrow = true;
+    a.foo = 10;
+    let threw = false;
+    try {
+      await a.updateComplete;
+    } catch (e) {
+      threw = true;
+    }
+    assert.isTrue(threw);
+    assert.equal(a.foo, 10);
+    assert.equal(a.updatedFoo, 5);
+    shouldThrow = false;
+    a.foo = 20;
+    await a.updateComplete;
+    assert.equal(a.foo, 20);
+    assert.equal(a.updatedFoo, 20);
+    document.body.removeChild(a);
+  });
+
+  test('exceptions in `shouldUpdate` throw but do not prevent further updates', async () => {
+    let shouldThrow = false;
+    class A extends UpdatingElement {
+
+      @property() foo = 5;
+      updatedFoo = 0;
+
+      shouldUpdate(changedProperties: Map<PropertyKey, unknown>) {
+        if (shouldThrow) {
+          throw new Error('test error');
+        }
+        return super.shouldUpdate(changedProperties);
+      }
+
+      updated(_changedProperties: Map<PropertyKey, unknown>) {
+        this.updatedFoo = this.foo;
+      }
+    }
+    customElements.define(generateElementName(), A);
+    const a = new A();
+    document.body.appendChild(a);
+    await a.updateComplete;
+    assert.equal(a.updatedFoo, 5);
+    shouldThrow = true;
+    a.foo = 10;
+    let threw = false;
+    try {
+      await a.updateComplete;
+    } catch (e) {
+      threw = true;
+    }
+    assert.isTrue(threw);
+    assert.equal(a.foo, 10);
+    assert.equal(a.updatedFoo, 5);
+    shouldThrow = false;
+    a.foo = 20;
+    await a.updateComplete;
+    assert.equal(a.foo, 20);
+    assert.equal(a.updatedFoo, 20);
+    document.body.removeChild(a);
+  });
+
+  test('exceptions in `performUpdate` throw but do not prevent further updates', async () => {
+    let shouldThrow = false;
+    class A extends UpdatingElement {
+
+      @property() foo = 5;
+      updatedFoo = 0;
+
+      updated(_changedProperties: Map<PropertyKey, unknown>) {
+        this.updatedFoo = this.foo;
+      }
+
+      performUpdate() {
+        super.performUpdate();
+        return new Promise((resolve, reject) => {
+          if (shouldThrow) {
+            reject();
+          } else {
+            resolve();
+          }
+        });
+      }
+    }
+    customElements.define(generateElementName(), A);
+    const a = new A();
+    document.body.appendChild(a);
+    await a.updateComplete;
+    assert.equal(a.updatedFoo, 5);
+    shouldThrow = true;
+    a.foo = 10;
+    let threw = false;
+    try {
+      await a.updateComplete;
+    } catch (e) {
+      threw = true;
+    }
+    assert.isTrue(threw);
+    assert.equal(a.foo, 10);
+    assert.equal(a.updatedFoo, 10);
+    shouldThrow = false;
+    a.foo = 20;
+    await a.updateComplete;
+    assert.equal(a.foo, 20);
+    assert.equal(a.updatedFoo, 20);
+    document.body.removeChild(a);
+  });
 });
