@@ -613,8 +613,8 @@ export abstract class UpdatingElement extends HTMLElement {
   private async _enqueueUpdate() {
     // Mark state updating...
     this._updateState = this._updateState | STATE_UPDATE_REQUESTED;
-    let resolve: (r: boolean) => void;
-    let reject: (e: Error) => void;
+    let resolve!: (r: boolean) => void;
+    let reject!: (e: Error) => void;
     const previousUpdatePromise = this._updatePromise;
     this._updatePromise = new Promise((res, rej) => {
       resolve = res;
@@ -640,7 +640,7 @@ export abstract class UpdatingElement extends HTMLElement {
     } catch (e) {
       // Ensure subsequent updates are ok but reject this update.
       this._markUpdated();
-      reject!(e);
+      reject(e);
     }
     // Note, this is to avoid delaying an additional microtask unless we need
     // to.
@@ -651,12 +651,11 @@ export abstract class UpdatingElement extends HTMLElement {
       } catch (e) {
         // Ensure subsequent updates are ok but reject this update.
         this._markUpdated();
-        reject!(e);
+        reject(e);
       }
     }
     // TypeScript can't tell that we've initialized resolve.
-    // tslint:disable-next-line:no-unnecessary-type-assertion
-    resolve!(!this._hasRequestedUpdate);
+    resolve(!this._hasRequestedUpdate);
   }
 
   private get _hasConnected() {
