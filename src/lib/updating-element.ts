@@ -632,27 +632,20 @@ export abstract class UpdatingElement extends HTMLElement {
     if (!this._hasConnected) {
       await new Promise((res) => this._hasConnectedResolver = res);
     }
-    let result = null;
     // Trap errors in updating so that element is not in a non-functional state.
     try {
-      // Allow `performUpdate` to be asynchronous to enable scheduling of updates.
-      result = this.performUpdate();
+      const result = this.performUpdate();
+      // If `performUpdate` returns a Promise, we await it. This is done to
+      // enable coordinating updates with a scheduler. Note, the result type is
+      // checked to avoid delaying an additional microtask unless we need to.
+      if (result != null &&
+          typeof (result as PromiseLike<unknown>).then === 'function') {
+        await result;
+      }
     } catch (e) {
       // Ensure subsequent updates are ok but reject this update.
       this._markUpdated();
       reject(e);
-    }
-    // Note, this is to avoid delaying an additional microtask unless we need
-    // to.
-    if (result != null &&
-        typeof (result as PromiseLike<unknown>).then === 'function') {
-      try {
-        await result;
-      } catch (e) {
-        // Ensure subsequent updates are ok but reject this update.
-        this._markUpdated();
-        reject(e);
-      }
     }
     // TypeScript can't tell that we've initialized resolve.
     resolve(!this._hasRequestedUpdate);
