@@ -586,7 +586,6 @@ export abstract class UpdatingElement extends HTMLElement {
           ctor._classProperties!.get(name) || defaultPropertyDeclaration;
       if (ctor._valueHasChanged(
               this[name as keyof this], oldValue, options.hasChanged)) {
-        // Track old value when changing.
         if (!this._changedProperties.has(name)) {
           this._changedProperties.set(name, oldValue);
         }
@@ -601,8 +600,8 @@ export abstract class UpdatingElement extends HTMLElement {
           }
           this._reflectingProperties.set(name, options);
         }
-        // Abort the request if the property should not be considered changed.
       } else {
+        // Abort the request if the property should not be considered changed.
         shouldRequestUpdate = false;
       }
     }
