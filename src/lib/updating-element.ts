@@ -620,9 +620,9 @@ export abstract class UpdatingElement extends HTMLElement {
       resolve = res;
       reject = rej;
     });
-    // Ensure any previous update has resolved before updating.
-    // This `await` also ensures that property changes are batched.
     try {
+      // Ensure any previous update has resolved before updating.
+      // This `await` also ensures that property changes are batched.
       await previousUpdatePromise;
     } catch (e) {
       // Ignore any previous errors. We only care that the previous cycle is
@@ -647,7 +647,6 @@ export abstract class UpdatingElement extends HTMLElement {
       this._markUpdated();
       reject(e);
     }
-    // TypeScript can't tell that we've initialized resolve.
     resolve(!this._hasRequestedUpdate);
   }
 
