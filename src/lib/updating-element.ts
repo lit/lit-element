@@ -441,6 +441,8 @@ export abstract class UpdatingElement extends HTMLElement {
    */
   protected initialize() {
     this._saveInstanceProperties();
+    // ensures first update will be caught by an early access of `updateComplete`
+    this._requestUpdate();
   }
 
   /**
@@ -484,15 +486,13 @@ export abstract class UpdatingElement extends HTMLElement {
 
   connectedCallback() {
     this._updateState = this._updateState | STATE_HAS_CONNECTED;
-    // Ensure connection triggers an update. Updates cannot complete before
+    // Ensure first connection completes an update. Updates cannot complete before
     // connection and if one is pending connection the `_hasConnectionResolver`
     // will exist. If so, resolve it to complete the update, otherwise
     // requestUpdate.
     if (this._hasConnectedResolver) {
       this._hasConnectedResolver();
       this._hasConnectedResolver = undefined;
-    } else {
-      this.requestUpdate();
     }
   }
 
@@ -571,16 +571,20 @@ export abstract class UpdatingElement extends HTMLElement {
    */
   private _requestUpdate(name?: PropertyKey, oldValue?: unknown) {
     let shouldRequestUpdate = true;
-    // if we have a property key, perform property update steps.
-    if (name !== undefined && !this._changedProperties.has(name)) {
+    // If we have a property key, perform property update steps.
+    if (name !== undefined) {
       const ctor = this.constructor as typeof UpdatingElement;
       const options =
           ctor._classProperties!.get(name) || defaultPropertyDeclaration;
       if (ctor._valueHasChanged(
               this[name as keyof this], oldValue, options.hasChanged)) {
-        // track old value when changing.
-        this._changedProperties.set(name, oldValue);
-        // add to reflecting properties set
+        if (!this._changedProperties.has(name)) {
+          this._changedProperties.set(name, oldValue);
+        }
+        // Add to reflecting properties set.
+        // Note, it's important that every change has a chance to add the
+        // property to `_reflectingProperties`. This ensures setting
+        // attribute + property reflects correctly.
         if (options.reflect === true &&
             !(this._updateState & STATE_IS_REFLECTING_TO_PROPERTY)) {
           if (this._reflectingProperties === undefined) {
@@ -588,8 +592,8 @@ export abstract class UpdatingElement extends HTMLElement {
           }
           this._reflectingProperties.set(name, options);
         }
-        // abort the request if the property should not be considered changed.
       } else {
+        // Abort the request if the property should not be considered changed.
         shouldRequestUpdate = false;
       }
     }
