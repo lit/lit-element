@@ -20,6 +20,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 * Initial update is scheduled at construction time rather than connected time ([#594](https://github.com/Polymer/lit-element/issues/594)).
+* A reflecting property set immediately after a corresponding attribute
+now reflects properly ([#592](https://github.com/Polymer/lit-element/issues/592)).
 * Properties annotated with the `@query` and `@queryAll` decorators will now
   survive property renaming optimizations when used with tsickle and Closure JS
   Compiler.
