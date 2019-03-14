@@ -2202,11 +2202,6 @@ suite('UpdatingElement', () => {
 
       @property() foo = 5;
 
-      constructor() {
-        super();
-        this.requestUpdate();
-      }
-
       updated(_changedProperties: Map<PropertyKey, unknown>) {
         this.updatedCalledCount++;
       }
@@ -2218,6 +2213,28 @@ suite('UpdatingElement', () => {
     container.appendChild(a);
     await a.updateComplete;
     assert.equal(a.updatedCalledCount, 1);
+  });
+
+  test('early access of updateComplete waits until first update', async() => {
+    class A extends UpdatingElement {
+      didUpdate = false;
+
+      updated(_changedProperties: Map<PropertyKey, unknown>) {
+        this.didUpdate = true;
+      }
+    }
+    customElements.define(generateElementName(), A);
+    const a = new A();
+    let updated = false;
+    a.updateComplete.then(() => {
+      updated = true;
+      assert.isTrue(a.didUpdate);
+    });
+    await new Promise((r) => setTimeout(r, 20));
+    assert.isFalse(updated);
+    container.appendChild(a);
+    await a.updateComplete;
+    assert.isTrue(updated);
   });
 
   test('property reflects after setting attribute in same update cycle', async () => {

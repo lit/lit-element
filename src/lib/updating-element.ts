@@ -441,6 +441,8 @@ export abstract class UpdatingElement extends HTMLElement {
    */
   protected initialize() {
     this._saveInstanceProperties();
+    // ensures first update will be caught by an early access of `updateComplete`
+    this.requestUpdate();
   }
 
   /**
@@ -484,15 +486,13 @@ export abstract class UpdatingElement extends HTMLElement {
 
   connectedCallback() {
     this._updateState = this._updateState | STATE_HAS_CONNECTED;
-    // Ensure connection triggers an update. Updates cannot complete before
+    // Ensure first connection completes an update. Updates cannot complete before
     // connection and if one is pending connection the `_hasConnectionResolver`
     // will exist. If so, resolve it to complete the update, otherwise
     // requestUpdate.
     if (this._hasConnectedResolver) {
       this._hasConnectedResolver();
       this._hasConnectedResolver = undefined;
-    } else {
-      this.requestUpdate();
     }
   }
 
