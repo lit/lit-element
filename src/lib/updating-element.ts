@@ -644,10 +644,9 @@ export abstract class UpdatingElement extends HTMLElement {
     try {
       const result = this.performUpdate();
       // If `performUpdate` returns a Promise, we await it. This is done to
-      // enable coordinating updates with a scheduler. Note, the result type is
+      // enable coordinating updates with a scheduler. Note, the result is
       // checked to avoid delaying an additional microtask unless we need to.
-      if (result != null &&
-          typeof (result as PromiseLike<unknown>).then === 'function') {
+      if (result != null) {
         await result;
       }
     } catch (e) {

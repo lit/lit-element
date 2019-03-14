@@ -2386,12 +2386,12 @@ suite('UpdatingElement', () => {
       threw = true;
     }
     assert.isTrue(threw);
-    assert.isFalse(a.changedProps!.has('foo'));
+    assert.isFalse(a.changedProps.has('foo'));
     assert.equal(a.foo, 10);
     assert.equal(a.updatedFoo, 5);
     a.foo = 20;
     await a.updateComplete;
-    assert.equal(a.changedProps!.get('foo'), 10);
+    assert.equal(a.changedProps.get('foo'), 10);
     assert.equal(a.foo, 20);
     assert.equal(a.updatedFoo, 20);
     enqueue = true;
@@ -2404,7 +2404,7 @@ suite('UpdatingElement', () => {
       threw = true;
     }
     assert.isTrue(threw);
-    assert.equal(a.changedProps!.get('foo'), 50);
+    assert.equal(a.changedProps.get('foo'), 50);
     assert.equal(a.foo, 51);
     assert.equal(a.updatedFoo, 51);
   });
