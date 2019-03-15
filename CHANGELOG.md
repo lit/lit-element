@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 * `LitElement.renderRoot` is now `public readonly` instead of `protected`.
 
 ### Fixed
+* Exceptions generated during update/render do not block subsequent updates ([#262](https://github.com/Polymer/lit-element/issues/262)).
 * Initial update is scheduled at construction time rather than connected time ([#594](https://github.com/Polymer/lit-element/issues/594)).
 * A reflecting property set immediately after a corresponding attribute
 now reflects properly ([#592](https://github.com/Polymer/lit-element/issues/592)).

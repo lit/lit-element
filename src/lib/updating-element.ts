@@ -303,7 +303,7 @@ export abstract class UpdatingElement extends HTMLElement {
         const oldValue = (this as any)[name];
         // tslint:disable-next-line:no-any no symbol in index
         (this as any)[key] = value;
-        this.requestUpdate(name, oldValue);
+        this._requestUpdate(name, oldValue);
       },
       configurable: true,
       enumerable: true
@@ -442,7 +442,7 @@ export abstract class UpdatingElement extends HTMLElement {
   protected initialize() {
     this._saveInstanceProperties();
     // ensures first update will be caught by an early access of `updateComplete`
-    this.requestUpdate();
+    this._requestUpdate();
   }
 
   /**
@@ -565,19 +565,11 @@ export abstract class UpdatingElement extends HTMLElement {
   }
 
   /**
-   * Requests an update which is processed asynchronously. This should
-   * be called when an element should update based on some state not triggered
-   * by setting a property. In this case, pass no arguments. It should also be
-   * called when manually implementing a property setter. In this case, pass the
-   * property `name` and `oldValue` to ensure that any configured property
-   * options are honored. Returns the `updateComplete` Promise which is resolved
-   * when the update completes.
-   *
-   * @param name {PropertyKey} (optional) name of requesting property
-   * @param oldValue {any} (optional) old value of requesting property
-   * @returns {Promise} A Promise that is resolved when the update completes.
+   * This private version of `requestUpdate` does not access or return the
+   * `updateComplete` promise. This promise can be overridden and is therefore
+   * not free to access.
    */
-  requestUpdate(name?: PropertyKey, oldValue?: unknown) {
+  private _requestUpdate(name?: PropertyKey, oldValue?: unknown) {
     let shouldRequestUpdate = true;
     // If we have a property key, perform property update steps.
     if (name !== undefined) {
@@ -608,6 +600,23 @@ export abstract class UpdatingElement extends HTMLElement {
     if (!this._hasRequestedUpdate && shouldRequestUpdate) {
       this._enqueueUpdate();
     }
+  }
+
+  /**
+   * Requests an update which is processed asynchronously. This should
+   * be called when an element should update based on some state not triggered
+   * by setting a property. In this case, pass no arguments. It should also be
+   * called when manually implementing a property setter. In this case, pass the
+   * property `name` and `oldValue` to ensure that any configured property
+   * options are honored. Returns the `updateComplete` Promise which is resolved
+   * when the update completes.
+   *
+   * @param name {PropertyKey} (optional) name of requesting property
+   * @param oldValue {any} (optional) old value of requesting property
+   * @returns {Promise} A Promise that is resolved when the update completes.
+   */
+  requestUpdate(name?: PropertyKey, oldValue?: unknown) {
+    this._requestUpdate(name, oldValue);
     return this.updateComplete;
   }
 
@@ -617,27 +626,37 @@ export abstract class UpdatingElement extends HTMLElement {
   private async _enqueueUpdate() {
     // Mark state updating...
     this._updateState = this._updateState | STATE_UPDATE_REQUESTED;
-    let resolve: (r: boolean) => void;
+    let resolve!: (r: boolean) => void;
+    let reject!: (e: Error) => void;
     const previousUpdatePromise = this._updatePromise;
-    this._updatePromise = new Promise((res) => resolve = res);
-    // Ensure any previous update has resolved before updating.
-    // This `await` also ensures that property changes are batched.
-    await previousUpdatePromise;
+    this._updatePromise = new Promise((res, rej) => {
+      resolve = res;
+      reject = rej;
+    });
+    try {
+      // Ensure any previous update has resolved before updating.
+      // This `await` also ensures that property changes are batched.
+      await previousUpdatePromise;
+    } catch (e) {
+      // Ignore any previous errors. We only care that the previous cycle is
+      // done. Any error should have been handled in the previous update.
+    }
     // Make sure the element has connected before updating.
     if (!this._hasConnected) {
       await new Promise((res) => this._hasConnectedResolver = res);
     }
-    // Allow `performUpdate` to be asynchronous to enable scheduling of updates.
-    const result = this.performUpdate();
-    // Note, this is to avoid delaying an additional microtask unless we need
-    // to.
-    if (result != null &&
-        typeof (result as PromiseLike<unknown>).then === 'function') {
-      await result;
+    try {
+      const result = this.performUpdate();
+      // If `performUpdate` returns a Promise, we await it. This is done to
+      // enable coordinating updates with a scheduler. Note, the result is
+      // checked to avoid delaying an additional microtask unless we need to.
+      if (result != null) {
+        await result;
+      }
+    } catch (e) {
+      reject(e);
     }
-    // TypeScript can't tell that we've initialized resolve.
-    // tslint:disable-next-line:no-unnecessary-type-assertion
-    resolve!(!this._hasRequestedUpdate);
+    resolve(!this._hasRequestedUpdate);
   }
 
   private get _hasConnected() {
@@ -653,10 +672,13 @@ export abstract class UpdatingElement extends HTMLElement {
   }
 
   /**
-   * Performs an element update.
+   * Performs an element update. Note, if an exception is thrown during the
+   * update, `firstUpdated` and `updated` will not be called.
    *
-   * You can override this method to change the timing of updates. For instance,
-   * to schedule updates to occur just before the next frame:
+   * You can override this method to change the timing of updates. If this
+   * method is overridden, `super.performUpdate()` must be called.
+   *
+   * For instance, to schedule updates to occur just before the next frame:
    *
    * ```
    * protected async performUpdate(): Promise<unknown> {
@@ -670,17 +692,28 @@ export abstract class UpdatingElement extends HTMLElement {
     if (this._instanceProperties) {
       this._applyInstanceProperties();
     }
-    if (this.shouldUpdate(this._changedProperties)) {
-      const changedProperties = this._changedProperties;
-      this.update(changedProperties);
+    let shouldUpdate = false;
+    const changedProperties = this._changedProperties;
+    try {
+      shouldUpdate = this.shouldUpdate(changedProperties);
+      if (shouldUpdate) {
+        this.update(changedProperties);
+      }
+    } catch (e) {
+      // Prevent `firstUpdated` and `updated` from running when there's an
+      // update exception.
+      shouldUpdate = false;
+      throw e;
+    } finally {
+      // Ensure element can accept additional updates after an exception.
       this._markUpdated();
+    }
+    if (shouldUpdate) {
       if (!(this._updateState & STATE_HAS_UPDATED)) {
         this._updateState = this._updateState | STATE_HAS_UPDATED;
         this.firstUpdated(changedProperties);
       }
       this.updated(changedProperties);
-    } else {
-      this._markUpdated();
     }
   }
 
@@ -693,7 +726,8 @@ export abstract class UpdatingElement extends HTMLElement {
    * Returns a Promise that resolves when the element has completed updating.
    * The Promise value is a boolean that is `true` if the element completed the
    * update without triggering another update. The Promise result is `false` if
-   * a property was set inside `updated()`. This getter can be implemented to
+   * a property was set inside `updated()`. If the Promise is rejected, an
+   * exception was thrown during the update. This getter can be implemented to
    * await additional state. For example, it is sometimes useful to await a
    * rendered element before fulfilling this Promise. To do this, first await
    * `super.updateComplete` then any subsequent state.
