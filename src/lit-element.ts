@@ -12,13 +12,13 @@
  * http://polymer.github.io/PATENTS.txt
  */
 import {TemplateResult} from 'lit-html';
-import {render} from 'lit-html/lib/shady-render';
+import {render} from 'lit-html/lib/shady-render.js';
 
 import {PropertyValues, UpdatingElement} from './lib/updating-element.js';
 
 export * from './lib/updating-element.js';
 export * from './lib/decorators.js';
-export {html, svg, TemplateResult, SVGTemplateResult} from 'lit-html/lit-html';
+export {html, svg, TemplateResult, SVGTemplateResult} from 'lit-html/lit-html.js';
 import {supportsAdoptingStyleSheets, CSSResult} from './lib/css-tag.js';
 export * from './lib/css-tag.js';
 
@@ -117,7 +117,7 @@ export class LitElement extends UpdatingElement {
         return set;
       }, new Set<CSSResult>());
       // Array.from does not work on Set in IE
-      styleSet.forEach((v) => styles!.unshift(v));
+      styleSet.forEach((v) => styles.unshift(v));
     } else if (userStyles) {
       styles.push(userStyles);
     }
@@ -214,8 +214,8 @@ export class LitElement extends UpdatingElement {
       (this.constructor as typeof LitElement)
           .render(
               templateResult,
-              this.renderRoot!,
-              {scopeName: this.localName!, eventContext: this});
+              this.renderRoot,
+              {scopeName: this.localName, eventContext: this});
     }
     // When native Shadow DOM is used but adoptedStyles are not supported,
     // insert styling after rendering to ensure adoptedStyles have highest
@@ -225,7 +225,7 @@ export class LitElement extends UpdatingElement {
       (this.constructor as typeof LitElement)._styles!.forEach((s) => {
         const style = document.createElement('style');
         style.textContent = s.cssText;
-        this.renderRoot!.appendChild(style);
+        this.renderRoot.appendChild(style);
       });
     }
   }

@@ -201,7 +201,7 @@ suite('Styling', () => {
         div = inner!.shadowRoot!.querySelector('div');
         assert.equal(
             getComputedStyleValue(div!, 'border-top-width').trim(), '2px');
-        el2!.shadowRoot!.appendChild(inner!);
+        el2.shadowRoot!.appendChild(inner!);
 
         // Workaround for Safari 9 Promise timing bugs.
         await el.updateComplete;
@@ -307,14 +307,14 @@ suite('Styling', () => {
 
         // Workaround for Safari 9 Promise timing bugs.
         await firstApplied.updateComplete && el.updateComplete &&
-            await (el.applied as I)!.updateComplete;
+            await (el.applied as I).updateComplete;
 
         await nextFrame();
         assert.equal(
-            getComputedStyleValue(firstApplied!, 'border-top-width').trim(),
+            getComputedStyleValue(firstApplied, 'border-top-width').trim(),
             '2px');
         assert.equal(
-            getComputedStyleValue(firstApplied!, 'margin-top').trim(), '10px');
+            getComputedStyleValue(firstApplied, 'margin-top').trim(), '10px');
         assert.equal(
             getComputedStyleValue(el.applied!, 'border-top-width').trim(),
             '10px');

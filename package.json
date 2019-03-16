@@ -1,7 +1,7 @@
 {
   "name": "lit-element",
   "version": "2.0.1",
-  "description": "Polymer based lit-html custom element",
+  "description": "A simple base class for creating fast, lightweight web components",
   "license": "BSD-3-Clause",
   "repository": "Polymer/lit-element",
   "main": "lit-element.js",

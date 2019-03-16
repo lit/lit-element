@@ -71,9 +71,8 @@ const standardCustomElement =
 export const customElement = (tagName: string) =>
     (classOrDescriptor: Constructor<HTMLElement>|ClassDescriptor) =>
         (typeof classOrDescriptor === 'function') ?
-    legacyCustomElement(
-        tagName, classOrDescriptor as Constructor<HTMLElement>) :
-    standardCustomElement(tagName, classOrDescriptor as ClassDescriptor);
+    legacyCustomElement(tagName, classOrDescriptor) :
+    standardCustomElement(tagName, classOrDescriptor);
 
 const standardProperty =
     (options: PropertyDeclaration, element: ClassElement) => {
@@ -109,7 +108,7 @@ const standardProperty =
           // tslint:disable-next-line:no-any decorator
           initializer(this: any) {
             if (typeof element.initializer === 'function') {
-              this[element.key] = element.initializer!.call(this);
+              this[element.key] = element.initializer.call(this);
             }
           },
           finisher(clazz: typeof UpdatingElement) {
@@ -122,7 +121,7 @@ const standardProperty =
 const legacyProperty =
     (options: PropertyDeclaration, proto: Object, name: PropertyKey) => {
       (proto.constructor as typeof UpdatingElement)
-          .createProperty(name!, options);
+          .createProperty(name, options);
     };
 
 /**
