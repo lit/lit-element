@@ -118,7 +118,7 @@ For security reasons, use unsafeCSS to pass non-literal values using only truste
 ```js
 import { unsafeCSS } from 'lit-element';
 
-const mainColor = unsafeCSS('red');
+const mainColor = css`red`;
 
 class MyElement extends LitElement {
   static get styles() {
