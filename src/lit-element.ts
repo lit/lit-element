@@ -15,12 +15,14 @@ import {TemplateResult} from 'lit-html';
 import {render} from 'lit-html/lib/shady-render.js';
 
 import {PropertyValues, UpdatingElement} from './lib/updating-element.js';
+import {elementStyleMap} from './lib/element-style.js';
 
 export * from './lib/updating-element.js';
 export * from './lib/decorators.js';
 export {html, svg, TemplateResult, SVGTemplateResult} from 'lit-html/lit-html.js';
 import {supportsAdoptingStyleSheets, CSSResult} from './lib/css-tag.js';
 export * from './lib/css-tag.js';
+
 
 declare global {
   interface Window {
@@ -83,19 +85,20 @@ export class LitElement extends UpdatingElement {
 
   private static _styles: CSSResult[]|undefined;
 
-  /** @nocollapse */
-  protected static finalize() {
-    super.finalize();
-    // Prepare styling that is stamped at first render time. Styling
-    // is built from user provided `styles` or is inherited from the superclass.
-    this._styles =
-        this.hasOwnProperty(JSCompiler_renameProperty('styles', this)) ?
-        this.getUniqueStyles() :
-        this._styles || [];
+  private static _stylesForElement(name: string) {
+    if (!this.hasOwnProperty('_styles')) {
+      // Prepare styling that is stamped at first render time. Styling
+      // is built from user provided `styles` or is inherited from the superclass.
+      this._styles =
+        this.hasOwnProperty(JSCompiler_renameProperty('styles', this)) ||
+          (elementStyleMap.has(name)) ?
+        this.getUniqueStyles(name) : [];
+    }
+    return this._styles;
   }
 
   /** @nocollapse */
-  static getUniqueStyles(): CSSResult[] {
+  static getUniqueStyles(name: string): CSSResult[] {
     // Take care not to call `this.styles` multiple times since this generates
     // new CSSResults each time.
     // TODO(sorvell): Since we do not cache CSSResults by input, any
@@ -120,6 +123,10 @@ export class LitElement extends UpdatingElement {
       styleSet.forEach((v) => styles.unshift(v));
     } else if (userStyles) {
       styles.push(userStyles);
+    }
+    const elementStyles = elementStyleMap.get(name);
+    if (elementStyles !== undefined) {
+      styles.push(...elementStyles);
     }
     return styles;
   }
@@ -170,7 +177,8 @@ export class LitElement extends UpdatingElement {
    * behavior](https://wicg.github.io/construct-stylesheets/#using-constructed-stylesheets).
    */
   protected adoptStyles() {
-    const styles = (this.constructor as typeof LitElement)._styles!;
+    const styles = (this.constructor as typeof LitElement)
+        ._stylesForElement(this.localName);
     if (styles.length === 0) {
       return;
     }

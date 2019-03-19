@@ -87,8 +87,8 @@ export class PartStyledElement extends LitElement {
   static useNativePart = 'part' in Element.prototype;
 
   // overridden to establish part context
-  static getUniqueStyles() {
-    const cssResults = super.getUniqueStyles();
+  static getUniqueStyles(name: string) {
+    const cssResults = super.getUniqueStyles(name);
     cssResults.forEach((s) => {
       if (s.parts!.length) {
         if (!this.hasOwnProperty('cssPartRules')) {
