@@ -85,7 +85,7 @@ export class LitElement extends UpdatingElement {
 
   private static _styles: CSSResult[]|undefined;
 
-  private static _stylesForElement(name: string) {
+  private static _stylesForElement(name: string): CSSResult[] {
     if (!this.hasOwnProperty('_styles')) {
       // Prepare styling that is stamped at first render time. Styling
       // is built from user provided `styles` or is inherited from the superclass.
@@ -94,7 +94,7 @@ export class LitElement extends UpdatingElement {
           (elementStyleMap.has(name)) ?
         this.getUniqueStyles(name) : [];
     }
-    return this._styles;
+    return this._styles!;
   }
 
   /** @nocollapse */

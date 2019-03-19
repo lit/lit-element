@@ -84,8 +84,6 @@ const appliedShadyStyles: Set<string> = new Set();
 // TODO(sorvell): if not polyfiling part, just use LitElement.
 export class PartStyledElement extends LitElement {
 
-  static useNativePart = 'part' in Element.prototype;
-
   // overridden to establish part context
   static getUniqueStyles(name: string) {
     const cssResults = super.getUniqueStyles(name);
@@ -147,16 +145,22 @@ export class PartStyledElement extends LitElement {
    */
   // TODO(sorvell): can we avoid this since it depends on rendering state?
   // TODO(sorvell): qsa'ing here costs about 5%.
-  _cssPartNames?: Set<string>;
+  static _cssPartNames?: Set<string>;
   protected get cssPartNames() {
-    if (!this.hasOwnProperty('_cssPartNames')) {
-      this._cssPartNames = new Set();
-      Array.from(this.shadowRoot!.querySelectorAll('[part]'))
-        .map((e) =>
-        e.getAttribute('part')).forEach((part) =>
-        this._cssPartNames!.add(part!));
+    if (!this.constructor.hasOwnProperty('_cssPartNames')) {
+      (this.constructor as typeof PartStyledElement)
+        ._cssPartNames = new Set();
+      const els = this.shadowRoot!.querySelectorAll('[part]');
+      for (let i = 0; i < els.length; i++) {
+        const parts = els[i].getAttribute('part')!.split(/\s/).filter((e) => e);
+        parts.forEach((part) => {
+          (this.constructor as typeof PartStyledElement)
+            ._cssPartNames!.add(part!);
+        });
+      }
     }
-    return this._cssPartNames;
+    return (this.constructor as typeof PartStyledElement)
+      ._cssPartNames;
   }
 
   _appliedParts = new Set();
@@ -215,7 +219,7 @@ export class PartStyledElement extends LitElement {
     this._appliedParts.add(rule);
     const {selectorPseudo, partPseudo, propertySet} = rule;
     let hostSelector = `:host(${selector}${selectorPseudo ? `:${selectorPseudo}` : ''})`;
-    let partSelector = `[part=${part}]`;
+    let partSelector = `[part~=${part}]`;
     if (usingShadyDom) {
       const hostScope = `${this.localName}${this._partParent ?
         `.${STYLE_SCOPE}.${this._partParent.localName}` : ''}`;
