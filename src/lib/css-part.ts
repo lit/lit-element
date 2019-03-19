@@ -20,12 +20,15 @@ declare global {
   }
 }
 
-const forcePartPolyfill = window.forcePartPolyfill = window.forcePartPolyfill ||
+window.forcePartPolyfill = window.forcePartPolyfill ||
   window.location.search.indexOf('forcePartPolyfill') >= 0;
 
 const usingShadyDom = !!window.ShadyDOM;
 
-export const useNativePart = () => !(usingShadyDom || forcePartPolyfill);
+const supportsPart = 'part' in Element.prototype;
+
+export const useNativePart = () => supportsPart &&
+  !(usingShadyDom || window.forcePartPolyfill);
 
 export interface CSSPartRule {
   rawSelector: string;
