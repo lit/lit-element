@@ -38,9 +38,9 @@ This section describes how to create styles in your shadow root to style your ho
 
 There are three main places in which you can define styles for your host element and its shadow DOM:
 
-* [In the static `styles` property of a LitElement class (recomended)](#static).
-* [Inside a `<style>` element in the HTML template defined in your `render` function](#styleelement).
-* [In an external stylesheet, linked to from your LitElement template with `<link rel="stylesheet" href="...">`](#external).
+* [In the static `styles` property of a LitElement class (recomended)](#static-styles).
+* [Inside a `<style>` element in the HTML template defined in your `render` function](#style-element).
+* [In an external stylesheet, linked to from your LitElement template with `<link rel="stylesheet" href="...">`](#external-stylesheet).
 
 ### Define styles in a static styles property {#static-styles}
 
