@@ -127,6 +127,8 @@ export class PartStyledElement extends LitElement {
       // When the class attribute changes, update dynamic part at next update.
       if (name === 'class' && !this._dynamicPartsDirty) {
         this._dynamicPartsDirty = true;
+        // TODO(sorvell): this is faster than requestUpdate, but
+        // means this update is not done when `updateComplete` resolves.
         this.updateComplete.then(() => {
           if (this._dynamicPartsDirty) {
             this._updateDynamicParts();
