@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- ### Fixed -->
 
 ## Unreleased
+
+## [2.1.0] - 2019-03-21
 ### Changed
 * `LitElement.renderRoot` is now `public readonly` instead of `protected`.
 
