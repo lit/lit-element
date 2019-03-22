@@ -15,22 +15,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   </script>
   <script src="../node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
   <script type="module">
-    import {elementStyle, css} from '../lib/element-style.js';
-    elementStyle('pseudo-part', css`
+    import {elementStyle, unsafeElementStyle, part, css} from '../lib/element-style.js';
+    unsafeElementStyle('pseudo-part', css`
 
-        :host(.red) [part=button] {
+        :host(.red) button {
           background: red;
         }
 
       `);
 
-    elementStyle('pseudo-part', css`
-
-        :host(.orange) [part=button] {
-          background: orange;
-        }
-
-      `);
+    elementStyle('pseudo-part',
+      part('.orange::part(button)', css`
+        background: orange;
+      `)
+    );
   </script>
   <script type="module" src="./pseudo-part-styled.js"></script>
 </head>

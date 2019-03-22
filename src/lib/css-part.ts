@@ -119,3 +119,4 @@ export const addPartRules = (set: PartRules, rules: CSSPartRuleSet[]) => {
 
 export const part = (selector: string|Array<string>, propertySet: CSSResult) =>
   new CSSPartRuleSet(selector, propertySet);
+

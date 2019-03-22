@@ -17,7 +17,7 @@ import {classMap} from 'lit-html/directives/class-map.js';
 import {PartStyledElement, css, html, part} from '../../lib/part-styled-element.js';
 import {generateElementName, getComputedStyleValue, nextFrame} from '../test-helpers.js';
 import {documentStyle} from '../../lib/document-style.js';
-import {elementStyle} from '../../lib/element-style.js';
+import {elementStyle, unsafeElementStyle, part as elementPart} from '../../lib/element-style.js';
 
 window.forcePartPolyfill = true;
 
@@ -438,8 +438,8 @@ suite('PartStyledElement', () => {
     class PartElement2 extends PartElement {}
     @customElement('part-element3')
     class PartElement3 extends PartElement2 {}
-    elementStyle('part-element2', css`
-      :host(part-element2) [part~=part1] {
+    unsafeElementStyle('part-element2', css`
+      [part~=part1] {
         border: 10px solid orange;
       }
 
@@ -447,15 +447,15 @@ suite('PartStyledElement', () => {
         padding: 4px;
       }
     `);
-    elementStyle('part-element3', css`
-      :host(part-element3) [part~=part1] {
+    elementStyle('part-element3',
+      elementPart('::part(part1)', css`
         border: 4px solid orange;
-      }
+      `),
 
-      :host(.special) [part~=part2] {
+      elementPart('.special::part(part2)', css`
         padding: 8px;
-      }
-    `);
+      `)
+    );
     const el1 = new PartElement2();
     container.appendChild(el1);
     const el2 = new PartElement3();
