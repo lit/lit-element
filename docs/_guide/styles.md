@@ -113,18 +113,19 @@ To define a static `styles` property:
 
 Static styles apply to all instances of an element. Any expressions in your CSS are evaluated and included **once**, then reused for all instances. 
 
-For security reasons, use **css** to pass non-literal values using only trusted sources:
+For security reasons, use **unsafeCSS** to pass non-literal values using only trusted sources:
 
 ```js
-import {LitElement, css} from 'lit-element';
+import {LitElement, css, unsafeCSS} from 'lit-element';
 
-const mainColor = css`red`;
+const displayType = css`block`;
+const mainColor = unsafeCSS('#a50e0e');
 
 class MyElement extends LitElement {
   static get styles() {
     return css`
     :host {
-      display: block;
+      display: ${displayType};
       color: ${mainColor};
     }`;
   } 
