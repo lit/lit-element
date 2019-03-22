@@ -3,6 +3,7 @@
   "version": "2.1.0",
   "description": "A simple base class for creating fast, lightweight web components",
   "license": "BSD-3-Clause",
+  "homepage": "https://lit-element.polymer-project.org/",
   "repository": "Polymer/lit-element",
   "main": "lit-element.js",
   "module": "lit-element.js",
