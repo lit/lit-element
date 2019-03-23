@@ -56,7 +56,7 @@ Install Babel and the Babel plugins you need. For example:
 ```
 npm install --save-dev @babel/core
 npm install --save-dev @babel/plugin-proposal-class-properties
-npm install --save-dev @babel/proposal-decorators
+npm install --save-dev @babel/plugin-proposal-decorators
 ```
 
 Configure Babel. For example:
@@ -66,7 +66,7 @@ Configure Babel. For example:
 ```js
 const plugins = [
   '@babel/plugin-proposal-class-properties',
-  ['@babel/proposal-decorators', { decoratorsBeforeExport: true } ],
+  ['@babel/plugin-proposal-decorators', { decoratorsBeforeExport: true } ],
 ];
 
 module.exports = { plugins };
