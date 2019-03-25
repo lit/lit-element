@@ -49,7 +49,7 @@ npm run serve -- --port <PORTNUMBER>
 ```
 
 The generated API docs are checked in, so you don't need to build the 
-API docs unless you're making changes to the doc comments in the lit-html source.
+API docs unless you're making changes to the doc comments in the lit-element source.
 
 To regenerate the API docs and rebuild the  site, run the following command:
 
