@@ -64,6 +64,4 @@ Your code sample should be working now. LitElement components are added to a pag
 <my-element></my-element>
 ```
 
-See [Use a LitElement component](/use) for more information about local setup.
-
 [Next: 2. Properties](properties)
