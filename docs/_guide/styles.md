@@ -111,26 +111,32 @@ To define a static `styles` property:
 
 #### Expressions in static styles
 
+The `css` tag only accepts literal strings. You can include expressions in your static styles using the `unsafeCSS` tag instead. 
+
 Static styles apply to all instances of an element. Any expressions in your CSS are evaluated and included **once**, then reused for all instances. 
 
-For security reasons, use **unsafeCSS** to pass non-literal values using only trusted sources:
+Example:
 
 ```js
-import {LitElement, css, unsafeCSS} from 'lit-element';
-
-const displayType = css`block`;
-const mainColor = unsafeCSS('#a50e0e');
+import { LitElement, unsafeCSS } from 'lit-element';
 
 class MyElement extends LitElement {
   static get styles() {
-    return css`
-    :host {
-      display: ${displayType};
-      color: ${mainColor};
-    }`;
+    return unsafeCSS`
+      :host {
+        display: ${this.getDisplayType()};
+        color: ${this.getMainColor()};
+      }
+    `;
   } 
 }
 ```
+
+<div class="alert alert-warning">
+
+**Only use the `unsafeCSS` tag with trusted input.** To prevent LitElement-based components from evaluating potentially malicious code, the `css` tag only accepts literal strings. `unsafeCSS` circumvents this safeguard.
+
+</div>
 
 ### Define styles in a style element {#style-element} 
 
