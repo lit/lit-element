@@ -289,13 +289,13 @@ _index.html_
 _my-element.js_
 
 ```js
-{% include project.html folder="projects/docs/templates/namedslots/my-element.js" %}
+{% include projects/docs/templates/namedslots/my-element.js %}
 ```
 
 _index.html_
 
 ```html
-{% include project.html folder="projects/docs/templates/namedslots/index.html" %}
+{% include projects/docs/templates/namedslots/index.html %}
 ```
 
 {% include project.html folder="docs/templates/namedslots" openFile="my-element.js" %}
