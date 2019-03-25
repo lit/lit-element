@@ -31,7 +31,7 @@ You should also create a README describing how to consume your component. A basi
 
 ## Transpiling with TypeScript
 
-When compiling your code from TypeScript to JavaScript, we recommend targeting ES2017 with Node.js module resolution. 
+When compiling your code from TypeScript to JavaScript, we recommend targeting ES2017 with Node.js module resolution.
 
 The following JSON sample is a partial tsconfig.json that uses recommended options for targeting ES2017:
 
@@ -49,14 +49,14 @@ See the [tsconfig.json documentation](https://www.typescriptlang.org/docs/handbo
 
 ## Transpiling with Babel
 
-To transpile a LitElement component that uses proposed JavaScript features, use Babel. 
+To transpile a LitElement component that uses proposed JavaScript features, use Babel.
 
 Install Babel and the Babel plugins you need. For example:
 
 ```
 npm install --save-dev @babel/core
 npm install --save-dev @babel/plugin-proposal-class-properties
-npm install --save-dev @babel/proposal-decorators
+npm install --save-dev @babel/plugin-proposal-decorators
 ```
 
 Configure Babel. For example:
@@ -66,7 +66,7 @@ Configure Babel. For example:
 ```js
 const plugins = [
   '@babel/plugin-proposal-class-properties',
-  ['@babel/proposal-decorators', { decoratorsBeforeExport: true } ],
+  ['@babel/plugin-proposal-decorators', { decoratorsBeforeExport: true } ],
 ];
 
 module.exports = { plugins };
