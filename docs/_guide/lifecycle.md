@@ -36,7 +36,7 @@ For a more detailed explanation of the browser event loop, see [Jake Archibald's
 #### Lifecycle callbacks
 
 LitElement also inherits the default [lifecycle callbacks](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements#Using_the_lifecycle_callbacks) from the Web Component standard:
-* `connectedCallback`: Invoked when a component is removed from the document's DOM.
+* `connectedCallback`: Invoked when a component is added to the document's DOM.
 * `disconnectedCallback`: Invoked when a component is removed from the document's DOM.
 * `adoptedCallback`: Invoked when a component is moved to a new document.
 * `attributeChangedCallback`: Invoked when component attribute changes.
