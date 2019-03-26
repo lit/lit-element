@@ -2,12 +2,16 @@ import { LitElement, html, css } from 'lit-element';
 
 class MyElement extends LitElement {
   static get styles() {
-    return css``;
-  }
+    return css`
+      button { width: 200px; }
+    `;
+  } 
+
   render() {
     return html`
-      <span>More inheritance</span>
+      <button>click</button>
     `;
   }
 }
+
 customElements.define('my-element', MyElement);
