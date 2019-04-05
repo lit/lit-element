@@ -18,9 +18,9 @@ class MyElement extends LitElement {
     this.prop5 = { };
   }
 
-  attributeChangedCallback(name, oldval, newval) {
-    console.log('attribute change: ', name, newval);
-    super.attributeChangedCallback(name, oldval, newval);
+  attributeChangedCallback(name, oldVal, newVal) {
+    console.log('attribute change: ', name, newVal);
+    super.attributeChangedCallback(name, oldVal, newVal);
   }
 
   render() {
