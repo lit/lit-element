@@ -55,8 +55,6 @@ The styles in the static `styles` property are evaluated once only and applied t
 
 If you don't want to use custom properties, you can define per-instance styles in a `<style>` element inside shadow DOM. See the section on [Defining your styles in a style element](#styleelement) for more information.
 
-</div>
-
 To define a static `styles` property:
 
 1.  Import the `css` helper function from the `lit-element` module:
