@@ -1,0 +1,16 @@
+{
+  "variants": [
+    {
+      "name": "1",
+      "config": {
+        "depth": 1
+      }
+    },
+    {
+      "name": "1000",
+      "config": {
+        "depth": 1000
+      }
+    }
+  ]
+}

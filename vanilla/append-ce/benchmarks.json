@@ -1,0 +1,18 @@
+{
+  "variants": [
+    {
+      "name": "100 light",
+      "config": {
+        "attachShadow": false,
+        "elements": 100
+      }
+    },
+    {
+      "name": "100 shadow",
+      "config": {
+        "attachShadow": true,
+        "elements": 100
+      }
+    }
+  ]
+}

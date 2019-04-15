@@ -1,0 +1,20 @@
+{
+  "name": "lit-benchmarks-snabbdom",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Benchmarks for snabbdom",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PolymerLabs/lit-benchmarks.git"
+  },
+  "author": "The Polymer Project Authors",
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/PolymerLabs/lit-benchmarks/issues"
+  },
+  "homepage": "https://github.com/PolymerLabs/lit-benchmarks#readme",
+  "dependencies": {
+    "snabbdom": "^0.7.3"
+  }
+}
