@@ -233,14 +233,15 @@ export abstract class UpdatingElement extends HTMLElement {
    */
   static get observedAttributes() {
     // note: piggy backing on this to ensure we're finalized.
-    this.finalize();
+    (this as typeof UpdatingElement).finalize();
     const attributes: string[] = [];
     // Use forEach so this works even if for/of loops are compiled to for loops
     // expecting arrays
-    this._classProperties!.forEach((v, p) => {
-      const attr = this._attributeNameForProperty(p, v);
+    (this as typeof UpdatingElement)._classProperties!.forEach((v, p) => {
+      const attr =
+          (this as typeof UpdatingElement)._attributeNameForProperty(p, v);
       if (attr !== undefined) {
-        this._attributeToPropertyMap.set(attr, p);
+        (this as typeof UpdatingElement)._attributeToPropertyMap.set(attr, p);
         attributes.push(attr);
       }
     });
@@ -255,16 +256,18 @@ export abstract class UpdatingElement extends HTMLElement {
   /** @nocollapse */
   private static _ensureClassProperties() {
     // ensure private storage for property declarations.
-    if (!this.hasOwnProperty(
-            JSCompiler_renameProperty('_classProperties', this))) {
-      this._classProperties = new Map();
+    if (!(this as typeof UpdatingElement)
+             .hasOwnProperty(JSCompiler_renameProperty(
+                 '_classProperties', (this as typeof UpdatingElement)))) {
+      (this as typeof UpdatingElement)._classProperties = new Map();
       // NOTE: Workaround IE11 not supporting Map constructor argument.
       const superProperties: PropertyDeclarationMap =
-          Object.getPrototypeOf(this)._classProperties;
+          Object.getPrototypeOf((this as typeof UpdatingElement))
+              ._classProperties;
       if (superProperties !== undefined) {
         superProperties.forEach(
             (v: PropertyDeclaration, k: PropertyKey) =>
-                this._classProperties!.set(k, v));
+                (this as typeof UpdatingElement)._classProperties!.set(k, v));
       }
     }
   }
@@ -282,28 +285,27 @@ export abstract class UpdatingElement extends HTMLElement {
     // Note, since this can be called by the `@property` decorator which
     // is called before `finalize`, we ensure storage exists for property
     // metadata.
-    this._ensureClassProperties();
-    this._classProperties!.set(name, options);
+    (this as typeof UpdatingElement)._ensureClassProperties();
+    (this as typeof UpdatingElement)._classProperties!.set(name, options);
     // Do not generate an accessor if the prototype already has one, since
     // it would be lost otherwise and that would never be the user's intention;
     // Instead, we expect users to call `requestUpdate` themselves from
     // user-defined accessors. Note that if the super has an accessor we will
     // still overwrite it
-    if (options.noAccessor || this.prototype.hasOwnProperty(name)) {
+    if (options.noAccessor ||
+        (this as typeof UpdatingElement).prototype.hasOwnProperty(name)) {
       return;
     }
     const key = typeof name === 'symbol' ? Symbol() : `__${name}`;
-    Object.defineProperty(this.prototype, name, {
+    Object.defineProperty((this as typeof UpdatingElement).prototype, name, {
       // tslint:disable-next-line:no-any no symbol in index
       get(): any {
-        return this[key];
+        return (this as {[key: string]: unknown})[key as string];
       },
       set(this: UpdatingElement, value: unknown) {
-        // tslint:disable-next-line:no-any no symbol in index
-        const oldValue = (this as any)[name];
-        // tslint:disable-next-line:no-any no symbol in index
-        (this as any)[key] = value;
-        this._requestUpdate(name, oldValue);
+        const oldValue = (this as {[key: string]: unknown})[name as string];
+        (this as {[key: string]: unknown})[key as string] = value;
+        (this as UpdatingElement)._requestUpdate(name, oldValue);
       },
       configurable: true,
       enumerable: true
@@ -316,25 +318,29 @@ export abstract class UpdatingElement extends HTMLElement {
    * @nocollapse
    */
   protected static finalize() {
-    if (this.hasOwnProperty(JSCompiler_renameProperty('finalized', this)) &&
-        this.finalized) {
+    if ((this as typeof UpdatingElement)
+            .hasOwnProperty(JSCompiler_renameProperty(
+                'finalized', (this as typeof UpdatingElement))) &&
+        (this as typeof UpdatingElement).finalized) {
       return;
     }
     // finalize any superclasses
-    const superCtor = Object.getPrototypeOf(this);
+    const superCtor = Object.getPrototypeOf((this as typeof UpdatingElement));
     if (typeof superCtor.finalize === 'function') {
       superCtor.finalize();
     }
-    this.finalized = true;
-    this._ensureClassProperties();
+    (this as typeof UpdatingElement).finalized = true;
+    (this as typeof UpdatingElement)._ensureClassProperties();
     // initialize Map populated in observedAttributes
-    this._attributeToPropertyMap = new Map();
+    (this as typeof UpdatingElement)._attributeToPropertyMap = new Map();
     // make any properties
     // Note, only process "own" properties since this element will inherit
     // any properties defined on the superClass, and finalization ensures
     // the entire prototype chain is finalized.
-    if (this.hasOwnProperty(JSCompiler_renameProperty('properties', this))) {
-      const props = this.properties;
+    if ((this as typeof UpdatingElement)
+            .hasOwnProperty(JSCompiler_renameProperty(
+                'properties', (this as typeof UpdatingElement)))) {
+      const props = (this as typeof UpdatingElement).properties;
       // support symbols in properties (IE11 does not support this)
       const propKeys = [
         ...Object.getOwnPropertyNames(props),
@@ -347,7 +353,7 @@ export abstract class UpdatingElement extends HTMLElement {
         // note, use of `any` is due to TypeSript lack of support for symbol in
         // index types
         // tslint:disable-next-line:no-any no symbol in index
-        this.createProperty(p, (props as any)[p]);
+        (this as typeof UpdatingElement).createProperty(p, (props as any)[p]);
       }
     }
   }
@@ -441,7 +447,8 @@ export abstract class UpdatingElement extends HTMLElement {
    */
   protected initialize() {
     this._saveInstanceProperties();
-    // ensures first update will be caught by an early access of `updateComplete`
+    // ensures first update will be caught by an early access of
+    // `updateComplete`
     this._requestUpdate();
   }
 
@@ -486,10 +493,10 @@ export abstract class UpdatingElement extends HTMLElement {
 
   connectedCallback() {
     this._updateState = this._updateState | STATE_HAS_CONNECTED;
-    // Ensure first connection completes an update. Updates cannot complete before
-    // connection and if one is pending connection the `_hasConnectionResolver`
-    // will exist. If so, resolve it to complete the update, otherwise
-    // requestUpdate.
+    // Ensure first connection completes an update. Updates cannot complete
+    // before connection and if one is pending connection the
+    // `_hasConnectionResolver` will exist. If so, resolve it to complete the
+    // update, otherwise requestUpdate.
     if (this._hasConnectedResolver) {
       this._hasConnectedResolver();
       this._hasConnectedResolver = undefined;
