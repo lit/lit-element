@@ -60,7 +60,7 @@ export const unsafeCSS = (value: unknown) => {
   return new CSSResult(String(value), constructionToken);
 };
 
-const textFromCSSResult = (value: CSSResult | number) => {
+const textFromCSSResult = (value: CSSResult|number) => {
   if (value instanceof CSSResult) {
     return value.cssText;
   } else if (typeof value === 'number') {
@@ -79,9 +79,10 @@ const textFromCSSResult = (value: CSSResult | number) => {
  * used. To incorporate non-literal values `unsafeCSS` may be used inside a
  * template string part.
  */
-export const css = (strings: TemplateStringsArray, ...values: (CSSResult | number)[]) => {
-  const cssText = values.reduce(
-      (acc, v, idx) => acc + textFromCSSResult(v) + strings[idx + 1],
-      strings[0]);
-  return new CSSResult(cssText, constructionToken);
-};
+export const css =
+    (strings: TemplateStringsArray, ...values: (CSSResult|number)[]) => {
+      const cssText = values.reduce(
+          (acc, v, idx) => acc + textFromCSSResult(v) + strings[idx + 1],
+          strings[0]);
+      return new CSSResult(cssText, constructionToken);
+    };
