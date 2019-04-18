@@ -1,6 +1,5 @@
 {
   "name": "lit-html-benchmarks",
-  "private": true,
   "version": "0.1.0",
   "description": "Benchmarks for lit-html",
   "main": "index.js",
