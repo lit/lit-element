@@ -1,6 +1,6 @@
 {
   "name": "lit-html-benchmarks",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Benchmarks for lit-html",
   "main": "index.js",
   "repository": {
@@ -12,8 +12,5 @@
   "bugs": {
     "url": "https://github.com/PolymerLabs/benchmarks/issues"
   },
-  "homepage": "https://github.com/PolymerLabs/benchmarks#readme",
-  "dependencies": {
-    "lit-html": "^1.0.0"
-  }
+  "homepage": "https://github.com/PolymerLabs/benchmarks#readme"
 }

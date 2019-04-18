@@ -13,22 +13,22 @@ import * as bench from '/bench.js';
 import {html, render} from '../node_modules/lit-html/lit-html.js';
 
 const data = {
-  page: 'mens_tshirts',
-  categories: {
-    'mens_outerwear': {
-      title: 'Men\'s Outerwear',
+  page : 'mens_tshirts',
+  categories : {
+    'mens_outerwear' : {
+      title : 'Men\'s Outerwear',
     },
-    'ladies_outerwear': {
-      title: 'Ladies Outerwear',
+    'ladies_outerwear' : {
+      title : 'Ladies Outerwear',
     },
-    'mens_tshirts': {
-      title: 'Men\'s T-Shirts',
+    'mens_tshirts' : {
+      title : 'Men\'s T-Shirts',
     },
-    'ladies_tshirts': {
-      title: 'Ladies T-Shirts',
+    'ladies_tshirts' : {
+      title : 'Ladies T-Shirts',
     },
   },
-  cart: [],
+  cart : [],
 };
 
 const renderPage = () => render(body(), document.body);
@@ -52,9 +52,8 @@ const cartContainer = () => html`
 
 const categoryNav = () =>
     Object.keys(data.categories)
-        .map(
-            (c) => html`<a ?active=${data.page === c} @click=${
-                (e) => selectCategory(c, e)}>${data.categories[c].title}</a>`);
+        .map((c) => html`<a ?active=${data.page === c} @click=${
+                 (e) => selectCategory(c, e)}>${data.categories[c].title}</a>`);
 
 const selectCategory = (page, event) => {
   event.preventDefault();
