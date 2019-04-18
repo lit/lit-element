@@ -105,7 +105,6 @@ const standardProperty =
           //     initializer: descriptor.initializer,
           //   }
           // ],
-          // tslint:disable-next-line:no-any decorator
           initializer(this: {[key: string]: unknown}) {
             if (typeof element.initializer === 'function') {
               this[element.key as string] = element.initializer.call(this);

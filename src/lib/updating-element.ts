@@ -303,9 +303,7 @@ export abstract class UpdatingElement extends HTMLElement {
         return (this as {[key: string]: unknown})[key as string];
       },
       set(this: UpdatingElement, value: unknown) {
-        // tslint:disable-next-line:no-any no symbol in index
         const oldValue = (this as {[key: string]: unknown})[name as string];
-        // tslint:disable-next-line:no-any no symbol in index
         (this as {[key: string]: unknown})[key as string] = value;
         (this as UpdatingElement)._requestUpdate(name, oldValue);
       },
