@@ -88,10 +88,12 @@ export class LitElement extends UpdatingElement {
     super.finalize();
     // Prepare styling that is stamped at first render time. Styling
     // is built from user provided `styles` or is inherited from the superclass.
-    this._styles =
-        this.hasOwnProperty(JSCompiler_renameProperty('styles', this)) ?
-        this._getUniqueStyles() :
-        this._styles || [];
+    (this as typeof LitElement)._styles =
+        (this as typeof LitElement)
+            .hasOwnProperty(JSCompiler_renameProperty(
+                'styles', (this as typeof LitElement))) ?
+        (this as typeof LitElement)._getUniqueStyles() :
+        (this as typeof LitElement)._styles || [];
   }
 
   /** @nocollapse */
@@ -102,7 +104,7 @@ export class LitElement extends UpdatingElement {
     // shared styles will generate new stylesheet objects, which is wasteful.
     // This should be addressed when a browser ships constructable
     // stylesheets.
-    const userStyles = this.styles;
+    const userStyles = (this as typeof LitElement).styles;
     const styles: CSSResult[] = [];
     if (Array.isArray(userStyles)) {
       const flatStyles = flattenStyles(userStyles);
