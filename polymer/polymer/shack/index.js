@@ -9,8 +9,10 @@
  * rights grant found at http://polymer.github.io/PATENTS.txt
  */
 
+import './elements/list-item';
+import './elements/shack-cart';
+
 import {html, render} from '../node_modules/lit-html/lit-html.js';
-import {ListItem} from './elements/list-item';
 
 const data = {
   page: 'mens_tshirts',
@@ -41,13 +43,8 @@ const body = () => html`
 
 const pageHeader = () => html`
   <h1 id="logo">SHACK</h1>
-  <div id="cartContainer">${cartContainer()}</div>
+  <shack-cart .items=${data.cart}></shack-cart>
   <nav id="categoryNav">${categoryNav()}</nav>
-`;
-
-const cartContainer = () => html`
-  <a id="cartButton">🛒</a>
-  <div id="cartBadge">${data.cart.length}</div>
 `;
 
 const categoryNav = () =>
@@ -81,6 +78,8 @@ const listItem = (item) => html`
 const clickItem = (item, event) => {
   event.preventDefault();
   data.cart.push(item.title);
+  const cart = document.getElementsByTagName('shack-cart')[0];
+  cart.items = data.items;
   renderPage();
 };
 
