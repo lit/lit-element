@@ -10,6 +10,7 @@
  */
 
 import {html, render} from '../node_modules/lit-html/lit-html.js';
+import {ListItem} from './elements/list-item';
 
 const data = {
   page: 'mens_tshirts',
@@ -66,17 +67,15 @@ const categoryList = () => html`
   <h2 id="categoryTitle">${data.categories[data.page].title}</h2>
   <span id="numItems">(${data.categories[data.page].items.length} items)</span>
 
-  <ul id="grid">
+  <div id="grid">
     ${data.categories[data.page].items.map(gridItem)}
-  </ul>
+  </div>
 `;
 
 const gridItem = (item) => html`
-  <li class="gridItem" @click=${(e) => clickItem(item, e)}>
-    <div class="imagePlaceholder"></div>
-    <span class="title">${item.title}</span>
-    <span class="price">\$${item.price.toFixed(2)}</span>
-  </li>
+  <list-item .title=${item.title} .price=${item.price}
+             @click=${(e) => clickItem(item, e)}>
+  </list-item>
 `;
 
 const clickItem = (item, event) => {

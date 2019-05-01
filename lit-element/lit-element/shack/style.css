@@ -104,58 +104,31 @@ main {
   padding: 0;
 }
 
-.gridItem {
+list-item {
   flex-basis: 33%;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  cursor: pointer;
-  padding-top: 43px;
+  margin-top: 43px;
 }
 
-.imagePlaceholder {
-  height: 125px;
-  width: 130px;
-  padding-top: 24px;
+list-item:nth-child(7n+1) {
+  --list-item-placeholder-color: #d1fdb5;
 }
-
-.gridItem:nth-child(7n+1) .imagePlaceholder {
-  background-color: #d1fdb5;
+list-item:nth-child(7n+2) {
+  --list-item-placeholder-color: #ffe7a6;
 }
-.gridItem:nth-child(7n+2) .imagePlaceholder {
-  background-color: #ffe7a6;
+list-item:nth-child(7n+3) {
+  --list-item-placeholder-color: #ffe4fe;
 }
-.gridItem:nth-child(7n+3) .imagePlaceholder {
-  background-color: #ffe4fe;
+list-item:nth-child(7n+4) {
+  --list-item-placeholder-color: #cfffff;
 }
-.gridItem:nth-child(7n+4) .imagePlaceholder {
-  background-color: #cfffff;
+list-item:nth-child(7n+5) {
+  --list-item-placeholder-color: #feff9b;
 }
-.gridItem:nth-child(7n+5) .imagePlaceholder {
-  background-color: #feff9b;
+list-item:nth-child(7n+6) {
+  --list-item-placeholder-color: #d0ebff;
 }
-.gridItem:nth-child(7n+6) .imagePlaceholder {
-  background-color: #d0ebff;
-}
-.gridItem:nth-child(7n+7) .imagePlaceholder {
-  background-color: #ffd9d9;
-}
-
-.gridItem .title {
-  color: #202020;
-  font-size: 13px;
-  font-weight: bold;
-  margin-top: 36px;
-  text-align: center;
-}
-
-.gridItem .price {
-  color: #757575;
-  font-size: 13px;
-  margin-top: 4px;
+list-item:nth-child(7n+7) {
+  --list-item-placeholder-color: #ffd9d9;
 }
 
 #demoNotice {

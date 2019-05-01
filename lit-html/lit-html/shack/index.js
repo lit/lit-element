@@ -9,7 +9,7 @@
  * rights grant found at http://polymer.github.io/PATENTS.txt
  */
 
-import * as bench from '/bench.js';
+// import * as bench from '/bench.js';
 import {html, render} from '../node_modules/lit-html/lit-html.js';
 
 const data = {
@@ -99,10 +99,13 @@ const footer = () => html`
     })());
   }
   await Promise.all(promises);
+  renderPage();
 
+  /**
   setTimeout(() => {
     bench.start();
     renderPage();
     bench.stop();
   }, 100);
+  */
 })();
