@@ -77,9 +77,7 @@ const listItem = (item) => html`
 
 const clickItem = (item, event) => {
   event.preventDefault();
-  data.cart.push(item.title);
-  const cart = document.getElementsByTagName('shack-cart')[0];
-  cart.items = data.items;
+  data.cart = [item.title, ...data.cart];
   renderPage();
 };
 
