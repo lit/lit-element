@@ -111,23 +111,62 @@ To define a static `styles` property:
 
 Static styles apply to all instances of an element. Any expressions in your CSS are evaluated and included **once**, then reused for all instances. 
 
-For security reasons, expressions must be tagged with the `cssLiteral` template literal tag:
+To prevent LitElement-based components from evaluating potentially malicious code, the `css` tag only accepts literal strings. You can nest them like this:
 
 ```js
-import { LitElement, css, cssLiteral } from 'lit-element';
+static get styles() {
+  const mainColor = css`red`;
 
-const mainColor = cssLiteral`red`;
+  return css`
+    :host { 
+      color: ${mainColor}; 
+    }
+  `;
+}
+```
+
+However, if you want to inject any variable or non-literal into a css string, you must wrap it with the `unsafeCSS` function. For example:
+
+```js
+import { LitElement, css, unsafeCSS } from 'lit-element';
 
 class MyElement extends LitElement {
   static get styles() {
+    const mainColor = 'red';
+    
     return css`
-    :host {
-      display: block;
-      color: ${mainColor}
-    }`;
+      :host { 
+        color: ${unsafeCSS(mainColor)};
+      }
+    `;
   } 
 }
 ```
+
+Another example:
+
+```js
+import { LitElement, css, unsafeCSS } from 'lit-element';
+
+class MyElement extends LitElement {
+  static get styles() {
+    const mainWidth = 800;
+    const padding = 20;   
+    
+    return css`
+      :host { 
+        width: ${unsafeCSS(mainWidth + padding)}px;
+      }
+    `;
+  } 
+}
+```
+
+<div class="alert alert-warning">
+
+**Only use the `unsafeCSS` tag with trusted input.** To prevent LitElement-based components from evaluating potentially malicious code, the `css` tag only accepts literal strings. `unsafeCSS` circumvents this safeguard.
+
+</div>
 
 ### Define styles in a style element {#style-element} 
 
