@@ -9,14 +9,10 @@
  * rights grant found at http://polymer.github.io/PATENTS.txt
  */
 
-import './elements/shack-cart';
-import './elements/shack-item';
+import './elements/shack-app.js';
 
-import {html, render} from '../node_modules/lit-html/lit-html.js';
-
-const data = {
-  page: 'mens_tshirts',
-  categories: {
+(async function() {
+  const categories = {
     'mens_outerwear': {
       title: 'Men\'s Outerwear',
     },
@@ -29,69 +25,20 @@ const data = {
     'ladies_tshirts': {
       title: 'Ladies T-Shirts',
     },
-  },
-  cart: [],
-};
+  };
 
-const renderPage = () => render(body(), document.body);
-
-const body = () => html`
-  <header id="pageHeader">${pageHeader()}</header>
-  <main id="categoryList">${categoryList()}</main>
-  <footer id="footer">${footer()}</footer>
-`;
-
-const pageHeader = () => html`
-  <h1 id="logo">SHACK</h1>
-  <shack-cart .items=${data.cart}></shack-cart>
-`;
-
-const categoryNav = () =>
-    Object.keys(data.categories)
-        .map(
-            (c) => html`<a ?active=${data.page === c} @click=${
-                (e) => selectCategory(c, e)}>${data.categories[c].title}</a>`);
-
-const selectCategory = (page, event) => {
-  event.preventDefault();
-  data.page = page;
-  renderPage();
-};
-
-const categoryList = () => html`
-  <div id="hero"></div>
-  <h2 id="categoryTitle">${data.categories[data.page].title}</h2>
-  <span id="numItems">(${data.categories[data.page].items.length} items)</span>
-
-  <div id="list">
-    ${data.categories[data.page].items.map(listItem)}
-  </div>
-`;
-
-const listItem = (item) => html`
-  <shack-item .title=${item.title} .price=${item.price}
-              @click=${(e) => clickItem(item, e)}>
-  </shack-item>
-`;
-
-const clickItem = (item, event) => {
-  event.preventDefault();
-  data.cart = [item.title, ...data.cart];
-  renderPage();
-};
-
-const footer = () => html`
-  <div id="demoNotice">DEMO ONLY</div>
-`;
-
-(async function() {
   const promises = [];
-  for (const c in data.categories) {
+  for (const c in categories) {
     promises.push((async () => {
       const resp = await fetch(`./${c}.json`);
-      data.categories[c].items = await resp.json();
+      categories[c].items = await resp.json();
+      categories[c].slug = c;
     })());
   }
   await Promise.all(promises);
-  renderPage();
+
+  const app = document.createElement('shack-app');
+  app.page = 'mens_tshirts';
+  app.categories = categories;
+  document.body.appendChild(app);
 })();
