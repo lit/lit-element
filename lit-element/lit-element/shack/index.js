@@ -9,8 +9,9 @@
  * rights grant found at http://polymer.github.io/PATENTS.txt
  */
 
+import './elements/shack-item';
+
 import {html, render} from '../node_modules/lit-html/lit-html.js';
-import {ListItem} from './elements/list-item';
 
 const data = {
   page: 'mens_tshirts',
@@ -73,9 +74,9 @@ const categoryList = () => html`
 `;
 
 const listItem = (item) => html`
-  <list-item .title=${item.title} .price=${item.price}
-             @click=${(e) => clickItem(item, e)}>
-  </list-item>
+  <shack-item .title=${item.title} .price=${item.price}
+              @click=${(e) => clickItem(item, e)}>
+  </shack-item>
 `;
 
 const clickItem = (item, event) => {

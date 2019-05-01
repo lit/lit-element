@@ -11,7 +11,7 @@
 
 import {css, html, LitElement} from 'lit-element';
 
-export class ListItem extends LitElement {
+export class ShackItem extends LitElement {
   static get properties() {
     return {
       title: {type: String},
@@ -32,7 +32,7 @@ export class ListItem extends LitElement {
         height: 125px;
         width: 130px;
         padding-top: 24px;
-        background-color: var(--list-item-placeholder-color, gray);
+        background-color: var(--shack-item-placeholder-color, gray);
       }
 
       .title {
@@ -66,4 +66,4 @@ export class ListItem extends LitElement {
   }
 }
 
-customElements.define('list-item', ListItem);
+customElements.define('shack-item', ShackItem);
