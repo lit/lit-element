@@ -9,7 +9,7 @@
  * rights grant found at http://polymer.github.io/PATENTS.txt
  */
 
-import './elements/list-item';
+import './elements/shack-item';
 import './elements/shack-cart';
 
 import {html, render} from '../node_modules/lit-html/lit-html.js';
@@ -70,9 +70,9 @@ const categoryList = () => html`
 `;
 
 const listItem = (item) => html`
-  <list-item .title=${item.title} .price=${item.price}
-             @click=${(e) => clickItem(item, e)}>
-  </list-item>
+  <shack-item .title=${item.title} .price=${item.price}
+              @click=${(e) => clickItem(item, e)}>
+  </shack-item>
 `;
 
 const clickItem = (item, event) => {

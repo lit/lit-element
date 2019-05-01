@@ -51,7 +51,6 @@ export class ShackCart extends PolymerElement {
   }
 
   computeItemLength() {
-    console.log('ok', this.items);
     return this.items ? this.items.length : 0;
   }
 }
