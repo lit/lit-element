@@ -1,7 +1,6 @@
 {
   "private": true,
   "dependencies": {
-    "@polymer/polymer": "^3.2.0",
-    "lit-html": "^1.0.0"
+    "@polymer/polymer": "^3.2.0"
   }
 }
