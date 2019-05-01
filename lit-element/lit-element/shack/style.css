@@ -95,7 +95,7 @@ main {
   margin-top: 8px;
 }
 
-#grid {
+#list {
   max-width: 1000px;
   display: flex;
   flex-direction: row;

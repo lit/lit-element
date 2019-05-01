@@ -67,12 +67,12 @@ const categoryList = () => html`
   <h2 id="categoryTitle">${data.categories[data.page].title}</h2>
   <span id="numItems">(${data.categories[data.page].items.length} items)</span>
 
-  <div id="grid">
-    ${data.categories[data.page].items.map(gridItem)}
+  <div id="list">
+    ${data.categories[data.page].items.map(listItem)}
   </div>
 `;
 
-const gridItem = (item) => html`
+const listItem = (item) => html`
   <list-item .title=${item.title} .price=${item.price}
              @click=${(e) => clickItem(item, e)}>
   </list-item>

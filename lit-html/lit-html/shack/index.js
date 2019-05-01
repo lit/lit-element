@@ -67,17 +67,17 @@ const categoryList = () => html`
   <h2 id="categoryTitle">${data.categories[data.page].title}</h2>
   <span id="numItems">(${data.categories[data.page].items.length} items)</span>
 
-  <ul id="grid">
-    ${data.categories[data.page].items.map(gridItem)}
-  </ul>
+  <div id="list">
+    ${data.categories[data.page].items.map(listItem)}
+  </div>
 `;
 
-const gridItem = (item) => html`
-  <li class="gridItem" @click=${(e) => clickItem(item, e)}>
+const listItem = (item) => html`
+  <div class="listItem" @click=${(e) => clickItem(item, e)}>
     <div class="imagePlaceholder"></div>
     <span class="title">${item.title}</span>
     <span class="price">\$${item.price.toFixed(2)}</span>
-  </li>
+  </div>
 `;
 
 const clickItem = (item, event) => {

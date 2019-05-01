@@ -95,7 +95,7 @@ main {
   margin-top: 8px;
 }
 
-#grid {
+#list {
   max-width: 1000px;
   display: flex;
   flex-direction: row;
@@ -104,11 +104,9 @@ main {
   padding: 0;
 }
 
-.gridItem {
+.listItem {
   flex-basis: 33%;
-  list-style: none;
   margin: 0;
-  padding: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -122,29 +120,29 @@ main {
   padding-top: 24px;
 }
 
-.gridItem:nth-child(7n+1) .imagePlaceholder {
+.listItem:nth-child(7n+1) .imagePlaceholder {
   background-color: #d1fdb5;
 }
-.gridItem:nth-child(7n+2) .imagePlaceholder {
+.listItem:nth-child(7n+2) .imagePlaceholder {
   background-color: #ffe7a6;
 }
-.gridItem:nth-child(7n+3) .imagePlaceholder {
+.listItem:nth-child(7n+3) .imagePlaceholder {
   background-color: #ffe4fe;
 }
-.gridItem:nth-child(7n+4) .imagePlaceholder {
+.listItem:nth-child(7n+4) .imagePlaceholder {
   background-color: #cfffff;
 }
-.gridItem:nth-child(7n+5) .imagePlaceholder {
+.listItem:nth-child(7n+5) .imagePlaceholder {
   background-color: #feff9b;
 }
-.gridItem:nth-child(7n+6) .imagePlaceholder {
+.listItem:nth-child(7n+6) .imagePlaceholder {
   background-color: #d0ebff;
 }
-.gridItem:nth-child(7n+7) .imagePlaceholder {
+.listItem:nth-child(7n+7) .imagePlaceholder {
   background-color: #ffd9d9;
 }
 
-.gridItem .title {
+.listItem .title {
   color: #202020;
   font-size: 13px;
   font-weight: bold;
@@ -152,7 +150,7 @@ main {
   text-align: center;
 }
 
-.gridItem .price {
+.listItem .price {
   color: #757575;
   font-size: 13px;
   margin-top: 4px;
