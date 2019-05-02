@@ -37,8 +37,21 @@ import './elements/shack-app.js';
   }
   await Promise.all(promises);
 
-  const app = document.createElement('shack-app');
-  app.page = 'mens_tshirts';
-  app.categories = categories;
-  document.body.appendChild(app);
+  const renderApp = () => {
+    const app = document.createElement('shack-app');
+    app.page = 'mens_tshirts';
+    app.categories = categories;
+    document.body.appendChild(app);
+  };
+
+  try {
+    const bench = await import('/bench.js');
+    setTimeout(() => {
+      bench.start();
+      renderApp();
+      bench.stop();
+    }, 100);
+  } catch (e) {
+    renderApp();
+  }
 })();

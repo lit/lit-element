@@ -37,5 +37,14 @@ import {appData, renderApp} from './elements/shack-app.js';
   }
   await Promise.all(promises);
 
-  renderApp();
+  try {
+    const bench = await import('/bench.js');
+    setTimeout(() => {
+      bench.start();
+      renderApp();
+      bench.stop();
+    }, 100);
+  } catch (e) {
+    renderApp();
+  }
 })();
