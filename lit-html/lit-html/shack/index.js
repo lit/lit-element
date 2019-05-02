@@ -37,14 +37,19 @@ import {appData, renderApp} from './elements/shack-app.js';
   }
   await Promise.all(promises);
 
-  try {
+  // TODO We defer rendering for 100ms in the micro benchmark case because this
+  // reduces variance substantially, plus we won't always have the bench.js
+  // library available. For the first-contentful-paint case, we don't need
+  // bench.js and shouldn't defer rendering. Clean up this logic somehow.
+  const nobench = new URL(window.location.href).searchParams.has('nobench');
+  if (nobench) {
+    renderApp();
+  } else {
     const bench = await import('/bench.js');
     setTimeout(() => {
       bench.start();
       renderApp();
       bench.stop();
     }, 100);
-  } catch (e) {
-    renderApp();
   }
 })();
