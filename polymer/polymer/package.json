@@ -1,0 +1,6 @@
+{
+  "private": true,
+  "dependencies": {
+    "@polymer/polymer": "^3.2.0"
+  }
+}
