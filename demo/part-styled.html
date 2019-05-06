@@ -12,6 +12,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <title>lit-element demo</title>
   <script>
     //ShadyDOM = {force: true};
+    delete Document.prototype.adoptedStyleSheets;
   </script>
   <script src="../node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
   <script type="module">
@@ -47,7 +48,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <script type="module" src="./part-styled.js"></script>
 </head>
 <body>
-    <part-host></part-host>
+    <part-host>
+      <part-child></part-child>
+    </part-host>
     <hr>
     <part-child></part-child>
     <hr>

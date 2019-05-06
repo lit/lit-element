@@ -92,6 +92,10 @@ export class PartHost extends PartStyledElement {
 
     ${part(['part-child', '*::part(b)'], css`margin: ${unsafeCSS(margin)}`)}
 
+    ${part(['::slotted(part-child)::part(foo)', '::slotted(part-child)::part(nug)', '::slotted(part-child)::part(child-zot)'], css`
+      border: 10px dashed green;
+    `)}
+
   `; }
 
   render() {
@@ -101,6 +105,8 @@ export class PartHost extends PartStyledElement {
         <header part="header">part-host</header>
         <part-child exportparts="b" class=${classMap({special})}></part-child>
         <part-child exportparts="b"></part-child>
+        <hr>
+        <slot></slot>
       </div>
     `;
   }

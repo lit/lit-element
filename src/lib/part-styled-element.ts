@@ -109,6 +109,7 @@ export class PartStyledElement extends LitElement {
 
   private _staticPartsDirty = true;
   private _dynamicPartsDirty = true;
+  private _childrenPartsDirty = true;
   private _partParent?: PartStyledElement|null;
   private _exportPartChildren = new Set();
   private _dynamicParts?: Set<CSSPartRule>|null;
@@ -222,11 +223,19 @@ export class PartStyledElement extends LitElement {
     const {selectorPseudo, partPseudo, propertySet} = rule;
     let hostSelector = `:host(${selector}${selectorPseudo ? `:${selectorPseudo}` : ''})`;
     let partSelector = `[part~=${part}]`;
+    let slotSelector = '';
     if (usingShadyDom) {
       const hostScope = `${this.localName}${this._partParent ?
         `.${STYLE_SCOPE}.${this._partParent.localName}` : ''}`;
-      hostSelector = `${hostScope}${selector.replace(new RegExp(`${this.localName}|\\*`), '')}`;
-      partSelector = `.${STYLE_SCOPE}.${this.localName}${partSelector}`;
+      if (rule.slotSelector) {
+        const parent = this.parentNode;
+        //const parentHost = (parent.getRootNode() as ShadowRoot).host;
+        slotSelector = `${rule.slotSelector.replace(/\*/g,
+          parent && parent instanceof Element ?
+            (parent as Element).localName : '')} `;
+      }
+      hostSelector = `${slotSelector}${hostScope}${selector.replace(new RegExp(`${this.localName}|\\*`), '')}`;
+            partSelector = `.${STYLE_SCOPE}.${this.localName}${partSelector}`;
     }
     const cssText = `${hostSelector} ${partSelector}${partPseudo ? `:${partPseudo}` : ''} { ${propertySet} }`;
     // Bail if already added in ShadyDOM case.
@@ -234,6 +243,7 @@ export class PartStyledElement extends LitElement {
       return;
     }
     const partStyle = document.createElement('style');
+    partStyle.setAttribute('part-scope', `${this.localName}${rule.slotSelector ? '-slot' : ''}`);
     const refNode = orderStyle(partStyle, this._partOrder, distance, rule.order!);
     partStyle.textContent = cssText;
     if (usingShadyDom) {
@@ -252,7 +262,7 @@ export class PartStyledElement extends LitElement {
     this._exportPartChildren.delete(child);
   }
 
-  connectedCallback() {
+  async connectedCallback() {
     this._partParent = (this.getRootNode() as ShadowRoot).host as PartStyledElement;
     // Note, dynamically adding `exportParts` is not supported.
     if (this._partParent && this._partParent.addExportPartChild && this.exportParts) {
@@ -268,7 +278,12 @@ export class PartStyledElement extends LitElement {
     if (super.disconnectedCallback) {
       super.disconnectedCallback();
     }
-    // remove all part rules.
+    this._resetParts();
+    this._partParent = null;
+  }
+
+  // remove all part rules.
+  _resetParts() {
     this._dynamicParts = null;
     this._appliedParts = new Set();
     // TODO(sorvell): This could remove styles only if there is no parentNode.
@@ -287,10 +302,10 @@ export class PartStyledElement extends LitElement {
     this._partOrder = [];
     this._staticPartsDirty = true;
     this._dynamicPartsDirty = true;
+    this._childrenPartsDirty = true;
     if (this._partParent && this._partParent.removeExportPartChild) {
       this._partParent.removeExportPartChild(this);
     }
-    this._partParent = null;
   }
 
   updated(changedProperties: PropertyValues) {
@@ -298,6 +313,20 @@ export class PartStyledElement extends LitElement {
       super.updated(changedProperties);
     }
     this._updateParts();
+    // update slotted children
+    if (this._childrenPartsDirty) {
+      this._childrenPartsDirty = false;
+      for (let n=this.firstElementChild; n; n=n.nextElementSibling) {
+        if ((n as PartStyledElement).forceUpdateParts) {
+          (n as PartStyledElement).forceUpdateParts();
+        }
+      }
+    }
+  }
+
+  forceUpdateParts() {
+    this._resetParts();
+    this.requestUpdate();
   }
 
   private _updateParts() {
@@ -309,33 +338,76 @@ export class PartStyledElement extends LitElement {
     }
   }
 
+  // NOTE: ::sloted()::part does not work in native currently.
+  // https://bugs.chromium.org/p/chromium/issues/detail?id=955524
+  private _getSlottedParts() {
+    let assignedSlot = this.assignedSlot;
+    const slottedParts = new Set();
+    while (assignedSlot) {
+      const slotHost = (assignedSlot.getRootNode() as ShadowRoot).host;
+      if (slotHost) {
+        const map = (slotHost.constructor as typeof PartStyledElement).cssPartRules;
+        if (map) {
+          map.forEach((rule: CSSPartRule) => {
+            // TODO(sorvell): needs ShadyCSS matching help.
+            if (rule.slotSelector && assignedSlot!.matches(rule.slotSelector)) {
+              slottedParts.add(rule);
+            }
+          });
+        }
+      }
+      assignedSlot = assignedSlot.assignedSlot;
+    }
+    return slottedParts;
+  }
+
   private _updateStaticParts() {
     this._staticPartsDirty = false;
     const map = this._partParent ?
       (this._partParent.constructor as typeof PartStyledElement).cssPartRules : documentPartRules;
+    const slottedMap = this._getSlottedParts();
     // process static part rules here and store dynamic rules for runtime updates.
-    if (map) {
+    if (map || slottedMap) {
       this._dynamicParts = new Set();
-      map.forEach((rule: CSSPartRule) => {
+      const addPart = (rule: CSSPartRule) => {
         if (rule.dynamic) {
           this._dynamicParts!.add(rule);
         } else {
-          if (this.matches(rule.selector)) {
+          if (this._ruleMatches(rule)) {
             this.addPartStyle(rule.part!, rule);
           }
         }
-      });
+      }
+      if (map) {
+        map.forEach(addPart);
+      }
+      if (slottedMap) {
+        slottedMap.forEach(addPart);
+      }
     }
   }
 
   private _updateDynamicParts() {
     this._dynamicPartsDirty = false;
     if (this._dynamicParts) {
-      this._dynamicParts.forEach((rule) => this.matches(rule.selector) ?
+      this._dynamicParts.forEach((rule) => this._ruleMatches(rule) ?
         this.addPartStyle(rule.part!, rule) :
         this.removePartStyle(rule.part!, rule)
       );
     }
+  }
+
+  private _ruleMatches(rule: CSSPartRule) {
+    if (!this.matches(rule.selector)) {
+      return false;
+    }
+    if (!rule.slotSelector) {
+      return true;
+    }
+    if (!this.assignedSlot) {
+      return false;
+    }
+    return this.assignedSlot.matches(rule.slotSelector);
   }
 
 }

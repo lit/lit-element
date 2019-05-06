@@ -32,6 +32,7 @@ export const useNativePart = () => supportsPart &&
 
 export interface CSSPartRule {
   rawSelector: string;
+  slotSelector: string;
   selector: string;
   selectorPseudo?: string;
   part?: string;
@@ -55,8 +56,10 @@ export class CSSPartRuleSet {
   private _rules?: CSSPartRule[];
 
   // TODO(sorvell): support multiple pseudo selectors
-  // (1. non-pseudo selector):(2. pseudo)::part((3. part)):(4. pseudo)
-  private _rx = /([^:]*)(?:\:([^:]+))?(?:\:\:part\(([^)]*)\))?(?:\:(.+))?/;
+  // (1. nothing)(2. nothing)(3. non-pseudo selector):(4. pseudo)::part((5. part)):(6. pseudo)
+  private _rx = /()()([^:]*)(?:\:([^:]+))?(?:\:\:part\(([^)]*)\))?(?:\:(.+))?/;
+  // (1. non-pseudo selector)(2. (::slotted))(3. non-pseudo or end paren):(4. pseudo)::part((5. part)):(6. pseudo)
+  private _slottedRx = /([^:]*)(\:\:slotted)\(([^):]*)(?:\:([^:]+))?\)(?:\:\:part\(([^)]*)\))?(?:\:(.+))?/;
 
   constructor(selector: string[]|string, propertySet: CSSResult) {
     this.selector = selector;
@@ -76,12 +79,13 @@ export class CSSPartRuleSet {
   }
 
   _parse(selector: string) {
-    const match = selector.match(this._rx);
+    let match = selector.match(this._slottedRx) || selector.match(this._rx);
     if (match) {
       // @ts-ignore (ignore unused variable there for destructuring)
-      const [rawSelector, selector, selectorPseudo, part, partPseudo] = match;
+      const [rawSelector, slotSelector, isSlotted, selector, selectorPseudo, part, partPseudo] = match;
       this._rules!.push({
         rawSelector,
+        slotSelector: isSlotted ? slotSelector || '*' : '',
         selector,
         selectorPseudo,
         part,
