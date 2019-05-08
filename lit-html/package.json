@@ -12,5 +12,8 @@
   "bugs": {
     "url": "https://github.com/PolymerLabs/benchmarks/issues"
   },
-  "homepage": "https://github.com/PolymerLabs/benchmarks#readme"
+  "homepage": "https://github.com/PolymerLabs/benchmarks#readme",
+  "dependencies": {
+    "lit-html": "^1.0.0"
+  }
 }
