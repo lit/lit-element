@@ -60,7 +60,7 @@
   },
   "typings": "lit-element.d.ts",
   "dependencies": {
-    "lit-html": "^1.0.0"
+    "lit-html": "^1.0.1-dev.58f394e"
   },
   "publishConfig": {
     "access": "public"
