@@ -433,7 +433,7 @@ render() { return html`<p>template</p>`; }
 html`<p>${this.myProp}</p>`;
 
 // Loop 
-html`${this.myArray.map(i => html`<li>${i}</li>`;)}`;
+html`${this.myArray.map(i => html`<li>${i}</li>`)}`;
 
 // Conditional
 html`${this.myBool?html`<p>foo</p>`:html`<p>bar</p>`}`;
