@@ -48,7 +48,7 @@ LitElement lets you define static styles that apply to all instances of a compon
 
 We recommend using static styles for optimal performance. LitElement uses [Constructable Stylesheets](https://wicg.github.io/construct-stylesheets/) in browsers that support it, with a fallback for browsers that don't. Constructable Stylesheets allow the browser to parse styles exactly once and reuse the resulting Stylesheet object for maximum efficiency.
 
-The styles in the static `styles` property are evaluated once only and applied to all instances of the element. You can modify styles per element instance by using [CSS custom properties](#cssprops):
+The styles in the static `styles` property are evaluated once only and applied to all instances of the element. You can modify styles per element instance by using [CSS custom properties](#css-properties):
 
 *   The element **developer** defines a style rule inside shadow DOM that uses CSS variables to apply a custom CSS property to a particular style property.
 *   The element **consumer** defines the value of the custom CSS property outside shadow DOM in a CSS rule that is inherited by the host element.
