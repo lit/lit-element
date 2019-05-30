@@ -11,8 +11,8 @@
  * subject to an additional IP rights grant found at
  * http://polymer.github.io/PATENTS.txt
  */
-import {TemplateResult} from 'lit-html';
-import {render} from 'lit-html/lib/shady-render.js';
+import {TemplateResult, render} from 'lit-html';
+import {render as shadyRender} from 'lit-html/lib/shady-render.js';
 
 import {PropertyValues, UpdatingElement} from './lib/updating-element.js';
 
@@ -73,7 +73,7 @@ export class LitElement extends UpdatingElement {
    * @param {String} Element name.
    * @nocollapse
    */
-  static render = render;
+  static render = window.ShadyCSS === undefined ? render : shadyRender;
 
   /**
    * Array of styles to apply to the element. The styles should be defined
