@@ -10,7 +10,9 @@ slug: styles
 
 It’s easy to style LitElement templates and components with plain CSS. Here are some examples of how the main styling use cases work:
 
-## Style the contents of a template 
+## Basic examples
+
+### Style the contents of a template 
 
 The following code applies styling to all `<button>` elements inside a template:
 
@@ -25,7 +27,7 @@ class MyElement extends LitElement {
 }
 ```
 
-## Style a LitElement custom HTML tag 
+### Style a LitElement custom HTML tag 
 
 The following code applies styling to a LitElement custom HTML tag:
 
@@ -36,7 +38,7 @@ The following code applies styling to a LitElement custom HTML tag:
 <my-element></my-element>
 ```
 
-## Expose properties in a template for styling 
+### Expose properties in a template for styling 
 
 Sometimes, you might want to make some properties of the elements in a LitElement template stylable from outside.
 
