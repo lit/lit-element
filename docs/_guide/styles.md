@@ -8,9 +8,11 @@ slug: styles
 * ToC
 {:toc}
 
-It’s easy to style LitElement templates and components with plain CSS. 
+It’s easy to style LitElement templates and components with plain CSS. Here are some examples of how the main styling use cases work:
 
-Style the `button` elements in a component's template:
+## Style the contents of a template 
+
+The following code applies styling to all `<button>` elements inside a template:
 
 ```js
 class MyElement extends LitElement {
@@ -23,7 +25,9 @@ class MyElement extends LitElement {
 }
 ```
 
-Add a margin around a component:
+## Style a LitElement custom HTML tag 
+
+The following code applies styling to a LitElement custom HTML tag:
 
 ```html
 <style>
@@ -32,15 +36,17 @@ Add a margin around a component:
 <my-element></my-element>
 ```
 
-{% include project.html folder="style/intro" openFile="index.html" %}
+## Expose properties in a template for styling 
 
-Style your template from the main HTML document:
+Sometimes, you might want to make some properties of the elements in a LitElement template stylable from outside.
+
+The following template uses a CSS variable to expose the `width` property of its `<button>` elements:
 
 ```js
 class MyElement extends LitElement {
   static get styles() {
     return css`
-      button { width: var(--buttonWidth, 100px); }
+      button { width: var(--buttonWidth); }
     `;
   }
   render() {
@@ -49,6 +55,8 @@ class MyElement extends LitElement {
 }
 ```
 
+To style the `width` property from outside the template, set the `--buttonWidth` custom CSS property, using the component's HTML tag as a CSS selector:
+
 ```html
 <style>
   my-element { --buttonWidth: 200px; }
@@ -56,16 +64,7 @@ class MyElement extends LitElement {
 <my-element></my-element>
 ```
 
-{% include project.html folder="style/introcustomprops" openFile="index.html" %}
-
-The component above makes the `button` element's `width` property stylable from outside the component template. See [CSS custom properties](#custom-properties) for more information.
-
-{:.alert .alert-info}
-<div>
-
-**CSS Shadow Parts are coming.** With [CSS Shadow Parts](https://www.w3.org/TR/css-shadow-parts-1/), component authors will be able to expose elements inside shadow DOM to the outside world for styling. Stay tuned!
-
-</div>
+See the section on [CSS custom properties](#custom-properties) for more information.
 
 <div class="alert alert-info">
 
@@ -97,52 +96,57 @@ class MyElement extends LitElement {
 
 The example above places the template styles in a static `styles` property, but you could also put them in a `<style>` block or an external stylesheet—see [Where to put your styles](#where) for details.
 
-{:.alert .alert-info}
-<div>
+In general, styles inside a LitElement template can only affect elements in the same template. Likewise, the elements in a LitElement template can only be affected by styles in that same template (with the exception of CSS inheritance. See the section on [CSS inheritance](#inheritance) for more information).
 
-**Styles in a LitElement template are automatically encapsulated.** You don't need to worry about accidentally styling other elements in the page!
+This means that you don't have to worry about the styles you set in your LitElement templates accidentally affecting the rest of your page, and vice versa.
 
-The template's rendered content forms a sub-tree, separate from the main HTML document. In general, from inside the sub-tree, you can only see the rest of the sub-tree. 
+### ...A LitElement custom HTML tag {#how-to-style-host}
 
-This also means simple selectors such as `*`, tagname, id, and class selectors work fine inside LitElement templates, as they won't match any outside content. 
-
-</div>
-
-To style your template from outside your component's source code, see the section on [custom CSS properties](#custom-properties).
-
-{:.alert .alert-info}
-<div>
-
-**CSS Shadow Parts are coming.** With [CSS Shadow Parts](https://www.w3.org/TR/css-shadow-parts-1/), component authors will be able to expose elements inside LitElement templates to the outside world for styling. Stay tuned!
-
-</div>
-
-### ...A component's host element {#how-to-style-host}
-
-A component's _host element_ is the HTML element that serves as a container for the component's rendered content.
-
-The rendered content forms a separate, encapsulated sub-tree. In general, from outside the sub-tree, you can only see the host element (the container). From inside the sub-tree, you can only see the rest of the content in the sub-tree. 
-
-To style the host element from the context where you're using the component—for example, in an HTML document—simply define styles for the component's element type selector. For example:
- 
-_index.html_
+Apply styles to the custom HTML tag of a LitElement component by styling its type selector, the same way you style normal HTML elements: 
 
 ```html
 <head>
   <style>
-    my-element { 
-      border: 1px solid black; 
-      margin-left: 50px;
-      color: blue;
+    div, my-element {
+      padding: 20px;
+      margin: 30px;
     }
   </style>
 </head>
+
 <body>
+  <div>I am div.</div>
   <my-element></my-element>
 </body>
 ```
 
-To style the host element from inside your component's source code, use the special `:host` and `:host()` CSS features. These features allow you to "peek outside" the sub-tree of your rendered content, and style its container:
+When the browser renders a LitElement component into an HTML document, by default, the contents of its template are placed in a **shadow root**—a special HTML subsection that is hidden from the main document.
+
+For example, the following code:
+
+```js
+class MyElement extends LitElement {
+  render() {
+    return html`<p>template content</p>`;
+  }
+}
+```
+
+```html
+<my-element></my-element>
+```
+
+Produces an HTML document that looks like this:
+
+```html
+<my-element>
+  #shadowRoot
+    <p>template content</p>
+```
+
+The element in the main document that contains the shadow root is called the **host**. In the example above, the host is `<my-element>`.
+
+To style the host from inside your component's template, use the special `:host` and `:host()` CSS features. These features allow you to "peek outside" a template and style its container.
 
 *   `:host` selects the host element.
 
@@ -200,7 +204,7 @@ class MyElement extends LitElement {
 </my-element>
 ```
 
-Use the `::slotted()` CSS pseudo-element to select elements that have been included in your component's rendered content via the `<slot>` element.
+Use the `::slotted()` CSS pseudo-element to select elements that have been included in your template via the `<slot>` element.
 
 *   `::slotted(*)` matches all slotted elements.
 
@@ -370,11 +374,11 @@ There are some important caveats though:
 
 ## Make an app theme {#theme}
 
-Use CSS inheritance to share styles, and custom CSS properties to configure them. Use both together to build an app theme!
+Use CSS inheritance to share styles, and custom CSS properties to configure them. Use both together to build an app theme.
 
 ### CSS inheritance {#inheritance}
 
-Encapsulation prevents styles from outside a component from "leaking" into the component's rendered template content, and vice versa. CSS inheritance, on the other hand, provides a way for parent and host elements to propagate certain CSS properties to their descendents.
+CSS inheritance provides a way for parent and host elements to propagate certain CSS properties to their descendents.
 
 Not all CSS properties inherit. Inherited CSS properties include `color`, `font-family`, and all CSS custom properties (`--*`). See [CSS Inheritance on MDN](https://developer.mozilla.org/en-US/docs/Web/CSS/inheritance) for more information.
 
