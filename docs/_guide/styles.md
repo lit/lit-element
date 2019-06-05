@@ -521,3 +521,121 @@ _my-element.js_
 ```
 
 {% include project.html folder="style/theming" openFile="theme.css" %}
+
+## Use lit-html's styleMap and classMap functions {#directives}
+
+LitElement is based on the lit-html templating library, which offers two functions, `classMap` and `styleMap`, to help apply classes and styles to HTML templates. 
+
+For more information on these and other lit-html directives, see the documentation on [lit-html built-in directives](https://lit-html.polymer-project.org/guide/template-reference#built-in-directives).
+
+To use these functions:
+
+1.  Install the `lit-html` package, and add it as a dependency of your project:
+
+    ```bash
+    npm install --save lit-html
+    ```
+
+2.  Import `classMap` and/or `styleMap`:
+
+    ```js
+    import { classMap } from 'lit-html/directives/class-map';
+    import { styleMap } from 'lit-html/directives/style-map';
+    ```
+
+3.  Use `classMap` and/or `styleMap` in your element template:
+
+    ```js
+    constructor() {
+      super();
+      this.classes = { mydiv: true, someclass: true };
+      this.styles = { color: 'green', fontFamily: 'Roboto' };
+    }
+    render() {
+      return html`
+        <div class=${classMap(this.classes)} style=${styleMap(this.styles)}>
+          some content
+        </div>
+      `;
+    }
+    ```
+
+{% include project.html folder="style/maps" openFile="my-element.js" %}
+
+`classMap` applies a set of classes to an HTML element:
+
+```html
+<div class=${classMap({alert:true,info:true})}>An info alert box.</div>
+<!-- Equivalent: <div class="alert info">An info alert box.</div> -->
+```
+
+{% include project.html folder="style/classmap" openFile="my-element.js" %}
+
+`styleMap` applies a set of CSS rules to an HTML element:
+
+```html
+<button style=${styleMap({
+  backgroundColor: 'blue',
+  border: '1px solid black'
+})}>A button</button>
+
+<!-- Equivalent: 
+  <button style="
+    background-color:blue;
+    border: 1px solid black;
+  ">A button</button>
+-->
+```
+
+{% include project.html folder="style/stylemap" openFile="my-button.js" %}
+
+To refer to hyphenated properties such as `font-family`, use the camelCase equivalent (`fontFamily`) or place the hyphenated property name in quotes (`'font-family'`). 
+
+To refer to custom CSS properties such as `--custom-color`, place the whole property name in quotes (`'--custom-color'`).
+
+|**Inline style or CSS**|**styleMap equivalent**|
+|----|----|
+| `background-color: blue;` <br/> | `backgroundColor: 'blue'` <br/><br/> or <br/><br/>`'background-color': 'blue'`|
+| `font-family: Roboto, Arial, sans-serif;` <br/> | `fontFamily: 'Roboto, Arial, sans-serif'` <br/><br/> or <br/><br/>`'font-family': 'Roboto, Arial, sans-serif'`|
+|`--custom-color: #FFFABC;`|`'--custom-color': '#FFFABC;'`|
+|`--otherCustomColor: #FFFABC;`|`'--otherCustomColor': '#FFFABC;'`|
+|`color: var(--customprop, blue);`|`color: 'var(--customprop, blue)'`|
+
+**Examples**
+
+Inline style syntax:
+
+```html 
+<div style="
+  background-color:blue;
+  font-family:Roboto, Arial, sans-serif;
+  --custom-color:#FFFABC;
+  --otherCustomColor:#FFFABC;">
+</div>
+```
+
+Equivalent CSS syntax:
+
+```css
+div {
+  background-color: blue;
+  font-family: Roboto, Arial, sans-serif;
+  --custom-color: #FFFABC;
+  --otherCustomColor: #FFFABC;
+}
+```
+
+Equivalent `styleMap` syntax:
+
+```js 
+html`
+  <div style=${styleMap({
+    'background-color': 'blue',
+    fontFamily: 'Roboto, Arial, sans-serif',
+    '--custom-color': '#FFFABC',
+    '--otherCustomColor': '#FFFABC'
+  })}></div>
+`
+```
+
+{% include project.html folder="style/stylemap2" openFile="index.html" %}
