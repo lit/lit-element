@@ -1,13 +1,8 @@
-import { LitElement, html, css } from 'lit-element';
+import { LitElement, html } from 'lit-element';
 
 class MyElement extends LitElement {
-  static get styles() {
-    return css``;
-  }
-  render() {
-    return html`
-      <span>More inheritance</span>
-    `;
+  render() { 
+    return html`<p>Will use Roboto</p>`; 
   }
 }
 customElements.define('my-element', MyElement);

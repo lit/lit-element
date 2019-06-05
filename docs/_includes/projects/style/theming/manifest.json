@@ -3,12 +3,10 @@
   "description": "lit-element code sample",
   "files": [
     "my-element.js",
-    "index.html",
-    "index.ts"
+    "index.html"
   ],
   "dependencies": {
-    "lit-element": "latest",
-    "@webcomponents/webcomponentsjs": "latest"
+    "lit-element": "latest"
   },
-  "template": "typescript"
+  "template": "polymer"
 }

@@ -19,7 +19,9 @@ The following code applies styling to all `<button>` elements inside a template:
 ```js
 class MyElement extends LitElement {
   static get styles() {
-    return css`button { width: 200px; }`;
+    return css`
+      button { width: 200px; }
+    `;
   }
   render() {
     return html`<button>click</button>`;
@@ -27,16 +29,20 @@ class MyElement extends LitElement {
 }
 ```
 
+{% include project.html folder="style/introbutton" openFile="index.html" %}
+
 ### Style a LitElement custom HTML tag 
 
 The following code applies styling to a LitElement custom HTML tag:
 
 ```html
 <style>
-  my-element { margin-left: 50px; }
+  my-element { margin: 100px; }
 </style>
 <my-element></my-element>
 ```
+
+{% include project.html folder="style/intromargin" openFile="index.html" %}
 
 ### Expose properties in a template for styling 
 
@@ -66,6 +72,8 @@ To style the `width` property from outside the template, set the `--buttonWidth`
 <my-element></my-element>
 ```
 
+{% include project.html folder="style/introcustomprops" openFile="index.html" %}
+
 See the section on [CSS custom properties](#custom-properties) for more information.
 
 <div class="alert alert-info">
@@ -86,15 +94,25 @@ import { LitElement, css, html } from 'lit-element';
 class MyElement extends LitElement {
   static get styles() {
     return css`
-      * { color: black; }
+      * { color: red; }
       p { font-family: sans-serif; }
-      .myclass { margin: 30px; }
-      #main { padding: 16px; }
-      h1 { font-size: 4rem; }
+      .myclass { margin: 100px; }
+      #main { padding: 30px; }
+      h1 { font-size: 4em; }
+    `;
+  }
+  render() {
+    return html`
+      <p>Hello World</p>
+      <p class="myclass">Hello World</p>
+      <p id="main">Hello World</p>
+      <h1>Hello World</h1>
     `;
   }
 }
 ```
+
+{% include project.html folder="style/styleatemplate" openFile="my-element.js" %}
 
 The example above places the template styles in a static `styles` property, but you could also put them in a `<style>` block or an external stylesheet—see [Where to put your styles](#where) for details.
 
@@ -115,12 +133,13 @@ Apply styles to the custom HTML tag of a LitElement component by styling its typ
     }
   </style>
 </head>
-
 <body>
   <div>I am div.</div>
   <my-element></my-element>
 </body>
 ```
+
+{% include project.html folder="style/stylecustomtag" openFile="my-element.js" %}
 
 When the browser renders a LitElement component into an HTML document, by default, the contents of its template are placed in a **shadow root**—a special HTML subsection that is hidden from the main document.
 
@@ -177,10 +196,12 @@ class MyElement extends LitElement {
 }
 ```
 
+{% include project.html folder="style/host" openFile="my-element.js" %}
+
 {:.alert .alert-info}
 <div>
 
-**An element type selector has higher specificity than the `:host` pseudo-class selector.** Styles set for a host element from outside (for example, in the main document) will override styles set with `:host` and `:host()`.
+**Styles set for a custom element tag will override styles set with `:host` and `:host()`.** See the section below on [CSS inheritance](#specificity) for more information.
 
 </div>
 
@@ -191,22 +212,18 @@ The `<slot>` element acts as a placeholder in a LitElement template. For example
 ```js
 class MyElement extends LitElement {
   render() {
-    return html`
-      <p>Hello/p>
-      <slot></slot>
-      <p>World</p>
-    `;
+    return html`<slot></slot>`;
   }
 }
 ```
 
 ```html
-<my-element>
-  <p>Slotted content</p>
-</my-element>
+<my-element><p>Slotted content</p></my-element>
 ```
 
-Use the `::slotted()` CSS pseudo-element to select elements that have been included in your template via the `<slot>` element.
+{% include project.html folder="style/slottedbase" openFile="my-element.js" %}
+
+Use the `::slotted()` CSS pseudo-element to select elements that are included in your template via the `<slot>` element.
 
 *   `::slotted(*)` matches all slotted elements.
 
@@ -215,10 +232,10 @@ Use the `::slotted()` CSS pseudo-element to select elements that have been inclu
 *   `p ::slotted(*)` matches slotted elements in a paragraph element.
 
 ```js
-{% include projects/style/slotted/my-element.js %}
+{% include projects/style/slottedselector/my-element.js %}
 ```
 
-{% include project.html folder="style/slotted" openFile="my-element.js" %}
+{% include project.html folder="style/slottedselector" openFile="my-element.js" %}
 
 {:.alert .alert-info}
 <div>
@@ -251,13 +268,17 @@ import { LitElement, html, css } from 'lit-element';
 
 class MyElement extends LitElement {
   static get styles() {
-    return css`button { color: red; }`;
+    return css`
+      button { color: red; }
+    `;
   } 
   render() {
     return html`<button>click</button>`;
   }
 }
 ```
+
+{% include project.html folder="style/introbutton" openFile="my-element.js" %}
 
 {:.alert .alert-info}
 <div>
@@ -284,7 +305,7 @@ The value of the static `styles` property can be:
     }
     ```
 
-You can inherit the styles from a LitElement superclass:
+A component can inherit the styles from a LitElement superclass:
 
 ```js
 class MyElement extends SuperElement {
@@ -303,23 +324,13 @@ class MyElement extends SuperElement {
 
 Static styles apply to all instances of an element. Any expressions in your CSS are evaluated **once**, then reused for all instances. 
 
-For security reasons, expressions must be tagged with the `cssLiteral` template literal tag:
+For security reasons, expressions in static styles must be tagged with the `cssLiteral` template literal tag:
 
 ```js
-import { LitElement, css, cssLiteral } from 'lit-element';
-
-const mainColor = cssLiteral`red`;
-
-class MyElement extends LitElement {
-  static get styles() {
-    return css`
-    :host {
-      display: block;
-      color: ${mainColor}
-    }`;
-  } 
-}
+{% include projects/style/expressions/my-element.js %}
 ```
+
+{% include project.html folder="style/expressions" openFile="my-element.js" %}
 
 ### In a style element {#style-element} 
 
@@ -356,15 +367,10 @@ class MyElement extends LitElement {
 We recommend placing your styles in a static `styles` property for optimal performance. However, you can also include an external stylesheet in an element template with a `<link>` element:
 
 ```js
-class MyElement extends LitElement {
-  render() {
-    return html`
-      <link rel="stylesheet" href="./styles.css">
-      <p>style me</p>
-    `;
-  }
-}
+{% include projects/style/where/some-element.js %}
 ```
+
+{% include project.html folder="style/where" openFile="some-element.js" %}
 
 There are some important caveats though:
 
@@ -421,7 +427,7 @@ class MyElement extends LitElement {
 }
 ```
 
-{% include project.html folder="style/inherited2" openFile="my-element.js" %}
+{% include project.html folder="style/inherited2" openFile="index.html" %}
 
 A host element can also be styled with its element type selector:
 
@@ -440,11 +446,14 @@ class MyElement extends LitElement {
 }
 ```
 
-An element type selector has higher specificity than the `:host` pseudo-class selector. Styles set for a host element from the main document will override styles set with `:host` and `:host()`:
+{% include project.html folder="style/inherited3" openFile="index.html" %}
+
+#### Type selectors have higher specificity than :host {#specificity}
+
+An element type selector has higher specificity than the `:host` pseudo-class selector. Styles set for a custom element tag will override styles set with `:host` and `:host()`:
 
 ```html
 <style>
-  /* has higher specificity than :host */
   my-element { font-family: Courier; }
 </style>
 <my-element></my-element>
@@ -456,10 +465,12 @@ class MyElement extends LitElement {
     return css`:host { font-family: Roboto; }`
   }
   render() {
-    return html`<p>will use courier</p>`;
+    return html`<p>Will use courier</p>`;
   }
 }
 ```
+
+{% include project.html folder="style/specificity" openFile="index.html" %}
 
 ### CSS custom properties {#css-properties}
 
@@ -476,11 +487,13 @@ class MyElement extends LitElement {
       }
     `;
   }
-  render() { return html`<p>hi</p>`; }
+  render() {
+    return html`<p>Hello world</p>`;
+  }
 }
 ```
 
-Users of this component can set `--my-background` on the host element from their main document:
+Users of this component can set the value of `--my-background` for the component, using the `my-element` tag as a CSS selector:
 
 ```html
 <style>
@@ -494,21 +507,10 @@ Users of this component can set `--my-background` on the host element from their
 If a component user has an existing app theme, they can easily set the host element's configurable properties to their existing theme properties:
 
 ```html
-<style>
-  html {
-    --themeColor1: rgb(67, 156, 144);
-  }
-  my-element {
-    --my-background: var(--themeColor1);
-  }
-</style>
+{% include projects/style/customproperties/index.html %}
 ```
 
-```js
-{% include projects/style/customproperties/my-element.js %}
-```
-
-{% include project.html folder="style/customproperties" openFile="my-element.js" %}
+{% include project.html folder="style/customproperties" openFile="index.html" %}
 
 See [CSS Custom Properties on MDN](https://developer.mozilla.org/en-US/docs/Web/CSS/--*) for more information.
 
@@ -527,3 +529,125 @@ _my-element.js_
 ```
 
 {% include project.html folder="style/theming" openFile="theme.css" %}
+
+## Use lit-html's styleMap and classMap functions {#directives}
+
+LitElement is based on the lit-html templating library, which offers two functions, `classMap` and `styleMap`, to apply classes and styles in HTML templates. 
+
+For more information on these and other lit-html directives, see the documentation on [lit-html built-in directives](https://lit-html.polymer-project.org/guide/template-reference#built-in-directives).
+
+To use `styleMap` and/or `classMap`:
+
+1.  Install the `lit-html` package, and add it as a dependency of your project:
+
+    ```bash
+    npm install --save lit-html
+    ```
+
+2.  Import `classMap` and/or `styleMap`:
+
+    ```js
+    import { classMap } from 'lit-html/directives/class-map';
+    import { styleMap } from 'lit-html/directives/style-map';
+    ```
+
+3.  Use `classMap` and/or `styleMap` in your element template:
+
+    ```js
+    constructor() {
+      super();
+      this.classes = { mydiv: true, someclass: true };
+      this.styles = { color: 'green', fontFamily: 'Roboto' };
+    }
+    render() {
+      return html`
+        <div class=${classMap(this.classes)} style=${styleMap(this.styles)}>
+          Hello World
+        </div>
+      `;
+    }
+    ```
+
+{% include project.html folder="style/maps" openFile="my-element.js" %}
+
+### classMap syntax {#classmap}
+
+`classMap` applies a set of classes to an HTML element:
+
+```html
+<div class=${classMap({alert:true,info:true})}>An info alert box.</div>
+<!-- Equivalent: <div class="alert info">An info alert box.</div> -->
+```
+
+{% include project.html folder="style/classmap" openFile="my-element.js" %}
+
+### styleMap syntax {#stylemap}
+
+`styleMap` applies a set of CSS rules to an HTML element:
+
+```html
+<button style=${styleMap({
+  backgroundColor: 'blue',
+  border: '1px solid black'
+})}>A button</button>
+
+<!-- Equivalent: 
+  <button style="
+    background-color:blue;
+    border: 1px solid black;
+  ">A button</button>
+-->
+```
+
+{% include project.html folder="style/stylemap" openFile="my-button.js" %}
+
+To refer to hyphenated properties such as `font-family`, use the camelCase equivalent (`fontFamily`) or place the hyphenated property name in quotes (`'font-family'`). 
+
+To refer to custom CSS properties such as `--custom-color`, place the whole property name in quotes (`'--custom-color'`).
+
+|**Inline style or CSS**|**styleMap equivalent**|
+|----|----|
+| `background-color: blue;` <br/> | `backgroundColor: 'blue'` <br/><br/> or <br/><br/>`'background-color': 'blue'`|
+| `font-family: Roboto, Arial, sans-serif;` <br/> | `fontFamily: 'Roboto, Arial, sans-serif'` <br/><br/> or <br/><br/>`'font-family': 'Roboto, Arial, sans-serif'`|
+|`--custom-color: #FFFABC;`|`'--custom-color': '#FFFABC;'`|
+|`--otherCustomColor: #FFFABC;`|`'--otherCustomColor': '#FFFABC;'`|
+|`color: var(--customprop, blue);`|`color: 'var(--customprop, blue)'`|
+
+**Examples**
+
+Inline style syntax:
+
+```html 
+<div style="
+  background-color:blue;
+  font-family:Roboto, Arial, sans-serif;
+  --custom-color:#FFFABC;
+  --otherCustomColor:#FFFABC;">
+</div>
+```
+
+Equivalent CSS syntax:
+
+```css
+div {
+  background-color: blue;
+  font-family: Roboto, Arial, sans-serif;
+  --custom-color: #FFFABC;
+  --otherCustomColor: #FFFABC;
+}
+```
+
+Equivalent `styleMap` syntax:
+
+```js 
+html`
+  <div style=${styleMap({
+    'background-color': 'blue',
+    fontFamily: 'Roboto, Arial, sans-serif',
+    '--custom-color': '#FFFABC',
+    '--otherCustomColor': '#FFFABC'
+  })}></div>
+`
+```
+
+{% include project.html folder="style/stylemap2" openFile="index.html" %}

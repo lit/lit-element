@@ -5,12 +5,9 @@ class MyElement extends LitElement {
     return css`
       button { width: var(--buttonWidth, 100px); }
     `;
-  } 
-
+  }
   render() {
-    return html`
-      <button>click</button>
-    `;
+    return html`<button>click</button>`;
   }
 }
 
