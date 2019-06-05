@@ -303,8 +303,8 @@ export abstract class UpdatingElement extends HTMLElement {
         return (this as {[key: string]: unknown})[key as string];
       },
       set(this: UpdatingElement, value: unknown) {
-        const oldValue = (this as {[key: string]: unknown})[name as string];
-        (this as {[key: string]: unknown})[key as string] = value;
+        const oldValue = (this as {} as {[key: string]: unknown})[name as string];
+        (this as {} as {[key: string]: unknown})[key as string] = value;
         (this as unknown as UpdatingElement)._requestUpdate(name, oldValue);
       },
       configurable: true,
