@@ -344,10 +344,10 @@ class MyElement extends LitElement {
 We recommend placing your styles in a static `styles` property for optimal performance. However, you can also include an external stylesheet in an element template with a `<link>` element:
 
 ```js
-{% include projects/style/where/my-element.js %}
+{% include projects/style/where/some-element.js %}
 ```
 
-{% include project.html folder="style/where" openFile="my-element.js" %}
+{% include project.html folder="style/where" openFile="some-element.js" %}
 
 There are some important caveats though:
 
