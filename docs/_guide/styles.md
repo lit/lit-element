@@ -15,7 +15,9 @@ Style the `button` elements in a component's template:
 ```js
 class MyElement extends LitElement {
   static get styles() {
-    return css`button { width: 200px; }`;
+    return css`
+      button { width: 200px; }
+    `;
   }
   render() {
     return html`<button>click</button>`;
@@ -23,16 +25,18 @@ class MyElement extends LitElement {
 }
 ```
 
+{% include project.html folder="style/introbutton" openFile="index.html" %}
+
 Add a margin around a component:
 
 ```html
 <style>
-  my-element { margin-left: 50px; }
+  my-element { margin: 100px; }
 </style>
 <my-element></my-element>
 ```
 
-{% include project.html folder="style/intro" openFile="index.html" %}
+{% include project.html folder="style/intromargin" openFile="index.html" %}
 
 Style your template from the main HTML document:
 
@@ -185,20 +189,16 @@ The `<slot>` element acts as a placeholder in a LitElement template. For example
 ```js
 class MyElement extends LitElement {
   render() {
-    return html`
-      <p>Hello/p>
-      <slot></slot>
-      <p>World</p>
-    `;
+    return html`<slot></slot>`;
   }
 }
 ```
 
 ```html
-<my-element>
-  <p>Slotted content</p>
-</my-element>
+<my-element><p>Slotted content</p></my-element>
 ```
+
+{% include project.html folder="style/slottedbase" openFile="my-element.js" %}
 
 Use the `::slotted()` CSS pseudo-element to select elements that have been included in your component's rendered content via the `<slot>` element.
 
@@ -209,10 +209,10 @@ Use the `::slotted()` CSS pseudo-element to select elements that have been inclu
 *   `p ::slotted(*)` matches slotted elements in a paragraph element.
 
 ```js
-{% include projects/style/slotted/my-element.js %}
+{% include projects/style/slottedselector/my-element.js %}
 ```
 
-{% include project.html folder="style/slotted" openFile="my-element.js" %}
+{% include project.html folder="style/slottedselector" openFile="my-element.js" %}
 
 {:.alert .alert-info}
 <div>
@@ -245,13 +245,17 @@ import { LitElement, html, css } from 'lit-element';
 
 class MyElement extends LitElement {
   static get styles() {
-    return css`button { color: red; }`;
+    return css`
+      button { color: red; }
+    `;
   } 
   render() {
     return html`<button>click</button>`;
   }
 }
 ```
+
+{% include project.html folder="style/introbutton" openFile="my-element.js" %}
 
 {:.alert .alert-info}
 <div>
@@ -300,20 +304,10 @@ Static styles apply to all instances of an element. Any expressions in your CSS 
 For security reasons, expressions must be tagged with the `cssLiteral` template literal tag:
 
 ```js
-import { LitElement, css, cssLiteral } from 'lit-element';
-
-const mainColor = cssLiteral`red`;
-
-class MyElement extends LitElement {
-  static get styles() {
-    return css`
-    :host {
-      display: block;
-      color: ${mainColor}
-    }`;
-  } 
-}
+{% include projects/style/expressions/my-element.js %}
 ```
+
+{% include project.html folder="style/expressions" openFile="my-element.js" %}
 
 ### In a style element {#style-element} 
 
@@ -350,15 +344,10 @@ class MyElement extends LitElement {
 We recommend placing your styles in a static `styles` property for optimal performance. However, you can also include an external stylesheet in an element template with a `<link>` element:
 
 ```js
-class MyElement extends LitElement {
-  render() {
-    return html`
-      <link rel="stylesheet" href="./styles.css">
-      <p>style me</p>
-    `;
-  }
-}
+{% include projects/style/where/my-element.js %}
 ```
+
+{% include project.html folder="style/where" openFile="my-element.js" %}
 
 There are some important caveats though:
 
@@ -415,7 +404,7 @@ class MyElement extends LitElement {
 }
 ```
 
-{% include project.html folder="style/inherited2" openFile="my-element.js" %}
+{% include project.html folder="style/inherited2" openFile="index.html" %}
 
 A host element can also be styled with its element type selector:
 
@@ -433,6 +422,8 @@ class MyElement extends LitElement {
   }
 }
 ```
+
+{% include project.html folder="style/inherited3" openFile="index.html" %}
 
 An element type selector has higher specificity than the `:host` pseudo-class selector. Styles set for a host element from the main document will override styles set with `:host` and `:host()`:
 
@@ -455,6 +446,8 @@ class MyElement extends LitElement {
 }
 ```
 
+{% include project.html folder="style/specificity" openFile="index.html" %}
+
 ### CSS custom properties {#css-properties}
 
 All CSS custom properties (<code>--<var>custom-property-name</var></code>) inherit. You can use this to make your component's styles configurable from outside. 
@@ -470,11 +463,13 @@ class MyElement extends LitElement {
       }
     `;
   }
-  render() { return html`<p>hi</p>`; }
+  render() {
+    return html`<p>Hello world</p>`;
+  }
 }
 ```
 
-Users of this component can set `--my-background` on the host element from their main document:
+Users of this component can set the value of `--my-background` for the component, using the `my-element` tag as a CSS selector:
 
 ```html
 <style>
@@ -488,21 +483,10 @@ Users of this component can set `--my-background` on the host element from their
 If a component user has an existing app theme, they can easily set the host element's configurable properties to their existing theme properties:
 
 ```html
-<style>
-  html {
-    --themeColor1: rgb(67, 156, 144);
-  }
-  my-element {
-    --my-background: var(--themeColor1);
-  }
-</style>
+{% include projects/style/customproperties/index.html %}
 ```
 
-```js
-{% include projects/style/customproperties/my-element.js %}
-```
-
-{% include project.html folder="style/customproperties" openFile="my-element.js" %}
+{% include project.html folder="style/customproperties" openFile="index.html" %}
 
 See [CSS Custom Properties on MDN](https://developer.mozilla.org/en-US/docs/Web/CSS/--*) for more information.
 

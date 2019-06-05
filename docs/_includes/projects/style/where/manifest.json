@@ -4,12 +4,10 @@
   "files": [
     "some-element.js",
     "app-styles.css",
-    "index.html",
-    "index.ts"
+    "index.html"
   ],
   "dependencies": {
-    "lit-element": "latest",
-    "@webcomponents/webcomponentsjs": "latest"
+    "lit-element": "latest"
   },
-  "template": "typescript"
+  "template": "polymer"
 }

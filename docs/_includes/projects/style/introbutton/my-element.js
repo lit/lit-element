@@ -3,7 +3,7 @@ import { LitElement, html, css } from 'lit-element';
 class MyElement extends LitElement {
   static get styles() {
     return css`
-      button { width: var(--buttonWidth, 100px); }
+      button { width: 200px; }
     `;
   }
   render() {

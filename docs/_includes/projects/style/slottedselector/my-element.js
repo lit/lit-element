@@ -3,10 +3,8 @@ import { LitElement, html, css } from 'lit-element';
 class MyElement extends LitElement {
   static get styles() {
     return css`
-      :host([hidden]) { display: none; }
-      :host { display: block; }
       ::slotted(*) { font-family: Roboto; }
-      ::slotted(span) { color: blue; }
+      ::slotted(p) { color: blue; }
       div ::slotted(*) { color: red; }
     `;
   }

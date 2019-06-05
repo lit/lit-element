@@ -1,17 +1,13 @@
 import { LitElement, html, css } from 'lit-element';
 
 class MyElement extends LitElement {
-  static get styles() {
+  static get styles() { 
     return css`
-      button { width: 200px; }
-    `;
-  } 
-
-  render() {
-    return html`
-      <button>click</button>
+      :host { font-family: Roboto; }
     `;
   }
+  render() {
+    return html`<p>Will use Courier</p>`;
+  }
 }
-
 customElements.define('my-element', MyElement);
