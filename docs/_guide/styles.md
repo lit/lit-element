@@ -334,33 +334,55 @@ For security reasons, expressions in static styles must be tagged with the `cssL
 
 ### In a style element {#style-element} 
 
-We recommend using static styles for optimal performance. However, static styles are evaluated once, and apply to all instances of a component; in some cases you may want to evaluate styles for each instance of a component.
+We recommend using static styles for optimal performance. However, static styles are evaluated **once per class**. Sometimes, you might need to evaluate styles per instance.
 
-One way to evaluate styles per instance is to place your styles in a `<style>` element in your template, and use your element's properties in your CSS rules:
+You can include `<style>` elements in a LitElement template. These elements are updated per instance:
 
 ```js
-class MyElement extends LitElement {
-  static get properties() {
-    return { 
-      mainColor: { type: String, value: 'blue' } 
-    };
-  }
-  render() {
-    return html`
-      <style>
-        :host { color: ${this.mainColor}; }
-      </style>
-    `;
-  }
+render() {
+  return html`
+    <style>
+      /* updated per instance */
+    </style>
+    <div>template content</div>
+  `;
 }
 ```
 
-{:.alert .alert-info}
-<div>
+#### Expressions and style elements
 
-**Expressions inside a `<style>` element won't update per instance in ShadyCSS**. Due to limitations of the ShadyCSS polyfill, you can't use element properties in CSS rules as the expressions won't be evaluated. See the [ShadyCSS readme](https://github.com/webcomponents/shadycss/blob/master/README.md#limitations).
+The most intuitive way to evaluate per-instance styles has some important limitations and performance issues. We consider the example below to be an anti-pattern:
 
-</div>
+```text
+// Anti-pattern!
+render() {
+  return html`
+    <style>
+      :host {
+        color: ${/* Limitations & performance issues */}
+      } 
+    </style>
+    <div>template content</div>
+  `;
+}
+```
+
+Firstly, expressions inside a `<style>` element won't update per instance in ShadyCSS, due to limitations of the ShadyCSS polyfill. See the [ShadyCSS readme](https://github.com/webcomponents/shadycss/blob/master/README.md#limitations) for more information.
+
+Secondly, evaluating an expression inside a `<style>` element is inefficient. When the text content of a `<style>` element changes, the browser must re-parse the whole element, resulting in needless rework. 
+
+To avoid creating performance problems:
+
+* Separate styles that require per-instance evaluation from those that don't.
+* Capture per-instance styles in complete `<style>` blocks, and include them in your template to avoid re-evaluation.
+
+**Example**
+
+```js
+{% include projects/style/perinstanceexpressions/my-element.js %}
+```
+
+{% include project.html folder="style/perinstanceexpressions" openFile="my-element.js" %}
 
 ### In an external stylesheet {#external-stylesheet}
 
