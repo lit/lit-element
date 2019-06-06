@@ -25,22 +25,3 @@ export class Div3 extends LitElement {
 }
 
 customElements.define('div-3', Div3);
-
-/** 
-export const alertbox = (styles) => {
-  return html`
-    <div style=${styleMap(styles)}>
-      <h3>Div 3</h3>
-      <p>Styled with styleMap</p>
-      <p style=${styleMap({
-        color: 'var(--custom-color)'
-      })}>A paragraph using <code>--custom-color</code></p>
-      <p style=${styleMap({
-        color: 'var(--otherCustomColor)'
-      })}>A paragraph using <code>--otherCustomColor</code></p>
-    </div>
-  `;
-}
-
-export const _render = render;
-*/

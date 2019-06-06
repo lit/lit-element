@@ -2,7 +2,7 @@
   "title": "lit-element code sample",
   "description": "lit-element code sample",
   "files": [
-    "some-element.js",
+    "my-element.js",
     "app-styles.css",
     "index.html"
   ],

@@ -18,12 +18,12 @@ class MyElement extends LitElement {
   constructor() {
     super();
     this.classes = { mydiv: true, someclass: true };
-    this.styles = { color: 'green', fontFamily: 'Roboto, Arial, sans-serif' };
+    this.styles = { color: 'green', fontFamily: 'Roboto' };
   }
   render() {
     return html`
       <div class=${classMap(this.classes)} style=${styleMap(this.styles)}>
-        some content
+        Some content
       </div>
     `;
   }

@@ -1,6 +1,10 @@
+:host {
+  display: block;
+  color: blue;
+}
 div { 
   background: aliceblue; 
 }
-some-element { 
-  margin-left: 50px; 
+button { 
+  width: 200px; 
 }

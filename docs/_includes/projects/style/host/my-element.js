@@ -15,7 +15,8 @@ class MyElement extends LitElement {
 
       /* Selects the host element if it has class "blue" */
       :host(.blue) { 
-        display: inline; 
+        background-color: aliceblue;
+        color: blue;
       }
     `;
   }

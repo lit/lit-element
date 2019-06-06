@@ -1,11 +1,11 @@
-import { LitElement, html, css, cssLiteral } from 'lit-element';
-
-const mainColor = cssLiteral`red`;
+import { LitElement, html, css, unsafeCSS } from 'lit-element';
 
 class MyElement extends LitElement {
   static get styles() {
+    const mainColor = 'red';
+
     return css`
-      div { color: ${mainColor} }
+      div { color: ${unsafeCSS(mainColor)} }
     `;
   }
   render() {

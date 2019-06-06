@@ -1,13 +1,15 @@
 import { LitElement, html, css } from 'lit-element';
 
+const mainColor = css`red`;
+
 class MyElement extends LitElement {
   static get styles() {
     return css`
-      :host { display: block; }
+      div { color: ${mainColor} }
     `;
   }
   render() {
-    return html`<p>Hello world</p>`;
+    return html`<div>Some content in a div</div>`;
   }
 }
 
