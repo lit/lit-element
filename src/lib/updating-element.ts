@@ -238,7 +238,8 @@ export abstract class UpdatingElement extends HTMLElement {
     // Use forEach so this works even if for/of loops are compiled to for loops
     // expecting arrays
     this._classProperties!.forEach((v, p) => {
-      const attr = this._attributeNameForProperty(p, v);
+      const attr =
+          this._attributeNameForProperty(p, v);
       if (attr !== undefined) {
         this._attributeToPropertyMap.set(attr, p);
         attributes.push(attr);
@@ -255,12 +256,14 @@ export abstract class UpdatingElement extends HTMLElement {
   /** @nocollapse */
   private static _ensureClassProperties() {
     // ensure private storage for property declarations.
-    if (!this.hasOwnProperty(
-            JSCompiler_renameProperty('_classProperties', this))) {
+    if (!this
+             .hasOwnProperty(JSCompiler_renameProperty(
+                 '_classProperties', this))) {
       this._classProperties = new Map();
       // NOTE: Workaround IE11 not supporting Map constructor argument.
       const superProperties: PropertyDeclarationMap =
-          Object.getPrototypeOf(this)._classProperties;
+          Object.getPrototypeOf(this)
+              ._classProperties;
       if (superProperties !== undefined) {
         superProperties.forEach(
             (v: PropertyDeclaration, k: PropertyKey) =>
@@ -289,21 +292,20 @@ export abstract class UpdatingElement extends HTMLElement {
     // Instead, we expect users to call `requestUpdate` themselves from
     // user-defined accessors. Note that if the super has an accessor we will
     // still overwrite it
-    if (options.noAccessor || this.prototype.hasOwnProperty(name)) {
+    if (options.noAccessor ||
+        this.prototype.hasOwnProperty(name)) {
       return;
     }
     const key = typeof name === 'symbol' ? Symbol() : `__${name}`;
     Object.defineProperty(this.prototype, name, {
       // tslint:disable-next-line:no-any no symbol in index
       get(): any {
-        return this[key];
+        return (this as {[key: string]: unknown})[key as string];
       },
       set(this: UpdatingElement, value: unknown) {
-        // tslint:disable-next-line:no-any no symbol in index
-        const oldValue = (this as any)[name];
-        // tslint:disable-next-line:no-any no symbol in index
-        (this as any)[key] = value;
-        this._requestUpdate(name, oldValue);
+        const oldValue = (this as {} as {[key: string]: unknown})[name as string];
+        (this as {} as {[key: string]: unknown})[key as string] = value;
+        (this as unknown as UpdatingElement)._requestUpdate(name, oldValue);
       },
       configurable: true,
       enumerable: true
@@ -316,7 +318,9 @@ export abstract class UpdatingElement extends HTMLElement {
    * @nocollapse
    */
   protected static finalize() {
-    if (this.hasOwnProperty(JSCompiler_renameProperty('finalized', this)) &&
+    if (this
+            .hasOwnProperty(JSCompiler_renameProperty(
+                'finalized', this)) &&
         this.finalized) {
       return;
     }
@@ -333,7 +337,9 @@ export abstract class UpdatingElement extends HTMLElement {
     // Note, only process "own" properties since this element will inherit
     // any properties defined on the superClass, and finalization ensures
     // the entire prototype chain is finalized.
-    if (this.hasOwnProperty(JSCompiler_renameProperty('properties', this))) {
+    if (this
+            .hasOwnProperty(JSCompiler_renameProperty(
+                'properties', this))) {
       const props = this.properties;
       // support symbols in properties (IE11 does not support this)
       const propKeys = [
@@ -441,7 +447,8 @@ export abstract class UpdatingElement extends HTMLElement {
    */
   protected initialize() {
     this._saveInstanceProperties();
-    // ensures first update will be caught by an early access of `updateComplete`
+    // ensures first update will be caught by an early access of
+    // `updateComplete`
     this._requestUpdate();
   }
 
@@ -486,10 +493,10 @@ export abstract class UpdatingElement extends HTMLElement {
 
   connectedCallback() {
     this._updateState = this._updateState | STATE_HAS_CONNECTED;
-    // Ensure first connection completes an update. Updates cannot complete before
-    // connection and if one is pending connection the `_hasConnectionResolver`
-    // will exist. If so, resolve it to complete the update, otherwise
-    // requestUpdate.
+    // Ensure first connection completes an update. Updates cannot complete
+    // before connection and if one is pending connection the
+    // `_hasConnectionResolver` will exist. If so, resolve it to complete the
+    // update, otherwise requestUpdate.
     if (this._hasConnectedResolver) {
       this._hasConnectedResolver();
       this._hasConnectedResolver = undefined;

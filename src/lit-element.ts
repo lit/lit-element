@@ -89,7 +89,9 @@ export class LitElement extends UpdatingElement {
     // Prepare styling that is stamped at first render time. Styling
     // is built from user provided `styles` or is inherited from the superclass.
     this._styles =
-        this.hasOwnProperty(JSCompiler_renameProperty('styles', this)) ?
+        this
+            .hasOwnProperty(JSCompiler_renameProperty(
+                'styles', this)) ?
         this._getUniqueStyles() :
         this._styles || [];
   }

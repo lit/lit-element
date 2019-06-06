@@ -93,6 +93,8 @@ import { LitElement, css, html } from 'lit-element';
 
 class MyElement extends LitElement {
   static get styles() {
+    const mainColor = 'red';
+    
     return css`
       * { color: red; }
       p { font-family: sans-serif; }
@@ -323,7 +325,7 @@ class MyElement extends SuperElement {
 
 #### Styling per instance of a component 
 
-Static styles are evaluated once per class. To style instances of a component using static styles, use CSS custom properties:
+Static styles are evaluated once per class. To style instances of a component using static styles, use CSS variables and custom properties:
 
 ```js
 static get styles() {
@@ -342,6 +344,8 @@ static get styles() {
 <my-element></my-element>
 ```
 
+See the section on [CSS custom properties](#customprops) for more information. 
+
 #### Expressions in static styles {#expressions}
 
 Static styles apply to all instances of a component. Any expressions in your CSS are evaluated **once**, then reused for all instances. 
@@ -349,11 +353,11 @@ Static styles apply to all instances of a component. Any expressions in your CSS
 {:.alert .alert-info}
 <div>
 
-**Consider using CSS variables and custom properties.** CSS custom properties are a good way to style per instance of a component, and work well with theming. See [CSS custom properties](#customprops) for more information.
+**Consider using CSS variables and custom properties to style instances of your components.** CSS custom properties are a good way to create per-instance styles, and work well with app themes. See [CSS custom properties](#customprops) for more information.
 
 </div>
 
-To prevent LitElement-based components from evaluating potentially malicious code, the `css` tag only accepts literal strings. You can nest them like this:
+To prevent LitElement-based components from evaluating potentially malicious code, the `css` tag only accepts literal strings. With expressions, you can nest `css` literals:
 
 ```js
 {% include projects/style/nestedcss/my-element.js %}
@@ -361,7 +365,7 @@ To prevent LitElement-based components from evaluating potentially malicious cod
 
 {% include project.html folder="style/nestedcss" openFile="my-element.js" %}
 
-However, if you want to include any variable or non-literal, you must wrap it with the `unsafeCSS` function. For example:
+However, if you want to use expressions to add a non-literal to a `css` literal, you must wrap the non-literal with the `unsafeCSS` function. For example:
 
 ```js
 {% include projects/style/unsafecss/my-element.js %}
@@ -422,7 +426,7 @@ render() {
   return html`
     <style>
       :host {
-        color: ${/* Limitations & performance issues */}
+        color: ${/* Limitations & performance issues! */}
       } 
     </style>
     <div>template content</div>
@@ -432,12 +436,13 @@ render() {
 
 Expressions inside a `<style>` element won't update per instance in ShadyCSS, due to limitations of the ShadyCSS polyfill. See the [ShadyCSS readme](https://github.com/webcomponents/shadycss/blob/master/README.md#limitations) for more information.
 
-Evaluating an expression inside a `<style>` element is inefficient. When the text content of a `<style>` element changes, the browser must re-parse the whole element, resulting in unnecessary rework. 
+Additionally, evaluating an expression inside a `<style>` element is inefficient. When any text inside a `<style>` element changes, the browser must re-parse the whole `<style>` element, resulting in unnecessary rework. 
 
-To avoid creating performance problems:
+If you need to evaluate expressions inside a `<style>` element, use the following strategy to avoid creating performance problems:
 
-* Separate styles that require per-instance evaluation from those that don't.
-* Evaluate per-instance styles by creating an expression that captures a complete `<style>` block, and include it in your template to avoid re-parsing.
+*   Separate styles that require per-instance evaluation from those that don't.
+
+*   Evaluate per-instance CSS properties by creating an expression that captures that property inside a complete `<style>` block. Include it in your template. 
 
 **Example**
 
@@ -449,7 +454,7 @@ To avoid creating performance problems:
 
 ### In an external stylesheet {#external-stylesheet}
 
-We recommend placing your styles in a static `styles` property for optimal performance. However, you can also include an external stylesheet in your template with a `<link>`:
+We recommend placing your styles in a static `styles` property for optimal performance. However, you can include an external stylesheet in your template with a `<link>`:
 
 ```js
 {% include projects/style/where/my-element.js %}
@@ -463,11 +468,52 @@ There are some important caveats though:
 
 *   External styles can cause a flash-of-unstyled-content (FOUC) while they load.
 
-*   The URL in the `href` attribute is relative to the _main document_. This is okay if you're building an app and your asset URLs are well-known, but avoid using external stylesheets when building a reusable element.
+*   The URL in the `href` attribute is relative to the **main document**. This is okay if you're building an app and your asset URLs are well-known, but avoid using external stylesheets when building a reusable element.
 
 ## Make an app theme {#theme}
 
-To create an app theme, use CSS inheritance to apply styles to your components; and use custom CSS properties to configure those styles. 
+To create an app theme:
+
+*   Use [**CSS inheritance**](#inheritance) to propagate style information to LitElement components and their rendered templates.
+
+    ```html
+    <style>
+      html {
+        --themeColor: #123456;
+        font-family: Roboto;
+      }
+    </style>
+
+    <!-- host inherits `--themeColor` and `font-family` and
+         passes these properties to its rendered template -->
+    <my-element></my-element>
+    ```
+
+*   Use [**CSS variables and custom properties**](#customprops) to configure styles per-instance.
+
+    ```html
+    <style>
+      html {
+        --my-element-background-color: /* some color */;
+      }
+      .stuff {
+        --my-element-background-color: /* some other color */;
+      }
+    </style>
+    <my-element></my-element>
+    <my-element class="stuff"></my-element>
+    ```
+
+    ```js
+    // MyElement's static styles
+    static get styles() {
+      return css`
+        :host {
+          background-color: var(--my-element-background-color);
+        }
+      `;
+    }
+    ```
 
 ### CSS inheritance {#inheritance}
 
@@ -481,51 +527,22 @@ Not all CSS properties inherit. Inherited CSS properties include:
 
 See [CSS Inheritance on MDN](https://developer.mozilla.org/en-US/docs/Web/CSS/inheritance) for more information.
 
-You can use CSS inheritance to set styles on a host element that are inherited by all elements in its template. 
-
-Use the `:host` CSS pseudo-class to do this:
-
-```js
-static get styles() {
-  return css`
-    :host([hidden]) { display: none; }
-    :host {
-      display: block;
-      font-family: Roboto;
-      font-size: 20;
-      color: blue;
-    }
-  `;
-}
-render() {
-  return html`
-    <p>Inherits font styles from host</p>
-  `;
-}
-```
-
-{% include project.html folder="style/inherited" openFile="my-element.js" %}
-
-Any properties that a host element inherits will also be inherited by the elements in its template:
+You can use CSS inheritance to set styles on an ancestor element that are inherited by its descendents:
 
 ```html
 <style>
-  div { font-family: Roboto; }
-</style>
-<div><my-element></my-element></div>
-```
-
-```js
-class MyElement extends LitElement {
-  render() { 
-    return html`<p>Will use Roboto</p>`; 
-  }
+html { 
+  font-family: Roboto;
 }
+</style>
+<div>
+  <p>Uses Roboto</p>
+</div>
 ```
 
-{% include project.html folder="style/inherited2" openFile="index.html" %}
+Similarly, host elements pass down inheritable CSS properties to their rendered templates. 
 
-A host element can also be styled with its element type selector:
+You can use the host element's type selector to style it:
 
 ```html
 <style>
@@ -537,14 +554,36 @@ A host element can also be styled with its element type selector:
 ```js
 class MyElement extends LitElement {
   render() { 
-    return html`<p>Will also use Roboto</p>`; 
+    return html`<p>Uses Roboto</p>`; 
   }
 }
 ```
 
 {% include project.html folder="style/inherited3" openFile="index.html" %}
 
-#### Type selectors have higher specificity than :host {#specificity}
+You can also use the `:host` CSS pseudo-class to style the host from inside its own template:
+
+```js
+static get styles() {
+  return css`
+    :host {
+      font-family: Roboto;
+    }
+  `;
+}
+render() {
+  return html`
+    <p>Uses Roboto</p>
+  `;
+}
+```
+
+{% include project.html folder="style/inherited" openFile="my-element.js" %}
+
+{.alert} {.alert-info}
+<div id="specificity">
+
+**Type selectors have higher specificity than :host.**
 
 An element type selector has higher specificity than the `:host` pseudo-class selector. Styles set for a custom element tag will override styles set with `:host` and `:host()`:
 
@@ -568,6 +607,27 @@ class MyElement extends LitElement {
 
 {% include project.html folder="style/specificity" openFile="index.html" %}
 
+</div>
+
+Any properties that a host element inherits will also be inherited by the elements in its template:
+
+```html
+<style>
+  div { font-family: Roboto; }
+</style>
+<div><my-element></my-element></div>
+```
+
+```js
+class MyElement extends LitElement {
+  render() { 
+    return html`<p>Uses Roboto</p>`; 
+  }
+}
+```
+
+{% include project.html folder="style/inherited2" openFile="index.html" %}
+
 ### CSS custom properties {#customprops}
 
 All CSS custom properties (<code>--<var>custom-property-name</var></code>) inherit. You can use this to make your component's styles configurable from outside. 
@@ -589,7 +649,7 @@ class MyElement extends LitElement {
 }
 ```
 
-Users of this component can set the value of `--my-background` for the component, using the `my-element` tag as a CSS selector:
+Users of this component can set the value of `--my-background`, using the `my-element` tag as a CSS selector:
 
 ```html
 <style>
@@ -598,6 +658,21 @@ Users of this component can set the value of `--my-background` for the component
   }
 </style>
 <my-element></my-element>
+```
+
+`--my-background` is configurable per instance of `my-element`:
+
+```html
+<style>
+  my-element {
+    --my-background: rgb(67, 156, 144);
+  }
+  my-element.stuff {
+    --my-background: #111111;
+  }
+</style>
+<my-element></my-element>
+<my-element class="stuff"></my-element>
 ```
 
 If a component user has an existing app theme, they can easily set the host's configurable properties to use theme properties:

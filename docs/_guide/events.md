@@ -152,7 +152,7 @@ To handle an event fired by a LitElement-based component that you're using on an
 To handle a custom event fired by a LitElement-based component from inside another LitElement template:
 
 ```html
-<my-element @my-event="${() => { console.log(event.detail.message) }}"></my-element>
+<my-element @my-event="${(e) => { console.log(e.detail.message) }}"></my-element>
 ```
 
 ## Working with events and shadow DOM
