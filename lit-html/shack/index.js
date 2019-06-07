@@ -9,47 +9,11 @@
  * rights grant found at http://polymer.github.io/PATENTS.txt
  */
 
+import * as bench from '/bench.js';
+import {categories} from './data.js';
 import {appData, renderApp} from './elements/shack-app.js';
 
-(async function() {
-  appData.categories = {
-    'mens_outerwear': {
-      title: 'Men\'s Outerwear',
-    },
-    'ladies_outerwear': {
-      title: 'Ladies Outerwear',
-    },
-    'mens_tshirts': {
-      title: 'Men\'s T-Shirts',
-    },
-    'ladies_tshirts': {
-      title: 'Ladies T-Shirts',
-    },
-  };
-
-  const promises = [];
-  for (const c in appData.categories) {
-    promises.push((async () => {
-      const resp = await fetch(`./${c}.json`);
-      appData.categories[c].items = await resp.json();
-      appData.categories[c].slug = c;
-    })());
-  }
-  await Promise.all(promises);
-
-  // TODO We defer rendering for 100ms in the micro benchmark case because this
-  // reduces variance substantially, plus we won't always have the bench.js
-  // library available. For the first-contentful-paint case, we don't need
-  // bench.js and shouldn't defer rendering. Clean up this logic somehow.
-  const nobench = new URL(window.location.href).searchParams.has('nobench');
-  if (nobench) {
-    renderApp();
-  } else {
-    const bench = await import('/bench.js');
-    setTimeout(() => {
-      bench.start();
-      renderApp();
-      bench.stop();
-    }, 100);
-  }
-})();
+bench.start();
+appData.categories = categories;
+renderApp();
+bench.stop();
