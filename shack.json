@@ -1,0 +1,21 @@
+{
+  "benchmarks": [
+    {
+      "measurement": "fcp",
+      "expand": [
+        {
+          "name": "lit-html",
+          "url": "lit-html/shack"
+        },
+        {
+          "name": "lit-element",
+          "url": "lit-element/shack"
+        },
+        {
+          "name": "polymer-3",
+          "url": "polymer/shack"
+        }
+      ]
+    }
+  ]
+}
