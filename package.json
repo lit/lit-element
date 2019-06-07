@@ -21,6 +21,6 @@
   "homepage": "https://github.com/PolymerLabs/benchmarks#readme",
   "dependencies": {
     "clang-format": "^1.2.4",
-    "tachometer": "^0.1.0"
+    "tachometer": "^0.4.2"
   }
 }
