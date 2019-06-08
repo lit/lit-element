@@ -10,10 +10,4 @@
  */
 
 import * as bench from '/bench.js';
-import {categories} from './data.js';
-import {appData, renderApp} from './elements/shack-app.js';
-
 bench.start();
-appData.categories = categories;
-renderApp();
-bench.stop();

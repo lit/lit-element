@@ -9,11 +9,13 @@
  * rights grant found at http://polymer.github.io/PATENTS.txt
  */
 
+import './elements/shack-app.js';
 import * as bench from '/bench.js';
 import {categories} from './data.js';
-import {appData, renderApp} from './elements/shack-app.js';
 
-bench.start();
-appData.categories = categories;
-renderApp();
-bench.stop();
+const app = document.createElement('shack-app');
+app.page = 'mens_tshirts';
+app.categories = categories;
+document.body.appendChild(app);
+
+requestAnimationFrame(() => bench.stop());

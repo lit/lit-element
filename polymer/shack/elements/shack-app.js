@@ -24,8 +24,8 @@ class ShackApp extends PolymerElement {
       categoryList: {
         computed: 'computeCategoryList(categories)',
       },
-      categoryPageTitle: {
-        computed: 'computeCategoryPageTitle(page, categories)',
+      categoryTitle: {
+        computed: 'computeCategoryTitle(page, categories)',
       },
       categoryItems: {
         computed: 'computeCategoryItems(page, categories)',
@@ -209,7 +209,7 @@ class ShackApp extends PolymerElement {
     return Object.values(this.categories);
   }
 
-  computeCategoryPageTitle() {
+  computeCategoryTitle() {
     return this.categories[this.page].title;
   }
 
