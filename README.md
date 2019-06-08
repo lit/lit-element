@@ -21,5 +21,5 @@ benchmarking purposes using lit-html, LitElement, and Polymer 3. To compare the
 first-contentful-paint time for each of these implementations, run:
 
 ```sh
-npx tach --config shack.json
+npm run tach -- --config shack.json
 ```

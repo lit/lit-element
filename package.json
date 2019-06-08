@@ -5,9 +5,9 @@
   "description": "Benchmarks for Polymer project libraries",
   "main": "index.js",
   "scripts": {
-    "bench": "tach",
     "prepare": "bash -c 'for dir in $(ls -1d */package.json | cut -d/ -f1); do (cd $dir && npm install); done'",
-    "format": "find . -name node_modules -prune -o -name \"*.js\" -print | xargs clang-format --style=file -i"
+    "format": "find . -name node_modules -prune -o -name \"*.js\" -print | xargs clang-format --style=file -i",
+    "tach": "tach"
   },
   "repository": {
     "type": "git",
