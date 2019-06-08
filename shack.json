@@ -1,4 +1,5 @@
 {
+  "$schema": "https://unpkg.com/tachometer/lib/config.schema.json",
   "benchmarks": [
     {
       "measurement": "fcp",
