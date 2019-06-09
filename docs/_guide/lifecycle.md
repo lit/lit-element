@@ -147,7 +147,7 @@ By default, `performUpdate` is scheduled as a microtask after the end of the nex
 
 ```js
 async performUpdate() {
-  await new Promise((resolve) => requestAnimationFrame(() => resolve());
+  await new Promise((resolve) => requestAnimationFrame(() => resolve()));
   super.performUpdate();
 }
 ```
