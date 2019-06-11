@@ -9,14 +9,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
    PRs should document their user-visible changes (if any) in the
    Unreleased section, uncommenting the header as necessary.
 -->
-### Added
-* css tagged template literals now allow numbers to be used in expressions ([#488](https://github.com/Polymer/lit-element/issues/488)).
 
+<!-- ## Unreleased -->
+<!-- ### Added -->
 <!-- ### Changed -->
 <!-- ### Removed -->
 <!-- ### Fixed -->
 
-## Unreleased
+
+## [2.2.0] - 2019-06-11
+### Added
+* css tagged template literals now allow numbers to be used in expressions ([#488](https://github.com/Polymer/lit-element/issues/488)).
 
 ## [2.1.0] - 2019-03-21
 ### Changed
