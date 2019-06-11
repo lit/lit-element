@@ -28,7 +28,7 @@
     "checksize": "rollup -c ; rm lit-element.bundled.js",
     "format": "find src test | grep '\\.js$\\|\\.ts$' | xargs clang-format --style=file -i",
     "lint": "tslint --project ./",
-    "prepublishOnly": "npm run build",
+    "prepublishOnly": "node check-version-tracker.js",
     "prepare": "npm run build",
     "regen-package-lock": "rm -rf node_modules package-lock.json; npm install",
     "publish-dev": "npm test && VERSION=${npm_package_version%-*}-dev.`git rev-parse --short HEAD` && npm version --no-git-tag-version $VERSION && npm publish --tag dev",
