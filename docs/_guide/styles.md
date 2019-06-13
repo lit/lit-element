@@ -564,7 +564,7 @@ render() {
 
 {% include project.html folder="style/inherited" openFile="my-element.js" %}
 
-{.alert} {.alert-info}
+{:.alert .alert-info}
 <div id="specificity">
 
 **Type selectors have higher specificity than :host.**
