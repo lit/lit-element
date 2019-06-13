@@ -45,6 +45,7 @@
     "@webcomponents/shadycss": "^1.8.0",
     "@webcomponents/webcomponentsjs": "^2.2.3",
     "chai": "^4.0.2",
+    "clang-format": "^1.2.4",
     "lit-element-benchmarks": "^0.1.0",
     "mocha": "^5.0.5",
     "np": "^4.0.2",
