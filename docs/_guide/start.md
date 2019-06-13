@@ -4,10 +4,6 @@ title: Getting Started
 slug: start
 ---
 
-{::options toc_levels="1..3" /}
-* ToC
-{:toc}
-
 ## Setup
 
 You need npm and Node.js to work with LitElement. To install npm and Node.js, see the [instructions on NodeJS.org](https://nodejs.org/en/).

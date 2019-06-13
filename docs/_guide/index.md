@@ -4,10 +4,6 @@ title: Introduction
 permalink: /guide
 ---
 
-{::options toc_levels="1..3" /}
-* ToC
-{:toc}
-
 ## What is LitElement?
 
 LitElement is a simple base class for creating fast, lightweight web components that work in any web page with any framework.

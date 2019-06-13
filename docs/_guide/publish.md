@@ -4,10 +4,6 @@ title: Publish an element
 slug: publish
 ---
 
-{::options toc_levels="1..3" /}
-* ToC
-{:toc}
-
 This page describes how to publish a LitElement component to npm.
 
 We recommend publishing JavaScript modules in standard ES2017. If you're writing your element in standard ES2017, you don't need to transpile for publication. If you're using TypeScript, or ES2017+ features such as decorators or class fields, you will need to transpile your element for publication.

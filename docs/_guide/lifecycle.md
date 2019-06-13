@@ -4,10 +4,6 @@ title: Lifecycle
 slug: lifecycle
 ---
 
-{::options toc_levels="1..3" /}
-* ToC
-{:toc}
-
 ## Overview
 
 LitElement-based components update asynchronously in response to observed property changes. Property changes are batched—if more properties change after an update is requested, but before the update starts, all of the changes are captured in the same update.

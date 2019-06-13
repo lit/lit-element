@@ -4,10 +4,6 @@ title: Templates
 slug: templates
 ---
 
-{::options toc_levels="1..3" /}
-* ToC
-{:toc}
-
 ## Define and render a template
 
 To define a template for a LitElement component, write a `render` function for your element class:

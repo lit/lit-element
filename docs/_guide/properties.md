@@ -4,10 +4,6 @@ title: Properties
 slug: properties
 ---
 
-{::options toc_levels="1..3" /}
-* ToC
-{:toc}
-
 ## Overview {#overview}
 
 LitElement manages your declared properties and their corresponding attributes. By default, LitElement will: 

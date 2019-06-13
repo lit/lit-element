@@ -4,10 +4,6 @@ title: Styles
 slug: styles
 ---
 
-{::options toc_levels="1..3" /}
-* ToC
-{:toc}
-
 This page is a guide to the styling options available for LitElement components. 
 
 * [Styling options for component developers](#styling-for-developers) describes how to apply styles internally to a component that you're building.

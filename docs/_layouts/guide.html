@@ -17,8 +17,11 @@ layout: default
   </nav>
 
   <article>
-    <h1>{{page.title}}</h1>
-    {{ content }}
+    <div id="title"><h1>{{page.title}}</h1></div>
+    <div id="pagetoc">
+      {% include toc.html html=content id="markdown-toc" item_class="pagetoc-h%level%" h_min=2 h_max=3 %}
+    </div>
+    <div id="content">{{ content }}</div>
   </article>
   
 </main>
