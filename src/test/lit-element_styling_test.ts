@@ -799,51 +799,61 @@ suite('Static get styles', () => {
         assert.equal(bodyStyles, '.my-module { color: yellow; }');
       });
 
-  test.only('Styles are not removed if the first rendered value is undefined.', async () => {
-    const localName = generateElementName();
+  test.only(
+      'Styles are not removed if the first rendered value is undefined.',
+      async () => {
+        const localName = generateElementName();
 
-    class SomeCustomElement extends LitElement {
-      static styles = css`:host {border: 4px solid black;}`;
+        class SomeCustomElement extends LitElement {
+          static styles = css`:host {border: 4px solid black;}`;
 
-      renderUndefined: boolean;
+          renderUndefined: boolean;
 
-      constructor() {
-        super();
-        this.renderUndefined = true;
-      }
+          constructor() {
+            super();
+            this.renderUndefined = true;
+          }
 
-      static get properties() {
-        return {
-          renderUndefined: {
-            type: Boolean,
-            value: true,
-          },
-        };
-      }
+          static get properties() {
+            return {
+              renderUndefined: {
+                type: Boolean,
+                value: true,
+              },
+            };
+          }
 
-      render() {
-        if (this.renderUndefined) {
-          return undefined;
+          render() {
+            if (this.renderUndefined) {
+              return undefined;
+            }
+
+            return htmlWithStyles`Some text.`;
+          }
         }
+        customElements.define(localName, SomeCustomElement);
 
-        return htmlWithStyles`Some text.`;
-      }
-    }
-    customElements.define(localName, SomeCustomElement);
+        const element = document.createElement(localName) as SomeCustomElement;
+        document.body.appendChild(element);
 
-    const element = document.createElement(localName) as SomeCustomElement;
-    document.body.appendChild(element);
+        await (element as LitElement).updateComplete;
+        assert.equal(
+            getComputedStyle(element)
+                .getPropertyValue('border-top-width')
+                .trim(),
+            '4px');
 
-    await (element as LitElement).updateComplete;
-    assert.equal(getComputedStyle(element).getPropertyValue('border-top-width').trim(), '4px');
+        element.renderUndefined = false;
 
-    element.renderUndefined = false;
+        await (element as LitElement).updateComplete;
+        assert.equal(
+            getComputedStyle(element)
+                .getPropertyValue('border-top-width')
+                .trim(),
+            '4px');
 
-    await (element as LitElement).updateComplete;
-    assert.equal(getComputedStyle(element).getPropertyValue('border-top-width').trim(), '4px');
-
-    document.body.removeChild(element);
-  });
+        document.body.removeChild(element);
+      });
 });
 
 suite('ShadyDOM', () => {
