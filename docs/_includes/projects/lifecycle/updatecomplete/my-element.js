@@ -25,7 +25,7 @@ class MyElement extends LitElement {
 
   async changeProp() {
     this.prop1 = Math.random();
-    await Promise.all(this.updateComplete, this.getMoreState());
+    await Promise.all([this.updateComplete, this.getMoreState()]);
     console.log('Update complete. Other state completed.');
   }
 }
