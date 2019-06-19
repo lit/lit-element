@@ -16,9 +16,9 @@ import {property} from '../../lib/decorators.js';
 import {ComplexAttributeConverter, PropertyDeclarations, PropertyValues, UpdatingElement} from '../../lib/updating-element.js';
 import {generateElementName} from '../test-helpers.js';
 
-// tslint:disable:no-any ok in tests
+const {assert} = chai;
 
-const assert = chai.assert;
+// tslint:disable:no-any ok in tests
 
 suite('UpdatingElement', () => {
   let container: HTMLElement;
