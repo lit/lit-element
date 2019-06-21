@@ -151,8 +151,9 @@ export const defaultConverter: ComplexAttributeConverter = {
       case Number:
         return value === null ? null : Number(value);
       case Object:
+        return value === '' ? {} : JSON.parse(value!);
       case Array:
-        return JSON.parse(value!);
+        return value === '' ? [] : JSON.parse(value!);
     }
     return value;
   }
