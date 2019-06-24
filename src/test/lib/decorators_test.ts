@@ -16,8 +16,6 @@ import {eventOptions, property} from '../../lib/decorators.js';
 import {customElement, html, LitElement, PropertyValues, query, queryAll} from '../../lit-element.js';
 import {generateElementName} from '../test-helpers.js';
 
-const {assert} = chai;
-
 // tslint:disable:no-any ok in tests
 
 let hasOptions;
@@ -63,6 +61,8 @@ const supportsPassive = (function() {
   document.body.removeChild(f);
   return hasPassive;
 })();
+
+const assert = chai.assert;
 
 suite('decorators', () => {
   let container: HTMLElement;

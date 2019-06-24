@@ -13,9 +13,10 @@
  */
 
 import {html, LitElement, property} from '../lit-element.js';
+
 import {generateElementName, stripExpressionDelimeters} from './test-helpers.js';
 
-const {assert} = chai;
+const assert = chai.assert;
 
 // tslint:disable:no-any ok in tests
 
