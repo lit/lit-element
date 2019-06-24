@@ -2,7 +2,7 @@ module.exports = (config) => {
   config.set({
     client: {runInParent: true, mocha: {ui: 'tdd'}},
     frameworks: ['mocha', 'chai', 'source-map-support'],
-    browsers: ['Chrome'],
+    browsers: ['Chrome','Firefox','Safari'],
     files: [
       {pattern: 'test/**/*_test.js', type: 'module'},
       {pattern: 'node_modules/**/*', included: false, watched: false},

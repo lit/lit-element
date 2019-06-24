@@ -72,6 +72,8 @@
   },
   "typings": "lit-element.d.ts",
   "dependencies": {
+    "karma-firefox-launcher": "^1.1.0",
+    "karma-safari-launcher": "^1.0.0",
     "koa-node-resolve": "^1.0.0-pre.4",
     "lit-html": "^1.0.0"
   },
