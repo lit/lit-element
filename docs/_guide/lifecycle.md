@@ -47,6 +47,22 @@ LitElement also inherits the default [lifecycle callbacks](https://developer.moz
 
 </div>
 
+<div class="alert alert-info">
+
+**All lifecycle methods need to call super method.** 
+
+</div>
+
+Example:
+
+```js
+connectedCallback() {
+  super.connectedCallback()
+
+  console.log('connected')
+}
+```
+
 #### Promises and asynchronous functions
 
 LitElement uses [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) objects to schedule and respond to element updates.
