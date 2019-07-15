@@ -67,7 +67,7 @@ export class LitElement extends UpdatingElement {
    * Note this property name is a string to prevent breaking Closure JS Compiler
    * optimizations. See updating-element.ts for more information.
    */
-  protected static ['finalized'] = true;
+  protected static['finalized'] = true;
   /**
    * Render method used to render the lit-html TemplateResult to the element's
    * DOM.
@@ -89,7 +89,7 @@ export class LitElement extends UpdatingElement {
   /** @nocollapse */
   protected static finalize() {
     // The Closure JS Compiler does not always preserve the correct "this"
-    // when calling static super methods, so explicitly bind here.
+    // when calling static super methods (b/137460243), so explicitly bind.
     super.finalize.apply(this);
     // Prepare styling that is stamped at first render time. Styling
     // is built from user provided `styles` or is inherited from the superclass.

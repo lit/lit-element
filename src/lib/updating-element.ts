@@ -193,8 +193,9 @@ type UpdateState = typeof STATE_HAS_UPDATED|typeof STATE_UPDATE_REQUESTED|
 
 /**
  * The Closure JS Compiler doesn't currently have good support for static
- * property semantics where "this" is dynamic, so we use this hack to bypass
- * any rewriting by the compiler.
+ * property semantics where "this" is dynamic (e.g.
+ * https://github.com/google/closure-compiler/issues/3177 and others) so we use
+ * this hack to bypass any rewriting by the compiler.
  */
 const finalized = 'finalized';
 
@@ -220,7 +221,7 @@ export abstract class UpdatingElement extends HTMLElement {
   /**
    * Marks class as having finished creating properties.
    */
-  protected static [finalized] = true;
+  protected static[finalized] = true;
 
   /**
    * Memoized list of all class properties, including any superclass properties.
