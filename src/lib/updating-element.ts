@@ -211,10 +211,11 @@ export abstract class UpdatingElement extends HTMLElement {
   private static _attributeToPropertyMap: AttributeMap;
 
   /**
-   * Marks class as having finished creating properties.
+   * This property was previously used to record the classes that have already
+   * been finalized. This property is no longer used, but is still declared here
+   * for backwards compatability in TypeScript typings.
    */
-  protected static finalized = true;
-
+  protected static finalized: boolean|undefined;
   /**
    * Memoized list of all class properties, including any superclass properties.
    * Created lazily on user subclasses when finalizing the class.
@@ -315,8 +316,7 @@ export abstract class UpdatingElement extends HTMLElement {
    * @nocollapse
    */
   protected static finalize() {
-    if (this.hasOwnProperty(JSCompiler_renameProperty('finalized', this)) &&
-        this.finalized) {
+    if (finalized.has(this)) {
       return;
     }
     // finalize any superclasses
@@ -324,7 +324,7 @@ export abstract class UpdatingElement extends HTMLElement {
     if (typeof superCtor.finalize === 'function') {
       superCtor.finalize();
     }
-    this.finalized = true;
+    finalized.add(this);
     this._ensureClassProperties();
     // initialize Map populated in observedAttributes
     this._attributeToPropertyMap = new Map();
@@ -793,3 +793,9 @@ export abstract class UpdatingElement extends HTMLElement {
   protected firstUpdated(_changedProperties: PropertyValues) {
   }
 }
+
+/**
+ * Marks class as having finished creating properties.
+ */
+const finalized = new Set<typeof UpdatingElement>();
+finalized.add(UpdatingElement);

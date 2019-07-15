@@ -60,12 +60,6 @@ const flattenStyles = (styles: CSSResultArray): CSSResult[] =>
 
 export class LitElement extends UpdatingElement {
   /**
-   * Ensure this class is marked as `finalized` as an optimization ensuring
-   * it will not needlessly try to `finalize`.
-   */
-  protected static finalized = true;
-
-  /**
    * Render method used to render the lit-html TemplateResult to the element's
    * DOM.
    * @param {TemplateResult} Template to render.
@@ -85,7 +79,11 @@ export class LitElement extends UpdatingElement {
 
   /** @nocollapse */
   protected static finalize() {
-    super.finalize();
+    if (this !== LitElement) {
+      // The Closure JS Compiler does not always preserve the correct "this"
+      // when calling static super methods, so explicitly bind here.
+      super.finalize.apply(this);
+    }
     // Prepare styling that is stamped at first render time. Styling
     // is built from user provided `styles` or is inherited from the superclass.
     this._styles =
