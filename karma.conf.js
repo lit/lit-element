@@ -5,7 +5,6 @@ module.exports = (config) => {
     browsers: ['Chrome','Firefox','Safari'],
     files: [
       {pattern: 'test/**/*_test.js', type: 'module'},
-      {pattern: 'node_modules/**/*', included: false, watched: false},
       {pattern: 'lit-*.js', included: false},
       {pattern: 'lib/**/*.js.map', included: false},
       {pattern: 'lib/**/*.js', included: false},

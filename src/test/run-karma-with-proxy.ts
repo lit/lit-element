@@ -3,8 +3,9 @@ const karma = require('karma');
 const portfinder = require('portfinder');
 const Koa = require('koa');
 const mount = require('koa-mount');
+const static_ = require('koa-static');
 const proxy = require('koa-proxy');
-const nodeResolve = require('koa-node-resolve').nodeResolve;
+const {nodeResolve} = require('koa-node-resolve');
 
 console.log('Initializing Karma with Koa Node Resolve Proxy Server');
 console.log('-----------------------------------------------------');
@@ -17,7 +18,7 @@ portfinder.getPort({port: 9876}, (_err: unknown, port: number) => {
   console.log('Starting Proxy Server...');
   const proxyServer =
       new Koa()
-          .use(mount('/base', nodeResolve()))
+          .use(mount('/base', new Koa().use(nodeResolve()).use(static_('.'))))
           .use((ctx: unknown, next: unknown) => karmaServerProxy(ctx, next))
           .listen(proxyPort);
   process.on('SIGINT', () => proxyServer.close())
