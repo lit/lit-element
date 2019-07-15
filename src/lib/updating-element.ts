@@ -193,10 +193,10 @@ type UpdateState = typeof STATE_HAS_UPDATED|typeof STATE_UPDATE_REQUESTED|
 
 /**
  * The Closure JS Compiler doesn't currently have good support for static
- * propertiy semantics where "this" is dynamic, so we use this hack to bypass
+ * property semantics where "this" is dynamic, so we use this hack to bypass
  * any rewriting by the compiler.
  */
-const finalized = '__finalized__';
+const finalized = 'finalized';
 
 /**
  * Base element class which manages element properties and attributes. When
@@ -216,6 +216,11 @@ export abstract class UpdatingElement extends HTMLElement {
    * class.
    */
   private static _attributeToPropertyMap: AttributeMap;
+
+  /**
+   * Marks class as having finished creating properties.
+   */
+  protected static [finalized] = true;
 
   /**
    * Memoized list of all class properties, including any superclass properties.
@@ -322,7 +327,7 @@ export abstract class UpdatingElement extends HTMLElement {
     if (!superCtor.hasOwnProperty(finalized)) {
       superCtor.finalize();
     }
-    (this as unknown as {[key: string]: unknown})[finalized] = true;
+    this[finalized] = true;
     this._ensureClassProperties();
     // initialize Map populated in observedAttributes
     this._attributeToPropertyMap = new Map();
@@ -791,6 +796,3 @@ export abstract class UpdatingElement extends HTMLElement {
   protected firstUpdated(_changedProperties: PropertyValues) {
   }
 }
-
-// UpdatingElement doesn't need finalization.
-(UpdatingElement as unknown as {[key: string]: unknown})[finalized] = true;

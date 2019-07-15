@@ -59,6 +59,15 @@ const flattenStyles = (styles: CSSResultArray): CSSResult[] =>
     styles.flat ? styles.flat(Infinity) : arrayFlat(styles);
 
 export class LitElement extends UpdatingElement {
+
+  /**
+   * Ensure this class is marked as `finalized` as an optimization ensuring
+   * it will not needlessly try to `finalize`.
+   *
+   * Note this property name is a string to prevent breaking Closure JS Compiler
+   * optimizations. See updating-element.ts for more information.
+   */
+  protected static ['finalized'] = true;
   /**
    * Render method used to render the lit-html TemplateResult to the element's
    * DOM.
@@ -234,6 +243,3 @@ export class LitElement extends UpdatingElement {
   protected render(): TemplateResult|void {
   }
 }
-
-// LitElement doesn't need finalizing.
-(LitElement as unknown as {[key: string]: unknown})['__finalized__'] = true;
