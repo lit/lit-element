@@ -79,11 +79,9 @@ export class LitElement extends UpdatingElement {
 
   /** @nocollapse */
   protected static finalize() {
-    if (this !== LitElement) {
-      // The Closure JS Compiler does not always preserve the correct "this"
-      // when calling static super methods, so explicitly bind here.
-      super.finalize.apply(this);
-    }
+    // The Closure JS Compiler does not always preserve the correct "this"
+    // when calling static super methods, so explicitly bind here.
+    super.finalize.apply(this);
     // Prepare styling that is stamped at first render time. Styling
     // is built from user provided `styles` or is inherited from the superclass.
     this._styles =
@@ -236,3 +234,6 @@ export class LitElement extends UpdatingElement {
   protected render(): TemplateResult|void {
   }
 }
+
+// LitElement doesn't need finalizing.
+(LitElement as unknown as {[key: string]: unknown})['__finalized__'] = true;
