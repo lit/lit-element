@@ -10,11 +10,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
    Unreleased section, uncommenting the header as necessary.
 -->
 
-<!-- ## Unreleased -->
+## Unreleased
 <!-- ### Added -->
 <!-- ### Changed -->
 <!-- ### Removed -->
-<!-- ### Fixed -->
+### Fixed
+* Fixed compatibility with Closure JS Compiler optimizations relating to static properties ([#732](https://github.com/Polymer/lit-element/issues/732)).
 
 
 ## [2.2.0] - 2019-06-11
