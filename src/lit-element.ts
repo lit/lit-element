@@ -90,7 +90,7 @@ export class LitElement extends UpdatingElement {
   protected static finalize() {
     // The Closure JS Compiler does not always preserve the correct "this"
     // when calling static super methods (b/137460243), so explicitly bind.
-    super.finalize.apply(this);
+    super.finalize.call(this);
     // Prepare styling that is stamped at first render time. Styling
     // is built from user provided `styles` or is inherited from the superclass.
     this._styles =
