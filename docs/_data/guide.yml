@@ -28,3 +28,6 @@ toc:
   use: 
     title: Use a component
     url: /guide/use
+  community:
+    title: Community
+    url: /guide/community
