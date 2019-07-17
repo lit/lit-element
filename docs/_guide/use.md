@@ -19,7 +19,7 @@ To use a LitElement component in your code:
 1.  From your project folder, install the component from npm.
 
     ```
-    npm install --save some-package-name
+    npm install some-package-name
     ```
 
 2.  Import the component.

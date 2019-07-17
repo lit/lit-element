@@ -108,7 +108,7 @@ Many components are published on npm and can be installed from the command line:
 
 ```bash
 cd my-project-folder
-npm install package-name --save
+npm install package-name
 ```
 
 In an HTML document, a component published on npm can be imported from the `node_modules` folder:
