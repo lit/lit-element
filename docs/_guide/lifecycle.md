@@ -49,7 +49,6 @@ LitElement also inherits the default [lifecycle callbacks](https://developer.moz
 
 **All lifecycle methods need to call the super method.** 
 
-</div>
 
 Example:
 
