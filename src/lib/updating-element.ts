@@ -737,14 +737,14 @@ export abstract class UpdatingElement extends HTMLElement {
    * `super.updateComplete` then any subsequent state.
    *
    * IMPORTANT: Do not override this getter directly. Override the
-   * `getUpdateComplete` method instead (see that method's description for more
-   * information).
+   * `_getUpdateComplete` method instead (see that method's description for
+   * more information).
    *
    * @returns {Promise} The Promise returns a boolean that indicates if the
    * update resolved without triggering another update.
    */
   get updateComplete() {
-    return this.getUpdateComplete();
+    return this._getUpdateComplete();
   }
 
   /**
@@ -758,12 +758,12 @@ export abstract class UpdatingElement extends HTMLElement {
    *
    *   class MyElement extends LitElement {
    *     ...
-   *     getUpdateComplete() {
-   *       return super.getUpdateComplete().then(this.myWorkIsDone);
+   *     _getUpdateComplete() {
+   *       return super._getUpdateComplete().then(this.myWorkIsDone);
    *     }
    *   }
    */
-  protected getUpdateComplete() {
+  protected _getUpdateComplete() {
     return this._updatePromise;
   }
 
