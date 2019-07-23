@@ -736,10 +736,34 @@ export abstract class UpdatingElement extends HTMLElement {
    * rendered element before fulfilling this Promise. To do this, first await
    * `super.updateComplete` then any subsequent state.
    *
+   * IMPORTANT: Do not override this getter directly. Override the
+   * `_getUpdateComplete` method instead (see that method's description for
+   * more information).
+   *
    * @returns {Promise} The Promise returns a boolean that indicates if the
    * update resolved without triggering another update.
    */
   get updateComplete() {
+    return this._getUpdateComplete();
+  }
+
+  /**
+   * Override point for the `updateComplete` promise.
+   *
+   * It is not safe to override the `updateComplete` getter directly due to a
+   * limitation in TypeScript which means it is not possible to call a
+   * superclass getter (e.g. `super.updateComplete.then(...)`) when the target
+   * language is ES5 (https://github.com/microsoft/TypeScript/issues/338).
+   * This method should be overridden instead. For example:
+   *
+   *   class MyElement extends LitElement {
+   *     ...
+   *     _getUpdateComplete() {
+   *       return super._getUpdateComplete().then(this.myWorkIsDone);
+   *     }
+   *   }
+   */
+  protected _getUpdateComplete() {
     return this._updatePromise;
   }
 
