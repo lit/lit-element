@@ -279,6 +279,17 @@ The `updateComplete` Promise resolves when the element has finished updating. Us
   this.updateComplete.then(() => { /* do stuff */ });
   ```
 
+To await additional state before fulfilling the `updateComplete` promise, override the `_getUpdateComplete` method. For example, it may be useful to await the update of a child element here. First await `super._getUpdateComplete()`, then any subsequent state. Note that the `updateComplete` getter should not be *directly* overridden due to a [limitation](https://github.com/microsoft/TypeScript/issues/338) in TypeScript's ES5 output support.
+
+  ```js
+  class MyElement extends LitElement {
+    async _getUpdateComplete() {
+      await super._getUpdateComplete();
+      await this.myUpdateWorkIsDone;
+    }
+  }
+  ```
+
 **Example**
 
 ```js
