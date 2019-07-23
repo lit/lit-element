@@ -220,6 +220,27 @@ There are some important caveats though:
 * External styles can cause a flash-of-unstyled-content (FOUC) while they load.
 * The URL in the `href` attribute is relative to the _main document_, making this technique mostly useful for application elements where asset URLs are well known, and not for reusable elements published publicly.
 
+Now, be sure what are you doing before do this: by the way, if you `really need` or ` really want` a `separate css file from main component file`, you can use the `unsafeCSS` function to import the "external css" like the example below.
+
+```js
+import {LitElement} from 'lit-element';
+import style from './style.css';
+
+class MyElement extends LitElement {
+  static get styles() {
+    return [css`${unsafeCSS(style)}`];
+  }
+
+  render() {
+    return html`
+      <link rel="stylesheet" href="./styles.css">
+    `;
+  }
+}
+```
+
+Thus, it is possible to avoid flash-of-unstyled-content (FOUC) and have a good organization in the project structure.
+
 ### Write CSS styles for a host element and its shadow DOM {#shadow-dom-styles}
 
 In this section: 
