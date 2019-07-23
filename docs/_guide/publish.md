@@ -37,10 +37,10 @@ The following JSON sample is a partial tsconfig.json that uses recommended optio
 
 ```json
   "compilerOptions": {
-    "target": "ES2017",
-    "module": "ES2017",
+    "target": "es2017",
+    "module": "es2015",
     "moduleResolution": "node",
-    "lib": ["ES2017", "DOM"],
+    "lib": ["es2017", "dom"],
     "experimentalDecorators": true
   }
 ```

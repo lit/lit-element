@@ -192,6 +192,14 @@ type UpdateState = typeof STATE_HAS_UPDATED|typeof STATE_UPDATE_REQUESTED|
     typeof STATE_IS_REFLECTING_TO_PROPERTY|typeof STATE_HAS_CONNECTED;
 
 /**
+ * The Closure JS Compiler doesn't currently have good support for static
+ * property semantics where "this" is dynamic (e.g.
+ * https://github.com/google/closure-compiler/issues/3177 and others) so we use
+ * this hack to bypass any rewriting by the compiler.
+ */
+const finalized = 'finalized';
+
+/**
  * Base element class which manages element properties and attributes. When
  * properties change, the `update` method is asynchronously called. This method
  * should be supplied by subclassers to render updates as desired.
@@ -213,7 +221,7 @@ export abstract class UpdatingElement extends HTMLElement {
   /**
    * Marks class as having finished creating properties.
    */
-  protected static finalized = true;
+  protected static[finalized] = true;
 
   /**
    * Memoized list of all class properties, including any superclass properties.
@@ -315,16 +323,12 @@ export abstract class UpdatingElement extends HTMLElement {
    * @nocollapse
    */
   protected static finalize() {
-    if (this.hasOwnProperty(JSCompiler_renameProperty('finalized', this)) &&
-        this.finalized) {
-      return;
-    }
     // finalize any superclasses
     const superCtor = Object.getPrototypeOf(this);
-    if (typeof superCtor.finalize === 'function') {
+    if (!superCtor.hasOwnProperty(finalized)) {
       superCtor.finalize();
     }
-    this.finalized = true;
+    this[finalized] = true;
     this._ensureClassProperties();
     // initialize Map populated in observedAttributes
     this._attributeToPropertyMap = new Map();
@@ -732,10 +736,34 @@ export abstract class UpdatingElement extends HTMLElement {
    * rendered element before fulfilling this Promise. To do this, first await
    * `super.updateComplete` then any subsequent state.
    *
+   * IMPORTANT: Do not override this getter directly. Override the
+   * `_getUpdateComplete` method instead (see that method's description for
+   * more information).
+   *
    * @returns {Promise} The Promise returns a boolean that indicates if the
    * update resolved without triggering another update.
    */
   get updateComplete() {
+    return this._getUpdateComplete();
+  }
+
+  /**
+   * Override point for the `updateComplete` promise.
+   *
+   * It is not safe to override the `updateComplete` getter directly due to a
+   * limitation in TypeScript which means it is not possible to call a
+   * superclass getter (e.g. `super.updateComplete.then(...)`) when the target
+   * language is ES5 (https://github.com/microsoft/TypeScript/issues/338).
+   * This method should be overridden instead. For example:
+   *
+   *   class MyElement extends LitElement {
+   *     ...
+   *     _getUpdateComplete() {
+   *       return super._getUpdateComplete().then(this.myWorkIsDone);
+   *     }
+   *   }
+   */
+  protected _getUpdateComplete() {
     return this._updatePromise;
   }
 
