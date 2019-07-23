@@ -8,11 +8,11 @@ slug: styles
 * ToC
 {:toc}
 
-This page is a guide to the styling options available for LitElement components. 
+This page is a guide to the styling options available for LitElement components.
 
 * [Styling options for component developers](#styling-for-developers) describes how to apply styles internally to a component that you're building.
 
-* [Styling options for component consumers](#styling-for-consumers) describes how to style an element that you're importing and using. 
+* [Styling options for component consumers](#styling-for-consumers) describes how to style an element that you're importing and using.
 
 * [Theming](#theming) is relevant to both developers and consumers of a LitElement-based component. It describes how to create easily stylable LitElement components, and how to create a style theme that can easily be applied to imported LitElement components.
 
@@ -24,11 +24,11 @@ This page is a guide to the styling options available for LitElement components.
 
 ## Styling options for component developers {#styling-for-developers}
 
-The [shadow DOM](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_shadow_DOM) API allows the creation of encapsulated DOM trees that are attached to a custom element. 
+The [shadow DOM](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_shadow_DOM) API allows the creation of encapsulated DOM trees that are attached to a custom element.
 
 The root node of a shadow DOM tree is called the **shadow root**. The element in the main document that has a shadow root attached to it is called the **host element**, or **host**.
 
-By default, LitElement creates a shadow root for your host element. LitElement renders the DOM structure described in your element template into this shadow root. 
+By default, LitElement creates a shadow root for your host element. LitElement renders the DOM structure described in your element template into this shadow root.
 
 Shadow DOM scopes CSS so that styles defined in a shadow root only apply to DOM inside the shadow root, and do not "leak" to outside DOM. With the exception of inherited CSS properties, shadow roots are also isolated from styles defined outside the shadow root, whether in the main page or an outer shadow root.
 
@@ -66,9 +66,9 @@ To define a static `styles` property:
 2.  Create a static `styles` property and define your styles in plain CSS.
 
     The value of the static `styles` property can be:
-    
+
     *   A single tagged template literal:
-    
+
         ```js
         class MyElement extends LitElement {
           static get styles() {
@@ -76,7 +76,7 @@ To define a static `styles` property:
             :host {
               display: block;
             }`;
-          } 
+          }
         }
         ```
 
@@ -109,7 +109,7 @@ To define a static `styles` property:
 
 #### Expressions in static styles
 
-Static styles apply to all instances of an element. Any expressions in your CSS are evaluated and included **once**, then reused for all instances. 
+Static styles apply to all instances of an element. Any expressions in your CSS are evaluated and included **once**, then reused for all instances.
 
 To prevent LitElement-based components from evaluating potentially malicious code, the `css` tag only accepts literal strings. You can nest them like this:
 
@@ -118,8 +118,8 @@ static get styles() {
   const mainColor = css`red`;
 
   return css`
-    :host { 
-      color: ${mainColor}; 
+    :host {
+      color: ${mainColor};
     }
   `;
 }
@@ -133,13 +133,13 @@ import { LitElement, css, unsafeCSS } from 'lit-element';
 class MyElement extends LitElement {
   static get styles() {
     const mainColor = 'red';
-    
+
     return css`
-      :host { 
+      :host {
         color: ${unsafeCSS(mainColor)};
       }
     `;
-  } 
+  }
 }
 ```
 
@@ -151,14 +151,14 @@ import { LitElement, css, unsafeCSS } from 'lit-element';
 class MyElement extends LitElement {
   static get styles() {
     const mainWidth = 800;
-    const padding = 20;   
-    
+    const padding = 20;
+
     return css`
-      :host { 
+      :host {
         width: ${unsafeCSS(mainWidth + padding)}px;
       }
     `;
-  } 
+  }
 }
 ```
 
@@ -168,7 +168,7 @@ class MyElement extends LitElement {
 
 </div>
 
-### Define styles in a style element {#style-element} 
+### Define styles in a style element {#style-element}
 
 We recommend using static styles to style LitElement components. However, in some cases you may want to evaluate and apply styles per instance, rather than to all instances of a LitElement component. One way to do this is to include inline styles in a `<style>` element in your template, and use your element's properties in your CSS rules to evaluate styles per instance.
 
@@ -243,7 +243,7 @@ Thus, it is possible to avoid flash-of-unstyled-content (FOUC) and have a good o
 
 ### Write CSS styles for a host element and its shadow DOM {#shadow-dom-styles}
 
-In this section: 
+In this section:
 
 * [Write CSS styles for a host element](#host-styles).
 * [Write CSS styles for elements in shadow DOM](#shadow-dom-styles).
@@ -343,11 +343,11 @@ Use the `::slotted()` CSS pseudo-element to select light DOM children that have 
 
 When you use a LitElement component, you can set styles from the main document by using its custom element tag as a selector. For example:
 
-_index.html_ 
+_index.html_
 
 ```html
 <style>
-  my-element { 
+  my-element {
     font-family: Roboto;
     font-size: 20;
     color: blue;
@@ -359,9 +359,9 @@ _index.html_
 
 <div class="alert alert-info">
 
-An element type selector has higher specificity than the `:host` pseudo-class selector. 
+An element type selector has higher specificity than the `:host` pseudo-class selector.
 
-Styles set for a host element from outside its shadow DOM will override styles set with the `:host` or `:host()` pseudo-class selectors inside shadow DOM. See Inheritance. 
+Styles set for a host element from outside its shadow DOM will override styles set with the `:host` or `:host()` pseudo-class selectors inside shadow DOM. See Inheritance.
 
 </div>
 
@@ -386,8 +386,8 @@ _my-element.js_
 render() {
   return html`
     <style>
-      :host { 
-        display: block; 
+      :host {
+        display: block;
         font-family: Roboto;
         font-size: 20;
         color: blue;
@@ -415,11 +415,11 @@ If a host element itself inherits properties from another element, the host's sh
 
 A LitElement component can be styled by using its custom element tag as a selector. For example:
 
-_index.html_ 
+_index.html_
 
 ```html
 <style>
-  my-element { 
+  my-element {
     font-family: Roboto;
     font-size: 20;
     color: blue;
@@ -429,16 +429,16 @@ _index.html_
 <my-element></my-element>
 ```
 
-An element type selector has higher specificity than the `:host` pseudo-class selector. 
+An element type selector has higher specificity than the `:host` pseudo-class selector.
 
 Styles set for a host element from outside its shadow DOM will override styles set with the `:host` or `:host()` pseudo-class selectors inside shadow DOM. For example:
 
-_index.html_ 
+_index.html_
 
 ```html
 <style>
   /* Overrides the `color` property of the `:host` styles in my-element.js */
-  my-element { 
+  my-element {
     color: blue;
   }
 </style>
@@ -474,7 +474,7 @@ _my-element.js_
 </style>
 ```
 
-The user can now set the custom property `--myBackground` in their main document in order to style the background of `my-element`. 
+The user can now set the custom property `--myBackground` in their main document in order to style the background of `my-element`.
 
 _index.html_
 
