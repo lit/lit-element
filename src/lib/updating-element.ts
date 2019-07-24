@@ -731,14 +731,12 @@ export abstract class UpdatingElement extends HTMLElement {
    * The Promise value is a boolean that is `true` if the element completed the
    * update without triggering another update. The Promise result is `false` if
    * a property was set inside `updated()`. If the Promise is rejected, an
-   * exception was thrown during the update. This getter can be implemented to
-   * await additional state. For example, it is sometimes useful to await a
-   * rendered element before fulfilling this Promise. To do this, first await
-   * `super.updateComplete` then any subsequent state.
+   * exception was thrown during the update.
    *
-   * IMPORTANT: Do not override this getter directly. Override the
-   * `_getUpdateComplete` method instead (see that method's description for
-   * more information).
+   * To await additional asynchronous work, override the `_getUpdateComplete`
+   * method. For example, it is sometimes useful to await a rendered element
+   * before fulfilling this Promise. To do this, first await
+   * `super._getUpdateComplete()`, then any subsequent state.
    *
    * @returns {Promise} The Promise returns a boolean that indicates if the
    * update resolved without triggering another update.
@@ -757,9 +755,9 @@ export abstract class UpdatingElement extends HTMLElement {
    * This method should be overridden instead. For example:
    *
    *   class MyElement extends LitElement {
-   *     ...
-   *     _getUpdateComplete() {
-   *       return super._getUpdateComplete().then(this.myWorkIsDone);
+   *     async _getUpdateComplete() {
+   *       await super._getUpdateComplete();
+   *       await this._myChild.updateComplete;
    *     }
    *   }
    */
