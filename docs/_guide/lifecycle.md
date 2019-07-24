@@ -279,9 +279,19 @@ The `updateComplete` Promise resolves when the element has finished updating. Us
   this.updateComplete.then(() => { /* do stuff */ });
   ```
 
+**Example**
+
+```js
+{% include projects/lifecycle/updatecomplete/my-element.js %}
+```
+
+{% include project.html folder="lifecycle/updatecomplete" openFile="my-element.js" %}
+
+#### Overriding updateComplete {#overriding-updatecomplete}
+
 To await additional state before fulfilling the `updateComplete` promise, override the `_getUpdateComplete` method. For example, it may be useful to await the update of a child element here. First await `super._getUpdateComplete()`, then any subsequent state.
 
-Note that it's recommended to override the `_getUpdateComplete` method instead of the `updateComplete` getter to ensure compatibility with users who are using TypeScript's ES5 output (see [TypeScript#338](https://github.com/microsoft/TypeScript/issues/338)).
+It's recommended to override the `_getUpdateComplete` method instead of the `updateComplete` getter to ensure compatibility with users who are using TypeScript's ES5 output (see [TypeScript#338](https://github.com/microsoft/TypeScript/issues/338)).
 
   ```js
   class MyElement extends LitElement {
@@ -291,14 +301,6 @@ Note that it's recommended to override the `_getUpdateComplete` method instead o
     }
   }
   ```
-
-**Example**
-
-```js
-{% include projects/lifecycle/updatecomplete/my-element.js %}
-```
-
-{% include project.html folder="lifecycle/updatecomplete" openFile="my-element.js" %}
 
 ## Examples {#examples}
 
