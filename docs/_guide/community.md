@@ -28,7 +28,7 @@ excellent to each other!
     mailing list is great for long-form questions and discussion on any of the libraries, polyfills, or 
     standards the the Polymer Project works on.
 
-*   On <a href="https://stackoverflow.com/tags/polymer">StackOverflow</a> use
+*   On <a href="https://stackoverflow.com/tags/lit-element">StackOverflow</a> use
     the <code>lit-element</code>, <code>lit-html</code>, or <code>shadow-dom</code>
     tags when asking questions. You can even try your
     hand at answering other people’s queries.
