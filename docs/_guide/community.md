@@ -17,8 +17,8 @@ excellent to each other!
 *   <strong>Join us on <a href="https://join.slack.com/t/polymer/shared_invite/enQtNTAzNzg3NjU4ODM4LTkzZGVlOGIxMmNiMjMzZDM1YzYyMzdiYTk0YjQyOWZhZTMwN2RlNjM5ZDFmZjMxZWRjMWViMDA1MjNiYWFhZWM">Slack</a>!</strong> The
     Polymer Project Slack workspace has thousands of users discussing LitElement, web components, and related topics.
     Check out <code>#general</code>, <code>#beginners</code>, or
-    <code>#tools</code> to get started.
-
+    <code>#tools</code> to get started. 
+    
 *   Follow us on <a href="https://twitter.com/polymer">Twitter</a>
     for the latest on web components and the Polymer Project. Many
     of our team members can be found tweeting about LitElement, lit-html, 
@@ -31,8 +31,8 @@ excellent to each other!
 *   On <a href="https://stackoverflow.com/tags/lit-element">StackOverflow</a> use
     the <code><a href="https://stackoverflow.com/tags/lit-element">lit-element</a></code> or 
     <code><a href="https://stackoverflow.com/tags/lit-html">lit-html</a></code> tags when
-    looking for answers. You can also look for help on underlying web standards like 
-    <a href="https://stackoverflow.com/tags/web-components">web components</a>, and try your
+    looking for answers. You can also find help on underlying web standards like 
+    <a href="https://stackoverflow.com/tags/web-component">web components</a>, and try your
     hand at answering other people’s queries.
 
 
