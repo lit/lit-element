@@ -67,6 +67,10 @@ npm run deploy
 
 The site is staged at a new URL (for example, `https://20181207t151022-dot-polymer-lit-element.appspot.com`). When ready, use the App Engine console to migrate traffic to the new version.
 
+Sometimes it's useful to stage to a specific, named version. For example, when 
+iterating on a new doc or design change, you may want to stage to an easily-to-remember
+version name, like `new-tooling-section`. 
+
 To push to a named App Engine version, specify the version on the command line:
 
 ```bash
