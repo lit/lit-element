@@ -29,9 +29,9 @@ excellent to each other!
     standards the the Polymer Project works on.
 
 *   On <a href="https://stackoverflow.com/tags/lit-element">StackOverflow</a> use
-    the <code><a href="https://stackoverflow.com/tags/lit-element">lit-element</a></code>, 
+    the <code><a href="https://stackoverflow.com/tags/lit-element">lit-element</a></code> or 
     <code><a href="https://stackoverflow.com/tags/lit-html">lit-html</a></code> tags when
-    looking for answers. You can look for help on underlying web standards like 
+    looking for answers. You can also look for help on underlying web standards like 
     <a href="https://stackoverflow.com/tags/web-components">web components</a>, and try your
     hand at answering other people’s queries.
 
