@@ -14,8 +14,8 @@ share what you've built, and more. All community participation is subject to the
 <a href="https://github.com/Polymer/project/blob/master/Code_of_Conduct.md">Code of Conduct</a>—be
 excellent to each other!
 
-*   <strong>Join us on <a href="https://polymer-slack.herokuapp.com/">Slack</a>!</strong> 
-    Polymer Slack has thousands of users discussing LitElement, web components, and related topics.
+*   <strong>Join us on <a href="https://join.slack.com/t/polymer/shared_invite/enQtNTAzNzg3NjU4ODM4LTkzZGVlOGIxMmNiMjMzZDM1YzYyMzdiYTk0YjQyOWZhZTMwN2RlNjM5ZDFmZjMxZWRjMWViMDA1MjNiYWFhZWM">Slack</a>!</strong> The
+    Polymer Project Slack workspace has thousands of users discussing LitElement, web components, and related topics.
     Check out <code>#general</code>, <code>#beginners</code>, or
     <code>#tools</code> to get started.
 
@@ -29,8 +29,10 @@ excellent to each other!
     standards the the Polymer Project works on.
 
 *   On <a href="https://stackoverflow.com/tags/lit-element">StackOverflow</a> use
-    the <code>lit-element</code>, <code>lit-html</code>, or <code>shadow-dom</code>
-    tags when asking questions. You can even try your
+    the <code><a href="https://stackoverflow.com/tags/lit-element">lit-element</a></code>, 
+    <code><a href="https://stackoverflow.com/tags/lit-html">lit-html</a></code> tags when
+    looking for answers. You can look for help on underlying web standards like 
+    <a href="https://stackoverflow.com/tags/web-components">web components</a>, and try your
     hand at answering other people’s queries.
 
 
