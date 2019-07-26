@@ -79,6 +79,8 @@ npm run deploy -- --version=<VERSION>
 
 This command stages the docs at `https://<VERSION>-dot-polymer-lit-element.appspot.com`.
 
+By specifying the version on the command line,  you can update an existing staged version.
+
 To make a staged version live, migrate traffic in the App Engine console or from the 
 command line:
 
