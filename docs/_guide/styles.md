@@ -223,7 +223,7 @@ There are some important caveats though:
 Now, be sure what are you doing before do this: by the way, if you `really need` or ` really want` a `separate css file from main component file`, you can use the `unsafeCSS` function to import the "external css" like the example below.
 
 ```js
-import {LitElement} from 'lit-element';
+import {LitElement, css, html} from 'lit-element';
 import style from './style.css';
 
 class MyElement extends LitElement {
