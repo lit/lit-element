@@ -228,9 +228,10 @@ export class LitElement extends UpdatingElement {
     if (this._needsShimAdoptedStyleSheets) {
       this._needsShimAdoptedStyleSheets = false;
       (this.constructor as typeof LitElement)._styles!.forEach((s) => {
-        const style = document.createElement('style');
-        style.textContent = s.cssText;
-        this.renderRoot.appendChild(style);
+        const link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = s.objectURL;
+        this.renderRoot.appendChild(link);
       });
     }
   }

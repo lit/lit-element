@@ -17,6 +17,7 @@ const constructionToken = Symbol();
 
 export class CSSResult {
   _styleSheet?: CSSStyleSheet|null;
+  _objectURL?: string;
 
   readonly cssText: string;
 
@@ -42,6 +43,14 @@ export class CSSResult {
       }
     }
     return this._styleSheet;
+  }
+
+  get objectURL(): string {
+    if (this._objectURL === undefined) {
+      const blob = new Blob([this.cssText], {type: 'text/css'});
+      this._objectURL = URL.createObjectURL(blob);
+    }
+    return this._objectURL;
   }
 
   toString(): string {
