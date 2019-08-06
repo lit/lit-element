@@ -3,7 +3,7 @@
 ## Install lit-element
 
 ```
-npm install --save lit-element
+npm install lit-element
 ```
 
 ## Modules

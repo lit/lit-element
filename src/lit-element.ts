@@ -32,7 +32,7 @@ declare global {
 // This line will be used in regexes to search for LitElement usage.
 // TODO(justinfagnani): inject version number at build time
 (window['litElementVersions'] || (window['litElementVersions'] = []))
-    .push('2.2.0');
+    .push('2.2.1');
 
 export interface CSSResultArray extends Array<CSSResult|CSSResultArray> {}
 
@@ -59,12 +59,15 @@ const flattenStyles = (styles: CSSResultArray): CSSResult[] =>
     styles.flat ? styles.flat(Infinity) : arrayFlat(styles);
 
 export class LitElement extends UpdatingElement {
+
   /**
    * Ensure this class is marked as `finalized` as an optimization ensuring
    * it will not needlessly try to `finalize`.
+   *
+   * Note this property name is a string to prevent breaking Closure JS Compiler
+   * optimizations. See updating-element.ts for more information.
    */
-  protected static finalized = true;
-
+  protected static['finalized'] = true;
   /**
    * Render method used to render the lit-html TemplateResult to the element's
    * DOM.
@@ -85,7 +88,9 @@ export class LitElement extends UpdatingElement {
 
   /** @nocollapse */
   protected static finalize() {
-    super.finalize();
+    // The Closure JS Compiler does not always preserve the correct "this"
+    // when calling static super methods (b/137460243), so explicitly bind.
+    super.finalize.call(this);
     // Prepare styling that is stamped at first render time. Styling
     // is built from user provided `styles` or is inherited from the superclass.
     this._styles =
@@ -180,7 +185,7 @@ export class LitElement extends UpdatingElement {
     // (3) shadowRoot.adoptedStyleSheets polyfilled: append styles after
     // rendering
     if (window.ShadyCSS !== undefined && !window.ShadyCSS.nativeShadow) {
-      window.ShadyCSS.ScopingShim.prepareAdoptedCssText(
+      window.ShadyCSS.ScopingShim!.prepareAdoptedCssText(
           styles.map((s) => s.cssText), this.localName);
     } else if (supportsAdoptingStyleSheets) {
       (this.renderRoot as ShadowRoot).adoptedStyleSheets =
