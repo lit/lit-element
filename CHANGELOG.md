@@ -10,10 +10,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
    Unreleased section, uncommenting the header as necessary.
 -->
 
-<!-- ## Unreleased -->
+## Unreleased
 <!-- ### Added -->
 <!-- ### Removed -->
-<!-- ### Fixed -->
+
+### Fixed
+* Properties annotated with the `eventOptions` decorator will now survive property renaming optimizations when used with tsickle and Closure JS Compiler.
+
 <!-- ### Changed -->
 
 ## [2.2.1] - 2019-07-23
