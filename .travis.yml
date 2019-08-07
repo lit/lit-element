@@ -18,7 +18,7 @@ matrix:
     - env: JOB=benchmark
 
   include:
-    - env: JOB=test
+    - env: JOB=test KARMA_SAUCE_BROWSERS="firefox@30/Linux"
       before_script:
         - npm run lint
       script:
