@@ -59,7 +59,7 @@ static get properties() {
 ```
 
 ```js
-// TypeScript decorators
+// Decorators (requires transpiling)
 export class MyElement extends LitElement {
   @property( { type : String }  ) prop1 = '';
 ```
@@ -104,15 +104,18 @@ Remember to call `super()` first in your constructor, or your element won't rend
 
 {% include project.html folder="properties/declare" openFile="my-element.js" %}
 
-### Declare properties with TypeScript decorators
+### Declare properties with decorators
 
-You can also declare properties with TypeScript decorators:
+You can also declare properties with decorators:
 
 ```js
 @property({type : String})  prop1 = 'Hello World';
 ```
 
-**Example: Declare properties with TypeScript decorators** 
+Decorators are a proposed JavaScript feature, so you'll need to use a transpiler like Babel or the TypeScript compiler to use decorators. 
+With Babel, you'll need to use the `@babel/plugin-proposal-decorators` plugin. Decorators are supported by default in TypeScript.
+
+**Example: Declare properties with decorators** 
 
 ```js
 {% include projects/properties/declaretypescript/my-element.ts %}
@@ -429,7 +432,7 @@ If you want to use your own property accessor with the `@property` decorator, yo
     this.requestUpdate('myProp', oldValue);
   }
 ```
-As you can see this works almost exactly like `static get properties()`, except the property declaration goes on the getter.
+
 ### Prevent LitElement from generating a property accessor {#accessors-noaccessor}
 
 In rare cases, a subclass may need to change or add property options for a property that exists on its superclass.
