@@ -415,6 +415,21 @@ The setters that LitElement generates automatically call `requestUpdate`. If you
 {% include projects/properties/customsetter/my-element.js %}
 ```
 
+If you want to use your own property accessor with the `@property` decorator, you can achieve this by putting the decorator on the getter:
+```ts
+   _myProp: string = '';
+
+  @property({ type: String })
+  public get myProp(): string {
+    return this._myProp;
+  }
+  public set myProp(value: string) {
+    const oldValue = this.myProp;
+    this._myProp = value;
+    this.requestUpdate('myProp', oldValue);
+  }
+```
+As you can see this works almost exactly like `static get properties()`, except the property declaration goes on the getter.
 ### Prevent LitElement from generating a property accessor {#accessors-noaccessor}
 
 In rare cases, a subclass may need to change or add property options for a property that exists on its superclass.
