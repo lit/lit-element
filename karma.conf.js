@@ -1,3 +1,35 @@
+module.exports = (config) => {
+  // Establish browsers to test by
+  config.set({
+    client: {runInParent: true, mocha: {ui: 'tdd'}},
+    frameworks: ['mocha', 'chai', 'source-map-support'],
+    files: [{pattern: 'test/**/*_test.js', type: 'module'}],
+    logLevel: config.LOG_DEBUG
+  });
+  if (localBrowsers.length > 0) {
+    config.set({browsers: localBrowsers});
+  }
+  if (sauceBrowsers.length > 0) {
+    config.set({
+      sauceLabs: {
+        testName: 'lit-element unit tests',
+        startConnect: typeof travisJobNumber === 'undefined',
+        tunnelIdentifier: travisJobNumber,
+        idleTimeout: 300
+      },
+      transports: ['polling'],
+      browserDisconnectTolerance: 3,
+      browsers: Object.keys(customLaunchers),
+      customLaunchers,
+      captureTimeout: 240000,
+      browserDisconnectTimeout: 240000,
+      reporters: ['spec', 'saucelabs']
+    });
+  }
+};
+
+const travisJobNumber = process.env['TRAVIS_JOB_NUMBER'];
+
 const localBrowsers =
     (process.env['KARMA_LOCAL_BROWSERS'] || '').split(',').filter(Boolean);
 
@@ -47,27 +79,3 @@ const customLaunchers = sauceBrowsers.reduce(
       return customLaunchers;
     },
     {});
-
-module.exports = (config) => {
-  // Establish browsers to test by
-  config.set({
-    client: {runInParent: true, mocha: {ui: 'tdd'}},
-    frameworks: ['mocha', 'chai', 'source-map-support'],
-    files: [{pattern: 'test/**/*_test.js', type: 'module'}],
-    logLevel: config.LOG_DEBUG
-  });
-  if (localBrowsers.length > 0) {
-    config.set({browsers: localBrowsers});
-  }
-  if (sauceBrowsers.length > 0) {
-    config.set({
-      sauceLabs: {
-        testName: 'lit-element unit tests',
-        startConnect: !process.env['TRAVIS_JOB_NUMBER']
-      },
-      browsers: Object.keys(customLaunchers),
-      customLaunchers,
-      reporters: ['progress', 'saucelabs']
-    });
-  }
-};
