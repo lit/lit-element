@@ -152,7 +152,7 @@ In plain HTML and JavaScript, this would be the `addEventListener` API:
 
 ```js
 const myElement = document.querySelector('my-element');
-myElement.addEventListener('my-event', (e) => {console.log(e));
+myElement.addEventListener('my-event', (e) => {console.log(e)});
 ```
 
 ## Working with events and shadow DOM
