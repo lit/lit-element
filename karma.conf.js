@@ -11,7 +11,10 @@ module.exports = (config) => {
   config.set({
     client: {runInParent: true, mocha: {ui: 'tdd'}},
     frameworks: ['mocha', 'chai', 'source-map-support'],
-    files: [{pattern: 'test/**/*_test.js', type: 'module'}],
+    files: [
+      'node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js',
+      {pattern: 'test/**/*_test.js', type: 'module'}
+    ],
     logLevel: config.LOG_INFO,
     reporters: ['spec']
   });
