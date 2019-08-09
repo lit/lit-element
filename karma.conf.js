@@ -37,9 +37,9 @@ const localBrowsers =
 
 /**
  * Format of this ENV variable is:
- *     KARMA_SAUCE_BROWSERS="(,$browserName/$platform@$version(:$deviceName|$deviceOrientation)?)+"
+ *     KARMA_SAUCE_BROWSERS="$platform/$browser@$version(:$deviceName|$deviceOrientation)?"
  * Example:
- *     KARMA_SAUCE_BROWSERS="chrome@35/Windows 7,Browser@4.4/Android:Samsung
+ *     KARMA_SAUCE_BROWSERS="windows 7/chrome@35,Android/Browser@4.4:Samsung
  * Galaxy S3 Emulator|portrait"
  */
 const sauceBrowsers =
@@ -49,14 +49,14 @@ const sauceBrowsers =
         .split(',')
         .filter(Boolean)
         .map((sauceBrowserSpec) => {
-          const [browserName, afterBrowserName] =
-              sauceBrowserSpec.split('@').filter(Boolean);
-          const [version, afterVersion] =
-              (afterBrowserName || '').split('/').filter(Boolean);
           const [platform, afterPlatform] =
-              (afterVersion || '').split(':').filter(Boolean);
+              sauceBrowserSpec.split('/').filter(Boolean);
+          const [browserName, afterBrowserName] =
+              (afterPlatform || '').split('@').filter(Boolean);
+          const [version, afterVersion] =
+              (afterBrowserName || '').split(':').filter(Boolean);
           const [deviceName, deviceOrientation] =
-              (afterPlatform || '').split('|').filter(Boolean);
+              (afterVersion || '').split('|').filter(Boolean);
           const sauceBrowser =
               {base: 'SauceLabs', browserName, platform, version};
           if (deviceName) {
