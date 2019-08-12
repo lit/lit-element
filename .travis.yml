@@ -23,6 +23,8 @@ matrix:
       script:
         - xvfb-run npm run test
 
-    - env: JOB=benchmark
+    - addons:
+        chrome: stable
+      env: JOB=benchmark
       script:
         - ./travis-bench.sh
