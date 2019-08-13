@@ -770,7 +770,7 @@ export abstract class UpdatingElement extends HTMLElement {
    * an update. By default, this method always returns `true`, but this can be
    * customized to control when to update.
    *
-   * * @param _changedProperties Map of changed properties with old values
+   * @param _changedProperties Map of changed properties with old values
    */
   protected shouldUpdate(_changedProperties: PropertyValues): boolean {
     return true;
@@ -782,7 +782,7 @@ export abstract class UpdatingElement extends HTMLElement {
    * Setting properties inside this method will *not* trigger
    * another update.
    *
-   * * @param _changedProperties Map of changed properties with old values
+   * @param _changedProperties Map of changed properties with old values
    */
   protected update(_changedProperties: PropertyValues) {
     if (this._reflectingProperties !== undefined &&
@@ -802,7 +802,7 @@ export abstract class UpdatingElement extends HTMLElement {
    * Setting properties inside this method will trigger the element to update
    * again after this update cycle completes.
    *
-   * * @param _changedProperties Map of changed properties with old values
+   * @param _changedProperties Map of changed properties with old values
    */
   protected updated(_changedProperties: PropertyValues) {
   }
@@ -814,7 +814,7 @@ export abstract class UpdatingElement extends HTMLElement {
    * Setting properties inside this method will trigger the element to update
    * again after this update cycle completes.
    *
-   * * @param _changedProperties Map of changed properties with old values
+   * @param _changedProperties Map of changed properties with old values
    */
   protected firstUpdated(_changedProperties: PropertyValues) {
   }

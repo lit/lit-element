@@ -8,7 +8,7 @@
     "deploy-staging": "npm run build && gcloud app deploy _site/app.yaml --project polymer-lit-element-staging"
   },
   "dependencies": {
-    "lit-element": "^2.0.0-rc.1",
+    "lit-element": "^2.0.0",
     "@stackblitz/sdk": "^1.2.0",
     "@webcomponents/webcomponentsjs": "^2.1.3"
   }
