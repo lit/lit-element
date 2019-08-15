@@ -10,10 +10,15 @@ module.exports = (config) => {
 
   config.set({
     client: {runInParent: true, mocha: {ui: 'tdd'}},
+    // TODO(usergenic): 'source-map-support' framework's browser-source-map-support.js looks for `define` and then uses the requirejs module name feature.
+    // esm-to-amd proxy... not sure why yet.
     frameworks: ['mocha', 'chai', 'source-map-support'],
     files: [
       'node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js',
-      {pattern: 'test/**/*_test.js', type: 'module'}
+      { pattern: 'test/lit-element_test.js', type: 'module' },
+      { pattern: 'test/lit-element_styling_test.js', type: 'module' },
+      { pattern: 'test/lib/decorators_test.js', type: 'module' },
+      { pattern: 'test/lib/updating-element_test.js', type: 'module'}
     ],
     logLevel: config.LOG_INFO,
     reporters: ['spec']
@@ -23,10 +28,10 @@ module.exports = (config) => {
   const sauceBrowsers = SAUCE_USERNAME && SAUCE_ACCESS_KEY &&
       parseSauceBrowsers(KARMA_SAUCE_BROWSERS);
 
-  if (localBrowsers.length > 0) {
+  if (localBrowsers && localBrowsers.length > 0) {
     console.log('KARMA_LOCAL_BROWSERS defined', KARMA_LOCAL_BROWSERS);
     config.set({browsers: localBrowsers});
-  } else if (sauceBrowsers.length > 0) {
+  } else if (sauceBrowsers && sauceBrowsers.length > 0) {
     console.log('KARMA_SAUCE_BROWSERS defined', KARMA_SAUCE_BROWSERS);
     const customLaunchers = sauceBrowsers.reduce(
         (customLaunchers, launcher) => Object.assign(
