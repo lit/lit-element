@@ -213,7 +213,7 @@ suite('Styling', () => {
 
   // TODO(usergenic): This test failed after conversion to karma.  Must fix!
   // Assertion failure: `expected '0px' to equal '10px'`
-  test.skip('@apply renders in nested elements', async () => {
+  test('@apply renders in nested elements', async () => {
     customElements.define('x-inner2', class extends LitElement {
       render() {
         return htmlWithStyles`
@@ -260,7 +260,7 @@ suite('Styling', () => {
 
   // TODO(usergenic): This test failed after conversion to karma.  Must fix!
   // Assertion failure: `expected '2px' to equal '10px'`
-  test.skip(
+  test(
       '@apply renders in nested elements when sub-element renders separately first',
       async () => {
         class I extends LitElement {
