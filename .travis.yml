@@ -2,11 +2,13 @@ language: node_js
 sudo: false
 dist: trusty
 node_js: '9'
+addons:
+  firefox: latest
+  chrome: stable
+  sauce_connect: true
 cache:
   directories:
   - node_modules
-addons:
-  sauce_connect: true
 env:
   global:
   - secure: mRVq6Gjuq8QOakh9llctKR615PMnKB6HUkLEpZFNHMSXSJryLsZFUAYS5d9TRVtgiaExMciOWQAuAly/08TwLcob1aDPPzs6e2cZK18lRny4o0O3Ax4Kp6cdE27RP2xVIbqyodsYgHbvbAC/3bCWCBWC89LRBL2hEiZZ2fyMu7a2PECH/S1A33D/x1gzzXlvuroMvfbTrPenV3Ps/ZL7R27EHjB6I8ktMUvULXeyI3jmsRtAiqfd6N70caW0mFJsl6Y6A9hWNd2AjdIPxbiLESpbSBFnOdixLwAs5RLudLLQz+so1i/tOuZldXs+iDHVB+iHRl2nj6WY+nbXEObePFhk3S7wA9c4SKNY9tfOzT/FYn96QZdSdVyqQnhyj67YqejF7wSLD4YNfp2llyDBHQAdVd4Z7y/qlsLxgPzdponzlKzecSfjl9Q7wDdWEpPQtQfwjd1nZ/eeGmFwHTlKUfcAkkNOvNteJGabJBXpgoNljHRuevBLsZyZnTw+NPGVnhBdOw7mrWE4vMt5wH64PIFJmJWrWTiyzgOXuP1lh3LirQvWYK4tvmeQvLWosESqz5c+DE5x382fjIHUmIflxOnBYMwTjx8OCbkrhN3kb2NFNz3MyBD9Dz+yYRmzPaUU10HNKlFf1U3bT/c/IUTTkY+VxXKtwPfmOfSJTpMhbvk=
@@ -17,14 +19,12 @@ matrix:
     - env: JOB=benchmark
 
   include:
-    - env: JOB=test KARMA_SAUCE_BROWSERS="windows 10/microsoftedge@15,windows 10/microsoftedge@17,os x 10.13/safari@11,windows 10/chrome@76,windows 10/firefox@68"
+    - env: JOB=test KARMA_LOCAL_BROWSERS="Chrome,Firefox" KARMA_SAUCE_BROWSERS="windows 10/microsoftedge@15,windows 10/microsoftedge@17,os x 10.13/safari@11,windows 10/chrome@76,windows 10/firefox@68"
       before_script:
         - npm run lint
       script:
         - xvfb-run npm run test
 
-    - addons:
-        chrome: stable
-      env: JOB=benchmark
+    - env: JOB=benchmark
       script:
         - ./travis-bench.sh
