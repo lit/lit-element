@@ -18,7 +18,7 @@ matrix:
   allow_failures:
     - env: JOB=benchmark
   include:
-    - env: JOB=test KARMA_LOCAL_BROWSERS="Chrome,Firefox" KARMA_SAUCE_BROWSERS="windows 10/microsoftedge@15,windows 10/microsoftedge@17,windows 8.1/internet explorer@11,os x 10.11/safari@9,os x 10.12/safari@10,macos 10.13/safari@11,Linux/chrome@41,Linux/firefox@40"
+    - env: JOB=test KARMA_LOCAL_BROWSERS="Chrome,Firefox" KARMA_SAUCE_BROWSERS="windows 10/microsoftedge@15,windows 10/microsoftedge@17,windows 8.1/internet explorer@11,os x 10.11/safari@9,os x 10.12/safari@10,macos 10.13/safari@11,Linux/chrome@41,Linux/firefox"
       before_script:
         - npm run lint
       script:
