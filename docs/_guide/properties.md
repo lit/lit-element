@@ -47,7 +47,7 @@ All property declaration options can be specified in a static properties getter,
 
 ## Declare properties {#declare}
 
-Declare your element's properties by implementing a static `properties` getter, or by using TypeScript decorators:
+Declare your element's properties by implementing a static `properties` getter, or by using decorators:
 
 ```js
 // properties getter
@@ -59,7 +59,7 @@ static get properties() {
 ```
 
 ```js
-// Decorators (requires transpiling)
+// Decorators (requires TypeScript or Babel)
 export class MyElement extends LitElement {
   @property( { type : String }  ) prop1 = '';
 ```
@@ -104,7 +104,7 @@ Remember to call `super()` first in your constructor, or your element won't rend
 
 {% include project.html folder="properties/declare" openFile="my-element.js" %}
 
-### Declare properties with decorators
+### Declare properties with decorators {#declare-with-decorators}
 
 You can also declare properties with decorators:
 
@@ -112,8 +112,11 @@ You can also declare properties with decorators:
 @property({type : String})  prop1 = 'Hello World';
 ```
 
-Decorators are a proposed JavaScript feature, so you'll need to use a transpiler like Babel or the TypeScript compiler to use decorators. 
-With Babel, you'll need to use the `@babel/plugin-proposal-decorators` plugin. Decorators are supported by default in TypeScript.
+Decorators are a proposed JavaScript feature, so you'll need to use a transpiler like Babel or the TypeScript compiler to use decorators.
+
+If you're using Babel, you'll need to use the `@babel/plugin-proposal-decorators` plugin. 
+
+If you're using TypeScript, you'll need to enable the `experimentalDecorators` compiler option (for example, by setting `"experimentalDecorators": true` in `tsconfig.json`). Enabling `emitDecoratorMetadata` is not required and not recommended.
 
 **Example: Declare properties with decorators** 
 
