@@ -47,7 +47,7 @@ All property declaration options can be specified in a static properties getter,
 
 ## Declare properties {#declare}
 
-Declare your element's properties by implementing a static `properties` getter, or by using TypeScript decorators:
+Declare your element's properties by implementing a static `properties` getter, or by using decorators:
 
 ```js
 // properties getter
@@ -59,7 +59,7 @@ static get properties() {
 ```
 
 ```js
-// TypeScript decorators
+// Decorators (requires TypeScript or Babel)
 export class MyElement extends LitElement {
   @property( { type : String }  ) prop1 = '';
 ```
@@ -104,15 +104,21 @@ Remember to call `super()` first in your constructor, or your element won't rend
 
 {% include project.html folder="properties/declare" openFile="my-element.js" %}
 
-### Declare properties with TypeScript decorators
+### Declare properties with decorators {#declare-with-decorators}
 
-You can also declare properties with TypeScript decorators:
+You can also declare properties with decorators:
 
 ```js
 @property({type : String})  prop1 = 'Hello World';
 ```
 
-**Example: Declare properties with TypeScript decorators** 
+Decorators are a proposed JavaScript feature, so you'll need to use a transpiler like Babel or the TypeScript compiler to use decorators.
+
+If you're using Babel, you'll need to use the `@babel/plugin-proposal-decorators` plugin. 
+
+If you're using TypeScript, you'll need to enable the `experimentalDecorators` compiler option (for example, by setting `"experimentalDecorators": true` in `tsconfig.json`). Enabling `emitDecoratorMetadata` is not required and not recommended.
+
+**Example: Declare properties with decorators** 
 
 ```js
 {% include projects/properties/declaretypescript/my-element.ts %}
@@ -429,7 +435,7 @@ If you want to use your own property accessor with the `@property` decorator, yo
     this.requestUpdate('myProp', oldValue);
   }
 ```
-As you can see this works almost exactly like `static get properties()`, except the property declaration goes on the getter.
+
 ### Prevent LitElement from generating a property accessor {#accessors-noaccessor}
 
 In rare cases, a subclass may need to change or add property options for a property that exists on its superclass.
