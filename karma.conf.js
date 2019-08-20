@@ -38,7 +38,7 @@ module.exports = (config) => {
         build: process.env.TRAVIS_BUILD_NUMBER
       },
       transports: ['polling'],
-      browserDisconnectTolerance: 3,
+      browserDisconnectTolerance: 5,
       reporters: ['spec', 'saucelabs']
     });
   }
