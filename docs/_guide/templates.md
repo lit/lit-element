@@ -140,7 +140,7 @@ You can insert JavaScript expressions as placeholders for HTML text content, att
 
 * Text content: `<p>${...}</p>`
 * Attribute: `<p id="${...}"></p>`
-* Boolean attribute: `?checked="${...}"`
+* Boolean attribute: `?disabled="${...}"`
 * Property: `.value="${...}"`
 * Event handler: `@event="${...}"`
 
@@ -168,10 +168,10 @@ Attribute values are always strings, so an attribute binding should return a val
 
 #### Bind to a boolean attribute
 
-Bind `prop3` to a boolean attribute: 
+Bind `prop3` to a boolean attribute:
 
 ```js
-html`<input type="checkbox" ?checked="${this.prop3}">i like pie</input>`
+html`<input type="text" ?disabled="${this.prop3}">`
 ```
 
 Boolean attributes are added if the expression evaluates to a truthy value, and removed if it evaluates to a falsy value.
@@ -446,7 +446,7 @@ html`${this.myBool?html`<p>foo</p>`:html`<p>bar</p>`}`;
 html`<p id="${...}">`;
 
 // Boolean attribute
-html`<input type="checkbox" ?checked="${...}">`;
+html`<input type="text" ?disabled="${...}">`;
 
 // Property
 html`<input .value="${...}">`;
