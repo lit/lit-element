@@ -27,13 +27,13 @@ class MyElement extends LitElement {
       <!-- boolean attribute binding -->
       <div>
         boolean attribute binding
-        <input type="checkbox" ?checked="${this.prop3}"/>
+        <input type="text" ?disabled="${this.prop3}"/>
       </div>
 
       <!-- property binding -->
       <div>
         property binding
-        <input type="checkbox" .value="${this.prop4}"/>
+        <input type="text" .value="${this.prop4}"/>
       </div>
 
       <!-- event handler binding -->
