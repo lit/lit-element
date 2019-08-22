@@ -1,36 +1,28 @@
 language: node_js
 sudo: false
 dist: trusty
-node_js: "9"
+node_js: '9'
 addons:
   firefox: latest
   chrome: stable
   sauce_connect: true
 cache:
   directories:
-    - node_modules
+  - node_modules
 env:
   global:
-    - KARMA_LOCAL_BROWSERS="Chrome,Firefox" KARMA_SAUCE_BROWSERS="windows 10/microsoftedge@15,windows 10/microsoftedge@17,windows 8.1/internet explorer@11,os x 10.11/safari@9,os x 10.12/safari@10,macos 10.13/safari@11,Linux/chrome@41,Linux/firefox"
-    - secure: mRVq6Gjuq8QOakh9llctKR615PMnKB6HUkLEpZFNHMSXSJryLsZFUAYS5d9TRVtgiaExMciOWQAuAly/08TwLcob1aDPPzs6e2cZK18lRny4o0O3Ax4Kp6cdE27RP2xVIbqyodsYgHbvbAC/3bCWCBWC89LRBL2hEiZZ2fyMu7a2PECH/S1A33D/x1gzzXlvuroMvfbTrPenV3Ps/ZL7R27EHjB6I8ktMUvULXeyI3jmsRtAiqfd6N70caW0mFJsl6Y6A9hWNd2AjdIPxbiLESpbSBFnOdixLwAs5RLudLLQz+so1i/tOuZldXs+iDHVB+iHRl2nj6WY+nbXEObePFhk3S7wA9c4SKNY9tfOzT/FYn96QZdSdVyqQnhyj67YqejF7wSLD4YNfp2llyDBHQAdVd4Z7y/qlsLxgPzdponzlKzecSfjl9Q7wDdWEpPQtQfwjd1nZ/eeGmFwHTlKUfcAkkNOvNteJGabJBXpgoNljHRuevBLsZyZnTw+NPGVnhBdOw7mrWE4vMt5wH64PIFJmJWrWTiyzgOXuP1lh3LirQvWYK4tvmeQvLWosESqz5c+DE5x382fjIHUmIflxOnBYMwTjx8OCbkrhN3kb2NFNz3MyBD9Dz+yYRmzPaUU10HNKlFf1U3bT/c/IUTTkY+VxXKtwPfmOfSJTpMhbvk=
-    - secure: gHKVw3rluT5gBkkUALh9Rh8fYmtolE2TNBSOvblWI9JZuyHFKMTiyaL9BZJ98Yrr9mrlHcbOe3d+GwNs6wt+zLD3Bbqy8s3gqtOhNUBYXM/OcIcmrbnVSqnRCaxzckWsNKpYWG1q0fnbcBCv6AU+sDGT72JKigPqSPhfLUQBMgr3RVND1QW8ujcjdSE8NAa8OfKvigwNZjC1svOuRZTXae+E5smSWXx0BAZ2BTM9DbWEkOZXcaIRXUZL2PMuk01zxX9M/P5k7JUbRkR3VAlx6b9lL2dsjqawREBRu3pQ+3QX5V7fat/ach174zNjKcmiqzCjk+3jnPAbeXhxybYJmf/FDMuwU9/nuUDAyzetgZ4p5mDgL89XiDK6TijW16UwPE2djkMarFXoaGWp7VHsQ7rNWdp7fGcmSmvvRwJrQuDO3RgnBM3m+vqOw03vKQzeDCsUCgYXut+An5b6Tzya2X1rYPH6QuprRNySctCXvlz+ENyG/SPY7zirK9irc/MIMzEJb27jYgcdTSOwFIXfL48CHQj7kPtB05wPIhpElJnA5uKmavhH3zMJCDiBn8rRSCwwwSsivuQhFKbga80G/VCQBxvOs1il8JcqQU8JinlfFVGHn9Gji13gvIk3jIxPo+ZSOd4OCVMf4D0NrMBYzTVCFPyf/9bb7M+ii7Qt1ZE=
+  - KARMA_LOCAL_BROWSERS="Chrome,Firefox" KARMA_CUSTOM_LAUNCHERS="./test/custom-launchers-browserstack.json"
+  - secure: mRVq6Gjuq8QOakh9llctKR615PMnKB6HUkLEpZFNHMSXSJryLsZFUAYS5d9TRVtgiaExMciOWQAuAly/08TwLcob1aDPPzs6e2cZK18lRny4o0O3Ax4Kp6cdE27RP2xVIbqyodsYgHbvbAC/3bCWCBWC89LRBL2hEiZZ2fyMu7a2PECH/S1A33D/x1gzzXlvuroMvfbTrPenV3Ps/ZL7R27EHjB6I8ktMUvULXeyI3jmsRtAiqfd6N70caW0mFJsl6Y6A9hWNd2AjdIPxbiLESpbSBFnOdixLwAs5RLudLLQz+so1i/tOuZldXs+iDHVB+iHRl2nj6WY+nbXEObePFhk3S7wA9c4SKNY9tfOzT/FYn96QZdSdVyqQnhyj67YqejF7wSLD4YNfp2llyDBHQAdVd4Z7y/qlsLxgPzdponzlKzecSfjl9Q7wDdWEpPQtQfwjd1nZ/eeGmFwHTlKUfcAkkNOvNteJGabJBXpgoNljHRuevBLsZyZnTw+NPGVnhBdOw7mrWE4vMt5wH64PIFJmJWrWTiyzgOXuP1lh3LirQvWYK4tvmeQvLWosESqz5c+DE5x382fjIHUmIflxOnBYMwTjx8OCbkrhN3kb2NFNz3MyBD9Dz+yYRmzPaUU10HNKlFf1U3bT/c/IUTTkY+VxXKtwPfmOfSJTpMhbvk=
+  - secure: gHKVw3rluT5gBkkUALh9Rh8fYmtolE2TNBSOvblWI9JZuyHFKMTiyaL9BZJ98Yrr9mrlHcbOe3d+GwNs6wt+zLD3Bbqy8s3gqtOhNUBYXM/OcIcmrbnVSqnRCaxzckWsNKpYWG1q0fnbcBCv6AU+sDGT72JKigPqSPhfLUQBMgr3RVND1QW8ujcjdSE8NAa8OfKvigwNZjC1svOuRZTXae+E5smSWXx0BAZ2BTM9DbWEkOZXcaIRXUZL2PMuk01zxX9M/P5k7JUbRkR3VAlx6b9lL2dsjqawREBRu3pQ+3QX5V7fat/ach174zNjKcmiqzCjk+3jnPAbeXhxybYJmf/FDMuwU9/nuUDAyzetgZ4p5mDgL89XiDK6TijW16UwPE2djkMarFXoaGWp7VHsQ7rNWdp7fGcmSmvvRwJrQuDO3RgnBM3m+vqOw03vKQzeDCsUCgYXut+An5b6Tzya2X1rYPH6QuprRNySctCXvlz+ENyG/SPY7zirK9irc/MIMzEJb27jYgcdTSOwFIXfL48CHQj7kPtB05wPIhpElJnA5uKmavhH3zMJCDiBn8rRSCwwwSsivuQhFKbga80G/VCQBxvOs1il8JcqQU8JinlfFVGHn9Gji13gvIk3jIxPo+ZSOd4OCVMf4D0NrMBYzTVCFPyf/9bb7M+ii7Qt1ZE=
+  - secure: VbLQvfftgOcodCJOXLB7bm/L0OQM6oZT7ehFNaZUTsoKpx9WD2dqPFWK7Fy0uYQEF6++Jzb29UNdgBGw4kHAQwmZ80jutK1Z0k6zHccmsA7cX/AIC4kmTA+nE9Ze98oCQspAVxzfsYmCJYlJF7XgtSLEHR8EiERruJtvSN9BdX9nFA2m9Vwj0ens31tbU8DyieV6ZfPRnFhwl6IYOcNrsg6XkhI6aMPqDW5Z7uvgfjfm30CgjZ09IDUVhIywUkD1DGKQYX9/0HRwyWzglwWz/6N+kH1OjhNx8ccosPuuz9eHKoy9oqPiMaYWh+8+DeC6sFtSonkvCl7P3QkSpdbA9PWPJKQ6tO94unyrO7+4PNS8U4m7TNdeTufp+pc1AUA/ApZxXV2fAWfyiXWQmcrVFSH5paJTmCHb4pxNro1cnZU6gQj+dypsAcK2YCfCT6bWIUuqjj35TdpTdTVn3Cz6PhJFnFMveket9qHNoUsfTiGsAfoG6Mhv+BZPU+v35h0Hu9MUGrf4HO8pHaYMSoLUwrlJT5c0Gs+1vmjWqc89mWHf2h+oTyjEPAX8Q4LYq/JhQxgRp54nmqNYGO6dekRKG5PvBJ2Cu3kwdsyW9aeJ/OD2QibJw37/2RQXaHHX5ybhB6V23rcBIqS0AQP27wct0xPVkE4/sibU29f1NwqGk6I=
+  - secure: pA61ajc8uVnJa/ebly7579QJnkZ6oqzCoUqym5QGzDtfedHbdyOLnFcRBrD4Xyrtm09yNhzRxPgHkHobjgCR8B1Ps1qL67NicBlleaY6aTV+LywVBk9+esZeJLEecZOgZbRIAKsK/F/i4aSwAqmv8LVSlHSxSz47lwxE/JvFmaI1yya0b3lnnp4ipe1zojTr32R29xjEdaJcWoj5h7NxXqGdrQdonI6A29DPQXhZo3PDLLCqr1ukWVFzfT7Lxk0EgCQoHAwmWy9tvho1NzgGzq05K4J1Bki2HZiIk+TSFq+8DnlF87wjLKxYfAeIy+UrFazTLpNUVcjnSUcl6Agxub4EglQT/1PBuRki2a0ZN+hzdWf2gJl0znhlctO3caeezHFi1ZIApGWzdWqNcNMkzN+rea2q2rm332aKMdyPJ4JdWaVboMuy+/bRm193apaIyiSQL2fz8G1j54IYIJViOcVGKJTBLgLH99c05WOSozwogHGWvagcVOTGAS493XHPAkpFOgCepdjLYQtJVBfSEGIIzlUjs0M8D99fesS+3pe9Mf0V2gAJ6f3DhDd25fA0Dxqd/+KIceThmMzR0O4DjDZa7yAIzuhtXbW0bmady1GquFZXhc3Q2CPtNMniRy4oQ6T2n6rcq6HxplYmV4Z4hhxK8Fizn+aZqmQ4z7qqZgk=
 matrix:
   fast_finish: true
   allow_failures:
-    - env: JOB=benchmark
+  - env: JOB=benchmark
   include:
-    - env: JOB=test
-      before_script: npm run lint
-      script: xvfb-run npm run test
-
-    # - env: JOB=test POLYFILLS=wc-shadydom
-    #   script: xvfb-run npm run test
-    #
-    # - env: JOB=test POLYFILLS=wc-shadydom,wc-ce
-    #   script: xvfb-run npm run test
-    #
-    # - env: JOB=test POLYFILLS=wc-shadydom,wc-ce,wc-shimcssproperties
-    #   script: xvfb-run npm run test
-
-    - env: JOB=benchmark
-      script: ./travis-bench.sh
+  - env: JOB=test
+    before_script: npm run lint
+    script: xvfb-run npm run test
+  - env: JOB=benchmark
+    script: "./travis-bench.sh"

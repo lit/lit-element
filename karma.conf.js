@@ -13,87 +13,88 @@
  */
 require('source-map-support/register');
 
-module.exports = (config) => {
-  config.set({
-    browsers: [...localBrowsers, ...Object.keys(sauceBrowsers)],
-    client: { captureConsole: false, runInParent: true, mocha: { ui: 'tdd' } },
-    frameworks: ['mocha', 'chai', 'source-map-support'],
-    files: [
-      polyfills.includes('wc-ce') && { pattern: 'test/wc-ce.html', type: 'dom' },
-      polyfills.includes('wc-shadydom') && { pattern: 'test/wc-shadydom.js', type: 'dom' },
-      polyfills.includes('wc-shimcssproperties') && { pattern: 'test/wc-shimcssproperties.js', type: 'dom' },
-      'node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js',
-      { pattern: 'test/lit-element_test.js', type: 'module' },
-      { pattern: 'test/lit-element_styling_test.js', type: 'module' },
-      { pattern: 'test/lib/decorators_test.js', type: 'module' },
-      { pattern: 'test/lib/updating-element_test.js', type: 'module' },
-      { pattern: 'test/lib/decorators-babel_test.js', type: 'module' }
-    ].filter(Boolean),
-    logLevel: config.LOG_INFO,
-    reporters: ['spec']
-  });
+const {readFileSync, existsSync} = require('fs');
 
-  if (runTestsOnSauce) {
+module.exports = (config) => {
+  try {
     config.set({
-      customLaunchers: sauceBrowsers,
-      sauceLabs: {
-        testName: 'lit-element unit tests',
-        startConnect: typeof process.env.TRAVIS_JOB_NUMBER === 'undefined',
-        tunnelIdentifier: process.env.TRAVIS_JOB_NUMBER,
-        idleTimeout: 300,
-        build: process.env.TRAVIS_BUILD_NUMBER
-      },
-      transports: ['polling'],
-      browserDisconnectTolerance: 5,
-      reporters: ['spec', 'saucelabs']
+      browsers: [...browsers, ...Object.keys(customLaunchers)],
+      client: {captureConsole: false, runInParent: true, mocha: {ui: 'tdd'}},
+      frameworks: ['mocha', 'chai', 'source-map-support'],
+      files: [
+        polyfills.includes('wc-ce') &&
+            {pattern: 'test/wc-ce.html', type: 'dom'},
+        polyfills.includes('wc-shadydom') &&
+            {pattern: 'test/wc-shadydom.js', type: 'dom'},
+        polyfills.includes('wc-shimcssproperties') &&
+            {pattern: 'test/wc-shimcssproperties.js', type: 'dom'},
+        'node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js',
+        {pattern: 'test/lit-element_test.js', type: 'module'},
+        {pattern: 'test/lit-element_styling_test.js', type: 'module'},
+        {pattern: 'test/lib/decorators_test.js', type: 'module'},
+        {pattern: 'test/lib/updating-element_test.js', type: 'module'},
+        {pattern: 'test/lib/decorators-babel_test.js', type: 'module'}
+      ].filter(Boolean),
+      customLaunchers,
+      logLevel: config.LOG_INFO
     });
+
+    if (runTestsOnBrowserStack) {
+      config.set({
+        browserStack: {
+          username: process.env.BROWSERSTACK_USERNAME,
+          accessKey: process.env.BROWSERSTACK_ACCESS_KEY
+        },
+        browserDisconnectTolerance: 5,
+      });
+    }
+
+    if (runTestsOnSauce) {
+      config.set({
+        sauceLabs: {
+          testName: 'lit-element unit tests',
+          startConnect: typeof process.env.TRAVIS_JOB_NUMBER === 'undefined',
+          tunnelIdentifier: process.env.TRAVIS_JOB_NUMBER,
+          idleTimeout: 300,
+          build: process.env.TRAVIS_BUILD_NUMBER
+        },
+        transports: ['polling'],
+        browserDisconnectTolerance: 5,
+      });
+    }
+
+    config.set({reporters});
+
+  } catch (error) {
+    console.log('ERROR HAPPENED', error);
+    throw 'up';
   }
 };
 
 const polyfills = (process.env.POLYFILLS || '').split(',').filter(Boolean);
 console.log('\n---\nPOLYFILLS:', polyfills, '\n---');
-const localBrowsers = (process.env.KARMA_LOCAL_BROWSERS || '')
-  .split(',').filter(Boolean);
-const sauceBrowsers = parseBrowserSpecs(process.env.KARMA_SAUCE_BROWSERS || '');
-const runTestsOnSauce =
-  process.env.SAUCE_USERNAME &&
-  process.env.SAUCE_ACCESS_KEY &&
-  Object.keys(sauceBrowsers).length > 0;
 
-/**
- * Using data URLs since karma doesn't have a config
- * option to inject inline scripts, which we'd use to
- * turn polyfills on.
- */
-function dataURL(code) {
-  return 'data:application/javascript;charset=utf-8;base64,' + btoa(code);
-}
+const browsers = (process.env.KARMA_BROWSERS || '').split(',').filter(Boolean);
+const customLaunchers = process.env.KARMA_CUSTOM_LAUNCHERS &&
+        JSON.parse(
+            existsSync(process.env.KARMA_CUSTOM_LAUNCHERS) ?
+                readFileSync(process.env.KARMA_CUSTOM_LAUNCHERS, 'utf-8') :
+                process.env.KARMA_CUSTOM_LAUNCHERS) ||
+    {};
 
-/**
- * Format of browsersList is:
- * ```
- * windows 7/chrome@35,Android/Browser@4.4:Samsung Galaxy S3
- * Emulator|portrait
- * ```
- */
-function parseBrowserSpecs(browsersList) {
-  return browsersList
-    .split(',')
-    .filter(Boolean)
-    .reduce((browsers, spec) => {
-      const match = spec.match(
-        /([^/]+)(?:\/([^@]+))?(?:@([^:]+))?(?:\:(.+)\|(.+))?/
-      )
-      if (match) {
-        browsers[spec.replace(/[^A-Za-z0-9]+/g, '_')] = {
-          base: 'SauceLabs',
-          platform: match[1],
-          browserName: match[2],
-          version: match[3],
-          deviceName: match[4],
-          deviceOrientation: match[5]
-        }
-      }
-      return browsers
-    }, {})
-}
+const runTestsOnBrowserStack = process.env.BROWSERSTACK_USERNAME &&
+    process.env.BROWSERSTACK_ACCESS_KEY &&
+    Object.keys(customLaunchers)
+        .some((name) => customLaunchers[name].base === 'BrowserStack');
+
+const runTestsOnSauce = process.env.SAUCE_USERNAME &&
+    process.env.SAUCE_ACCESS_KEY &&
+    Object.keys(customLaunchers)
+        .some((name) => customLaunchers[name].base === 'SauceLabs');
+
+const reporters = [
+  'spec',
+  'summary',
+  runTestsOnBrowserStack && 'BrowserStack',
+  runTestsOnSauce && 'saucelabs'
+].filter(Boolean);

@@ -25,4 +25,6 @@ lit-element.d.ts.map
 /docs/node_modules/
 *.pyc
 
+*.log
+
 .DS_Store

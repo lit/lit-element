@@ -1,0 +1,58 @@
+{
+  "bs_windows_10_ms_edge_15": {
+    "base": "BrowserStack",
+    "browser": "Edge",
+    "browser_version": "15",
+    "os": "Windows",
+    "os_version": "10"
+  },
+  "bs_windows_10_ms_edge_17": {
+    "base": "BrowserStack",
+    "browser": "Edge",
+    "browser_version": "17",
+    "os": "Windows",
+    "os_version": "10"
+  },
+  "bs_windows_81_ie_11": {
+    "base": "BrowserStack",
+    "browser": "IE",
+    "browser_version": "11",
+    "os": "windows",
+    "os_version": "8.1"
+  },
+  "bs_os_x_safari_9": {
+    "base": "BrowserStack",
+    "browser": "Safari",
+    "browser_version": "9.1",
+    "os": "OS X",
+    "os_version": "El Capitan"
+  },
+  "bs_os_x_safari_10": {
+    "base": "BrowserStack",
+    "browser": "Safari",
+    "browser_version": "10.1",
+    "os": "OS X",
+    "os_version": "Sierra"
+  },
+  "bs_os_x_safari_11": {
+    "base": "BrowserStack",
+    "browser": "Safari",
+    "browser_version": "11.1",
+    "os": "OS X",
+    "os_version": "High Sierra"
+  },
+  "bs_windows_chrome_41": {
+    "base": "BrowserStack",
+    "browser": "Chrome",
+    "browser_version": "41",
+    "os": "Windows",
+    "os_version": "10"
+  },
+  "bs_windows_firefox": {
+    "base": "BrowserStack",
+    "browser": "Firefox",
+    "browser_version": "45",
+    "os": "Windows",
+    "os_version": "10"
+  }
+}
