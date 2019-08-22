@@ -230,7 +230,7 @@ In this section:
 
 #### Write CSS styles for a host element {#host-styles}
 
-An element can apply styles to itself with the `:host` and `:host()` CSS psuedo-classes used inside the element's ShadowRoot. The term "host" is used because an element is the host of its own shadow root.
+An element can apply styles to itself with the `:host` and `:host()` CSS pseudo-classes used inside the element's ShadowRoot. The term "host" is used because an element is the host of its own shadow root.
 
 * `:host` selects the host element of the shadow root:
 
