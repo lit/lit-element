@@ -23,14 +23,14 @@ matrix:
       before_script: npm run lint
       script: xvfb-run npm run test
 
-    - env: JOB=test POLYFILLS=wc-shadydom
-      script: xvfb-run npm run test
-
-    - env: JOB=test POLYFILLS=wc-shadydom,wc-ce
-      script: xvfb-run npm run test
-
-    - env: JOB=test POLYFILLS=wc-shadydom,wc-ce,wc-shimcssproperties
-      script: xvfb-run npm run test
+    # - env: JOB=test POLYFILLS=wc-shadydom
+    #   script: xvfb-run npm run test
+    #
+    # - env: JOB=test POLYFILLS=wc-shadydom,wc-ce
+    #   script: xvfb-run npm run test
+    #
+    # - env: JOB=test POLYFILLS=wc-shadydom,wc-ce,wc-shimcssproperties
+    #   script: xvfb-run npm run test
 
     - env: JOB=benchmark
       script: ./travis-bench.sh
