@@ -70,11 +70,12 @@ const assert = chai.assert;
  * run babel-compiled tests on those browsers.
  *
  * The presence of the function `_coalesceClassElements` means we're running the
- * babelized version of the test.  Using eval here to get around TypeScript's
- * rightly pointing out this doesn't exist, and we can't declare it because
- * babel prepends the file with it instead of appending it.
+ * babelized version of the test.
  */
-const builtWithBabel = eval('typeof _coalesceClassElements') === 'function';
+
+// @ts-ignore:2304 - Suppress missing identifier error for
+//                   undefined function `_coalesceClassElements`
+const builtWithBabel = typeof _coalesceClassElements === 'function';
 /**
  * The babelized output expects Array.find and configurable function name
  * property, so we will say that the babel-built version of this module is

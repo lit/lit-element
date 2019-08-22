@@ -11,6 +11,8 @@
  * subject to an additional IP rights grant found at
  * http://polymer.github.io/PATENTS.txt
  */
+require('source-map-support/register');
+
 module.exports = (config) => {
   config.set({
     browsers: [...localBrowsers, ...Object.keys(sauceBrowsers)],
@@ -49,7 +51,7 @@ module.exports = (config) => {
 };
 
 const polyfills = (process.env.POLYFILLS || '').split(',').filter(Boolean);
-console.log('\n---\n\nPOLYFILLS:', polyfills, '\n\n---\n');
+console.log('\n---\nPOLYFILLS:', polyfills, '\n---');
 const localBrowsers = (process.env.KARMA_LOCAL_BROWSERS || '')
   .split(',').filter(Boolean);
 const sauceBrowsers = parseBrowserSpecs(process.env.KARMA_SAUCE_BROWSERS || '');
