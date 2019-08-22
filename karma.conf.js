@@ -30,7 +30,7 @@ module.exports = (config) => {
       { pattern: 'test/lib/decorators-babel_test.js', type: 'module' }
     ].filter(Boolean),
     logLevel: config.LOG_INFO,
-    reporters: ['spec']
+    reporters: ['brief']
   });
 
   if (runTestsOnSauce) {

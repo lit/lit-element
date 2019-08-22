@@ -51,6 +51,7 @@
     "chai": "^4.0.2",
     "clang-format": "^1.2.4",
     "karma": "^4.1.0",
+    "karma-brief-reporter": "^0.2.0",
     "karma-chai": "^0.1.0",
     "karma-chrome-launcher": "^2.2.0",
     "karma-firefox-launcher": "^1.1.0",
