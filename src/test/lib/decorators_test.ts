@@ -64,7 +64,27 @@ const supportsPassive = (function() {
 
 const assert = chai.assert;
 
-suite('decorators', () => {
+/**
+ * Currently Babel decorator compilation does not work on some older
+ * browsers due to use of some newish features; detect these and don't
+ * run babel-compiled tests on those browsers.
+ *
+ * The presence of the function `_coalesceClassElements` means we're running the
+ * babelized version of the test.  Using eval here to get around TypeScript's
+ * rightly pointing out this doesn't exist, and we can't declare it because
+ * babel prepends the file with it instead of appending it.
+ */
+const builtWithBabel = eval('typeof _coalesceClassElements') === 'function';
+/**
+ * The babelized output expects Array.find and configurable function name
+ * property, so we will say that the babel-built version of this module is
+ * "valid" only when these things are both true.
+ */
+const fnNameDesc = Object.getOwnPropertyDescriptor(function() {}, 'name');
+const babelBuildValid = fnNameDesc && fnNameDesc.configurable && [].find;
+const suiteOrSkip = (!builtWithBabel || babelBuildValid) ? suite : suite.skip;
+
+suiteOrSkip(builtWithBabel ? 'decorators (babel)' : 'decorators', () => {
   let container: HTMLElement;
 
   setup(() => {

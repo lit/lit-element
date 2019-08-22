@@ -14,15 +14,16 @@
 module.exports = (config) => {
   config.set({
     browsers: [...localBrowsers, ...Object.keys(sauceBrowsers)],
-    client: {runInParent: true, mocha: {ui: 'tdd'}},
+    client: { runInParent: true, mocha: { ui: 'tdd' } },
     frameworks: ['mocha', 'chai', 'source-map-support'],
     files: [
       'node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js',
-      {pattern: 'test/lit-element_test.js', type: 'module'},
-      {pattern: 'test/lit-element_styling_test.js', type: 'module'},
-      {pattern: 'test/lib/decorators_test.js', type: 'module'},
-      {pattern: 'test/lib/updating-element_test.js', type: 'module'}
-    ],
+      { pattern: 'test/lit-element_test.js', type: 'module' },
+      { pattern: 'test/lit-element_styling_test.js', type: 'module' },
+      { pattern: 'test/lib/decorators_test.js', type: 'module' },
+      { pattern: 'test/lib/updating-element_test.js', type: 'module' },
+      { pattern: 'test/lib/decorators-babel_test.js', type: 'module' }
+    ].filter(Boolean),
     logLevel: config.LOG_INFO,
     reporters: ['spec']
   });
@@ -44,11 +45,13 @@ module.exports = (config) => {
   }
 };
 
-const localBrowsers =
-    (process.env.KARMA_LOCAL_BROWSERS || '').split(',').filter(Boolean);
+const localBrowsers = (process.env.KARMA_LOCAL_BROWSERS || '')
+  .split(',').filter(Boolean);
 const sauceBrowsers = parseBrowserSpecs(process.env.KARMA_SAUCE_BROWSERS || '');
-const runTestsOnSauce = process.env.SAUCE_USERNAME &&
-    process.env.SAUCE_ACCESS_KEY && Object.keys(sauceBrowsers).length > 0;
+const runTestsOnSauce =
+  process.env.SAUCE_USERNAME &&
+  process.env.SAUCE_ACCESS_KEY &&
+  Object.keys(sauceBrowsers).length > 0;
 
 /**
  * Format of browsersList is:
@@ -58,19 +61,23 @@ const runTestsOnSauce = process.env.SAUCE_USERNAME &&
  * ```
  */
 function parseBrowserSpecs(browsersList) {
-  return browsersList.split(',').filter(Boolean).reduce((browsers, spec) => {
-    const match =
-        spec.match(/([^/]+)(?:\/([^@]+))?(?:@([^:]+))?(?:\:(.+)\|(.+))?/);
-    if (match) {
-      browsers[spec.replace(/[^A-Za-z0-9]+/g, '_')] = {
-        base: 'SauceLabs',
-        platform: match[1],
-        browserName: match[2],
-        version: match[3],
-        deviceName: match[4],
-        deviceOrientation: match[5]
-      };
-    }
-    return browsers;
-  }, {});
+  return browsersList
+    .split(',')
+    .filter(Boolean)
+    .reduce((browsers, spec) => {
+      const match = spec.match(
+        /([^/]+)(?:\/([^@]+))?(?:@([^:]+))?(?:\:(.+)\|(.+))?/
+      )
+      if (match) {
+        browsers[spec.replace(/[^A-Za-z0-9]+/g, '_')] = {
+          base: 'SauceLabs',
+          platform: match[1],
+          browserName: match[2],
+          version: match[3],
+          deviceName: match[4],
+          deviceOrientation: match[5]
+        }
+      }
+      return browsers
+    }, {})
 }
