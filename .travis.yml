@@ -11,6 +11,7 @@ cache:
     - node_modules
 env:
   global:
+    - KARMA_LOCAL_BROWSERS="Chrome,Firefox" KARMA_SAUCE_BROWSERS="windows 10/microsoftedge@15,windows 10/microsoftedge@17,windows 8.1/internet explorer@11,os x 10.11/safari@9,os x 10.12/safari@10,macos 10.13/safari@11,Linux/chrome@41,Linux/firefox"
     - secure: mRVq6Gjuq8QOakh9llctKR615PMnKB6HUkLEpZFNHMSXSJryLsZFUAYS5d9TRVtgiaExMciOWQAuAly/08TwLcob1aDPPzs6e2cZK18lRny4o0O3Ax4Kp6cdE27RP2xVIbqyodsYgHbvbAC/3bCWCBWC89LRBL2hEiZZ2fyMu7a2PECH/S1A33D/x1gzzXlvuroMvfbTrPenV3Ps/ZL7R27EHjB6I8ktMUvULXeyI3jmsRtAiqfd6N70caW0mFJsl6Y6A9hWNd2AjdIPxbiLESpbSBFnOdixLwAs5RLudLLQz+so1i/tOuZldXs+iDHVB+iHRl2nj6WY+nbXEObePFhk3S7wA9c4SKNY9tfOzT/FYn96QZdSdVyqQnhyj67YqejF7wSLD4YNfp2llyDBHQAdVd4Z7y/qlsLxgPzdponzlKzecSfjl9Q7wDdWEpPQtQfwjd1nZ/eeGmFwHTlKUfcAkkNOvNteJGabJBXpgoNljHRuevBLsZyZnTw+NPGVnhBdOw7mrWE4vMt5wH64PIFJmJWrWTiyzgOXuP1lh3LirQvWYK4tvmeQvLWosESqz5c+DE5x382fjIHUmIflxOnBYMwTjx8OCbkrhN3kb2NFNz3MyBD9Dz+yYRmzPaUU10HNKlFf1U3bT/c/IUTTkY+VxXKtwPfmOfSJTpMhbvk=
     - secure: gHKVw3rluT5gBkkUALh9Rh8fYmtolE2TNBSOvblWI9JZuyHFKMTiyaL9BZJ98Yrr9mrlHcbOe3d+GwNs6wt+zLD3Bbqy8s3gqtOhNUBYXM/OcIcmrbnVSqnRCaxzckWsNKpYWG1q0fnbcBCv6AU+sDGT72JKigPqSPhfLUQBMgr3RVND1QW8ujcjdSE8NAa8OfKvigwNZjC1svOuRZTXae+E5smSWXx0BAZ2BTM9DbWEkOZXcaIRXUZL2PMuk01zxX9M/P5k7JUbRkR3VAlx6b9lL2dsjqawREBRu3pQ+3QX5V7fat/ach174zNjKcmiqzCjk+3jnPAbeXhxybYJmf/FDMuwU9/nuUDAyzetgZ4p5mDgL89XiDK6TijW16UwPE2djkMarFXoaGWp7VHsQ7rNWdp7fGcmSmvvRwJrQuDO3RgnBM3m+vqOw03vKQzeDCsUCgYXut+An5b6Tzya2X1rYPH6QuprRNySctCXvlz+ENyG/SPY7zirK9irc/MIMzEJb27jYgcdTSOwFIXfL48CHQj7kPtB05wPIhpElJnA5uKmavhH3zMJCDiBn8rRSCwwwSsivuQhFKbga80G/VCQBxvOs1il8JcqQU8JinlfFVGHn9Gji13gvIk3jIxPo+ZSOd4OCVMf4D0NrMBYzTVCFPyf/9bb7M+ii7Qt1ZE=
 matrix:
@@ -18,11 +19,18 @@ matrix:
   allow_failures:
     - env: JOB=benchmark
   include:
-    - env: JOB=test KARMA_LOCAL_BROWSERS="Chrome,Firefox" KARMA_SAUCE_BROWSERS="windows 10/microsoftedge@15,windows 10/microsoftedge@17,windows 8.1/internet explorer@11,os x 10.11/safari@9,os x 10.12/safari@10,macos 10.13/safari@11,Linux/chrome@41,Linux/firefox"
-      before_script:
-        - npm run lint
-      script:
-        - xvfb-run npm run test:polyfills
+    - env: JOB=test
+      before_script: npm run lint
+      script: xvfb-run npm run test
+
+    - env: JOB=test POLYFILLS=wc-shadydom
+      script: xvfb-run npm run test
+
+    - env: JOB=test POLYFILLS=wc-shadydom,wc-ce
+      script: xvfb-run npm run test
+
+    - env: JOB=test POLYFILLS=wc-shadydom,wc-ce,wc-shimcssproperties
+      script: xvfb-run npm run test
+
     - env: JOB=benchmark
-      script:
-        - ./travis-bench.sh
+      script: ./travis-bench.sh
