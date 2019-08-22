@@ -17,6 +17,9 @@ module.exports = (config) => {
     client: { runInParent: true, mocha: { ui: 'tdd' } },
     frameworks: ['mocha', 'chai', 'source-map-support'],
     files: [
+      polyfills.includes('wc-ce') && { pattern: 'test/wc-ce.html', type: 'dom' },
+      polyfills.includes('wc-shadydom') && { pattern: 'test/wc-shadydom.js', type: 'dom' },
+      polyfills.includes('wc-shimcssproperties') && { pattern: 'test/wc-shimcssproperties.js', type: 'dom' },
       'node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js',
       { pattern: 'test/lit-element_test.js', type: 'module' },
       { pattern: 'test/lit-element_styling_test.js', type: 'module' },
@@ -45,6 +48,8 @@ module.exports = (config) => {
   }
 };
 
+const polyfills = (process.env.POLYFILLS || '').split(',').filter(Boolean);
+console.log('\n---\n\nPOLYFILLS:', polyfills, '\n\n---\n');
 const localBrowsers = (process.env.KARMA_LOCAL_BROWSERS || '')
   .split(',').filter(Boolean);
 const sauceBrowsers = parseBrowserSpecs(process.env.KARMA_SAUCE_BROWSERS || '');
@@ -52,6 +57,15 @@ const runTestsOnSauce =
   process.env.SAUCE_USERNAME &&
   process.env.SAUCE_ACCESS_KEY &&
   Object.keys(sauceBrowsers).length > 0;
+
+/**
+ * Using data URLs since karma doesn't have a config
+ * option to inject inline scripts, which we'd use to
+ * turn polyfills on.
+ */
+function dataURL(code) {
+  return 'data:application/javascript;charset=utf-8;base64,' + btoa(code);
+}
 
 /**
  * Format of browsersList is:
