@@ -16,7 +16,7 @@ require('source-map-support/register');
 module.exports = (config) => {
   config.set({
     browsers: [...localBrowsers, ...Object.keys(sauceBrowsers)],
-    client: { runInParent: true, mocha: { ui: 'tdd' } },
+    client: { captureConsole: false, runInParent: true, mocha: { ui: 'tdd' } },
     frameworks: ['mocha', 'chai', 'source-map-support'],
     files: [
       polyfills.includes('wc-ce') && { pattern: 'test/wc-ce.html', type: 'dom' },
@@ -30,7 +30,7 @@ module.exports = (config) => {
       { pattern: 'test/lib/decorators-babel_test.js', type: 'module' }
     ].filter(Boolean),
     logLevel: config.LOG_INFO,
-    reporters: ['brief']
+    reporters: ['spec']
   });
 
   if (runTestsOnSauce) {
