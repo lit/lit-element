@@ -43,7 +43,8 @@ module.exports = (config) => {
       config.set({
         browserStack: {
           username: process.env.BROWSERSTACK_USERNAME,
-          accessKey: process.env.BROWSERSTACK_ACCESS_KEY
+          accessKey: process.env.BROWSERSTACK_ACCESS_KEY,
+          project: 'lit-element'
         },
         browserDisconnectTolerance: 5,
       });
