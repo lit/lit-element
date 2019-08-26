@@ -5,6 +5,7 @@ A simple base class for creating fast, lightweight web components with [lit-html
 [![Published on npm](https://img.shields.io/npm/v/lit-element.svg)](https://www.npmjs.com/package/lit-element)
 [![Published on webcomponents.org](https://img.shields.io/badge/webcomponents.org-published-blue.svg)](https://www.webcomponents.org/element/lit-element)
 [![Mentioned in Awesome lit-html](https://awesome.re/mentioned-badge.svg)](https://github.com/web-padawan/awesome-lit-html)
+[![BrowserStack Status](https://automate.browserstack.com/badge.svg?badge_key=TnM4R3dScWdhU1NRck1WejNtMmVoMzQrU2s5bnRtOVVGMmFkQWtEV25iST0tLTNiWEZVYldaV1VqY2oxTEVJV09XSFE9PQ==--e79a2e8601a562e5b200dfcd2d6a15416fd4ed5f)](https://automate.browserstack.com/public-build/TnM4R3dScWdhU1NRck1WejNtMmVoMzQrU2s5bnRtOVVGMmFkQWtEV25iST0tLTNiWEZVYldaV1VqY2oxTEVJV09XSFE9PQ==--e79a2e8601a562e5b200dfcd2d6a15416fd4ed5f)
 
 ## Documentation
 
