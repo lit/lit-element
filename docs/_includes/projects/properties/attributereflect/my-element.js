@@ -1,9 +1,11 @@
 import { LitElement, html } from 'lit-element';
 
 class MyElement extends LitElement {
-  static get properties() { return {
-    myProp: { reflect: true }
-  };}
+  static get properties() {
+    return {
+      myProp: { reflect: true }
+    };
+  }
 
   constructor() {
     super();
