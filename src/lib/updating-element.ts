@@ -204,7 +204,7 @@ const finalized = 'finalized';
  * properties change, the `update` method is asynchronously called. This method
  * should be supplied by subclassers to render updates as desired.
  */
-export abstract class UpdatingElement extends HTMLElement {
+export class UpdatingElement extends HTMLElement {
   /*
    * Due to closure compiler ES6 compilation bugs, @nocollapse is required on
    * all static methods and properties with initializers.  Reference:
@@ -216,18 +216,18 @@ export abstract class UpdatingElement extends HTMLElement {
    * `fooBar` property. Created lazily on user subclasses when finalizing the
    * class.
    */
-  private static _attributeToPropertyMap: AttributeMap;
+  static _attributeToPropertyMap: AttributeMap;
 
   /**
    * Marks class as having finished creating properties.
    */
-  protected static[finalized] = true;
+  static[finalized] = true;
 
   /**
    * Memoized list of all class properties, including any superclass properties.
    * Created lazily on user subclasses when finalizing the class.
    */
-  private static _classProperties?: PropertyDeclarationMap;
+  static _classProperties?: PropertyDeclarationMap;
 
   /**
    * User-supplied object that maps property names to `PropertyDeclaration`
@@ -261,7 +261,7 @@ export abstract class UpdatingElement extends HTMLElement {
    * ensure the `@property` decorator can add property metadata.
    */
   /** @nocollapse */
-  private static _ensureClassProperties() {
+  static _ensureClassProperties() {
     // ensure private storage for property declarations.
     if (!this.hasOwnProperty(
             JSCompiler_renameProperty('_classProperties', this))) {
@@ -322,7 +322,7 @@ export abstract class UpdatingElement extends HTMLElement {
    * any superclasses are also finalized.
    * @nocollapse
    */
-  protected static finalize() {
+  static finalize() {
     // finalize any superclasses
     const superCtor = Object.getPrototypeOf(this);
     if (!superCtor.hasOwnProperty(finalized)) {
@@ -359,7 +359,7 @@ export abstract class UpdatingElement extends HTMLElement {
    * Returns the property name for the given attribute `name`.
    * @nocollapse
    */
-  private static _attributeNameForProperty(
+  static _attributeNameForProperty(
       name: PropertyKey, options: PropertyDeclaration) {
     const attribute = options.attribute;
     return attribute === false ?
@@ -375,7 +375,7 @@ export abstract class UpdatingElement extends HTMLElement {
    * option for the property if present or a strict identity check.
    * @nocollapse
    */
-  private static _valueHasChanged(
+  static _valueHasChanged(
       value: unknown, old: unknown, hasChanged: HasChanged = notEqual) {
     return hasChanged(value, old);
   }
@@ -386,13 +386,13 @@ export abstract class UpdatingElement extends HTMLElement {
    * `converter` or `converter.fromAttribute` property option.
    * @nocollapse
    */
-  private static _propertyValueFromAttribute(
+  static _propertyValueFromAttribute(
       value: string|null, options: PropertyDeclaration) {
     const type = options.type;
     const converter = options.converter || defaultConverter;
     const fromAttribute =
         (typeof converter === 'function' ? converter : converter.fromAttribute);
-    return fromAttribute ? fromAttribute(value, type) : value;
+    return fromAttribute ? fromAttribute(value!, type) : value;
   }
 
   /**
@@ -403,7 +403,7 @@ export abstract class UpdatingElement extends HTMLElement {
    * This uses the property's `reflect` and `type.toAttribute` property options.
    * @nocollapse
    */
-  private static _propertyValueToAttribute(
+  static _propertyValueToAttribute(
       value: unknown, options: PropertyDeclaration) {
     if (options.reflect === undefined) {
       return;
@@ -416,21 +416,21 @@ export abstract class UpdatingElement extends HTMLElement {
     return toAttribute!(value, type);
   }
 
-  private _updateState: UpdateState = 0;
-  private _instanceProperties: PropertyValues|undefined = undefined;
-  private _updatePromise: Promise<unknown> = microtaskPromise;
-  private _hasConnectedResolver: (() => void)|undefined = undefined;
+  _updateState: UpdateState = 0;
+  _instanceProperties: PropertyValues|undefined = undefined;
+  _updatePromise: Promise<unknown> = microtaskPromise;
+  _hasConnectedResolver: (() => void)|undefined = undefined;
 
   /**
    * Map with keys for any properties that have changed since the last
    * update cycle with previous values.
    */
-  private _changedProperties: PropertyValues = new Map();
+  _changedProperties: PropertyValues = new Map();
 
   /**
    * Map with keys of properties that should be reflected when updated.
    */
-  private _reflectingProperties: Map<PropertyKey, PropertyDeclaration>|
+  _reflectingProperties: Map<PropertyKey, PropertyDeclaration>|
       undefined = undefined;
 
   constructor() {
@@ -442,7 +442,7 @@ export abstract class UpdatingElement extends HTMLElement {
    * Performs element initialization. By default captures any pre-set values for
    * registered properties.
    */
-  protected initialize() {
+  initialize() {
     this._saveInstanceProperties();
     // ensures first update will be caught by an early access of
     // `updateComplete`
@@ -461,7 +461,7 @@ export abstract class UpdatingElement extends HTMLElement {
    * this.id = 'id' in the constructor, the 'id' will become '' since this is
    * the native platform default).
    */
-  private _saveInstanceProperties() {
+  _saveInstanceProperties() {
     // Use forEach so this works even if for/of loops are compiled to for loops
     // expecting arrays
     (this.constructor as typeof UpdatingElement)
@@ -480,7 +480,7 @@ export abstract class UpdatingElement extends HTMLElement {
   /**
    * Applies previously saved instance properties.
    */
-  private _applyInstanceProperties() {
+  _applyInstanceProperties() {
     // Use forEach so this works even if for/of loops are compiled to for loops
     // expecting arrays
     // tslint:disable-next-line:no-any
@@ -517,7 +517,7 @@ export abstract class UpdatingElement extends HTMLElement {
     }
   }
 
-  private _propertyToAttribute(
+  _propertyToAttribute(
       name: PropertyKey, value: unknown,
       options: PropertyDeclaration = defaultPropertyDeclaration) {
     const ctor = (this.constructor as typeof UpdatingElement);
@@ -547,7 +547,7 @@ export abstract class UpdatingElement extends HTMLElement {
     }
   }
 
-  private _attributeToProperty(name: string, value: string|null) {
+  _attributeToProperty(name: string, value: string|null) {
     // Use tracking info to avoid deserializing attribute value if it was
     // just set from a property setter.
     if (this._updateState & STATE_IS_REFLECTING_TO_ATTRIBUTE) {
@@ -573,7 +573,7 @@ export abstract class UpdatingElement extends HTMLElement {
    * `updateComplete` promise. This promise can be overridden and is therefore
    * not free to access.
    */
-  private _requestUpdate(name?: PropertyKey, oldValue?: unknown) {
+  _requestUpdate(name?: PropertyKey, oldValue?: unknown) {
     let shouldRequestUpdate = true;
     // If we have a property key, perform property update steps.
     if (name !== undefined) {
@@ -627,7 +627,7 @@ export abstract class UpdatingElement extends HTMLElement {
   /**
    * Sets up the element to asynchronously update.
    */
-  private async _enqueueUpdate() {
+  async _enqueueUpdate() {
     // Mark state updating...
     this._updateState = this._updateState | STATE_UPDATE_REQUESTED;
     let resolve!: (r: boolean) => void;
@@ -663,15 +663,15 @@ export abstract class UpdatingElement extends HTMLElement {
     resolve(!this._hasRequestedUpdate);
   }
 
-  private get _hasConnected() {
+  get _hasConnected() {
     return (this._updateState & STATE_HAS_CONNECTED);
   }
 
-  private get _hasRequestedUpdate() {
+  get _hasRequestedUpdate() {
     return (this._updateState & STATE_UPDATE_REQUESTED);
   }
 
-  protected get hasUpdated() {
+  get hasUpdated() {
     return (this._updateState & STATE_HAS_UPDATED);
   }
 
@@ -685,13 +685,13 @@ export abstract class UpdatingElement extends HTMLElement {
    * For instance, to schedule updates to occur just before the next frame:
    *
    * ```
-   * protected async performUpdate(): Promise<unknown> {
+   * async performUpdate(): Promise<unknown> {
    *   await new Promise((resolve) => requestAnimationFrame(() => resolve()));
    *   super.performUpdate();
    * }
    * ```
    */
-  protected performUpdate(): void|Promise<unknown> {
+  performUpdate(): void|Promise<unknown> {
     // Mixin instance properties once, if they exist.
     if (this._instanceProperties) {
       this._applyInstanceProperties();
@@ -721,7 +721,7 @@ export abstract class UpdatingElement extends HTMLElement {
     }
   }
 
-  private _markUpdated() {
+  _markUpdated() {
     this._changedProperties = new Map();
     this._updateState = this._updateState & ~STATE_UPDATE_REQUESTED;
   }
@@ -761,7 +761,7 @@ export abstract class UpdatingElement extends HTMLElement {
    *     }
    *   }
    */
-  protected _getUpdateComplete() {
+  _getUpdateComplete() {
     return this._updatePromise;
   }
 
@@ -772,7 +772,7 @@ export abstract class UpdatingElement extends HTMLElement {
    *
    * @param _changedProperties Map of changed properties with old values
    */
-  protected shouldUpdate(_changedProperties: PropertyValues): boolean {
+  shouldUpdate(_changedProperties: PropertyValues): boolean {
     return true;
   }
 
@@ -784,7 +784,7 @@ export abstract class UpdatingElement extends HTMLElement {
    *
    * @param _changedProperties Map of changed properties with old values
    */
-  protected update(_changedProperties: PropertyValues) {
+  update(_changedProperties: PropertyValues) {
     if (this._reflectingProperties !== undefined &&
         this._reflectingProperties.size > 0) {
       // Use forEach so this works even if for/of loops are compiled to for
@@ -804,7 +804,7 @@ export abstract class UpdatingElement extends HTMLElement {
    *
    * @param _changedProperties Map of changed properties with old values
    */
-  protected updated(_changedProperties: PropertyValues) {
+  updated(_changedProperties: PropertyValues) {
   }
 
   /**
@@ -816,6 +816,6 @@ export abstract class UpdatingElement extends HTMLElement {
    *
    * @param _changedProperties Map of changed properties with old values
    */
-  protected firstUpdated(_changedProperties: PropertyValues) {
+  firstUpdated(_changedProperties: PropertyValues) {
   }
 }
