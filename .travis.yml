@@ -5,7 +5,6 @@ node_js: '9'
 addons:
   firefox: latest
   chrome: stable
-  sauce_connect: true
 cache:
   directories:
   - node_modules
