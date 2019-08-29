@@ -21,7 +21,7 @@ module.exports = (config) => {
       browsers: [...browsers, ...Object.keys(customLaunchers)],
       client: {captureConsole: false, runInParent: true, mocha: {ui: 'tdd'}},
       frameworks: ['mocha', 'chai', 'source-map-support'],
-      concurrency: 2,
+      concurrency: 1,
       files: [
         polyfills.includes('wc-ce') &&
             {pattern: 'test/wc-ce.html', type: 'dom'},
