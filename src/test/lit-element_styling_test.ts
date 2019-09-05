@@ -799,7 +799,7 @@ suite('Static get styles', () => {
         assert.equal(bodyStyles, '.my-module { color: yellow; }');
       });
 
-  test.only(
+  test(
       'Styles are not removed if the first rendered value is undefined.',
       async () => {
         const localName = generateElementName();
