@@ -11,7 +11,6 @@
  * subject to an additional IP rights grant found at
  * http://polymer.github.io/PATENTS.txt
  */
-import {TemplateResult} from 'lit-html';
 import {render} from 'lit-html/lib/shady-render.js';
 
 import {PropertyValues, UpdatingElement} from './lib/updating-element.js';
@@ -68,10 +67,10 @@ export class LitElement extends UpdatingElement {
    * optimizations. See updating-element.ts for more information.
    */
   protected static['finalized'] = true;
+
   /**
-   * Render method used to render the lit-html TemplateResult to the element's
-   * DOM.
-   * @param {TemplateResult} Template to render.
+   * Render method used to render the value to the element's DOM.
+   * @param {unknown} The value to render.
    * @param {Element|DocumentFragment} Node into which to render.
    * @param {String} Element name.
    * @nocollapse
@@ -233,10 +232,12 @@ export class LitElement extends UpdatingElement {
   }
 
   /**
-   * Invoked on each update to perform rendering tasks. This method must return
-   * a lit-html TemplateResult. Setting properties inside this method will *not*
-   * trigger the element to update.
+   * Invoked on each update to perform rendering tasks. This method may return
+   * any value renderable by lit-html's NodePart - typically a TemplateResult.
+   * Setting properties inside this method will *not* trigger the element to
+   * update.
    */
-  protected render(): TemplateResult|void {
+  protected render(): unknown {
+    return undefined;
   }
 }
