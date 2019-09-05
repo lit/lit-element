@@ -25,7 +25,7 @@ import {LitElement} from '../lit-element.js';
 import {PropertyDeclaration, UpdatingElement} from './updating-element.js';
 
 export type Constructor<T> = {
-  new (...args: unknown[]): T
+  new (...args: any[]): T
 };
 
 // From the TC39 Decorators proposal
