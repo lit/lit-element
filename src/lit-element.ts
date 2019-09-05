@@ -11,7 +11,7 @@
  * subject to an additional IP rights grant found at
  * http://polymer.github.io/PATENTS.txt
  */
-import {render} from 'lit-html/lib/shady-render.js';
+import {render, ShadyRenderOptions} from 'lit-html/lib/shady-render.js';
 
 import {PropertyValues, UpdatingElement} from './lib/updating-element.js';
 
@@ -58,7 +58,6 @@ const flattenStyles = (styles: CSSResultArray): CSSResult[] =>
     styles.flat ? styles.flat(Infinity) : arrayFlat(styles);
 
 export class LitElement extends UpdatingElement {
-
   /**
    * Ensure this class is marked as `finalized` as an optimization ensuring
    * it will not needlessly try to `finalize`.
@@ -70,12 +69,14 @@ export class LitElement extends UpdatingElement {
 
   /**
    * Render method used to render the value to the element's DOM.
-   * @param {unknown} The value to render.
-   * @param {Element|DocumentFragment} Node into which to render.
-   * @param {String} Element name.
+   * @param result The value to render.
+   * @param container Node into which to render.
+   * @param options Element name.
    * @nocollapse
    */
-  static render = render;
+  static render:
+      (result: unknown, container: Element|DocumentFragment,
+       options: ShadyRenderOptions) => void = render;
 
   /**
    * Array of styles to apply to the element. The styles should be defined
