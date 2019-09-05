@@ -54,3 +54,40 @@ API docs unless you're making changes to the doc comments in the lit-element sou
 To regenerate the API docs and rebuild the  site, run the following command:
 
 `npm run build-all`
+
+### Deployment
+
+To build and deploy a new version of the site:
+
+```bash
+npm run deploy
+```
+
+(You must have permission to update the App Engine project to deploy the site.)
+
+The site is staged at a new URL (for example, `https://20181207t151022-dot-polymer-lit-element.appspot.com`). When ready, use the App Engine console to migrate traffic to the new version.
+
+Sometimes it's useful to stage to a specific, named version. For example, when 
+iterating on a new doc or design change, you may want to stage to an easily-to-remember
+version name, like `new-tooling-section`. 
+
+To push to a named App Engine version, specify the version on the command line:
+
+```bash
+npm run deploy -- --version=<VERSION>
+```
+
+This command stages the docs at `https://<VERSION>-dot-polymer-lit-element.appspot.com`.
+
+By specifying the version on the command line,  you can update an existing staged version.
+
+To make a staged version live, migrate traffic in the App Engine console or from the 
+command line:
+
+```bash
+gcloud app services set-traffic --splits <VERSION>=1
+```
+
+
+
+
