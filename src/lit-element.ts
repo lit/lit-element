@@ -242,4 +242,60 @@ export class LitElement extends UpdatingElement {
    */
   protected render(): TemplateResult|void {
   }
+
+  /** @nocollapse */
+  static notifyOnHotModuleReload(tagname: string, classObj: typeof LitElement) {
+    if (goog.DEBUG) {
+      // There's lots of things that this doesn't handle, but probably the
+      // biggest is updates to the constructor. That means that changes to event
+      // handlers won't go through when they're defined as arrow function
+      // property initializers. We could potentially hack that together, via
+      // some really wild tricks, but I'm inclined not to. Periodically
+      // reloading the page while developing with HMR is a good habit for people
+      // to get into.
+      //
+      // One thing I'd like to support is live updating of CSS defined in a
+      // css file with lit_css_module.
+      const existingProps = new Set(Object.getOwnPropertyNames(this.prototype));
+      const newProps = new Set(Object.getOwnPropertyNames(classObj.prototype));
+      for (const prop of Object.getOwnPropertyNames(classObj.prototype)) {
+        Object.defineProperty(
+            this.prototype, prop,
+            Object.getOwnPropertyDescriptor(classObj.prototype, prop)!);
+      }
+      for (const existingProp of existingProps) {
+        if (!newProps.has(existingProp)) {
+          // tslint:disable-next-line:no-any Also hacky
+          delete (this.prototype as any)[existingProp];
+        }
+      }
+
+      // This new class object has never been finalized before. Need to finalize
+      // so that instances can get any updated styles.
+      classObj.finalize();
+
+      for (const node of shadowPiercingWalk(document)) {
+        if (node instanceof HTMLElement &&
+            node.tagName.toLowerCase() === tagname.toLowerCase()) {
+          const myNode = node as LitElement;
+          // Get updated styling. Need to test that this works in all the
+          // different browser configs, only tested on recent Chrome so far,
+          // where overriding adopted stylesheets seems to just work.
+          myNode.adoptStyles();
+          if (!supportsAdoptingStyleSheets) {
+            const nodes = Array.from(myNode.renderRoot.children);
+            for (const node of nodes) {
+              // TODO(rictic): this is super hacky and doesn't always work,
+              //   even for inline styles.
+              if ((node as HTMLElement).tagName.toLowerCase() === 'style') {
+                myNode.renderRoot.removeChild(node);
+              }
+            }
+          }
+          // Ask for a re-render.
+          myNode.requestUpdate();
+        }
+      }
+    }
+  }
 }

@@ -47,6 +47,32 @@ export class CSSResult {
   toString(): string {
     return this.cssText;
   }
+
+  /**
+   * Used when generating files at build time that transform .css files
+   * into something like CSS Modules that export CSSResults.
+   *
+   * Does nothing in production, and doesn't replace existing references
+   * unless the current browser supports adopting stylesheets (at time of
+   * writing that Chrome only).
+   *
+   * We could support replacing styles cross-browser,
+   * but it would be very tricky to do so without leaking memory, becasue we'd
+   * need to keep track of every style element that `this` is written into.
+   * This actually seems like a legit use case for WeakRefs.
+   */
+  notifyOnHotModuleReload(newVal: CSSResult) {
+    if (goog.DEBUG) {
+      const sheet = this.styleSheet;
+      // Only works with constructable stylesheets
+      if (sheet === null) {
+        return;
+      }
+      // tslint:disable-next-line:no-any hot module reload writes readonly prop.
+      (this as any).cssText = newVal.cssText;
+      sheet.replaceSync(newVal.cssText);
+    }
+  }
 }
 
 /**
