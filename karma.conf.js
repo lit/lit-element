@@ -33,9 +33,9 @@ module.exports = (config) => {
         polyfills.includes('wc-ce') &&
             {pattern: 'test/wc-ce.html', type: 'dom'},
         polyfills.includes('wc-shadydom') &&
-            {pattern: 'test/wc-shadydom.js', type: 'dom'},
+            {pattern: 'test/wc-shadydom.html', type: 'dom'},
         polyfills.includes('wc-shimcssproperties') &&
-            {pattern: 'test/wc-shimcssproperties.js', type: 'dom'},
+            {pattern: 'test/wc-shimcssproperties.html', type: 'dom'},
         'node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js',
         {pattern: 'test/lit-element_test.js', type: 'module'},
         {pattern: 'test/lit-element_styling_test.js', type: 'module'},
