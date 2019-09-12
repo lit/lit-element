@@ -25,6 +25,7 @@ import {LitElement} from '../lit-element.js';
 import {PropertyDeclaration, UpdatingElement} from './updating-element.js';
 
 export type Constructor<T> = {
+  // tslint:disable:no-any
   new (...args: any[]): T
 };
 
