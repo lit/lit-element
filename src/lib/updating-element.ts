@@ -603,7 +603,7 @@ export abstract class UpdatingElement extends HTMLElement {
       }
     }
     if (!this._hasRequestedUpdate && shouldRequestUpdate) {
-      this._enqueueUpdate();
+      this._updatePromise = this._enqueueUpdate();
     }
   }
 
@@ -628,26 +628,24 @@ export abstract class UpdatingElement extends HTMLElement {
   /**
    * Sets up the element to asynchronously update.
    */
-  private _enqueueUpdate() {
+  private async _enqueueUpdate() {
     this._updateState = this._updateState | STATE_UPDATE_REQUESTED;
-    this._updatePromise = (async () => {
-      try {
-        // Ensure any previous update has resolved before updating.
-        // This `await` also ensures that property changes are batched.
-        await this._updatePromise;
-      } catch (e) {
-        // Ignore any previous errors. We only care that the previous cycle is
-        // done. Any error should have been handled in the previous update.
-      }
-      const result = this.performUpdate();
-      // If `performUpdate` returns a Promise, we await it. This is done to
-      // enable coordinating updates with a scheduler. Note, the result is
-      // checked to avoid delaying an additional microtask unless we need to.
-      if (result != null) {
-        await result;
-      }
-      return !this._hasRequestedUpdate;
-    })();
+    try {
+      // Ensure any previous update has resolved before updating.
+      // This `await` also ensures that property changes are batched.
+      await this._updatePromise;
+    } catch (e) {
+      // Ignore any previous errors. We only care that the previous cycle is
+      // done. Any error should have been handled in the previous update.
+    }
+    const result = this.performUpdate();
+    // If `performUpdate` returns a Promise, we await it. This is done to
+    // enable coordinating updates with a scheduler. Note, the result is
+    // checked to avoid delaying an additional microtask unless we need to.
+    if (result != null) {
+      await result;
+    }
+    return !this._hasRequestedUpdate;
   }
 
   private get _hasRequestedUpdate() {
