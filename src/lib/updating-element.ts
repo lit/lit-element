@@ -180,8 +180,6 @@ const defaultPropertyDeclaration: PropertyDeclaration = {
   hasChanged: notEqual
 };
 
-const microtaskPromise = Promise.resolve(true);
-
 const STATE_HAS_UPDATED = 1;
 const STATE_UPDATE_REQUESTED = 1 << 2;
 const STATE_IS_REFLECTING_TO_ATTRIBUTE = 1 << 3;
@@ -418,8 +416,11 @@ export abstract class UpdatingElement extends HTMLElement {
 
   private _updateState: UpdateState = 0;
   private _instanceProperties: PropertyValues|undefined = undefined;
-  private _updatePromise: Promise<unknown> = microtaskPromise;
-  private _hasConnectedResolver: (() => void)|undefined = undefined;
+  // Initialize to an unresolved Promise so we can make sure the element has
+  // connected before first update.
+  private _updatePromise =
+      new Promise((res) => this._hasConnectedResolver = res);
+  private _hasConnectedResolver: (() => void)|undefined;
 
   /**
    * Map with keys for any properties that have changed since the last
@@ -645,10 +646,6 @@ export abstract class UpdatingElement extends HTMLElement {
       // Ignore any previous errors. We only care that the previous cycle is
       // done. Any error should have been handled in the previous update.
     }
-    // Make sure the element has connected before updating.
-    if (!this._hasConnected) {
-      await new Promise((res) => this._hasConnectedResolver = res);
-    }
     try {
       const result = this.performUpdate();
       // If `performUpdate` returns a Promise, we await it. This is done to
@@ -661,10 +658,6 @@ export abstract class UpdatingElement extends HTMLElement {
       reject(e);
     }
     resolve(!this._hasRequestedUpdate);
-  }
-
-  private get _hasConnected() {
-    return (this._updateState & STATE_HAS_CONNECTED);
   }
 
   private get _hasRequestedUpdate() {
