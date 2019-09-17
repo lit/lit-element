@@ -691,7 +691,8 @@ export abstract class UpdatingElement extends HTMLElement {
       throw e;
     } finally {
       // Ensure element can accept additional updates after an exception.
-      this._markUpdated();
+      this._changedProperties = new Map();
+      this._updateState = this._updateState & ~STATE_UPDATE_REQUESTED;
     }
     if (shouldUpdate) {
       if (!(this._updateState & STATE_HAS_UPDATED)) {
@@ -700,11 +701,6 @@ export abstract class UpdatingElement extends HTMLElement {
       }
       this.updated(changedProperties);
     }
-  }
-
-  private _markUpdated() {
-    this._changedProperties = new Map();
-    this._updateState = this._updateState & ~STATE_UPDATE_REQUESTED;
   }
 
   /**
