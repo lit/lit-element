@@ -390,7 +390,7 @@ export abstract class UpdatingElement extends HTMLElement {
     const converter = options.converter || defaultConverter;
     const fromAttribute =
         (typeof converter === 'function' ? converter : converter.fromAttribute);
-    return fromAttribute ? fromAttribute(value, type) : value;
+    return fromAttribute ? fromAttribute(value!, type) : value;
   }
 
   /**

@@ -65,7 +65,7 @@ export const unsafeCSS = (value: unknown) => {
   return new CSSResult(String(value), constructionToken);
 };
 
-const textFromCSS = (value: CSSResult|CSSPartRuleSet) => {
+const textFromCSS = (value: CSSResult|CSSPartRuleSet|number) => {
   if (value instanceof CSSResult || value instanceof CSSPartRuleSet) {
     return value.toString();
   } else if (typeof value === 'number') {
@@ -84,7 +84,7 @@ const textFromCSS = (value: CSSResult|CSSPartRuleSet) => {
  * used. To incorporate non-literal values `unsafeCSS` may be used inside a
  * template string part.
  */
-export const css = (strings: TemplateStringsArray, ...values: (CSSResult|CSSPartRuleSet)[]) => {
+export const css = (strings: TemplateStringsArray, ...values: (CSSResult|CSSPartRuleSet|number)[]) => {
   const parts: CSSPartRuleSet[] = [];
   const cssText = values.reduce(
       (acc, v, idx) => {

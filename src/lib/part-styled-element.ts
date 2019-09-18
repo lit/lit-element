@@ -189,8 +189,8 @@ export class PartStyledElement extends LitElement {
     this._exportPartChildren.forEach(async (child) => {
       const inner = (child as PartStyledElement).exportParts!.get(part);
       if (inner) {
-        await child.updateComplete;
-        child.addExportPartStyle(inner, rule, ++distance);
+        await (child as PartStyledElement).updateComplete;
+        (child as PartStyledElement).addExportPartStyle(inner, rule, ++distance);
       }
     });
   }
@@ -208,8 +208,8 @@ export class PartStyledElement extends LitElement {
     this._exportPartChildren.forEach(async (child) => {
       const inner = (child as PartStyledElement).exportParts!.get(part);
       if (inner) {
-        await child.updateComplete;
-        child.removeExportPartStyle(inner, rule, ++distance);
+        await (child as PartStyledElement).updateComplete;
+        (child as PartStyledElement).removeExportPartStyle(inner, rule, ++distance);
       }
     });
   }
@@ -342,7 +342,7 @@ export class PartStyledElement extends LitElement {
   // https://bugs.chromium.org/p/chromium/issues/detail?id=955524
   private _getSlottedParts() {
     let assignedSlot = this.assignedSlot;
-    const slottedParts = new Set();
+    const slottedParts: Set<CSSPartRule> = new Set();
     while (assignedSlot) {
       const slotHost = (assignedSlot.getRootNode() as ShadowRoot).host;
       if (slotHost) {
