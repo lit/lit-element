@@ -97,6 +97,24 @@
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-comment">
+				<div class="tsd-comment tsd-typography">
+					<dl class="tsd-comment-tags">
+						<dt>license</dt>
+						<dd><p>Copyright (c) 2017 The Polymer Project Authors. All rights reserved.
+								This code may only be used under the BSD style license found at
+								<a href="http://polymer.github.io/LICENSE.txt">http://polymer.github.io/LICENSE.txt</a>
+								The complete set of authors may be found at
+								<a href="http://polymer.github.io/AUTHORS.txt">http://polymer.github.io/AUTHORS.txt</a>
+								The complete set of contributors may be found at
+								<a href="http://polymer.github.io/CONTRIBUTORS.txt">http://polymer.github.io/CONTRIBUTORS.txt</a>
+								Code distributed by Google as part of the polymer project is also
+								subject to an additional IP rights grant found at
+							<a href="http://polymer.github.io/PATENTS.txt">http://polymer.github.io/PATENTS.txt</a></p>
+						</dd>
+					</dl>
+				</div>
+			</section>
 			<section class="tsd-panel-group tsd-index-group">
 				<h2>Index</h2>
 				<section class="tsd-panel tsd-index-panel">
@@ -104,7 +122,7 @@
 						<section class="tsd-index-section ">
 							<h3>Type aliases</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-type-alias tsd-parent-kind-external-module"><a href="_lib_decorators_.html#constructor" class="tsd-kind-icon">Constructor</a></li>
+								<li class="tsd-kind-type-alias tsd-parent-kind-external-module tsd-has-type-parameter"><a href="_lib_decorators_.html#constructor" class="tsd-kind-icon">Constructor</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
@@ -122,13 +140,13 @@
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Type aliases</h2>
-				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-parent-kind-external-module">
+				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-parent-kind-external-module tsd-has-type-parameter">
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>Constructor</h3>
 					<div class="tsd-signature tsd-kind-icon">Constructor<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/36e1991/src/lib/decorators.ts#L19">lib/decorators.ts:19</a></li>
+							<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/4b0c88c/src/lib/decorators.ts#L27">lib/decorators.ts:27</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-type-declaration">
@@ -142,7 +160,7 @@
 				<h2>Functions</h2>
 				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
 					<a name="customelement" class="tsd-anchor"></a>
-					<h3>custom<wbr>Element</h3>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> custom<wbr>Element</h3>
 					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
 						<li class="tsd-signature tsd-kind-icon">custom<wbr>Element<span class="tsd-signature-symbol">(</span>tagName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">(Anonymous function)</span></li>
 					</ul>
@@ -150,7 +168,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/36e1991/src/lib/decorators.ts#L71">lib/decorators.ts:71</a></li>
+									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/4b0c88c/src/lib/decorators.ts#L79">lib/decorators.ts:79</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -183,7 +201,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/36e1991/src/lib/decorators.ts#L245">lib/decorators.ts:245</a></li>
+									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/4b0c88c/src/lib/decorators.ts#L253">lib/decorators.ts:253</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -191,18 +209,34 @@
 									<p>Adds event listener options to a method used as an event listener in a
 									lit-html template.</p>
 								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre><code><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyElement</span> </span>{
+
+  clicked = <span class="hljs-literal">false</span>;
+
+  render() {
+    <span class="hljs-keyword">return</span> html`&lt;div <span class="hljs-meta">@click</span>=${<span class="hljs-keyword">this</span>._onClick}`&gt;&lt;button&gt;&lt;/button&gt;&lt;/div&gt;`;
+  }
+
+  <span class="hljs-meta">@eventOptions({capture: true})</span>
+  _onClick(e) {
+    <span class="hljs-keyword">this</span>.clicked = <span class="hljs-literal">true</span>;
+  }
+}</code></pre></dd>
+									<dt>exportdecorateditems</dt>
+									<dd></dd>
+								</dl>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>options: <span class="tsd-signature-type">AddEventListenerOptions</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<div class="lead">
-											<p>An object that specifis event listener options as accepted by
-											<code>EventTarget#addEventListener</code> and <code>EventTarget#removeEventListener</code>.</p>
-											<p>Current browsers support the <code>capture</code>, <code>passive</code>, and <code>once</code> options. See:
-											<a href="https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener#Parameters">https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener#Parameters</a></p>
-										</div>
+										<p>An object that specifies event listener options as accepted by
+										<code>EventTarget#addEventListener</code> and <code>EventTarget#removeEventListener</code>.</p>
+										<p>Current browsers support the <code>capture</code>, <code>passive</code>, and <code>once</code> options. See:
+										<a href="https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener#Parameters">https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener#Parameters</a></p>
 									</div>
 								</li>
 							</ul>
@@ -220,7 +254,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/36e1991/src/lib/decorators.ts#L135">lib/decorators.ts:135</a></li>
+									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/4b0c88c/src/lib/decorators.ts#L141">lib/decorators.ts:141</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -254,7 +288,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/36e1991/src/lib/decorators.ts#L149">lib/decorators.ts:149</a></li>
+									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/4b0c88c/src/lib/decorators.ts#L155">lib/decorators.ts:155</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -287,7 +321,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/36e1991/src/lib/decorators.ts#L172">lib/decorators.ts:172</a></li>
+									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/4b0c88c/src/lib/decorators.ts#L178">lib/decorators.ts:178</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -318,6 +352,9 @@
 					<li class="globals  ">
 						<a href="../globals.html"><em>Globals</em></a>
 					</li>
+					<li class="label tsd-is-external">
+						<span>Internals</span>
+					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="_demo_ts_element_.html">"demo/ts-<wbr>element"</a>
 					</li>
@@ -330,14 +367,17 @@
 					<li class=" tsd-kind-external-module">
 						<a href="_lib_updating_element_.html">"lib/updating-<wbr>element"</a>
 					</li>
-					<li class=" tsd-kind-external-module">
+					<li class="label tsd-is-external">
+						<span>Externals</span>
+					</li>
+					<li class=" tsd-kind-external-module tsd-is-external">
 						<a href="_lit_element_.html">"lit-<wbr>element"</a>
 					</li>
 				</ul>
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
-					<li class=" tsd-kind-type-alias tsd-parent-kind-external-module">
+					<li class=" tsd-kind-type-alias tsd-parent-kind-external-module tsd-has-type-parameter">
 						<a href="_lib_decorators_.html#constructor" class="tsd-kind-icon">Constructor</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-external-module">

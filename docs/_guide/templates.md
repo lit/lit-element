@@ -289,13 +289,13 @@ _index.html_
 _my-element.js_
 
 ```js
-{% include project.html folder="projects/docs/templates/namedslots/my-element.js" %}
+{% include projects/docs/templates/namedslots/my-element.js %}
 ```
 
 _index.html_
 
 ```html
-{% include project.html folder="projects/docs/templates/namedslots/index.html" %}
+{% include projects/docs/templates/namedslots/index.html %}
 ```
 
 {% include project.html folder="docs/templates/namedslots" openFile="my-element.js" %}
@@ -433,7 +433,7 @@ render() { return html`<p>template</p>`; }
 html`<p>${this.myProp}</p>`;
 
 // Loop 
-html`${this.myArray.map(i => html`<li>${i}</li>`;)}`;
+html`${this.myArray.map(i => html`<li>${i}</li>`)}`;
 
 // Conditional
 html`${this.myBool?html`<p>foo</p>`:html`<p>bar</p>`}`;
@@ -496,3 +496,13 @@ render() { return html`<slot name="thing"></slot>`; }
   <p slot="thing">stuff</p>
 </my-element>
 ```
+
+## Further reading
+Since LitElement uses lit-html's `html` and `render` functions to render templates you can take advantage
+of the entire lit-html feature-set for writing your templates. You can find further information
+* [on the lit-html homepage](https://lit-html.polymer-project.org)
+* [in the Template Reference](https://lit-html.polymer-project.org/guide/template-reference)
+
+Note: Since lit-html is a dependency of LitElement it is installed into node_modules folder when you install LitElement. You do not have to install
+lit-html yourself. It is recommended that you only use the version of lit-html that comes as a dependency of your version of LitElement to avoid
+version conflicts.

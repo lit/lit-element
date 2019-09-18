@@ -2215,7 +2215,7 @@ suite('UpdatingElement', () => {
     assert.equal(a.updatedCalledCount, 1);
   });
 
-  test('early access of updateComplete waits until first update', async() => {
+  test('early access of updateComplete waits until first update', async () => {
     class A extends UpdatingElement {
       didUpdate = false;
 
@@ -2237,37 +2237,37 @@ suite('UpdatingElement', () => {
     assert.isTrue(updated);
   });
 
-  test('property reflects after setting attribute in same update cycle', async () => {
-    class A extends UpdatingElement {
+  test(
+      'property reflects after setting attribute in same update cycle',
+      async () => {
+        class A extends UpdatingElement {
+          foo?: boolean;
+          bar?: string;
 
-      foo?: boolean;
-      bar?: string;
-
-      static get properties() {
-        return {
-          foo: {type: Boolean, reflect: true},
-          bar: {type: String, reflect: true}
-        };
-      }
-    }
-    customElements.define(generateElementName(), A);
-    const a = new A();
-    container.appendChild(a);
-    a.setAttribute('foo', '');
-    a.removeAttribute('foo');
-    a.foo = true;
-    await a.updateComplete;
-    assert.isTrue(a.hasAttribute('foo'));
-    a.setAttribute('bar', 'hi');
-    a.bar = 'yo';
-    await a.updateComplete;
-    assert.equal(a.getAttribute('bar'), 'yo');
-  });
+          static get properties() {
+            return {
+              foo: {type: Boolean, reflect: true},
+              bar: {type: String, reflect: true}
+            };
+          }
+        }
+        customElements.define(generateElementName(), A);
+        const a = new A();
+        container.appendChild(a);
+        a.setAttribute('foo', '');
+        a.removeAttribute('foo');
+        a.foo = true;
+        await a.updateComplete;
+        assert.isTrue(a.hasAttribute('foo'));
+        a.setAttribute('bar', 'hi');
+        a.bar = 'yo';
+        await a.updateComplete;
+        assert.equal(a.getAttribute('bar'), 'yo');
+      });
 
   test('exceptions in `update` do not prevent further updates', async () => {
     let shouldThrow = false;
     class A extends UpdatingElement {
-
       @property() foo = 5;
       updatedFoo = 0;
 
@@ -2305,196 +2305,199 @@ suite('UpdatingElement', () => {
     assert.equal(a.updatedFoo, 20);
   });
 
-  test('exceptions in `update` prevent `firstUpdated` and `updated` from being called', async () => {
-    let shouldThrow = false;
-    class A extends UpdatingElement {
+  test(
+      'exceptions in `update` prevent `firstUpdated` and `updated` from being called',
+      async () => {
+        let shouldThrow = false;
+        class A extends UpdatingElement {
+          firstUpdatedCalled = false;
+          updatedCalled = false;
 
-      firstUpdatedCalled = false;
-      updatedCalled = false;
-
-      update(changedProperties: Map<PropertyKey, unknown>) {
-        if (shouldThrow) {
-          throw new Error('test error');
-        }
-        super.update(changedProperties);
-      }
-
-      firstUpdated() {
-        this.firstUpdatedCalled = true;
-      }
-
-      updated(_changedProperties: Map<PropertyKey, unknown>) {
-        this.updatedCalled = true;
-      }
-    }
-    customElements.define(generateElementName(), A);
-    shouldThrow = true;
-    const a = new A();
-    container.appendChild(a);
-    let threw = false;
-    try {
-      await a.updateComplete;
-    } catch (e) {
-      threw = true;
-    }
-    assert.isTrue(threw);
-    assert.isFalse(a.firstUpdatedCalled);
-    assert.isFalse(a.updatedCalled);
-    shouldThrow = false;
-    await a.requestUpdate();
-    assert.isTrue(a.firstUpdatedCalled);
-    assert.isTrue(a.updatedCalled);
-
-  });
-
-  test('exceptions in `shouldUpdate` do not prevent further updates', async () => {
-    let shouldThrow = false;
-    class A extends UpdatingElement {
-
-      @property() foo = 5;
-      updatedFoo = 0;
-
-      shouldUpdate(changedProperties: Map<PropertyKey, unknown>) {
-        if (shouldThrow) {
-          throw new Error('test error');
-        }
-        return super.shouldUpdate(changedProperties);
-      }
-
-      updated(_changedProperties: Map<PropertyKey, unknown>) {
-        this.updatedFoo = this.foo;
-      }
-    }
-    customElements.define(generateElementName(), A);
-    const a = new A();
-    container.appendChild(a);
-    await a.updateComplete;
-    assert.equal(a.updatedFoo, 5);
-    shouldThrow = true;
-    a.foo = 10;
-    let threw = false;
-    try {
-      await a.updateComplete;
-    } catch (e) {
-      threw = true;
-    }
-    assert.isTrue(threw);
-    assert.equal(a.foo, 10);
-    assert.equal(a.updatedFoo, 5);
-    shouldThrow = false;
-    a.foo = 20;
-    await a.updateComplete;
-    assert.equal(a.foo, 20);
-    assert.equal(a.updatedFoo, 20);
-  });
-
-  test('exceptions in `updated` do not prevent further or re-entrant updates', async () => {
-    let shouldThrow = false;
-    let enqueue = false;
-    class A extends UpdatingElement {
-
-      @property() foo = 5;
-      updatedFoo = 0;
-
-      changedProps?: PropertyValues;
-
-      updated(_changedProperties: Map<PropertyKey, unknown>) {
-        if (enqueue) {
-          enqueue = false;
-          this.foo++;
-        }
-        if (shouldThrow) {
-          shouldThrow = false;
-          throw new Error('test error');
-        }
-        this.changedProps = _changedProperties;
-        this.updatedFoo = this.foo;
-      }
-
-      get updateComplete(): Promise<any> {
-        return super.updateComplete.then((v) => v || this.updateComplete);
-      }
-    }
-    customElements.define(generateElementName(), A);
-    const a = new A();
-    container.appendChild(a);
-    await a.updateComplete;
-    assert.equal(a.updatedFoo, 5);
-    shouldThrow = true;
-    a.changedProps = new Map();
-    a.foo = 10;
-    let threw = false;
-    try {
-      await a.updateComplete;
-    } catch (e) {
-      threw = true;
-    }
-    assert.isTrue(threw);
-    assert.isFalse(a.changedProps.has('foo'));
-    assert.equal(a.foo, 10);
-    assert.equal(a.updatedFoo, 5);
-    a.foo = 20;
-    await a.updateComplete;
-    assert.equal(a.changedProps.get('foo'), 10);
-    assert.equal(a.foo, 20);
-    assert.equal(a.updatedFoo, 20);
-    enqueue = true;
-    shouldThrow = true;
-    a.foo = 50;
-    threw = false;
-    try {
-      await a.updateComplete;
-    } catch (e) {
-      threw = true;
-    }
-    assert.isTrue(threw);
-    assert.equal(a.changedProps.get('foo'), 50);
-    assert.equal(a.foo, 51);
-    assert.equal(a.updatedFoo, 51);
-  });
-
-  test('exceptions in `performUpdate` do not prevent further updates', async () => {
-    let shouldThrow = false;
-    class A extends UpdatingElement {
-
-      @property() foo = 5;
-      updatedFoo = 0;
-
-      updated(_changedProperties: Map<PropertyKey, unknown>) {
-        this.updatedFoo = this.foo;
-      }
-
-      performUpdate() {
-        return new Promise((resolve, reject) => {
-          super.performUpdate();
-          if (shouldThrow) {
-            reject();
-          } else {
-            resolve();
+          update(changedProperties: Map<PropertyKey, unknown>) {
+            if (shouldThrow) {
+              throw new Error('test error');
+            }
+            super.update(changedProperties);
           }
-        });
-      }
-    }
-    customElements.define(generateElementName(), A);
-    const a = new A();
-    container.appendChild(a);
-    await a.updateComplete;
-    assert.equal(a.updatedFoo, 5);
-    shouldThrow = true;
-    a.foo = 10;
-    let threw = false;
-    try {
-      await a.updateComplete;
-    } catch (e) {
-      threw = true;
-    }
-    assert.isTrue(threw);
-    assert.equal(a.foo, 10);
-    assert.equal(a.updatedFoo, 10);
-    shouldThrow = false;
-    a.foo = 20;
-    await a.updateComplete;
-    assert.equal(a.foo, 20);
-    assert.equal(a.updatedFoo, 20);
-  });
+
+          firstUpdated() {
+            this.firstUpdatedCalled = true;
+          }
+
+          updated(_changedProperties: Map<PropertyKey, unknown>) {
+            this.updatedCalled = true;
+          }
+        }
+        customElements.define(generateElementName(), A);
+        shouldThrow = true;
+        const a = new A();
+        container.appendChild(a);
+        let threw = false;
+        try {
+          await a.updateComplete;
+        } catch (e) {
+          threw = true;
+        }
+        assert.isTrue(threw);
+        assert.isFalse(a.firstUpdatedCalled);
+        assert.isFalse(a.updatedCalled);
+        shouldThrow = false;
+        await a.requestUpdate();
+        assert.isTrue(a.firstUpdatedCalled);
+        assert.isTrue(a.updatedCalled);
+      });
+
+  test(
+      'exceptions in `shouldUpdate` do not prevent further updates',
+      async () => {
+        let shouldThrow = false;
+        class A extends UpdatingElement {
+          @property() foo = 5;
+          updatedFoo = 0;
+
+          shouldUpdate(changedProperties: Map<PropertyKey, unknown>) {
+            if (shouldThrow) {
+              throw new Error('test error');
+            }
+            return super.shouldUpdate(changedProperties);
+          }
+
+          updated(_changedProperties: Map<PropertyKey, unknown>) {
+            this.updatedFoo = this.foo;
+          }
+        }
+        customElements.define(generateElementName(), A);
+        const a = new A();
+        container.appendChild(a);
+        await a.updateComplete;
+        assert.equal(a.updatedFoo, 5);
+        shouldThrow = true;
+        a.foo = 10;
+        let threw = false;
+        try {
+          await a.updateComplete;
+        } catch (e) {
+          threw = true;
+        }
+        assert.isTrue(threw);
+        assert.equal(a.foo, 10);
+        assert.equal(a.updatedFoo, 5);
+        shouldThrow = false;
+        a.foo = 20;
+        await a.updateComplete;
+        assert.equal(a.foo, 20);
+        assert.equal(a.updatedFoo, 20);
+      });
+
+  test(
+      'exceptions in `updated` do not prevent further or re-entrant updates',
+      async () => {
+        let shouldThrow = false;
+        let enqueue = false;
+        class A extends UpdatingElement {
+          @property() foo = 5;
+          updatedFoo = 0;
+
+          changedProps?: PropertyValues;
+
+          updated(_changedProperties: Map<PropertyKey, unknown>) {
+            if (enqueue) {
+              enqueue = false;
+              this.foo++;
+            }
+            if (shouldThrow) {
+              shouldThrow = false;
+              throw new Error('test error');
+            }
+            this.changedProps = _changedProperties;
+            this.updatedFoo = this.foo;
+          }
+
+          get updateComplete(): Promise<any> {
+            return super.updateComplete.then((v) => v || this.updateComplete);
+          }
+        }
+        customElements.define(generateElementName(), A);
+        const a = new A();
+        container.appendChild(a);
+        await a.updateComplete;
+        assert.equal(a.updatedFoo, 5);
+        shouldThrow = true;
+        a.changedProps = new Map();
+        a.foo = 10;
+        let threw = false;
+        try {
+          await a.updateComplete;
+        } catch (e) {
+          threw = true;
+        }
+        assert.isTrue(threw);
+        assert.isFalse(a.changedProps.has('foo'));
+        assert.equal(a.foo, 10);
+        assert.equal(a.updatedFoo, 5);
+        a.foo = 20;
+        await a.updateComplete;
+        assert.equal(a.changedProps.get('foo'), 10);
+        assert.equal(a.foo, 20);
+        assert.equal(a.updatedFoo, 20);
+        enqueue = true;
+        shouldThrow = true;
+        a.foo = 50;
+        threw = false;
+        try {
+          await a.updateComplete;
+        } catch (e) {
+          threw = true;
+        }
+        assert.isTrue(threw);
+        assert.equal(a.changedProps.get('foo'), 50);
+        assert.equal(a.foo, 51);
+        assert.equal(a.updatedFoo, 51);
+      });
+
+  test(
+      'exceptions in `performUpdate` do not prevent further updates',
+      async () => {
+        let shouldThrow = false;
+        class A extends UpdatingElement {
+          @property() foo = 5;
+          updatedFoo = 0;
+
+          updated(_changedProperties: Map<PropertyKey, unknown>) {
+            this.updatedFoo = this.foo;
+          }
+
+          performUpdate() {
+            return new Promise((resolve, reject) => {
+              super.performUpdate();
+              if (shouldThrow) {
+                reject();
+              } else {
+                resolve();
+              }
+            });
+          }
+        }
+        customElements.define(generateElementName(), A);
+        const a = new A();
+        container.appendChild(a);
+        await a.updateComplete;
+        assert.equal(a.updatedFoo, 5);
+        shouldThrow = true;
+        a.foo = 10;
+        let threw = false;
+        try {
+          await a.updateComplete;
+        } catch (e) {
+          threw = true;
+        }
+        assert.isTrue(threw);
+        assert.equal(a.foo, 10);
+        assert.equal(a.updatedFoo, 10);
+        shouldThrow = false;
+        a.foo = 20;
+        await a.updateComplete;
+        assert.equal(a.foo, 20);
+        assert.equal(a.updatedFoo, 20);
+      });
 });

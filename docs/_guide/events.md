@@ -140,19 +140,19 @@ class MyElement extends LitElement {
 
 ### Handle an event fired by a LitElement-based component {#handle-fired-event}
 
-Handle events fired by a LitElement-based component the same way you would handle any event fired from a standard DOM element.
-
-To handle an event fired by a LitElement-based component that you're using on any HTML page:
+If you want to listen to an event fired from a LitElement-based component from within another LitElement or from a lit-html template, you can use the lit-html declarative event syntax:
 
 ```html
-<my-element onMyEvent="(e) => {console.log(e)}"></my-element>
-<my-element onClick="(e) => {console.log(e)}"></my-element>
+<my-element @my-event="${(e) => { console.log(e.detail.message) }}"></my-element>
 ```
 
-To handle a custom event fired by a LitElement-based component from inside another LitElement template:
+To listen to events fired from a LitElement-based component in other contexts, like HTML or another framework, use the standard mechanism for listening to DOM events.
 
-```html
-<my-element @my-event="${() => { console.log(event.detail.message) }}"></my-element>
+In plain HTML and JavaScript, this would be the `addEventListener` API:
+
+```js
+const myElement = document.querySelector('my-element');
+myElement.addEventListener('my-event', (e) => {console.log(e)});
 ```
 
 ## Working with events and shadow DOM

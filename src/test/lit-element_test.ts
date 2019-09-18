@@ -195,41 +195,41 @@ suite('LitElement', () => {
     assert.equal(window['litElementVersions'].length, 1);
   });
 
-  test('exceptions in `render` throw but do not prevent further updates', async () => {
-    let shouldThrow = false;
-    class A extends LitElement {
+  test(
+      'exceptions in `render` throw but do not prevent further updates',
+      async () => {
+        let shouldThrow = false;
+        class A extends LitElement {
+          @property() foo = 5;
+          updatedFoo = 0;
 
-      @property() foo = 5;
-      updatedFoo = 0;
-
-      render() {
-        if (shouldThrow) {
-          throw new Error('test error');
+          render() {
+            if (shouldThrow) {
+              throw new Error('test error');
+            }
+            return html`${this.foo}`;
+          }
         }
-        return html`${this.foo}`;
-      }
-
-    }
-    customElements.define(generateElementName(), A);
-    const a = new A();
-    container.appendChild(a);
-    await a.updateComplete;
-    assert.equal(a.shadowRoot!.textContent, '5');
-    shouldThrow = true;
-    a.foo = 10;
-    let threw = false;
-    try {
-      await a.updateComplete;
-    } catch (e) {
-      threw = true;
-    }
-    assert.isTrue(threw);
-    assert.equal(a.foo, 10);
-    assert.equal(a.shadowRoot!.textContent, '5');
-    shouldThrow = false;
-    a.foo = 20;
-    await a.updateComplete;
-    assert.equal(a.foo, 20);
-    assert.equal(a.shadowRoot!.textContent, '20');
-  });
+        customElements.define(generateElementName(), A);
+        const a = new A();
+        container.appendChild(a);
+        await a.updateComplete;
+        assert.equal(a.shadowRoot!.textContent, '5');
+        shouldThrow = true;
+        a.foo = 10;
+        let threw = false;
+        try {
+          await a.updateComplete;
+        } catch (e) {
+          threw = true;
+        }
+        assert.isTrue(threw);
+        assert.equal(a.foo, 10);
+        assert.equal(a.shadowRoot!.textContent, '5');
+        shouldThrow = false;
+        a.foo = 20;
+        await a.updateComplete;
+        assert.equal(a.foo, 20);
+        assert.equal(a.shadowRoot!.textContent, '20');
+      });
 });

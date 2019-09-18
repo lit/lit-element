@@ -68,6 +68,8 @@ export const unsafeCSS = (value: unknown) => {
 const textFromCSS = (value: CSSResult|CSSPartRuleSet) => {
   if (value instanceof CSSResult || value instanceof CSSPartRuleSet) {
     return value.toString();
+  } else if (typeof value === 'number') {
+    return value;
   } else {
     throw new Error(
         `Value passed to 'css' function must be a 'css' function result: ${

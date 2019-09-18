@@ -38,9 +38,9 @@ This section describes how to create styles in your shadow root to style your ho
 
 There are three main places in which you can define styles for your host element and its shadow DOM:
 
-* [In the static `styles` property of a LitElement class (recomended)](#static).
-* [Inside a `<style>` element in the HTML template defined in your `render` function](#styleelement).
-* [In an external stylesheet, linked to from your LitElement template with `<link rel="stylesheet" href="...">`](#external).
+* [In the static `styles` property of a LitElement class (recommended)](#static-styles).
+* [Inside a `<style>` element in the HTML template defined in your `render` function](#style-element).
+* [In an external stylesheet, linked to from your LitElement template with `<link rel="stylesheet" href="...">`](#external-stylesheet).
 
 ### Define styles in a static styles property {#static-styles}
 
@@ -54,8 +54,6 @@ The styles in the static `styles` property are evaluated once only and applied t
 *   The element **consumer** defines the value of the custom CSS property outside shadow DOM in a CSS rule that is inherited by the host element.
 
 If you don't want to use custom properties, you can define per-instance styles in a `<style>` element inside shadow DOM. See the section on [Defining your styles in a style element](#styleelement) for more information.
-
-</div>
 
 To define a static `styles` property:
 
@@ -113,23 +111,62 @@ To define a static `styles` property:
 
 Static styles apply to all instances of an element. Any expressions in your CSS are evaluated and included **once**, then reused for all instances. 
 
-For security reasons, expressions must be tagged with the `cssLiteral` template literal tag:
+To prevent LitElement-based components from evaluating potentially malicious code, the `css` tag only accepts literal strings. You can nest them like this:
 
 ```js
-import { LitElement, css, cssLiteral } from 'lit-element';
+static get styles() {
+  const mainColor = css`red`;
 
-const mainColor = cssLiteral`red`;
+  return css`
+    :host { 
+      color: ${mainColor}; 
+    }
+  `;
+}
+```
+
+However, if you want to inject any variable or non-literal into a css string, you must wrap it with the `unsafeCSS` function. For example:
+
+```js
+import { LitElement, css, unsafeCSS } from 'lit-element';
 
 class MyElement extends LitElement {
   static get styles() {
+    const mainColor = 'red';
+    
     return css`
-    :host {
-      display: block;
-      color: ${mainColor}
-    }`;
+      :host { 
+        color: ${unsafeCSS(mainColor)};
+      }
+    `;
   } 
 }
 ```
+
+Another example:
+
+```js
+import { LitElement, css, unsafeCSS } from 'lit-element';
+
+class MyElement extends LitElement {
+  static get styles() {
+    const mainWidth = 800;
+    const padding = 20;   
+    
+    return css`
+      :host { 
+        width: ${unsafeCSS(mainWidth + padding)}px;
+      }
+    `;
+  } 
+}
+```
+
+<div class="alert alert-warning">
+
+**Only use the `unsafeCSS` tag with trusted input.** To prevent LitElement-based components from evaluating potentially malicious code, the `css` tag only accepts literal strings. `unsafeCSS` circumvents this safeguard.
+
+</div>
 
 ### Define styles in a style element {#style-element} 
 
@@ -193,7 +230,7 @@ In this section:
 
 #### Write CSS styles for a host element {#host-styles}
 
-An element can apply styles to itself with the `:host` and `:host()` CSS psuedo-classes used inside the element's ShadowRoot. The term "host" is used because an element is the host of its own shadow root.
+An element can apply styles to itself with the `:host` and `:host()` CSS pseudo-classes used inside the element's ShadowRoot. The term "host" is used because an element is the host of its own shadow root.
 
 * `:host` selects the host element of the shadow root:
 

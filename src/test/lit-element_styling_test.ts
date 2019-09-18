@@ -461,6 +461,13 @@ suite('Static get styles', () => {
     });
   });
 
+  test('`css` allows real JavaScript numbers', async () => {
+    const spacer = 2;
+
+    const result = css`div { margin: ${spacer * 2}px; }`;
+    assert.equal(result.cssText, 'div { margin: 4px; }');
+  });
+
   test('`CSSResult` cannot be constructed', async () => {
     // Note, this is done for security, instead use `css` or `unsafeCSS`
     assert.throws(() => {
