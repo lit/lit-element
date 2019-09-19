@@ -2,10 +2,10 @@
 /lib/
 
 #Compiler Output
-lit-element.js
-lit-element.js.map
-lit-element.d.ts
-lit-element.d.ts.map
+lit-element*.js
+lit-element*.js.map
+lit-element*.d.ts
+lit-element*.d.ts.map
 
 /test/**/*.d.ts
 /test/**/*.d.ts.map

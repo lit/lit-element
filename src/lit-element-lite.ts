@@ -12,8 +12,9 @@
  * http://polymer.github.io/PATENTS.txt
  */
 import {LitElement} from './lit-element-base.js';
-import {render} from 'lit-html/lib/shady-render.js';
+import {render} from 'lit-html/lib/render.js';
 
 export * from './lit-element-base.js';
 
-LitElement.render = render;
+export class LitElementLite extends LitElement {}
+LitElementLite.render = render;

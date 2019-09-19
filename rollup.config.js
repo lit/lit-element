@@ -17,7 +17,7 @@ import {terser} from 'rollup-plugin-terser';
 import resolve from 'rollup-plugin-node-resolve';
 
 export default {
-  input: 'lit-element.js',
+  input: 'lit-element-lite.js',
   output: {
     file: 'lit-element.bundled.js',
     format: 'esm',
