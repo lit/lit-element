@@ -1,0 +1,53 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Polymer/tachometer/master/config.schema.json",
+  "sampleSize": 50,
+  "root": "/",
+  "timeout": 0,
+  "benchmarks": [
+    {
+      "browser": {
+        "name": "chrome",
+        "headless": true
+      },
+      "measurement": "global",
+      "expand": [
+        {
+          "name": "simple-native",
+          "url": "bench/tester.html?element=my-styled-dialog&count=5"
+        },
+        {
+          "name": "simple-polyfill",
+          "url": "bench/tester.html?element=my-styled-dialog&forcePartPolyfill=true&count=5"
+        },
+        {
+          "name": "simple-polyfill-shadydom",
+          "url": "bench/tester.html?element=my-styled-dialog&forcePartPolyfill=true&count=5&shadydom=true"
+        },
+        {
+          "name": "complex-render-native",
+          "url": "bench/tester.html?element=my-stuff"
+        },
+        {
+          "name": "complex-render-polyfill",
+          "url": "bench/tester.html?element=my-stuff&forcePartPolyfill=true"
+        },
+        {
+          "name": "complex-render-polyfill-shadydom",
+          "url": "bench/tester.html?element=my-stuff&forcePartPolyfill=true&shadydom=true"
+        },
+        {
+          "name": "complex-toggle-native",
+          "url": "bench/tester.html?element=my-stuff&shouldToggle=true"
+        },
+        {
+          "name": "complex-toggle-polyfill",
+          "url": "bench/tester.html?element=my-stuff&shouldToggle=true&forcePartPolyfill=true"
+        },
+        {
+          "name": "complex-toggle-polyfill-shadydom",
+          "url": "bench/tester.html?element=my-stuff&shouldToggle=true&forcePartPolyfill=true&shadydom=true"
+        }
+      ]
+    }
+  ]
+}
