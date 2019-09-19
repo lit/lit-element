@@ -17,6 +17,11 @@ lit-element.d.ts.map
 /demo/**/*.js
 /demo/**/*.js.map
 
+/bench/**/*.d.ts
+/bench/**/*.d.ts.map
+/bench/**/*.js
+/bench/**/*.js.map
+
 !custom_typings/
 
 #Docs

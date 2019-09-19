@@ -31,7 +31,7 @@ const exportPartsConverter = (value: string) => {
   return map;
 };
 
-const usingShadyDom = !!window.ShadyDOM;
+const usingShadyDom = !!(window.ShadyDOM && window.ShadyDOM.inUse);
 
 const PART_ATTR = 'part-guid';
 

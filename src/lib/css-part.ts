@@ -23,7 +23,7 @@ declare global {
 window.forcePartPolyfill = window.forcePartPolyfill ||
   window.location.search.indexOf('forcePartPolyfill') >= 0;
 
-const usingShadyDom = !!window.ShadyDOM;
+const usingShadyDom = !!(window.ShadyDOM && window.ShadyDOM.inUse);
 
 const supportsPart = 'part' in Element.prototype;
 
