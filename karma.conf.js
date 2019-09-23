@@ -30,18 +30,9 @@ module.exports = (config) => {
       hostname: '127.0.0.1',
       listenAddress: '127.0.0.1',
       files: [
-        polyfills.includes('wc-ce') &&
-            {pattern: 'test/wc-ce.html', type: 'dom'},
-        polyfills.includes('wc-shadydom') &&
-            {pattern: 'test/wc-shadydom.html', type: 'dom'},
-        polyfills.includes('wc-shimcssproperties') &&
-            {pattern: 'test/wc-shimcssproperties.html', type: 'dom'},
         'node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js',
-        {pattern: 'test/lit-element_test.js', type: 'module'},
-        {pattern: 'test/lit-element_styling_test.js', type: 'module'},
-        {pattern: 'test/lib/decorators_test.js', type: 'module'},
-        {pattern: 'test/lib/updating-element_test.js', type: 'module'},
-        {pattern: 'test/lib/decorators-babel_test.js', type: 'module'}
+        'node_modules/mocha-suite-child/mocha-suite-child.js',
+        {pattern: 'test/suites.html', type: 'dom'}
       ].filter(Boolean),
       customLaunchers,
       logLevel: config.LOG_INFO
