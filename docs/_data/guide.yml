@@ -28,3 +28,6 @@ toc:
   use: 
     title: Use a component
     url: /guide/use
+  lithtml:
+    title: lit-html Guides
+    url: https://lit-html.polymer-project.org

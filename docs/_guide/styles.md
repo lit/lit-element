@@ -8,17 +8,36 @@ slug: styles
 * ToC
 {:toc}
 
-## Define scoped stylesheets {#scoped}
+Add styles to your element using a static `styles` property:
 
-_Scoped stylesheets_ are stylesheets that only style instances of the component in which they are defined. 
+```js
+import { LitElement, css, html } from 'lit-element';
 
-Scoped stylesheets can style:
+class MyElement extends LitElement {
+  static get styles() {
+    return css`
+      /* styles go here */
+    `;
+  }
+  ... 
+}
+```
 
-* [Shadow root contents (the element's rendered template)](#shadowroot).
-* [The host element (the element that owns the shadow root)](#host).
-* [Slotted children (light DOM content rendered via a `<slot>`)](#slot).
+Your component's template is rendered to its shadow DOM tree. The styles you add to your component are automatically _scoped_ to the shadow tree, so they don't leak out and affect other elements.
 
-For optimal performance, we recommend placing scoped stylesheets in a static `styles` property. To do this, import the `css` helper function from the `lit-element` module and create a static `styles` property. Then, write styles in standard CSS. 
+[ADD shadow DOM info links?]
+
+## Add styles to your component {#add-styles}
+
+The styles you add to your component are _scoped_ using shadow DOM. If you're not familiar with shadow DOM, this section gives a brief overview of shadow DOM styling.
+
+Styles you add to a component can affect:
+
+* [The shadow tree (your component's rendered template)](#shadowroot).
+* [The component itself](#host).
+* [The component's children](#slot).
+
+For optimal performance, define scoped styles in a static `styles` property. To do this, import the `css` helper function from the `lit-element` module and create a static `styles` property. Then, write styles in standard CSS. 
 
 ```js
 // Import the `css` helper function
@@ -71,9 +90,9 @@ The value of the static `styles` property can be:
 
 {% include project.html folder="style/superstyles" openFile="my-element.js" %}
 
-### Style shadow root contents {#shadowroot}
+### Style the shadow tree {#shadowroot}
 
-LitElement templates are rendered into a shadow root by default. Styles scoped to an element's shadow root don't affect the main document. Similarly, with the exception of [inherited CSS properties](#inheritance), document-level styles do not affect the contents of a shadow root.
+LitElement templates are rendered into a shadow tree by default. Styles scoped to an element's shadow tree don't affect the main document. Similarly, with the exception of [inherited CSS properties](#inheritance), document-level styles don't affect the contents of a shadow tree.
 
 To style content in a shadow root, create a static `styles` property and write styles using standard CSS selectors:
 
@@ -102,9 +121,12 @@ class MyElement extends LitElement {
 
 {% include project.html folder="style/styleatemplate" openFile="my-element.js" %}
 
-### Style the host element
+### Style the component itself
 
-The host element is the container element for a rendered LitElement component. To create default styles for the host element, use the `:host` CSS pseudo-selector and `::host()` CSS pseudo-class.
+Styles defined in an element's shadow tree can style the element itself. The element that a shadow tree 
+is attached to is called the _host_.
+
+To create default styles for the host element, use the `:host` CSS pseudo-class and `::host()` CSS pseudo-class function.
 
 *   `:host` selects the host element.
 
@@ -134,9 +156,18 @@ static get styles() {
 
 {% include project.html folder="style/host" openFile="my-element.js" %}
 
-### Style slotted content
+Note that the host element can be affected by styles from outside the shadow tree, as well, so you should consider 
+the styles you set in `:host` and `:host()` rules as _default styles_ that can be overridden by the user. For example:
 
-The `<slot>` element acts as a placeholder in a LitElement template. For example: 
+```css
+my-element {
+  display: inline-block;
+}
+```
+
+### Style the component's children
+
+The `<slot>` element acts as a placeholder in a LitElement template where its children are displayed. For example: 
 
 ```js
 class MyElement extends LitElement {
@@ -152,13 +183,19 @@ class MyElement extends LitElement {
 
 {% include project.html folder="style/slottedbase" openFile="my-element.js" %}
 
-Use the `::slotted()` CSS pseudo-element to select elements that are included in your template via `<slot>`s.
+Use the `::slotted()` CSS pseudo-element to select children that are included in your template via `<slot>`s.
 
 *   `::slotted(*)` matches all slotted elements.
 
 *   `::slotted(p)` matches slotted paragraphs.
 
-*   `p ::slotted(*)` matches slotted elements in a paragraph element.
+*   `p ::slotted(*)` matches slotted elements where the `<slot>` is a descendant of a paragraph element.
+
+    ```html
+    <p>
+      <slot></slot>
+    </p>
+    ```
 
 ```js
 {% include projects/style/slottedselector/my-element.js %}
@@ -166,7 +203,7 @@ Use the `::slotted()` CSS pseudo-element to select elements that are included in
 
 {% include project.html folder="style/slottedselector" openFile="my-element.js" %}
 
-Note that only direct slotted children can be styled with `::slotted()`.
+Note that **only direct slotted children** can be styled with `::slotted()`. 
 
 ```html
 <my-element>
@@ -178,16 +215,27 @@ Note that only direct slotted children can be styled with `::slotted()`.
 </my-element>
 ```
 
+Also, children can 
+be styled from outside the shadow tree, so you should regard your `::slotted()` styles as
+default styles that can be overridden.
+
+```css
+my-element div {
+  // Outside style targetting a slotted child can override ::slotted() styles
+}
+```
+
+
 {:.alert .alert-info}
 <div>
 
-**Watch out for Shady CSS limitations around slotted content!** See the [Shady CSS limitations](https://github.com/webcomponents/shadycss) for details on how to use the `::slotted()` syntax in a polyfill-friendly way. 
+**Watch out for Shady CSS limitations around slotted content!** See the [Shady CSS limitations](https://github.com/webcomponents/polyfills/tree/master/packages/shadycss#limitations) for details on how to use the `::slotted()` syntax in a polyfill-friendly way. 
 
 </div>
 
 ### Configurable styles with custom properties {#configurable}
 
-Static styles are evaluated once per class. To style instances of a component using static styles, use CSS variables and custom properties:
+Static styles are evaluated once per class. Use CSS variables and custom properties to make styles that can be configured at runtime:
 
 ```js
 static get styles() {
@@ -257,11 +305,13 @@ class MyElement extends LitElement {
 {:.alert .alert-info}
 <div>
 
-**Only use the `unsafeCSS` tag with trusted input.** To prevent LitElement-based components from evaluating potentially malicious code, the `css` tag only accepts literal strings. `unsafeCSS` circumvents this safeguard, so use it with caution.
+**Only use the `unsafeCSS` tag with trusted input.** To prevent LitElement-based components from evaluating potentially malicious code, the `css` tag only accepts literal strings and numbers. `unsafeCSS` circumvents this safeguard, so use it with caution.
 
 </div>
 
 ## Define scoped styles in the template
+
+We recommend using static styles for optimal performance.  However, sometimes you may want to 
 
 ### In a style element
 
@@ -334,28 +384,24 @@ There are some important caveats though:
 
 *   The URL in the `href` attribute is relative to the **main document**. This is okay if you're building an app and your asset URLs are well-known, but avoid using external stylesheets when building a reusable element.
 
-## Use lit-html’s styleMap and classMap functions
+## Dynamic classes and styles
 
-LitElement is based on the lit-html templating library, which offers two functions, `classMap` and `styleMap`, to conveniently apply classes and styles in HTML templates. 
+One way to make styles dynamic is to add bindings to the `class` or `style` attributes in your template.
+
+The lit-html library offers two directives, `classMap` and `styleMap`, to conveniently apply classes and styles in HTML templates. 
 
 For more information on these and other lit-html directives, see the documentation on [lit-html built-in directives](https://lit-html.polymer-project.org/guide/template-reference#built-in-directives).
 
 To use `styleMap` and/or `classMap`:
 
-1.  Install the `lit-html` package, and add it as a dependency of your project:
-
-    ```bash
-    npm install --save lit-html
-    ```
-
-2.  Import `classMap` and/or `styleMap`:
+1.  Import `classMap` and/or `styleMap`:
 
     ```js
     import { classMap } from 'lit-html/directives/class-map';
     import { styleMap } from 'lit-html/directives/style-map';
     ```
 
-3.  Use `classMap` and/or `styleMap` in your element template:
+2.  Use `classMap` and/or `styleMap` in your element template:
 
     ```js
     constructor() {
@@ -524,7 +570,7 @@ html {
 </div>
 ```
 
-Similarly, host elements pass down inheritable CSS properties to their rendered templates. 
+Similarly, host elements pass down inheritable CSS properties to their shadow trees. 
 
 You can use the host element's type selector to style it:
 

@@ -8,11 +8,19 @@ slug: templates
 * ToC
 {:toc}
 
+Add a template to your component to define internal DOM to implement your component. 
+
+LitElement uses
+[shadow DOM](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_shadow_DOM) to encapsulate the templated DOM. Shadow DOM provides scoped styling, so you can add styles to your component that don't affect other parts of the DOM tree. Where native shadow DOM isn't available, LitElement 
+uses the [Shady CSS](https://github.com/webcomponents/polyfills/tree/master/packages/shadycss) polyfill.
+
 ## Define and render a template
 
 To define a template for a LitElement component, write a `render` function for your element class:
 
 ```js
+import {LitElement, html} from 'lit-element';
+
 class MyElement extends LitElement {
   render() {
     return html`<p>template content</p>`;
@@ -20,9 +28,14 @@ class MyElement extends LitElement {
 }
 ```
 
-* Write your template in HTML inside a JavaScript template literal by enclosing the raw HTML in back-ticks (<code>``</code>). 
+*   Write your template in HTML inside a JavaScript template literal by enclosing the raw HTML in back-ticks 
+    (<code>``</code>). 
 
-* Tag your template literal with the `html` helper function, so that `render` returns a lit-html `TemplateResult`.
+*   Tag your template literal with the [`html`](https://lit-html.polymer-project.org/api/modules/lit_html.html#html) 
+    tag function. 
+
+*   The component's `render` method can return anything that lit-html can render. Typically, it 
+    returns a single `TemplateResult` object (the same type returned by the `html` tag function).
 
 Example
 
@@ -31,6 +44,11 @@ Example
 ```
 
 {% include project.html folder="docs/templates/define" openFile="my-element.js" %}
+
+LitElement uses lit-html templates; this page summarizes the features of lit-html templates,
+for more details, see [Writing templates](https://lit-html.polymer-project.org/guide/writing-templates)
+and the [Template syntax reference](https://lit-html.polymer-project.org/guide/template-reference) 
+in the lit-html documentation.
 
 ### Design a performant template
 
@@ -90,6 +108,9 @@ render() {
 
 ### Use properties, loops, and conditionals in a template
 
+When defining your element's template, you can bind the element's properties to the 
+template so the 
+
 #### Properties
 
 To add a property value to a template, insert it with `${this.propName}`:
@@ -134,7 +155,7 @@ html`
 
 {% include project.html folder="docs/templates/expressions" openFile="my-element.js" %}
 
-### Bind properties to child elements
+### Bind properties to templated elements
 
 You can insert JavaScript expressions as placeholders for HTML text content, attributes, Boolean attributes, properties, and event handlers.
 
@@ -210,7 +231,7 @@ _my-element.js_
 
 Since the introduction of shadow DOM, we use the term "light DOM" to refer to nodes that appear in the main DOM tree.
 
-By default, if a custom element has light DOM children in HTML, they do not render at all:
+By default, if an element has a shadow tree, its light DOM children do not render at all:
 
 ```html
 <my-element>
