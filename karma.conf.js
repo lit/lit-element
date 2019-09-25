@@ -30,7 +30,6 @@ module.exports = (config) => {
       hostname: '127.0.0.1',
       listenAddress: '127.0.0.1',
       files: [
-        'node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js',
         'node_modules/mocha-suite-child/mocha-suite-child.js',
         {pattern: 'test/suites.html', type: 'dom'}
       ].filter(Boolean),
@@ -70,9 +69,6 @@ module.exports = (config) => {
     throw 'up';
   }
 };
-
-const polyfills = (process.env.POLYFILLS || '').split(',').filter(Boolean);
-console.log('\n---\nPOLYFILLS:', polyfills, '\n---');
 
 const browsers = (process.env.KARMA_BROWSERS || '').split(',').filter(Boolean);
 const customLaunchers = process.env.KARMA_CUSTOM_LAUNCHERS &&
