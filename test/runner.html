@@ -22,6 +22,7 @@
     <div id="mocha"></div>
     <script>
       mocha.setup('tdd');
+      mocha.timeout(5000);
       mocha.checkLeaks();
     </script>
     <script type="module" src="lit-element_test.js"></script>

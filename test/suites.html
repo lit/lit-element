@@ -3,20 +3,15 @@ suiteChild('/base/test/runner.html');
 suiteChild('/base/test/runner.html?wc-shadydom=true');
 suiteChild('/base/test/runner.html?wc-shadydom=true&wc-ce=true');
 suiteChild('/base/test/runner.html?wc-shadydom=true&wc-ce=true&wc-shimcssproperties=true')
-// // Currently Babel decorator compilation does not work on some older
-// // browsers due to use of some newish features; detect these and don't
-// // run babel-compiled tests on those browsers
-// const fnNameDesc = Object.getOwnPropertyDescriptor(function() {}, 'name');
-// const testBabel = fnNameDesc && fnNameDesc.configurable && Array.prototype.find;
-// if (testBabel) {
-//   suiteChild('/base/test/runner-babel.html');
-//   suiteChild('/base/test/runner-babel.html?wc-shadydom=true');
-//   suiteChild('/base/test/runner-babel.html?wc-shadydom=true&wc-ce=true');
-//   suiteChild('/base/test/runner-babel.html?wc-shadydom=true&wc-ce=true&wc-shimcssproperties=true')
-// }
-// suite('test', () => {
-//   test('okay', () => {
-//     assert(true);
-//   });
-// });
+// Currently Babel decorator compilation does not work on some older
+// browsers due to use of some newish features; detect these and don't
+// run babel-compiled tests on those browsers
+const fnNameDesc = Object.getOwnPropertyDescriptor(function() {}, 'name');
+const testBabel = fnNameDesc && fnNameDesc.configurable && Array.prototype.find;
+if (testBabel) {
+  suiteChild('/base/test/runner-babel.html');
+  suiteChild('/base/test/runner-babel.html?wc-shadydom=true');
+  suiteChild('/base/test/runner-babel.html?wc-shadydom=true&wc-ce=true');
+  suiteChild('/base/test/runner-babel.html?wc-shadydom=true&wc-ce=true&wc-shimcssproperties=true')
+}
 </script>
