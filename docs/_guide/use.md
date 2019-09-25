@@ -58,7 +58,7 @@ However, LitElement and elements built with it import their dependencies using b
 
 At the time of writing, browsers must still be provided with the full path to a standard JavaScript module in order to load it. To convert bare module specifiers to full paths, a light transform is required.
 
-For a local server that does this automatically, try the [Open Web Components development server](https://open-wc.org/developing/owc-dev-server.html). 
+For a local server that does this automatically, try the [Open Web Components ES dev server](https://open-wc.org/developing/es-dev-server.html). 
 
 ## Build for production {#build}
 
