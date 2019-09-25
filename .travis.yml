@@ -22,6 +22,6 @@ matrix:
   include:
   - env: JOB=test KARMA_BROWSERS="Chrome,Firefox" KARMA_CUSTOM_LAUNCHERS="./test/custom-launchers-browserstack.json"
     before_script: time npm run lint
-    script: xvfb-run time npm run test:polyfills
+    script: xvfb-run time npm run test
   - env: JOB=benchmark
     script: "./travis-bench.sh"
