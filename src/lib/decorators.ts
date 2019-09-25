@@ -12,12 +12,21 @@
  * http://polymer.github.io/PATENTS.txt
  */
 
+/**
+ * IMPORTANT: For compatibility with tsickle and the Closure JS compiler, all
+ * property decorators (but not class decorators) in this file must:
+ *
+ * 1) Have an @ExportDecoratedItems annotation in its JSDoc.
+ * 2) Be defined as a regular function, not an arrow function.
+ */
+
 import {LitElement} from '../lit-element.js';
 
 import {PropertyDeclaration, UpdatingElement} from './updating-element.js';
 
 export type Constructor<T> = {
-  new (...args: unknown[]): T
+  // tslint:disable-next-line:no-any
+  new (...args: any[]): T
 };
 
 // From the TC39 Decorators proposal
@@ -218,7 +227,7 @@ const legacyEventOptions =
  * Adds event listener options to a method used as an event listener in a
  * lit-html template.
  *
- * @param options An object that specifis event listener options as accepted by
+ * @param options An object that specifies event listener options as accepted by
  * `EventTarget#addEventListener` and `EventTarget#removeEventListener`.
  *
  * Current browsers support the `capture`, `passive`, and `once` options. See:
@@ -239,16 +248,19 @@ const legacyEventOptions =
  *         this.clicked = true;
  *       }
  *     }
+ *
+ * @ExportDecoratedItems
  */
-export const eventOptions = (options: AddEventListenerOptions) =>
-    // Return value typed as any to prevent TypeScript from complaining that
-    // standard decorator function signature does not match TypeScript decorator
-    // signature
-    // TODO(kschaaf): unclear why it was only failing on this decorator and not
-    // the others
-    ((protoOrDescriptor: Object|ClassElement, name?: string) =>
-         (name !== undefined) ?
-         legacyEventOptions(options, protoOrDescriptor as Object, name) :
-         standardEventOptions(options, protoOrDescriptor as ClassElement)) as
-        // tslint:disable-next-line:no-any decorator
-        any;
+export function eventOptions(options: AddEventListenerOptions) {
+  // Return value typed as any to prevent TypeScript from complaining that
+  // standard decorator function signature does not match TypeScript decorator
+  // signature
+  // TODO(kschaaf): unclear why it was only failing on this decorator and not
+  // the others
+  return ((protoOrDescriptor: Object|ClassElement, name?: string) =>
+           (name !== undefined) ?
+               legacyEventOptions(options, protoOrDescriptor as Object, name) :
+               standardEventOptions(options, protoOrDescriptor as ClassElement)) as
+             // tslint:disable-next-line:no-any decorator
+             any;
+}

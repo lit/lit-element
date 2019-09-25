@@ -1,10 +1,14 @@
 language: node_js
 sudo: false
-dist: trusty
-node_js: '9'
+dist: xenial
+node_js: '10'
 addons:
   firefox: latest
-  chrome: stable
+  apt:
+    sources:
+      - google-chrome
+    packages:
+      - google-chrome-stable
 cache:
   directories:
   - node_modules
@@ -21,7 +25,10 @@ matrix:
   - env: JOB=benchmark
   include:
   - env: JOB=test KARMA_BROWSERS="Chrome,Firefox" KARMA_CUSTOM_LAUNCHERS="./test/custom-launchers-browserstack.json"
-    before_script: time npm run lint
-    script: xvfb-run time npm run test
+    before_script:
+      - time npm run lint
+    script: 
+      - xvfb-run time npm run test
   - env: JOB=benchmark
-    script: "./travis-bench.sh"
+    script:
+      - ./travis-bench.sh

@@ -36,30 +36,7 @@ declare global {
 
 export interface CSSResultArray extends Array<CSSResult|CSSResultArray> {}
 
-/**
- * Minimal implementation of Array.prototype.flat
- * @param arr the array to flatten
- * @param result the accumlated result
- */
-function arrayFlat(
-    styles: CSSResultArray, result: CSSResult[] = []): CSSResult[] {
-  for (let i = 0, length = styles.length; i < length; i++) {
-    const value = styles[i];
-    if (Array.isArray(value)) {
-      arrayFlat(value, result);
-    } else {
-      result.push(value);
-    }
-  }
-  return result;
-}
-
-/** Deeply flattens styles array. Uses native flat if available. */
-const flattenStyles = (styles: CSSResultArray): CSSResult[] =>
-    styles.flat ? styles.flat(Infinity) : arrayFlat(styles);
-
 export class LitElement extends UpdatingElement {
-
   /**
    * Ensure this class is marked as `finalized` as an optimization ensuring
    * it will not needlessly try to `finalize`.
@@ -107,26 +84,29 @@ export class LitElement extends UpdatingElement {
     // shared styles will generate new stylesheet objects, which is wasteful.
     // This should be addressed when a browser ships constructable
     // stylesheets.
-    const userStyles = this.styles;
-    const styles: CSSResult[] = [];
+    const userStyles = this.styles!;
     if (Array.isArray(userStyles)) {
-      const flatStyles = flattenStyles(userStyles);
-      // As a performance optimization to avoid duplicated styling that can
-      // occur especially when composing via subclassing, de-duplicate styles
-      // preserving the last item in the list. The last item is kept to
-      // try to preserve cascade order with the assumption that it's most
-      // important that last added styles override previous styles.
-      const styleSet = flatStyles.reduceRight((set, s) => {
-        set.add(s);
-        // on IE set.add does not return the set.
-        return set;
-      }, new Set<CSSResult>());
-      // Array.from does not work on Set in IE
-      styleSet.forEach((v) => styles.unshift(v));
-    } else if (userStyles) {
-      styles.push(userStyles);
+      // De-duplicate styles preserving the _last_ instance in the set.
+      // This is a performance optimization to avoid duplicated styles that can
+      // occur especially when composing via subclassing.
+      // The last item is kept to try to preserve the cascade order with the
+      // assumption that it's most important that last added styles override
+      // previous styles.
+      const addStyles =
+          (styles: CSSResultArray, set: Set<CSSResult>): Set<CSSResult> =>
+              styles.reduceRight(
+                  (set: Set<CSSResult>, s) =>
+                      // Note: On IE set.add() does not return the set
+                  Array.isArray(s) ? addStyles(s, set) : (set.add(s), set),
+                  set);
+      // Array.from does not work on Set in IE, otherwise return
+      // Array.from(addStyles(userStyles, new Set<CSSResult>())).reverse()
+      const set = addStyles(userStyles, new Set<CSSResult>());
+      const styles: CSSResult[] = [];
+      set.forEach((v) => styles.unshift(v));
+      return styles;
     }
-    return styles;
+    return [userStyles];
   }
 
   private _needsShimAdoptedStyleSheets?: boolean;
@@ -210,7 +190,7 @@ export class LitElement extends UpdatingElement {
    * Updates the element. This method reflects property values to attributes
    * and calls `render` to render DOM via lit-html. Setting properties inside
    * this method will *not* trigger another update.
-   * * @param _changedProperties Map of changed properties with old values
+   * @param _changedProperties Map of changed properties with old values
    */
   protected update(changedProperties: PropertyValues) {
     super.update(changedProperties);

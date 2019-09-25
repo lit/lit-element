@@ -38,7 +38,7 @@ This section describes how to create styles in your shadow root to style your ho
 
 There are three main places in which you can define styles for your host element and its shadow DOM:
 
-* [In the static `styles` property of a LitElement class (recomended)](#static-styles).
+* [In the static `styles` property of a LitElement class (recommended)](#static-styles).
 * [Inside a `<style>` element in the HTML template defined in your `render` function](#style-element).
 * [In an external stylesheet, linked to from your LitElement template with `<link rel="stylesheet" href="...">`](#external-stylesheet).
 
@@ -230,7 +230,7 @@ In this section:
 
 #### Write CSS styles for a host element {#host-styles}
 
-An element can apply styles to itself with the `:host` and `:host()` CSS psuedo-classes used inside the element's ShadowRoot. The term "host" is used because an element is the host of its own shadow root.
+An element can apply styles to itself with the `:host` and `:host()` CSS pseudo-classes used inside the element's ShadowRoot. The term "host" is used because an element is the host of its own shadow root.
 
 * `:host` selects the host element of the shadow root:
 

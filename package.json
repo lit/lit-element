@@ -76,7 +76,7 @@
     "rollup-plugin-filesize": "^4.0.1",
     "rollup-plugin-node-resolve": "^3.4.0",
     "rollup-plugin-terser": "^1.0.1",
-    "tachometer": "^0.4.4",
+    "tachometer": "^0.4.13",
     "tslint": "^5.12.0",
     "typedoc": "^0.15.0",
     "typescript": "^3.4.1",
