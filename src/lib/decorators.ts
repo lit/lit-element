@@ -258,9 +258,10 @@ export function eventOptions(options: AddEventListenerOptions) {
   // TODO(kschaaf): unclear why it was only failing on this decorator and not
   // the others
   return ((protoOrDescriptor: Object|ClassElement, name?: string) =>
-           (name !== undefined) ?
-               legacyEventOptions(options, protoOrDescriptor as Object, name) :
-               standardEventOptions(options, protoOrDescriptor as ClassElement)) as
+              (name !== undefined) ?
+              legacyEventOptions(options, protoOrDescriptor as Object, name) :
+              standardEventOptions(
+                  options, protoOrDescriptor as ClassElement)) as
              // tslint:disable-next-line:no-any decorator
              any;
 }
