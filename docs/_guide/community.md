@@ -14,7 +14,7 @@ share what you've built, and more. All community participation is subject to the
 <a href="https://github.com/Polymer/project/blob/master/Code_of_Conduct.md">Code of Conduct</a>—be
 excellent to each other!
 
-*   <strong>Join us on <a href="https://join.slack.com/t/polymer/shared_invite/enQtNTAzNzg3NjU4ODM4LTkzZGVlOGIxMmNiMjMzZDM1YzYyMzdiYTk0YjQyOWZhZTMwN2RlNjM5ZDFmZjMxZWRjMWViMDA1MjNiYWFhZWM">Slack</a>!</strong> The
+*   <strong>Join us on <a href="https://www.polymer-project.org/slack-invite">Slack</a>!</strong> The
     Polymer Project Slack workspace has thousands of users discussing LitElement, web components, and related topics.
     Check out <code>#general</code>, <code>#beginners</code>, or
     <code>#tools</code> to get started. 
