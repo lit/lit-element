@@ -9,9 +9,15 @@ layout: default
     <button id="toggleNavButton">Menu</button>
     <ul>
       {%- for item in site.data.guide.toc -%}
-      <li class="{% if page.url == item[1].url %}active{% endif %}">
+      {%- if item[1].header -%}
+      <li class="side-nav-header">
+        {{item[1].title}}
+      </li>
+      {%- else -%}
+      <li class="{% if page.url == item[1].url %}active{% endif %} {% unless item[1].header or item[1].toplevel %}side-nav-indent{% endunless %}">
         <a href="{{site.baseurl}}{{item[1].url}}">{{item[1].title}}</a>
       </li>
+      {%- endif -%}
       {%- endfor -%}      
     </ul>    
   </nav>
