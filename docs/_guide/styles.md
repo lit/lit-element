@@ -30,15 +30,9 @@ For more information, see [Resources](templates#resources) in the Templates chap
 
 ## Add styles to your component {#add-styles}
 
-The styles you add to your component are _scoped_ using shadow DOM. If you're not familiar with shadow DOM, this section gives a brief overview of shadow DOM styling.
+For optimal performance, define scoped styles in a static `styles` property. 
 
-Styles you add to a component can affect:
-
-* [The shadow tree (your component's rendered template)](#shadowroot).
-* [The component itself](#host).
-* [The component's children](#slot).
-
-For optimal performance, define scoped styles in a static `styles` property. To do this, import the `css` helper function from the `lit-element` module and create a static `styles` property. Then, write styles in standard CSS. 
+Define styles in a tagged template literal, using the the `css` tag function:  
 
 ```js
 // Import the `css` helper function
@@ -47,16 +41,18 @@ import { LitElement, css, html } from 'lit-element';
 class MyElement extends LitElement {
   static get styles() {
     return css`
-      /* Scoped styles go here */
+      div { color: red; }
     `;
   }
   render() { 
     return html`
-      <!-- Template goes here --> 
+      <div>I'm styled!</div> 
     `;
   }
 }
 ```
+
+The styles you add to your component are _scoped_ using shadow DOM. For a quick overview of shadow DOM styling, see [Shadow DOM styling overview](#shadow-dom).
 
 The value of the static `styles` property can be:
     
@@ -76,26 +72,96 @@ The value of the static `styles` property can be:
     }
     ```
 
-    Using an array of tagged template literals, a component can inherit the styles from a LitElement superclass, and add its own styles:
+The static `styles` property is _usually_ the best way to add styles to your component, but 
+there are some use cases you can't handle this way—for example, linking to an external stylesheet.
+For alternate ways to add styles, see [Define scoped styles in the template](#styles-in-the-template).
 
-    ```js
-    class MyElement extends SuperElement {
-      static get styles() {
-        return [
-          super.styles,
-          css`...`
-        ];
+### Expressions in static styles {#expressions}
+
+Static styles apply to all instances of a component. Any expressions in CSS are evaluated **once**, then reused for all instances. 
+
+{:.alert .alert-info}
+<div>
+
+**Consider using CSS variables and custom properties to create [configurable styles](#configurable).** CSS cusom properties work well with app themes, and also allow you to create per-instance styles.
+
+</div>
+
+To prevent LitElement-based components from evaluating potentially malicious code, the `css` tag only accepts literal strings. With expressions, you can nest `css` literals:
+
+```js
+{% include projects/style/nestedcss/my-element.js %}
+```
+
+{% include project.html folder="style/nestedcss" openFile="my-element.js" %}
+
+However, if you want to use expressions to add a non-literal to a `css` literal, you must wrap the non-literal with the `unsafeCSS` function. For example:
+
+```js
+{% include projects/style/unsafecss/my-element.js %}
+```
+
+{% include project.html folder="style/unsafecss" openFile="my-element.js" %}
+
+Another example:
+
+```js
+import { LitElement, css, unsafeCSS } from 'lit-element';
+
+class MyElement extends LitElement {
+  static get styles() {
+    const mainWidth = 800;
+    const padding = 20;   
+    
+    return css`
+      :host { 
+        width: ${unsafeCSS(mainWidth + padding)}px;
       }
-    }
-    ```
+    `;
+  } 
+}
+```
+
+{:.alert .alert-info}
+<div>
+
+**Only use the `unsafeCSS` tag with trusted input.** To prevent LitElement-based components from evaluating potentially malicious code, the `css` tag only accepts literal strings and numbers. `unsafeCSS` circumvents this safeguard, so use it with caution.
+
+</div>
+
+### Inheriting styles
+
+Using an array of tagged template literals, a component can inherit the styles from a LitElement superclass, and add its own styles:
+
+```js
+class MyElement extends SuperElement {
+  static get styles() {
+    return [
+      super.styles,
+      css`...`
+    ];
+  }
+}
+```
 
 {% include project.html folder="style/superstyles" openFile="my-element.js" %}
+
+## Shadow DOM styling overview {#shadow-dom}
+
+This section gives a brief overview of shadow DOM styling.
+
+Styles you add to a component can affect:
+
+* [The shadow tree (your component's rendered template)](#shadowroot).
+* [The component itself](#host).
+* [The component's children](#slot).
+
 
 ### Style the shadow tree {#shadowroot}
 
 LitElement templates are rendered into a shadow tree by default. Styles scoped to an element's shadow tree don't affect the main document. Similarly, with the exception of [inherited CSS properties](#inheritance), document-level styles don't affect the contents of a shadow tree.
 
-To style content in a shadow root, create a static `styles` property and write styles using standard CSS selectors:
+When you use standard CSS selectors, they only match elements in your component's shadow tree.
 
 ```js
 class MyElement extends LitElement {
@@ -124,8 +190,7 @@ class MyElement extends LitElement {
 
 ### Style the component itself
 
-Styles defined in an element's shadow tree can style the element itself. The element that a shadow tree 
-is attached to is called the _host_.
+Styles defined in an element's shadow tree can style the element itself (also known as the _shadow host_).
 
 To create default styles for the host element, use the `:host` CSS pseudo-class and `::host()` CSS pseudo-class function.
 
@@ -168,7 +233,7 @@ my-element {
 
 ### Style the component's children
 
-The `<slot>` element acts as a placeholder in a LitElement template where its children are displayed. For example: 
+The `<slot>` element acts as a placeholder in a shadow tree where the host element's children are displayed. For example: 
 
 ```js
 class MyElement extends LitElement {
@@ -257,62 +322,17 @@ static get styles() {
 
 See the section on [CSS custom properties](#customprops) for more information. 
 
-### Expressions in static styles {#expressions}
 
-Static styles apply to all instances of a component. Any expressions in CSS are evaluated **once**, then reused for all instances. 
 
-{:.alert .alert-info}
-<div>
+## Define scoped styles in the template {#styles-in-the-template}
 
-**Consider using CSS variables and custom properties to create [configurable styles](#configurable).** CSS cusom properties work well with app themes, and also allow you to create per-instance styles.
+We recommend using static styles for optimal performance.  However, sometimes you may want to
+define styles in the LitElement template. There are two ways to add scoped styles in the template:
 
-</div>
+*   Add styles using a `<style>` element.
+*   Add styles using an external style sheet.
 
-To prevent LitElement-based components from evaluating potentially malicious code, the `css` tag only accepts literal strings. With expressions, you can nest `css` literals:
-
-```js
-{% include projects/style/nestedcss/my-element.js %}
-```
-
-{% include project.html folder="style/nestedcss" openFile="my-element.js" %}
-
-However, if you want to use expressions to add a non-literal to a `css` literal, you must wrap the non-literal with the `unsafeCSS` function. For example:
-
-```js
-{% include projects/style/unsafecss/my-element.js %}
-```
-
-{% include project.html folder="style/unsafecss" openFile="my-element.js" %}
-
-Another example:
-
-```js
-import { LitElement, css, unsafeCSS } from 'lit-element';
-
-class MyElement extends LitElement {
-  static get styles() {
-    const mainWidth = 800;
-    const padding = 20;   
-    
-    return css`
-      :host { 
-        width: ${unsafeCSS(mainWidth + padding)}px;
-      }
-    `;
-  } 
-}
-```
-
-{:.alert .alert-info}
-<div>
-
-**Only use the `unsafeCSS` tag with trusted input.** To prevent LitElement-based components from evaluating potentially malicious code, the `css` tag only accepts literal strings and numbers. `unsafeCSS` circumvents this safeguard, so use it with caution.
-
-</div>
-
-## Define scoped styles in the template
-
-We recommend using static styles for optimal performance.  However, sometimes you may want to 
+Each of these techniques has its own set of advantages and drawbacks.
 
 ### In a style element
 
