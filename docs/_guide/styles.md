@@ -25,7 +25,8 @@ class MyElement extends LitElement {
 
 Your component's template is rendered to its shadow DOM tree. The styles you add to your component are automatically _scoped_ to the shadow tree, so they don't leak out and affect other elements.
 
-[ADD shadow DOM info links?]
+If you're not familiar with shadow DOM, this chapter gives an overview of some of the common styling features.
+For more information, see [Resources](templates#resources) in the Templates chapter for links to some shadow DOM primers.
 
 ## Add styles to your component {#add-styles}
 
@@ -340,7 +341,8 @@ render() {
   return html`
     <style>
       :host {
-        color: ${/* Limitations & performance issues! */}
+        /* Warning: this approach has limitations & performance issues! */
+        color: ${myColor}
       } 
     </style>
     <div>template content</div>
@@ -350,7 +352,7 @@ render() {
 
 Expressions inside a `<style>` element won't update per instance in ShadyCSS, due to limitations of the ShadyCSS polyfill. See the [ShadyCSS readme](https://github.com/webcomponents/shadycss/blob/master/README.md#limitations) for more information.
 
-Additionally, evaluating an expression inside a `<style>` element is inefficient. When any text inside a `<style>` element changes, the browser must re-parse the whole `<style>` element, resulting in unnecessary rework. 
+Additionally, evaluating an expression inside a `<style>` element is inefficient. When any text inside a `<style>` element changes, the browser must re-parse the whole `<style>` element, resulting in unnecessary work. 
 
 If you need to evaluate expressions inside a `<style>` element, use the following strategy to avoid creating performance problems:
 

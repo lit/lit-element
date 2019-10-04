@@ -11,8 +11,9 @@ slug: templates
 Add a template to your component to define internal DOM to implement your component. 
 
 LitElement uses
-[shadow DOM](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_shadow_DOM) to encapsulate the templated DOM. Shadow DOM provides scoped styling, so you can add styles to your component that don't affect other parts of the DOM tree. Where native shadow DOM isn't available, LitElement 
+[shadow DOM](https://developers.google.com/web/fundamentals/web-components/shadowdom) to encapsulate the templated DOM. Shadow DOM provides scoped styling, so you can add styles to your component that don't affect other parts of the DOM tree. Where native shadow DOM isn't available, LitElement 
 uses the [Shady CSS](https://github.com/webcomponents/polyfills/tree/master/packages/shadycss) polyfill.
+
 
 ## Define and render a template
 
@@ -518,12 +519,46 @@ render() { return html`<slot name="thing"></slot>`; }
 </my-element>
 ```
 
-## Further reading
-Since LitElement uses lit-html's `html` and `render` functions to render templates you can take advantage
-of the entire lit-html feature-set for writing your templates. You can find further information
-* [on the lit-html homepage](https://lit-html.polymer-project.org)
-* [in the Template Reference](https://lit-html.polymer-project.org/guide/template-reference)
+## Using other lit-html features
 
-Note: Since lit-html is a dependency of LitElement it is installed into node_modules folder when you install LitElement. You do not have to install
-lit-html yourself. It is recommended that you only use the version of lit-html that comes as a dependency of your version of LitElement to avoid
-version conflicts.
+Since LitElement uses lit-html's `html` and function to render templates you can take advantage
+of the entire lit-html feature-set for writing your templates. This includes lit-html _directives_, 
+special functions that customize the way lit-html renders a binding.
+
+To import features directly from lit-html, your project should add lit-html as a direct dependency.
+We recommend using the widest practical version range for lit-html, to minimize the chance of npm
+installing two different versions of lit-html:
+
+```bash
+npm i lit-element@^2.0.0
+npm i lit-html@^1.0.0
+```
+
+### Import and use a lit-html directive
+
+You can import and use a lit-html directive and use it as shown in the lit-html documentation.
+
+```js
+import {LitElement, html} from 'lit-element';
+import {until} from 'lit-html/directives/until.js';
+
+const content = fetch('./content.txt').then(r => r.text());
+
+html`${until(content, html`<span>Loading...</span>`)}`
+```
+
+For a list of directives supplied with lit-html, see [Built-in directives](https://lit-html.polymer-project.org/guide/template-reference#built-in-directives) in the Template syntax reference.
+
+
+## Resources
+
+For more information on shadow DOM:
+
+* [Shadow DOM v1: Self-Contained Web Components](https://developers.google.com/web/fundamentals/web-components/shadowdom) on Web Fundamentals.
+* [Using shadow DOM](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_shadow_DOM) on MDN.
+
+For more information on lit-html templates:
+
+* [Writing templates](https://lit-html.polymer-project.org/guide/writing-templates)
+* [Template syntax reference](https://lit-html.polymer-project.org/guide/template-reference)
+
