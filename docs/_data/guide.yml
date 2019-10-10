@@ -9,7 +9,7 @@ toc:
     url: /guide/start
     toplevel: true
   components: 
-    title: Building components
+    title: Writing components
     header: true
   templates: 
     title: Templates
