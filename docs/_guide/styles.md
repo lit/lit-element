@@ -192,7 +192,7 @@ class MyElement extends LitElement {
 
 Styles defined in an element's shadow tree can style the element itself (also known as the _shadow host_).
 
-To create default styles for the host element, use the `:host` CSS pseudo-class and `::host()` CSS pseudo-class function.
+To create default styles for the host element, use the `:host` CSS pseudo-class and `:host()` CSS pseudo-class function.
 
 *   `:host` selects the host element.
 
@@ -295,7 +295,7 @@ my-element div {
 {:.alert .alert-info}
 <div>
 
-**Watch out for Shady CSS limitations around slotted content!** See the [Shady CSS limitations](https://github.com/webcomponents/polyfills/tree/master/packages/shadycss#limitations) for details on how to use the `::slotted()` syntax in a polyfill-friendly way. 
+**Watch out for limitations in the Shady CSS polyfill around slotted content!** See the [Shady CSS limitations](https://github.com/webcomponents/polyfills/tree/master/packages/shadycss#limitations) for details on how to use the `::slotted()` syntax in a polyfill-friendly way. 
 
 </div>
 

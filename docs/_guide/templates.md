@@ -29,7 +29,7 @@ class MyElement extends LitElement {
 }
 ```
 
-*   Write your template in HTML inside a JavaScript template literal by enclosing the raw HTML in back-ticks 
+*   Write your template in HTML inside a JavaScript [template literal](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals) by enclosing the raw HTML in back-ticks 
     (<code>``</code>). 
 
 *   Tag your template literal with the [`html`](https://lit-html.polymer-project.org/api/modules/lit_html.html#html) 
