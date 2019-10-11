@@ -31,8 +31,8 @@ module.exports = (config) => {
       listenAddress: '127.0.0.1',
       files: [
         'node_modules/mocha-suite-child/mocha-suite-child.js',
-        {pattern: 'test/suites.html', type: 'dom'}
-      ].filter(Boolean),
+        {pattern: 'test/suite.js', type: 'js'}
+      ],
       customLaunchers,
       logLevel: config.LOG_INFO
     });
