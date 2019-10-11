@@ -17,8 +17,6 @@ const staticFiles = require('koa-static');
 const {nodeResolve} = require('koa-node-resolve');
 const {esmTransform} = require('koa-esm-transform');
 
-const cache = new Map();
-
 module.exports = (karma) =>
     new Koa()
         .use(esmTransform())
