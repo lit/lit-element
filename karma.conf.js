@@ -89,7 +89,7 @@ const runTestsOnSauce = process.env.SAUCE_USERNAME &&
         .some((name) => customLaunchers[name].base === 'SauceLabs');
 
 const reporters = [
-  'spec',
+  'summary',
   runTestsOnBrowserStack && 'BrowserStack',
   runTestsOnSauce && 'saucelabs'
 ].filter(Boolean);
