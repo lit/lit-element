@@ -18,9 +18,11 @@ const {nodeResolve} = require('koa-node-resolve');
 const {esmTransform} = require('koa-esm-transform');
 const LRU = require('lru-cache');
 const cache = new LRU({max: 1000});
+const {browserCapabilities} = require('browser-capabilities');
 
 const cacheMeOutside = async (ctx, next) => {
-    const key = `${ctx.request.href}#${ctx.request.header['user-agent']||''}`;
+    const capabilitiesList = [...browserCapabilities(ctx.request.header['user-agent']||'').keys()].sort();
+    const key = `${ctx.request.href}#${capabilitiesList}`;
     const cachedResponse = cache.has(key) && cache.get(key);
     if (cachedResponse) {
         ctx.response.status = cachedResponse.status;

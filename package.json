@@ -47,6 +47,7 @@
     "@types/mocha": "^5.2.4",
     "@webcomponents/shadycss": "^1.8.0",
     "@webcomponents/webcomponentsjs": "^2.2.3",
+    "browser-capabilities": "^1.1.4",
     "chai": "^4.0.2",
     "clang-format": "^1.2.4",
     "karma": "^4.3.0",
