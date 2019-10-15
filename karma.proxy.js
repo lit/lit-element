@@ -16,9 +16,31 @@ const mount = require('koa-mount');
 const staticFiles = require('koa-static');
 const {nodeResolve} = require('koa-node-resolve');
 const {esmTransform} = require('koa-esm-transform');
+const LRU = require('lru-cache');
+const cache = new LRU({max: 1000});
+
+const cacheMeOutside = async (ctx, next) => {
+    const key = `${ctx.request.href}#${ctx.request.header['user-agent']||''}`;
+    const cachedResponse = cache.has(key) && cache.get(key);
+    if (cachedResponse) {
+        ctx.response.status = cachedResponse.status;
+        ctx.response.body = cachedResponse.body;
+        ctx.response.length = cachedResponse.length;
+        ctx.response.type = cachedResponse.type;
+        return;
+    }
+    await next();
+    cache.set({
+        status: ctx.status,
+        body: ctx.body,
+        length: ctx.length,
+        type: ctx.type
+    });
+}
 
 module.exports = (karma) =>
     new Koa()
+        .use(cacheMeOutside)
         .use(esmTransform())
         .use(mount('/base', new Koa().use(nodeResolve()).use(staticFiles('.'))))
         .use(karma);
