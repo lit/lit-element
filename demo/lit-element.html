@@ -12,9 +12,36 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <title>lit-element demo</title>
   <script src="../node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
   <script type="module" src = "./ts-element.js"></script>
+  <style type="element-theme" for="my-element">
+
+    :host {
+      padding: 20px;
+      border: 2px dashed orange;
+    }
+
+    [part=header] {
+      background: beige;
+      color: black;
+      padding: 16px;
+    }
+
+    [part=header]::after {
+      position: absolute;
+      right: 48px;
+      content: '[themed content!]';
+    }
+
+    :host(.dark) [part=header] {
+      background: darkgray;
+      color: white;
+    }
+
+  </style>
 </head>
 <body>
     <my-element bar="5" whales="5" foobar="17">Hi</my-element>
+    <hr>
+    <my-element class="dark" bar="5" whales="5" foobar="17">Hi</my-element>
     <hr>
     <ts-element message="Yo" more-info="person"></ts-element>
 
@@ -83,7 +110,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               padding: 8px;
             }
           </style>
-          <h4 on-click="${(e) => console.log(this, e.target)}">Foo: ${foo}, Bar: ${bar}</h4>
+          <h4 part="header" on-click="${(e) => console.log(this, e.target)}">Foo: ${foo}, Bar: ${bar}</h4>
           <div class="content">
             <slot></slot>
           </div>

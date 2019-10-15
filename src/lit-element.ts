@@ -20,6 +20,7 @@ export * from './lib/updating-element.js';
 export * from './lib/decorators.js';
 export {html, svg, TemplateResult, SVGTemplateResult} from 'lit-html/lit-html.js';
 import {supportsAdoptingStyleSheets, CSSResult} from './lib/css-tag.js';
+import {themes} from './lib/themes.js';
 export * from './lib/css-tag.js';
 
 declare global {
@@ -62,6 +63,15 @@ export class LitElement extends UpdatingElement {
   static styles?: CSSResult|CSSResultArray;
 
   private static _styles: CSSResult[]|undefined;
+
+  private static _themes: CSSResult[]|undefined;
+
+  private static _getThemeStyles(name: string): CSSResult[] {
+    if (this._themes) {
+      return this._themes;
+    }
+    return this._themes = themes().get(name) || [];
+  }
 
   /** @nocollapse */
   protected static finalize() {
@@ -155,7 +165,8 @@ export class LitElement extends UpdatingElement {
    * behavior](https://wicg.github.io/construct-stylesheets/#using-constructed-stylesheets).
    */
   protected adoptStyles() {
-    const styles = (this.constructor as typeof LitElement)._styles!;
+    let styles = ((this.constructor as typeof LitElement)._styles! || [])
+      .concat((this.constructor as typeof LitElement)._getThemeStyles(this.localName));
     if (styles.length === 0) {
       return;
     }
