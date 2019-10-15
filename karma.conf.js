@@ -26,7 +26,7 @@ module.exports = (config) => {
         mocha: {ui: 'tdd'}
       },
       frameworks: ['mocha', 'chai', 'source-map-support'],
-      concurrency: 1,
+      concurrency: 3,
       hostname: '127.0.0.1',
       listenAddress: '127.0.0.1',
       files: [
