@@ -73,7 +73,7 @@ The value of the static `styles` property can be:
     ```
 
 The static `styles` property is _usually_ the best way to add styles to your component, but 
-there are some use cases you can't handle this way—for example, linking to an external stylesheet.
+there are some use cases you can't handle this way—for example, linking to an external style sheet.
 For alternate ways to add styles, see [Define scoped styles in the template](#styles-in-the-template).
 
 ### Expressions in static styles {#expressions}
@@ -146,6 +146,45 @@ class MyElement extends SuperElement {
 
 {% include project.html folder="style/superstyles" openFile="my-element.js" %}
 
+### Sharing styles
+
+You can share styles between components by creating a module that exports tagged
+styles:
+
+```js
+import { css } from 'lit-element';
+
+export const buttonStyles = css`
+  .blue-button {
+    color: white;
+    background-color: blue;
+  }
+  .blue-button:disabled {
+    background-color: grey;
+  }`;
+```
+
+Your element can then import the styles and add them to its static `styles` property:
+
+```js
+import { buttonStyles } from './button-styles.js';
+
+class MyElement extends LitElement {
+  static get styles() {
+    return [
+      buttonStyles,
+      css`
+        :host { display: block;
+          border: 1px solid black;
+        }`
+    ]
+  }
+  ...
+}
+```
+
+You can also import an external style sheet by adding a `<link>` element to your template, but this has a number of limitations. For details, see [Import an external stylesheet](#external-stylesheet).
+
 ## Shadow DOM styling overview {#shadow-dom}
 
 This section gives a brief overview of shadow DOM styling.
@@ -190,7 +229,7 @@ class MyElement extends LitElement {
 
 ### Style the component itself
 
-Styles defined in an element's shadow tree can style the element itself (also known as the _shadow host_).
+You can style the component itself using special `:host` selectors. (The element that owns, or "hosts" a shadow tree is called the _host element_.)
 
 To create default styles for the host element, use the `:host` CSS pseudo-class and `:host()` CSS pseudo-class function.
 
@@ -210,12 +249,6 @@ static get styles() {
     :host([hidden]) { 
       display: none; 
     }
-
-    /* Selects the host element if it has class "blue" */
-    :host(.blue) { 
-      background-color: aliceblue;
-      color: blue;
-    }
   `;
 }
 ```
@@ -232,6 +265,8 @@ my-element {
 ```
 
 ### Style the component's children
+
+Your component may accept children (like a `<ul>` element can have `<li>` children). To render children, your template needs to include one or more `<slot>` elements, as described in [Render children with the slot element](templates#slots).
 
 The `<slot>` element acts as a placeholder in a shadow tree where the host element's children are displayed. For example: 
 
@@ -388,9 +423,9 @@ If you need to evaluate expressions inside a `<style>` element, use the followin
 
 {% include project.html folder="style/perinstanceexpressions" openFile="my-element.js" %}
 
-### In an external stylesheet
+### Import an external stylesheet {#external-stylesheet}
 
-We recommend placing your styles in a static `styles` property for optimal performance. However, you can include an external stylesheet in your template with a `<link>`:
+We recommend placing your styles in a static `styles` property for optimal performance. However, you can include an external style sheet in your template with a `<link>`:
 
 ```js
 {% include projects/style/where/my-element.js %}
@@ -400,11 +435,11 @@ We recommend placing your styles in a static `styles` property for optimal perfo
 
 There are some important caveats though:
 
-*  The [ShadyCSS polyfill](https://github.com/webcomponents/shadycss/blob/master/README.md#limitations) doesn't support external stylesheets.
+*  The [ShadyCSS polyfill](https://github.com/webcomponents/shadycss/blob/master/README.md#limitations) doesn't support external style sheets.
 
 *   External styles can cause a flash-of-unstyled-content (FOUC) while they load.
 
-*   The URL in the `href` attribute is relative to the **main document**. This is okay if you're building an app and your asset URLs are well-known, but avoid using external stylesheets when building a reusable element.
+*   The URL in the `href` attribute is relative to the **main document**. This is okay if you're building an app and your asset URLs are well-known, but avoid using external style sheets when building a reusable element.
 
 ## Dynamic classes and styles
 

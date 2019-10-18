@@ -10,8 +10,16 @@ slug: templates
 
 Add a template to your component to define internal DOM to implement your component. 
 
-LitElement uses
-[shadow DOM](https://developers.google.com/web/fundamentals/web-components/shadowdom) to encapsulate the templated DOM. Shadow DOM provides scoped styling, so you can add styles to your component that don't affect other parts of the DOM tree. Where native shadow DOM isn't available, LitElement 
+To encapsulate the templated DOM LitElement uses
+[shadow DOM](https://developers.google.com/web/fundamentals/web-components/shadowdom) . Shadow DOM provides three basic benefits:
+
+* DOM scoping. DOM APIs like `document.querySelector` won't find elements in the 
+  component's shadow DOM, so it's harder for global scripts to accidentally break your component.
+* Style scoping. You can write encapsulated styles for your shadow DOM that don't 
+  affect the rest of the DOM tree.
+* Composition. The component's shadow DOM (managed by the component) is separate from the component's children. You can choose how children are rendered in your templated DOM. Component users can add and remove children using standard DOM APIs without accidentally breaking anything in your shadow DOM.
+
+Where native shadow DOM isn't available, LitElement 
 uses the [Shady CSS](https://github.com/webcomponents/polyfills/tree/master/packages/shadycss) polyfill.
 
 
@@ -110,7 +118,7 @@ render() {
 ### Use properties, loops, and conditionals in a template
 
 When defining your element's template, you can bind the element's properties to the 
-template so the 
+template; the template is re-rendered whenever the properties change.
 
 #### Properties
 
@@ -226,25 +234,22 @@ _my-element.js_
 
 {% include project.html folder="docs/templates/databinding" openFile="my-element.js" %}
 
-### Render light DOM children with the slot element
+### Render children with the slot element {#slots}
 
-#### Shadow DOM vs light DOM
-
-Since the introduction of shadow DOM, we use the term "light DOM" to refer to nodes that appear in the main DOM tree.
-
-By default, if an element has a shadow tree, its light DOM children do not render at all:
+Your component may accept children (like a `<ul>` element can have `<li>` children). 
 
 ```html
 <my-element>
-  <p>I won't render</p>
+  <p>A child</p>
 </my-element>
 ```
+By default, if an element has a shadow tree, its children don't render at all. 
 
-You can make them render using the [`<slot>` element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/slot). 
+To render children, your template needs to include one or more [`<slot>` elements](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/slot), which act as placeholders for child nodes. 
 
 #### Use the `slot` element
 
-To render an element's light DOM children, create a `<slot>` for them in the element's template. For example:
+To render an element's children, create a `<slot>` for them in the element's template. For example:
 
 ```js
 render(){
@@ -256,7 +261,7 @@ render(){
 }
 ```
 
-Light DOM children will now render in the `<slot>`:
+Children will now render in the `<slot>`:
 
 ```html
 <my-element>
@@ -264,7 +269,9 @@ Light DOM children will now render in the `<slot>`:
 </my-element>
 ```
 
-Arbitrarily many light DOM children can populate a single slot:
+The children aren't _moved_ in the DOM tree, but they're rendered _as if_ they were children of the `<slot>`.
+
+Arbitrarily many children can populate a single slot:
 
 ```html
 <my-element>
@@ -278,7 +285,7 @@ Arbitrarily many light DOM children can populate a single slot:
 
 #### Use named slots
 
-To assign a light DOM child to a specific slot, ensure that the child's `slot` attribute matches the slot's `name` attribute:
+To assign a child to a specific slot, ensure that the child's `slot` attribute matches the slot's `name` attribute:
 
 ```js
 render(){
@@ -298,11 +305,11 @@ _index.html_
 </my-element>
 ```
 
-* **Named slots only accept light DOM children with a matching `slot` attribute.**
+* **Named slots only accept children with a matching `slot` attribute.**
 
   For example, `<slot name="one"></slot>` only accepts children with the attribute `slot="one"`.
 
-* **Light DOM children with a `slot` attribute will only be placed in a slot with a matching `name` attribute.**
+* **Children with a `slot` attribute will only be rendered in a slot with a matching `name` attribute.**
 
   For example, `<p slot="one">...</p>` will only be placed in `<slot name="one"></slot>`.
 
@@ -411,7 +418,7 @@ By default, LitElement creates an open `shadowRoot` and renders inside it, produ
 
 To customize a component's render root, implement `createRenderRoot` and return the node you want the template to render into. 
 
-For example, to render the template into the main DOM tree as your element's light DOM:
+For example, to render the template into the main DOM tree as your element's children:
 
 ```text
 <my-element>
@@ -425,13 +432,13 @@ Implement `createRenderRoot` and return `this`:
 class LightDom extends LitElement {
   render() {
     return html`
-      <p>This template renders in light DOM.</p>
+      <p>This template renders without shadow DOM.</p>
     `;
   }
   createRenderRoot() {
   /**
-   * Render template in light DOM. Note that shadow DOM features like 
-   * encapsulated CSS are unavailable.
+   * Render template without shadow DOM. Note that shadow DOM features like 
+   * encapsulated CSS and slots are unavailable.
    */
     return this;
   }
