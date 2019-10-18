@@ -47,8 +47,8 @@ class MyElement extends LitElement {
     let randy = Math.floor(Math.random()*10);
     let myBool = this.getAttribute('prop3');
 
-    this.setAttribute('prop1', randy.toString);
-    this.setAttribute('prop2', randy.toString);
+    this.setAttribute('prop1', randy.toString());
+    this.setAttribute('prop2', randy.toString());
     this.setAttribute('prop3', myBool? '' : null);
     this.setAttribute('prop4', JSON.stringify([...this.prop4, randy]));
     this.setAttribute('prop5',

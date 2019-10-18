@@ -40,6 +40,7 @@ class MyElement extends LitElement {
 *   Write your template in HTML inside a JavaScript [template literal](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals) by enclosing the raw HTML in back-ticks 
     (<code>``</code>). 
 
+
 *   Tag your template literal with the [`html`](https://lit-html.polymer-project.org/api/modules/lit_html.html#html) 
     tag function. 
 
@@ -72,7 +73,7 @@ To do this, make sure the `render` function:
 * Only depends on the element's properties.
 * Returns the same result when given the same property values.
 
-Also, avoid making DOM updates outside of `render`. Instead, express the element's template as a function of its state, and capture its state in properties. 
+Also, avoid making DOM updates outside of `render`. Instead, express the element's template as a function of its state, and capture its state in properties.
 
 The following code uses inefficient DOM manipulation:
 
@@ -129,8 +130,8 @@ static get properties() {
   return { myProp: String };
 }
 ...
-render() { 
-  return html`<p>${this.myProp}</p>`; 
+render() {
+  return html`<p>${this.myProp}</p>`;
 }
 ```
 
@@ -170,7 +171,7 @@ You can insert JavaScript expressions as placeholders for HTML text content, att
 
 * Text content: `<p>${...}</p>`
 * Attribute: `<p id="${...}"></p>`
-* Boolean attribute: `?checked="${...}"`
+* Boolean attribute: `?disabled="${...}"`
 * Property: `.value="${...}"`
 * Event handler: `@event="${...}"`
 
@@ -198,10 +199,10 @@ Attribute values are always strings, so an attribute binding should return a val
 
 #### Bind to a boolean attribute
 
-Bind `prop3` to a boolean attribute: 
+Bind `prop3` to a boolean attribute:
 
 ```js
-html`<input type="checkbox" ?checked="${this.prop3}">i like pie</input>`
+html`<input type="text" ?disabled="${this.prop3}">`
 ```
 
 Boolean attributes are added if the expression evaluates to a truthy value, and removed if it evaluates to a falsy value.
@@ -416,7 +417,7 @@ By default, LitElement creates an open `shadowRoot` and renders inside it, produ
     <p>child 2</p>
 ```
 
-To customize a component's render root, implement `createRenderRoot` and return the node you want the template to render into. 
+To customize a component's render root, implement `createRenderRoot` and return the node you want the template to render into.
 
 For example, to render the template into the main DOM tree as your element's children:
 
@@ -461,7 +462,7 @@ render() { return html`<p>template</p>`; }
 // Property
 html`<p>${this.myProp}</p>`;
 
-// Loop 
+// Loop
 html`${this.myArray.map(i => html`<li>${i}</li>`)}`;
 
 // Conditional
@@ -475,12 +476,12 @@ html`${this.myBool?html`<p>foo</p>`:html`<p>bar</p>`}`;
 html`<p id="${...}">`;
 
 // Boolean attribute
-html`<input type="checkbox" ?checked="${...}">`;
+html`<input type="text" ?disabled="${...}">`;
 
 // Property
 html`<input .value="${...}">`;
 
-// Event handler 
+// Event handler
 html`<button @click="${this.doStuff}"></button>`;
 ```
 

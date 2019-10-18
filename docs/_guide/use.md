@@ -19,7 +19,7 @@ To use a LitElement component in your code:
 1.  From your project folder, install the component from npm.
 
     ```
-    npm install --save some-package-name
+    npm install some-package-name
     ```
 
 2.  Import the component.
@@ -58,7 +58,7 @@ However, LitElement and elements built with it import their dependencies using b
 
 At the time of writing, browsers must still be provided with the full path to a standard JavaScript module in order to load it. To convert bare module specifiers to full paths, a light transform is required.
 
-For a local server that does this automatically, try the [Open Web Components development server](https://open-wc.org/developing/owc-dev-server.html). 
+For a local server that does this automatically, try the [Open Web Components ES dev server](https://open-wc.org/developing/es-dev-server.html). 
 
 ## Build for production {#build}
 
@@ -77,7 +77,7 @@ export default {
 	input: ['src/index.js'],
 	output: {
 		file: 'build/index.js',
-    format: 'es',
+		format: 'es',
 		sourcemap: true
 	},
 	plugins: [

@@ -9,14 +9,25 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
    PRs should document their user-visible changes (if any) in the
    Unreleased section, uncommenting the header as necessary.
 -->
-### Added
-* css tagged template literals now allow numbers to be used in expressions ([#488](https://github.com/Polymer/lit-element/issues/488)).
-
-<!-- ### Changed -->
-<!-- ### Removed -->
-<!-- ### Fixed -->
 
 ## Unreleased
+<!-- ### Added -->
+<!-- ### Removed -->
+
+### Fixed
+* Properties annotated with the `eventOptions` decorator will now survive property renaming optimizations when used with tsickle and Closure JS Compiler.
+
+<!-- ### Changed -->
+
+## [2.2.1] - 2019-07-23
+### Changed
+* Elements should now override the new `_getUpdateComplete` method instead of the `updateComplete` getter, for compatibility with TypeScript ES5 output, which does not support calling a superclass getter (e.g.`super.updateComplete.then(...)`) due to [TypeScript#338](https://github.com/microsoft/TypeScript/issues/338).
+### Fixed
+* Fixed compatibility with Closure JS Compiler optimizations relating to static properties ([#732](https://github.com/Polymer/lit-element/issues/732)).
+
+## [2.2.0] - 2019-06-11
+### Added
+* css tagged template literals now allow numbers to be used in expressions ([#488](https://github.com/Polymer/lit-element/issues/488)).
 
 ## [2.1.0] - 2019-03-21
 ### Changed

@@ -47,6 +47,18 @@ LitElement also inherits the default [lifecycle callbacks](https://developer.moz
 
 </div>
 
+**All lifecycle methods need to call the super method.** 
+
+Example:
+
+```js
+connectedCallback() {
+  super.connectedCallback()
+
+  console.log('connected')
+}
+```
+
 #### Promises and asynchronous functions
 
 LitElement uses [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) objects to schedule and respond to element updates.
@@ -147,7 +159,7 @@ By default, `performUpdate` is scheduled as a microtask after the end of the nex
 
 ```js
 async performUpdate() {
-  await new Promise((resolve) => requestAnimationFrame(() => resolve());
+  await new Promise((resolve) => requestAnimationFrame(() => resolve()));
   super.performUpdate();
 }
 ```
@@ -274,6 +286,21 @@ The `updateComplete` Promise resolves when the element has finished updating. Us
 ```
 
 {% include project.html folder="lifecycle/updatecomplete" openFile="my-element.js" %}
+
+#### Overriding updateComplete {#overriding-updatecomplete}
+
+To await additional state before fulfilling the `updateComplete` promise, override the `_getUpdateComplete` method. For example, it may be useful to await the update of a child element here. First await `super._getUpdateComplete()`, then any subsequent state.
+
+It's recommended to override the `_getUpdateComplete` method instead of the `updateComplete` getter to ensure compatibility with users who are using TypeScript's ES5 output (see [TypeScript#338](https://github.com/microsoft/TypeScript/issues/338)).
+
+  ```js
+  class MyElement extends LitElement {
+    async _getUpdateComplete() {
+      await super._getUpdateComplete();
+      await this._myChild.updateComplete;
+    }
+  }
+  ```
 
 ## Examples {#examples}
 

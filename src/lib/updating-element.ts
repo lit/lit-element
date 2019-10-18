@@ -180,8 +180,6 @@ const defaultPropertyDeclaration: PropertyDeclaration = {
   hasChanged: notEqual
 };
 
-const microtaskPromise = Promise.resolve(true);
-
 const STATE_HAS_UPDATED = 1;
 const STATE_UPDATE_REQUESTED = 1 << 2;
 const STATE_IS_REFLECTING_TO_ATTRIBUTE = 1 << 3;
@@ -190,6 +188,14 @@ const STATE_HAS_CONNECTED = 1 << 5;
 type UpdateState = typeof STATE_HAS_UPDATED|typeof STATE_UPDATE_REQUESTED|
     typeof STATE_IS_REFLECTING_TO_ATTRIBUTE|
     typeof STATE_IS_REFLECTING_TO_PROPERTY|typeof STATE_HAS_CONNECTED;
+
+/**
+ * The Closure JS Compiler doesn't currently have good support for static
+ * property semantics where "this" is dynamic (e.g.
+ * https://github.com/google/closure-compiler/issues/3177 and others) so we use
+ * this hack to bypass any rewriting by the compiler.
+ */
+const finalized = 'finalized';
 
 /**
  * Base element class which manages element properties and attributes. When
@@ -213,7 +219,7 @@ export abstract class UpdatingElement extends HTMLElement {
   /**
    * Marks class as having finished creating properties.
    */
-  protected static finalized = true;
+  protected static[finalized] = true;
 
   /**
    * Memoized list of all class properties, including any superclass properties.
@@ -238,8 +244,7 @@ export abstract class UpdatingElement extends HTMLElement {
     // Use forEach so this works even if for/of loops are compiled to for loops
     // expecting arrays
     this._classProperties!.forEach((v, p) => {
-      const attr =
-          this._attributeNameForProperty(p, v);
+      const attr = this._attributeNameForProperty(p, v);
       if (attr !== undefined) {
         this._attributeToPropertyMap.set(attr, p);
         attributes.push(attr);
@@ -256,14 +261,12 @@ export abstract class UpdatingElement extends HTMLElement {
   /** @nocollapse */
   private static _ensureClassProperties() {
     // ensure private storage for property declarations.
-    if (!this
-             .hasOwnProperty(JSCompiler_renameProperty(
-                 '_classProperties', this))) {
+    if (!this.hasOwnProperty(
+            JSCompiler_renameProperty('_classProperties', this))) {
       this._classProperties = new Map();
       // NOTE: Workaround IE11 not supporting Map constructor argument.
       const superProperties: PropertyDeclarationMap =
-          Object.getPrototypeOf(this)
-              ._classProperties;
+          Object.getPrototypeOf(this)._classProperties;
       if (superProperties !== undefined) {
         superProperties.forEach(
             (v: PropertyDeclaration, k: PropertyKey) =>
@@ -292,8 +295,7 @@ export abstract class UpdatingElement extends HTMLElement {
     // Instead, we expect users to call `requestUpdate` themselves from
     // user-defined accessors. Note that if the super has an accessor we will
     // still overwrite it
-    if (options.noAccessor ||
-        this.prototype.hasOwnProperty(name)) {
+    if (options.noAccessor || this.prototype.hasOwnProperty(name)) {
       return;
     }
     const key = typeof name === 'symbol' ? Symbol() : `__${name}`;
@@ -303,7 +305,8 @@ export abstract class UpdatingElement extends HTMLElement {
         return (this as {[key: string]: unknown})[key as string];
       },
       set(this: UpdatingElement, value: unknown) {
-        const oldValue = (this as {} as {[key: string]: unknown})[name as string];
+        const oldValue =
+            (this as {} as {[key: string]: unknown})[name as string];
         (this as {} as {[key: string]: unknown})[key as string] = value;
         (this as unknown as UpdatingElement)._requestUpdate(name, oldValue);
       },
@@ -318,18 +321,12 @@ export abstract class UpdatingElement extends HTMLElement {
    * @nocollapse
    */
   protected static finalize() {
-    if (this
-            .hasOwnProperty(JSCompiler_renameProperty(
-                'finalized', this)) &&
-        this.finalized) {
-      return;
-    }
     // finalize any superclasses
     const superCtor = Object.getPrototypeOf(this);
-    if (typeof superCtor.finalize === 'function') {
+    if (!superCtor.hasOwnProperty(finalized)) {
       superCtor.finalize();
     }
-    this.finalized = true;
+    this[finalized] = true;
     this._ensureClassProperties();
     // initialize Map populated in observedAttributes
     this._attributeToPropertyMap = new Map();
@@ -337,9 +334,7 @@ export abstract class UpdatingElement extends HTMLElement {
     // Note, only process "own" properties since this element will inherit
     // any properties defined on the superClass, and finalization ensures
     // the entire prototype chain is finalized.
-    if (this
-            .hasOwnProperty(JSCompiler_renameProperty(
-                'properties', this))) {
+    if (this.hasOwnProperty(JSCompiler_renameProperty('properties', this))) {
       const props = this.properties;
       // support symbols in properties (IE11 does not support this)
       const propKeys = [
@@ -421,8 +416,11 @@ export abstract class UpdatingElement extends HTMLElement {
 
   private _updateState: UpdateState = 0;
   private _instanceProperties: PropertyValues|undefined = undefined;
-  private _updatePromise: Promise<unknown> = microtaskPromise;
-  private _hasConnectedResolver: (() => void)|undefined = undefined;
+  // Initialize to an unresolved Promise so we can make sure the element has
+  // connected before first update.
+  private _updatePromise =
+      new Promise((res) => this._hasConnectedResolver = res);
+  private _hasConnectedResolver: (() => void)|undefined;
 
   /**
    * Map with keys for any properties that have changed since the last
@@ -605,7 +603,7 @@ export abstract class UpdatingElement extends HTMLElement {
       }
     }
     if (!this._hasRequestedUpdate && shouldRequestUpdate) {
-      this._enqueueUpdate();
+      this._updatePromise = this._enqueueUpdate();
     }
   }
 
@@ -631,43 +629,23 @@ export abstract class UpdatingElement extends HTMLElement {
    * Sets up the element to asynchronously update.
    */
   private async _enqueueUpdate() {
-    // Mark state updating...
     this._updateState = this._updateState | STATE_UPDATE_REQUESTED;
-    let resolve!: (r: boolean) => void;
-    let reject!: (e: Error) => void;
-    const previousUpdatePromise = this._updatePromise;
-    this._updatePromise = new Promise((res, rej) => {
-      resolve = res;
-      reject = rej;
-    });
     try {
       // Ensure any previous update has resolved before updating.
       // This `await` also ensures that property changes are batched.
-      await previousUpdatePromise;
+      await this._updatePromise;
     } catch (e) {
       // Ignore any previous errors. We only care that the previous cycle is
       // done. Any error should have been handled in the previous update.
     }
-    // Make sure the element has connected before updating.
-    if (!this._hasConnected) {
-      await new Promise((res) => this._hasConnectedResolver = res);
+    const result = this.performUpdate();
+    // If `performUpdate` returns a Promise, we await it. This is done to
+    // enable coordinating updates with a scheduler. Note, the result is
+    // checked to avoid delaying an additional microtask unless we need to.
+    if (result != null) {
+      await result;
     }
-    try {
-      const result = this.performUpdate();
-      // If `performUpdate` returns a Promise, we await it. This is done to
-      // enable coordinating updates with a scheduler. Note, the result is
-      // checked to avoid delaying an additional microtask unless we need to.
-      if (result != null) {
-        await result;
-      }
-    } catch (e) {
-      reject(e);
-    }
-    resolve(!this._hasRequestedUpdate);
-  }
-
-  private get _hasConnected() {
-    return (this._updateState & STATE_HAS_CONNECTED);
+    return !this._hasRequestedUpdate;
   }
 
   private get _hasRequestedUpdate() {
@@ -713,7 +691,8 @@ export abstract class UpdatingElement extends HTMLElement {
       throw e;
     } finally {
       // Ensure element can accept additional updates after an exception.
-      this._markUpdated();
+      this._changedProperties = new Map();
+      this._updateState = this._updateState & ~STATE_UPDATE_REQUESTED;
     }
     if (shouldUpdate) {
       if (!(this._updateState & STATE_HAS_UPDATED)) {
@@ -724,25 +703,42 @@ export abstract class UpdatingElement extends HTMLElement {
     }
   }
 
-  private _markUpdated() {
-    this._changedProperties = new Map();
-    this._updateState = this._updateState & ~STATE_UPDATE_REQUESTED;
-  }
-
   /**
    * Returns a Promise that resolves when the element has completed updating.
    * The Promise value is a boolean that is `true` if the element completed the
    * update without triggering another update. The Promise result is `false` if
    * a property was set inside `updated()`. If the Promise is rejected, an
-   * exception was thrown during the update. This getter can be implemented to
-   * await additional state. For example, it is sometimes useful to await a
-   * rendered element before fulfilling this Promise. To do this, first await
-   * `super.updateComplete` then any subsequent state.
+   * exception was thrown during the update.
+   *
+   * To await additional asynchronous work, override the `_getUpdateComplete`
+   * method. For example, it is sometimes useful to await a rendered element
+   * before fulfilling this Promise. To do this, first await
+   * `super._getUpdateComplete()`, then any subsequent state.
    *
    * @returns {Promise} The Promise returns a boolean that indicates if the
    * update resolved without triggering another update.
    */
   get updateComplete() {
+    return this._getUpdateComplete();
+  }
+
+  /**
+   * Override point for the `updateComplete` promise.
+   *
+   * It is not safe to override the `updateComplete` getter directly due to a
+   * limitation in TypeScript which means it is not possible to call a
+   * superclass getter (e.g. `super.updateComplete.then(...)`) when the target
+   * language is ES5 (https://github.com/microsoft/TypeScript/issues/338).
+   * This method should be overridden instead. For example:
+   *
+   *   class MyElement extends LitElement {
+   *     async _getUpdateComplete() {
+   *       await super._getUpdateComplete();
+   *       await this._myChild.updateComplete;
+   *     }
+   *   }
+   */
+  protected _getUpdateComplete() {
     return this._updatePromise;
   }
 
@@ -751,7 +747,7 @@ export abstract class UpdatingElement extends HTMLElement {
    * an update. By default, this method always returns `true`, but this can be
    * customized to control when to update.
    *
-   * * @param _changedProperties Map of changed properties with old values
+   * @param _changedProperties Map of changed properties with old values
    */
   protected shouldUpdate(_changedProperties: PropertyValues): boolean {
     return true;
@@ -763,7 +759,7 @@ export abstract class UpdatingElement extends HTMLElement {
    * Setting properties inside this method will *not* trigger
    * another update.
    *
-   * * @param _changedProperties Map of changed properties with old values
+   * @param _changedProperties Map of changed properties with old values
    */
   protected update(_changedProperties: PropertyValues) {
     if (this._reflectingProperties !== undefined &&
@@ -783,7 +779,7 @@ export abstract class UpdatingElement extends HTMLElement {
    * Setting properties inside this method will trigger the element to update
    * again after this update cycle completes.
    *
-   * * @param _changedProperties Map of changed properties with old values
+   * @param _changedProperties Map of changed properties with old values
    */
   protected updated(_changedProperties: PropertyValues) {
   }
@@ -795,7 +791,7 @@ export abstract class UpdatingElement extends HTMLElement {
    * Setting properties inside this method will trigger the element to update
    * again after this update cycle completes.
    *
-   * * @param _changedProperties Map of changed properties with old values
+   * @param _changedProperties Map of changed properties with old values
    */
   protected firstUpdated(_changedProperties: PropertyValues) {
   }

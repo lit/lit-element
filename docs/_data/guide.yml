@@ -31,3 +31,6 @@ toc:
   lithtml:
     title: lit-html Guides
     url: https://lit-html.polymer-project.org
+  community:
+    title: Community
+    url: /guide/community
