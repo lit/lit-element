@@ -8,34 +8,20 @@ slug: styles
 * ToC
 {:toc}
 
-Add styles to your element using a static `styles` property:
 
-```js
-import { LitElement, css, html } from 'lit-element';
 
-class MyElement extends LitElement {
-  static get styles() {
-    return css`
-      /* styles go here */
-    `;
-  }
-  ... 
-}
-```
+Your component's template is rendered to its shadow DOM tree. The styles you add to your component are automatically _scoped_ to the shadow tree, so they don't leak out and affect other elements. This page describes how to add scoped styles to your component.
 
-Your component's template is rendered to its shadow DOM tree. The styles you add to your component are automatically _scoped_ to the shadow tree, so they don't leak out and affect other elements.
-
-If you're not familiar with shadow DOM, this chapter gives an overview of some of the common styling features.
-For more information, see [Resources](templates#resources) in the Templates chapter for links to some shadow DOM primers.
+If you're not familiar with shadow DOM, this page gives an overview of some of the common styling features.
+For more information, see [Resources](templates#resources) on the Templates page for links to some shadow DOM primers.
 
 ## Add styles to your component {#add-styles}
 
 For optimal performance, define scoped styles in a static `styles` property. 
 
-Define styles in a tagged template literal, using the the `css` tag function:  
+Define styles in a tagged template literal, using the `css` tag function:  
 
 ```js
-// Import the `css` helper function
 import { LitElement, css, html } from 'lit-element';
 
 class MyElement extends LitElement {
@@ -80,14 +66,9 @@ For alternate ways to add styles, see [Define scoped styles in the template](#st
 
 Static styles apply to all instances of a component. Any expressions in CSS are evaluated **once**, then reused for all instances. 
 
-{:.alert .alert-info}
-<div>
+To allow for theming or per-instance style customization, use CSS variables and custom properties to create [configurable styles](#configurable).
 
-**Consider using CSS variables and custom properties to create [configurable styles](#configurable).** CSS cusom properties work well with app themes, and also allow you to create per-instance styles.
-
-</div>
-
-To prevent LitElement-based components from evaluating potentially malicious code, the `css` tag only accepts literal strings. With expressions, you can nest `css` literals:
+To prevent LitElement-based components from evaluating potentially malicious code, the `css` tag only  allows nested expressions that are themselves `css` tagged strings or numbers.
 
 ```js
 {% include projects/style/nestedcss/my-element.js %}
@@ -95,7 +76,9 @@ To prevent LitElement-based components from evaluating potentially malicious cod
 
 {% include project.html folder="style/nestedcss" openFile="my-element.js" %}
 
-However, if you want to use expressions to add a non-literal to a `css` literal, you must wrap the non-literal with the `unsafeCSS` function. For example:
+This restriction exists to protect applications from security vulnerabilities whereby malicious styles, or even malicious code, can be injected from untrusted sources such as URL parameters or database values.
+
+If you must use an expression in a `css` literal that is not itself a `css` literal, **and** you are confident that the expression is from a fully trusted source such as a constant defined in your own code, then you can wrap the expression with the `unsafeCSS` function:
 
 ```js
 {% include projects/style/unsafecss/my-element.js %}
@@ -103,29 +86,11 @@ However, if you want to use expressions to add a non-literal to a `css` literal,
 
 {% include project.html folder="style/unsafecss" openFile="my-element.js" %}
 
-Another example:
-
-```js
-import { LitElement, css, unsafeCSS } from 'lit-element';
-
-class MyElement extends LitElement {
-  static get styles() {
-    const mainWidth = 800;
-    const padding = 20;   
-    
-    return css`
-      :host { 
-        width: ${unsafeCSS(mainWidth + padding)}px;
-      }
-    `;
-  } 
-}
-```
-
-{:.alert .alert-info}
+{:.alert .alert-warning}
 <div>
 
-**Only use the `unsafeCSS` tag with trusted input.** To prevent LitElement-based components from evaluating potentially malicious code, the `css` tag only accepts literal strings and numbers. `unsafeCSS` circumvents this safeguard, so use it with caution.
+**Only use the `unsafeCSS` tag with trusted input.** Injecting unsanitized CSS is a security risk. For example,
+malicious CSS can "phone home" by adding an image URL that points to a third-party server.
 
 </div>
 
@@ -191,9 +156,9 @@ This section gives a brief overview of shadow DOM styling.
 
 Styles you add to a component can affect:
 
-* [The shadow tree (your component's rendered template)](#shadowroot).
-* [The component itself](#host).
-* [The component's children](#slot).
+* The shadow tree (your component's rendered template).
+* The component itself.
+* The component's children.
 
 
 ### Style the shadow tree {#shadowroot}
@@ -695,25 +660,6 @@ class MyElement extends LitElement {
 {% include project.html folder="style/specificity" openFile="index.html" %}
 
 </div>
-
-Any properties that a host element inherits will also be inherited by the elements in its template:
-
-```html
-<style>
-  div { font-family: Roboto; }
-</style>
-<div><my-element></my-element></div>
-```
-
-```js
-class MyElement extends LitElement {
-  render() { 
-    return html`<p>Uses Roboto</p>`; 
-  }
-}
-```
-
-{% include project.html folder="style/inherited2" openFile="index.html" %}
 
 ### CSS custom properties {#customprops}
 

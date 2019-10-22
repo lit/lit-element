@@ -11,7 +11,8 @@ slug: templates
 Add a template to your component to define internal DOM to implement your component. 
 
 To encapsulate the templated DOM LitElement uses
-[shadow DOM](https://developers.google.com/web/fundamentals/web-components/shadowdom) . Shadow DOM provides three basic benefits:
+[shadow DOM](https://developers.google.com/web/fundamentals/web-components/shadowdom). 
+Shadow DOM provides three benefits:
 
 * DOM scoping. DOM APIs like `document.querySelector` won't find elements in the 
   component's shadow DOM, so it's harder for global scripts to accidentally break your component.
@@ -28,7 +29,7 @@ uses the [Shady CSS](https://github.com/webcomponents/polyfills/tree/master/pack
 To define a template for a LitElement component, write a `render` function for your element class:
 
 ```js
-import {LitElement, html} from 'lit-element';
+import { LitElement, html } from 'lit-element';
 
 class MyElement extends LitElement {
   render() {
@@ -529,8 +530,8 @@ render() { return html`<slot name="thing"></slot>`; }
 
 ## Using other lit-html features
 
-Since LitElement uses lit-html's `html` and function to render templates you can take advantage
-of the entire lit-html feature-set for writing your templates. This includes lit-html _directives_, 
+Since LitElement uses the lit-html `html` tag function to define templates you can take advantage
+of the entire lit-html feature set for writing your templates. This includes lit-html _directives_, 
 special functions that customize the way lit-html renders a binding.
 
 To import features directly from lit-html, your project should add lit-html as a direct dependency.
@@ -544,11 +545,11 @@ npm i lit-html@^1.0.0
 
 ### Import and use a lit-html directive
 
-You can import and use a lit-html directive and use it as shown in the lit-html documentation.
+You can import and use a lit-html directive and use it as shown in the [lit-html documentation](https://lit-html.polymer-project.org/guide/template-reference#built-in-directives).
 
 ```js
-import {LitElement, html} from 'lit-element';
-import {until} from 'lit-html/directives/until.js';
+import { LitElement, html } from 'lit-element';
+import { until } from 'lit-html/directives/until.js';
 
 const content = fetch('./content.txt').then(r => r.text());
 
