@@ -8,12 +8,10 @@ slug: styles
 * ToC
 {:toc}
 
+This page describes how to add styles to your component.
 
+Your component's template is rendered to its shadow DOM tree. The styles you add to your component are automatically _scoped_ to the shadow tree, so they don't leak out and affect other elements. 
 
-Your component's template is rendered to its shadow DOM tree. The styles you add to your component are automatically _scoped_ to the shadow tree, so they don't leak out and affect other elements. This page describes how to add scoped styles to your component.
-
-If you're not familiar with shadow DOM, this page gives an overview of some of the common styling features.
-For more information, see [Resources](templates#resources) on the Templates page for links to some shadow DOM primers.
 
 ## Add styles to your component {#add-styles}
 
@@ -163,7 +161,7 @@ Styles you add to a component can affect:
 
 ### Style the shadow tree {#shadowroot}
 
-LitElement templates are rendered into a shadow tree by default. Styles scoped to an element's shadow tree don't affect the main document. Similarly, with the exception of [inherited CSS properties](#inheritance), document-level styles don't affect the contents of a shadow tree.
+LitElement templates are rendered into a shadow tree by default. Styles scoped to an element's shadow tree don't affect the main document or other shadow trees. Similarly, with the exception of [inherited CSS properties](#inheritance), document-level styles don't affect the contents of a shadow tree.
 
 When you use standard CSS selectors, they only match elements in your component's shadow tree.
 
