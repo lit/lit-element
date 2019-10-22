@@ -3,9 +3,14 @@ toc:
   introduction: 
     title: Introduction
     url: /guide
+    toplevel: true
   getting started: 
     title: Getting Started
     url: /guide/start
+    toplevel: true
+  components: 
+    title: Writing components
+    header: true
   templates: 
     title: Templates
     url: /guide/templates
@@ -22,15 +27,21 @@ toc:
   lifecycle: 
     title: Lifecycle
     url: /guide/lifecycle
+  tools: 
+    title: Tools
+    header: true
   publish: 
     title: Publish a component
     url: /guide/publish
   use: 
     title: Use a component
     url: /guide/use
-  lithtml:
-    title: lit-html Guides
-    url: https://lit-html.polymer-project.org
+  resources:
+    title: Resources
+    header: true
   community:
     title: Community
     url: /guide/community
+  lithtml:
+    title: lit-html Guides
+    url: https://lit-html.polymer-project.org
