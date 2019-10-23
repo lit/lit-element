@@ -1,0 +1,37 @@
+{
+	"compilerOptions": {
+		"target": "es2017",
+		"module": "amd",
+		"moduleResolution": "node",
+		"lib": [
+			"esnext.array",
+			"esnext",
+			"es2017",
+			"dom"
+		],
+		"declaration": false,
+		"declarationMap": false,
+		"sourceMap": true,
+		"inlineSources": true,
+		"strict": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"noImplicitReturns": true,
+		"noFallthroughCasesInSwitch": true,
+		"noImplicitAny": true,
+		"noImplicitThis": true,
+		"outDir": "./",
+		"outFile": "lit-element-amd.js",
+		// Only necessary because @types/uglify-js can't find types for source-map
+		"skipLibCheck": true,
+		"experimentalDecorators": true
+	},
+	"include": [
+		"custom_typings/**/*.ts",
+		"src/**/*.ts"
+	],
+	"exclude": [
+		"src/demo/**/*.ts",
+		"src/test/**/*.ts"
+	]
+}

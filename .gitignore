@@ -4,6 +4,8 @@
 #Compiler Output
 lit-element.js
 lit-element.js.map
+lit-element-amd.js
+lit-element-amd.js.map
 lit-element.d.ts
 lit-element.d.ts.map
 
