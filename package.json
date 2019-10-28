@@ -49,7 +49,7 @@
     "lit-element-benchmarks": "^0.1.0",
     "mocha": "^5.0.5",
     "np": "^4.0.2",
-    "rollup": "^1.23.0",
+    "rollup": "^1.26.0",
     "rollup-plugin-filesize": "^6.2.0",
     "rollup-plugin-node-resolve": "^5.2.0",
     "rollup-plugin-terser": "^5.1.0",
