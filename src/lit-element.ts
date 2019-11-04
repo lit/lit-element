@@ -19,6 +19,16 @@ import {PropertyValues, UpdatingElement} from './lib/updating-element.js';
 export * from './lib/updating-element.js';
 export * from './lib/decorators.js';
 export {html, svg, TemplateResult, SVGTemplateResult} from 'lit-html/lit-html.js';
+export {asyncAppend} from 'lit-html/directives/async-append.js';
+export {asyncReplace} from 'lit-html/directives/async-replace.js';
+export {cache} from 'lit-html/directives/cache.js';
+export {classMap} from 'lit-html/directives/class-map.js';
+export {guard} from 'lit-html/directives/guard.js';
+export {ifDefined} from 'lit-html/directives/if-defined.js';
+export {repeat} from 'lit-html/directives/repeat.js';
+export {styleMap} from 'lit-html/directives/style-map.js';
+export {unsafeHTML} from 'lit-html/directives/unsafe-html.js';
+export {until} from 'lit-html/directives/until.js';
 import {supportsAdoptingStyleSheets, CSSResult} from './lib/css-tag.js';
 export * from './lib/css-tag.js';
 
