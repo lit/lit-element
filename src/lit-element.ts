@@ -195,13 +195,17 @@ export class LitElement extends UpdatingElement {
   protected update(changedProperties: PropertyValues) {
     super.update(changedProperties);
     const templateResult = this.render() as unknown;
+
     if (templateResult instanceof TemplateResult) {
-      (this.constructor as typeof LitElement)
+      return;
+    }
+    
+    (this.constructor as typeof LitElement)
           .render(
               templateResult,
               this.renderRoot,
               {scopeName: this.localName, eventContext: this});
-    }
+
     // When native Shadow DOM is used but adoptedStyles are not supported,
     // insert styling after rendering to ensure adoptedStyles have highest
     // priority.
