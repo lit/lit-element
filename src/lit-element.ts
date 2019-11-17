@@ -18,7 +18,7 @@ import {PropertyValues, UpdatingElement} from './lib/updating-element.js';
 export * from './lib/updating-element.js';
 export * from './lib/decorators.js';
 export {html, svg, TemplateResult, SVGTemplateResult} from 'lit-html/lit-html.js';
-import {supportsAdoptingStyleSheets, CSSResult} from './lib/css-tag.js';
+import {supportsAdoptingShadowStyleSheets, CSSResult} from './lib/css-tag.js';
 export * from './lib/css-tag.js';
 
 declare global {
@@ -33,7 +33,9 @@ declare global {
 (window['litElementVersions'] || (window['litElementVersions'] = []))
     .push('2.3.1');
 
-export interface CSSResultArray extends Array<CSSResult|CSSResultArray> {}
+export type CSSResultOrNative = CSSResult|CSSStyleSheet;
+
+export interface CSSResultArray extends Array<CSSResultOrNative|CSSResultArray> {}
 
 /**
  * Sentinal value used to avoid calling lit-html's render function when
@@ -82,9 +84,10 @@ export class LitElement extends UpdatingElement {
    * Array of styles to apply to the element. The styles should be defined
    * using the [[`css`]] tag function.
    */
-  static styles?: CSSResult|CSSResultArray;
+  static styles?: CSSResultOrNative|CSSResultArray;
 
   private static _styles: CSSResult[]|undefined;
+  private static _nativeStyles: CSSStyleSheet[]|undefined;
 
   /**
    * Return the array of styles to apply to the element.
@@ -92,26 +95,25 @@ export class LitElement extends UpdatingElement {
    *
    * @nocollapse
    */
-  static getStyles(): CSSResult|CSSResultArray|undefined {
+  static getStyles(): CSSResultOrNative|CSSResultArray|undefined {
     return this.styles;
   }
 
   /** @nocollapse */
   private static _getUniqueStyles() {
     // Only gather styles once per class
-    if (this.hasOwnProperty(JSCompiler_renameProperty('_styles', this))) {
+    const property = supportsAdoptingShadowStyleSheets ?
+        JSCompiler_renameProperty('_nativeStyles', this) :
+        JSCompiler_renameProperty('_styles', this);
+    if (this.hasOwnProperty(property)) {
       return;
     }
     // Take care not to call `this.getStyles()` multiple times since this
     // generates new CSSResults each time.
-    // TODO(sorvell): Since we do not cache CSSResults by input, any
-    // shared styles will generate new stylesheet objects, which is wasteful.
-    // This should be addressed when a browser ships constructable
-    // stylesheets.
-    const userStyles = this.getStyles();
-    if (userStyles === undefined) {
-      this._styles = [];
-    } else if (Array.isArray(userStyles)) {
+    const userStyles = this.styles!;
+    const work = [];
+
+    if (Array.isArray(userStyles)) {
       // De-duplicate styles preserving the _last_ instance in the set.
       // This is a performance optimization to avoid duplicated styles that can
       // occur especially when composing via subclassing.
@@ -119,20 +121,38 @@ export class LitElement extends UpdatingElement {
       // assumption that it's most important that last added styles override
       // previous styles.
       const addStyles =
-          (styles: CSSResultArray, set: Set<CSSResult>): Set<CSSResult> =>
+          (styles: CSSResultArray, set: Set<CSSResultOrNative>): Set<CSSResultOrNative> =>
               styles.reduceRight(
-                  (set: Set<CSSResult>, s) =>
+                  (set: Set<CSSResultOrNative>, s) =>
                       // Note: On IE set.add() does not return the set
                   Array.isArray(s) ? addStyles(s, set) : (set.add(s), set),
                   set);
       // Array.from does not work on Set in IE, otherwise return
       // Array.from(addStyles(userStyles, new Set<CSSResult>())).reverse()
-      const set = addStyles(userStyles, new Set<CSSResult>());
-      const styles: CSSResult[] = [];
-      set.forEach((v) => styles.unshift(v));
-      this._styles = styles;
+      const set = addStyles(userStyles, new Set<CSSResultOrNative>());
+      set.forEach((v) => work.unshift(v));
+    } else if (userStyles !== undefined) {
+      work.push(userStyles);
+    }
+
+    if (supportsAdoptingShadowStyleSheets) {
+      // Convert all CSSResult instances to native CSSStyleSheet.
+      this._nativeStyles = work.map((resultOrNative) => {
+        if (resultOrNative instanceof CSSResult) {
+          return resultOrNative.styleSheet!;
+        }
+        return resultOrNative;
+      });
     } else {
-      this._styles = [userStyles];
+      // This is only possible when a user passes a CSSStyleSheet that was
+      // read from a <style> or <link rel="stylesheet"> tag, which are not
+      // constructible stylesheets.
+      work.forEach((resultOrNative) => {
+        if (resultOrNative instanceof CSSStyleSheet) {
+          throw new Error('Can\'t adopt non-constructed stylesheets.');
+        }
+      });
+      this._styles = <CSSResult[]> work;
     }
   }
 
@@ -174,8 +194,8 @@ export class LitElement extends UpdatingElement {
   }
 
   /**
-   * Applies styling to the element shadowRoot using the [[`styles`]]
-   * property. Styling will apply using `shadowRoot.adoptedStyleSheets` where
+   * Applies styling to the element shadowRoot using the private styles
+   * properties. Styling will apply using `shadowRoot.adoptedStyleSheets` where
    * available and will fallback otherwise. When Shadow DOM is polyfilled,
    * ShadyCSS scopes styles and adds them to the document. When Shadow DOM
    * is available but `adoptedStyleSheets` is not, styles are appended to the
@@ -183,21 +203,24 @@ export class LitElement extends UpdatingElement {
    * behavior](https://wicg.github.io/construct-stylesheets/#using-constructed-stylesheets).
    */
   protected adoptStyles() {
+    if (supportsAdoptingShadowStyleSheets) {
+      (this.renderRoot as ShadowRoot).adoptedStyleSheets =
+          (this.constructor as typeof LitElement)._nativeStyles!;
+      return;
+    }
+
     const styles = (this.constructor as typeof LitElement)._styles!;
     if (styles.length === 0) {
       return;
     }
     // There are three separate cases here based on Shadow DOM support.
     // (1) shadowRoot polyfilled: use ShadyCSS
-    // (2) shadowRoot.adoptedStyleSheets available: use it.
+    // (2) shadowRoot.adoptedStyleSheets available: use it (above)
     // (3) shadowRoot.adoptedStyleSheets polyfilled: append styles after
     // rendering
     if (window.ShadyCSS !== undefined && !window.ShadyCSS.nativeShadow) {
       window.ShadyCSS.ScopingShim!.prepareAdoptedCssText(
           styles.map((s) => s.cssText), this.localName);
-    } else if (supportsAdoptingStyleSheets) {
-      (this.renderRoot as ShadowRoot).adoptedStyleSheets =
-          styles.map((s) => s.styleSheet!);
     } else {
       // This must be done after rendering so the actual style insertion is done
       // in `update`.
