@@ -894,13 +894,13 @@ suite('Static get styles', () => {
   // Test this in Shadow DOM without `adoptedStyleSheets` only since it's easily
   // detectable in that case.
   const testNativeAdoptedStyleSheets =
-      (typeof ShadowRoot === 'object') &&
+      (typeof ShadowRoot === 'function') &&
       ('adoptedStyleSheets' in window.ShadowRoot.prototype);
   (testNativeAdoptedStyleSheets ? test : test.skip)(
       'Can return CSSStyleSheet where adoptedStyleSheets are natively supported',
       async () => {
         const sheet = new CSSStyleSheet();
-        sheet.replaceSync('div { background: red; }');
+        sheet.replaceSync('div { border: 4px solid red; }');
 
         const base = generateElementName();
         customElements.define(base, class extends LitElement {
@@ -916,7 +916,6 @@ suite('Static get styles', () => {
         await (el as LitElement).updateComplete;
         const div = el.shadowRoot!.querySelector('div');
 
-        // FIXME: error to prove this is running
         assert.equal(
           getComputedStyle(div!).getPropertyValue('background').trim(), 'blue');
       });
