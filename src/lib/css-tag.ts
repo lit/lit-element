@@ -9,8 +9,9 @@ part of the polymer project is also subject to an additional IP rights grant
 found at http://polymer.github.io/PATENTS.txt
 */
 
-export const supportsAdoptingStyleSheets =
-    ('adoptedStyleSheets' in Document.prototype) &&
+export const supportsAdoptingShadowStyleSheets =
+    (window.ShadowRoot) &&
+    ('adoptedStyleSheets' in ShadowRoot.prototype) &&
     ('replace' in CSSStyleSheet.prototype);
 
 const constructionToken = Symbol();
@@ -25,6 +26,7 @@ export class CSSResult {
       throw new Error(
           'CSSResult is not constructable. Use `unsafeCSS` or `css` instead.');
     }
+
     this.cssText = cssText;
   }
 
@@ -32,9 +34,9 @@ export class CSSResult {
   // stylesheets are not created until the first element instance is made.
   get styleSheet(): CSSStyleSheet|null {
     if (this._styleSheet === undefined) {
-      // Note, if `adoptedStyleSheets` is supported then we assume CSSStyleSheet
-      // is constructable.
-      if (supportsAdoptingStyleSheets) {
+      // Note, if `supportsAdoptingShadowStyleSheets` is supported then we
+      // assume CSSStyleSheet is constructable.
+      if (supportsAdoptingShadowStyleSheets) {
         this._styleSheet = new CSSStyleSheet();
         this._styleSheet.replaceSync(this.cssText);
       } else {
