@@ -14,6 +14,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- ### Added -->
 <!-- ### Removed -->
 
+### Added
+* Added `enableUpdating()` to `UpdatingElement` to enable customizing when updating is enabled.
+
 ### Fixed
 * Properties annotated with the `eventOptions` decorator will now survive property renaming optimizations when used with tsickle and Closure JS Compiler.
 
