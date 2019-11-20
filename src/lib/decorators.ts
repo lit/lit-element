@@ -264,3 +264,28 @@ export function eventOptions(options: AddEventListenerOptions) {
              // tslint:disable-next-line:no-any decorator
              any;
 }
+
+/**
+ * A property decorator that converts a class property into a getter that
+ * returns the `assignedNodes` of the given named `slot`.
+ *
+ * @ExportDecoratedItems
+ */
+export function queryAssignedNodes(slotName: string = '', flatten: boolean = false) {
+  return (protoOrDescriptor: Object|ClassElement,
+          // tslint:disable-next-line:no-any decorator
+          name?: PropertyKey): any => {
+    const descriptor = {
+      get(this: LitElement) {
+        const selector = `slot${slotName ? `[name=${slotName}]` : ''}`;
+        const slot = this.renderRoot.querySelector(selector);
+        return slot && (slot as HTMLSlotElement).assignedNodes({flatten});
+      },
+      enumerable: true,
+      configurable: true,
+    };
+    return (name !== undefined) ?
+        legacyQuery(descriptor, protoOrDescriptor as Object, name) :
+        standardQuery(descriptor, protoOrDescriptor as ClassElement);
+  };
+}

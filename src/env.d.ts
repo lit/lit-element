@@ -7,6 +7,7 @@ interface ShadyCSS {
 
 interface ShadyDOM {
   inUse: boolean;
+  flush: () => void;
 }
 
 interface Window {

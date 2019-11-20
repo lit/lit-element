@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Added
 * Added `enableUpdating()` to `UpdatingElement` to enable customizing when updating is enabled.
+* Added `queryAssignedNodes(slotName, flatten)` to enable querying assignedNodes for a given slot.
 
 ### Fixed
 * Properties annotated with the `eventOptions` decorator will now survive property renaming optimizations when used with tsickle and Closure JS Compiler.
