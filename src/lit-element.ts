@@ -199,7 +199,7 @@ export class LitElement extends UpdatingElement {
     if (templateResult instanceof TemplateResult === false) {
       return;
     }
-    
+
     (this.constructor as typeof LitElement)
       .render(
           templateResult as TemplateResult,
