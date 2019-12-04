@@ -202,7 +202,7 @@ export class LitElement extends UpdatingElement {
     
     (this.constructor as typeof LitElement)
       .render(
-          templateResult,
+          templateResult as TemplateResult,
           this.renderRoot,
           {scopeName: this.localName, eventContext: this});
 
