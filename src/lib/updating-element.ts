@@ -127,7 +127,12 @@ type PropertyDeclarationMap = Map<PropertyKey, PropertyDeclaration>;
 
 type AttributeMap = Map<string, PropertyKey>;
 
-export type PropertyValues = Map<PropertyKey, unknown>;
+/**
+ * Map of changed properties with old values. Takes an optional generic
+ * interface corresponding to the declared element properties.
+ */
+// tslint:disable-next-line:no-any
+export type PropertyValues<T = any> = keyof T extends PropertyKey ? Map<keyof T, unknown> : never;
 
 export const defaultConverter: ComplexAttributeConverter = {
 

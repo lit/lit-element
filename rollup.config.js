@@ -31,9 +31,6 @@ export default {
     resolve(),
     terser({
       warnings: true,
-      mangle: {
-        module: true,
-      },
     }),
     filesize({
       showBrotliSize: true,
