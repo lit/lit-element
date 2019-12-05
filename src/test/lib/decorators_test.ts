@@ -396,6 +396,7 @@ suite('decorators', () => {
     class D extends LitElement {
       @queryAssignedNodes() defaultAssigned!: Node[];
 
+      // The `true` on the decorator indicates that results should be flattened.
       @queryAssignedNodes('footer', true) footerAssigned!: Node[];
 
       render() {
@@ -406,6 +407,8 @@ suite('decorators', () => {
       }
     }
 
+    // Note, there are 2 elements here so that the `flatten` option of
+    // the decorator can be tested.
     @customElement(generateElementName() as keyof HTMLElementTagNameMap)
     class C extends LitElement {
       @query('div') div!: HTMLDivElement;
@@ -418,11 +421,13 @@ suite('decorators', () => {
       }
     }
 
-    test('returns assignedNodes slot', async () => {
+    test('returns assignedNodes for slot', async () => {
       const c = new C();
       container.appendChild(c);
       await c.updateComplete;
       await c.assignedNodesEl.updateComplete;
+      // Note, `defaultAssigned` does not `flatten` so we test that the property
+      // reflects current state and state when nodes are added or removed.
       assert.deepEqual(c.assignedNodesEl.defaultAssigned, [c.div]);
       const child = document.createElement('div');
       c.assignedNodesEl.appendChild(child);
@@ -433,11 +438,14 @@ suite('decorators', () => {
       assert.deepEqual(c.assignedNodesEl.defaultAssigned, [c.div]);
     });
 
-    test('returns flattened assignedNodes slot', async () => {
+    test('returns flattened assignedNodes for slot', async () => {
       const c = new C();
       container.appendChild(c);
       await c.updateComplete;
       await c.assignedNodesEl.updateComplete;
+      // Note, `defaultAssigned` does `flatten` so we test that the property
+      // reflects current state and state when nodes are added or removed to
+      // the light DOM of the element containing the element under test.
       assert.deepEqual(c.assignedNodesEl.footerAssigned, []);
       const child1 = document.createElement('div');
       const child2 = document.createElement('div');

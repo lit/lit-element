@@ -15,8 +15,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- ### Removed -->
 
 ### Added
-* Added `enableUpdating()` to `UpdatingElement` to enable customizing when updating is enabled.
-* Added `queryAssignedNodes(slotName, flatten)` to enable querying assignedNodes for a given slot.
+* Added `enableUpdating()` to `UpdatingElement` to enable customizing when updating is enabled [#860](https://github.com/Polymer/lit-element/pull/860).
+* Added `queryAssignedNodes(slotName, flatten)` to enable querying assignedNodes for a given slot [#860](https://github.com/Polymer/lit-element/pull/860).
 
 ### Fixed
 * Properties annotated with the `eventOptions` decorator will now survive property renaming optimizations when used with tsickle and Closure JS Compiler.
