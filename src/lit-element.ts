@@ -36,7 +36,7 @@ declare global {
 
 export type CSSResultArray = Array<CSSResult|CSSResultArray>
 
-export class LitElement extends UpdatingElement {
+    export class LitElement extends UpdatingElement {
   /**
    * Ensure this class is marked as `finalized` as an optimization ensuring
    * it will not needlessly try to `finalize`.
@@ -70,8 +70,8 @@ export class LitElement extends UpdatingElement {
     super.finalize.call(this);
     // Prepare styling that is stamped at first render time. Styling
     // is built from user provided `styles` or is inherited from the superclass.
-    this._styles =
-        Object.prototype.hasOwnProperty.call(this, JSCompiler_renameProperty('styles', this)) ?
+    this._styles = Object.prototype.hasOwnProperty.call(
+                       this, JSCompiler_renameProperty('styles', this)) ?
         this._getUniqueStyles() :
         this._styles || [];
   }
