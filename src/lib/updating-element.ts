@@ -513,6 +513,7 @@ export abstract class UpdatingElement extends HTMLElement {
    * when disconnecting at some point in the future.
    */
   disconnectedCallback() {
+    // eslint-disable-line @typescript-eslint/no-empty-function
   }
 
   /**
@@ -788,6 +789,7 @@ export abstract class UpdatingElement extends HTMLElement {
    * @param _changedProperties Map of changed properties with old values
    */
   protected updated(_changedProperties: PropertyValues) {
+    // eslint-disable-line @typescript-eslint/no-empty-function
   }
 
   /**
@@ -800,5 +802,6 @@ export abstract class UpdatingElement extends HTMLElement {
    * @param _changedProperties Map of changed properties with old values
    */
   protected firstUpdated(_changedProperties: PropertyValues) {
+    // eslint-disable-line @typescript-eslint/no-empty-function
   }
 }
