@@ -12,6 +12,8 @@
  * http://polymer.github.io/PATENTS.txt
  */
 
+/* eslint-disable @typescript-eslint/ban-types */
+
 /**
  * IMPORTANT: For compatibility with tsickle and the Closure JS compiler, all
  * property decorators (but not class decorators) in this file must:
