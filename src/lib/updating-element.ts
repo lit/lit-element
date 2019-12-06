@@ -268,8 +268,7 @@ export abstract class UpdatingElement extends HTMLElement {
   /** @nocollapse */
   private static _ensureClassProperties() {
     // ensure private storage for property declarations.
-    if (!this.hasOwnProperty(
-            JSCompiler_renameProperty('_classProperties', this))) {
+    if (!Object.prototype.hasOwnProperty.call(this, JSCompiler_renameProperty('_classProperties', this))) {
       this._classProperties = new Map();
       // NOTE: Workaround IE11 not supporting Map constructor argument.
       const superProperties: PropertyDeclarationMap =
@@ -302,7 +301,7 @@ export abstract class UpdatingElement extends HTMLElement {
     // Instead, we expect users to call `requestUpdate` themselves from
     // user-defined accessors. Note that if the super has an accessor we will
     // still overwrite it
-    if (options.noAccessor || this.prototype.hasOwnProperty(name)) {
+    if (options.noAccessor || Object.prototype.hasOwnProperty.call(this.prototype, name)) {
       return;
     }
     const key = typeof name === 'symbol' ? Symbol() : `__${name}`;
@@ -330,7 +329,7 @@ export abstract class UpdatingElement extends HTMLElement {
   protected static finalize() {
     // finalize any superclasses
     const superCtor = Object.getPrototypeOf(this);
-    if (!superCtor.hasOwnProperty(finalized)) {
+    if (!Object.prototype.hasOwnProperty.call(superCtor, finalized)) {
       superCtor.finalize();
     }
     this[finalized] = true;
@@ -341,7 +340,7 @@ export abstract class UpdatingElement extends HTMLElement {
     // Note, only process "own" properties since this element will inherit
     // any properties defined on the superClass, and finalization ensures
     // the entire prototype chain is finalized.
-    if (this.hasOwnProperty(JSCompiler_renameProperty('properties', this))) {
+    if (Object.prototype.hasOwnProperty.call(this, JSCompiler_renameProperty('properties', this))) {
       const props = this.properties;
       // support symbols in properties (IE11 does not support this)
       const propKeys = [
@@ -475,7 +474,7 @@ export abstract class UpdatingElement extends HTMLElement {
     // expecting arrays
     (this.constructor as typeof UpdatingElement)
         ._classProperties!.forEach((_v, p) => {
-          if (this.hasOwnProperty(p)) {
+          if (Object.prototype.hasOwnProperty.call(this, p)) {
             const value = this[p as keyof this];
             delete this[p as keyof this];
             if (!this._instanceProperties) {
