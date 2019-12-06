@@ -221,6 +221,5 @@ export type CSSResultArray = Array<CSSResult|CSSResultArray>;
    * trigger the element to update.
    */
   protected render(): TemplateResult|void {
-    // eslint-disable-line @typescript-eslint/no-empty-function
   }
 }

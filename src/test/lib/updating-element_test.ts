@@ -1953,8 +1953,7 @@ suite('UpdatingElement', () => {
         const el = new E();
         container.appendChild(el);
         // eslint-disable-next-line no-empty
-        while (!await el.updateComplete) {
-        }
+        while (!await el.updateComplete) {}
         assert.equal(el.foo, 10);
       });
 
