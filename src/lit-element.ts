@@ -34,7 +34,7 @@ declare global {
 (window['litElementVersions'] || (window['litElementVersions'] = []))
     .push('2.2.1');
 
-export interface CSSResultArray extends Array<CSSResult|CSSResultArray> {}
+export type CSSResultArray = Array<CSSResult|CSSResultArray>
 
 export class LitElement extends UpdatingElement {
   /**
