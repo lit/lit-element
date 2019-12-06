@@ -53,7 +53,7 @@
     "@webcomponents/webcomponentsjs": "^2.2.3",
     "chai": "^4.0.2",
     "clang-format": "^1.2.4",
-    "eslint": "^6.7.2",
+    "eslint": "^6.7.0",
     "husky": "^3.1.0",
     "lint-staged": "^9.5.0",
     "lit-element-benchmarks": "^0.1.0",
