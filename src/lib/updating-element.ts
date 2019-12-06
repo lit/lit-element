@@ -310,8 +310,7 @@ export abstract class UpdatingElement extends HTMLElement {
     }
     const key = typeof name === 'symbol' ? Symbol() : `__${name}`;
     Object.defineProperty(this.prototype, name, {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      get(): any {
+      get(): unknown {
         return (this as {[key: string]: unknown})[key as string];
       },
       set(this: UpdatingElement, value: unknown) {
