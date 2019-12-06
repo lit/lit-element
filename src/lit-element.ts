@@ -70,8 +70,8 @@ export type CSSResultArray = Array<CSSResult|CSSResultArray>
     super.finalize.call(this);
     // Prepare styling that is stamped at first render time. Styling
     // is built from user provided `styles` or is inherited from the superclass.
-    this._styles = Object.prototype.hasOwnProperty.call(
-                       this, JSCompiler_renameProperty('styles', this)) ?
+    this._styles =
+        this.hasOwnProperty(JSCompiler_renameProperty('styles', this)) ?
         this._getUniqueStyles() :
         this._styles || [];
   }

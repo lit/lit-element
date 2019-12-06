@@ -22,6 +22,7 @@
     "@typescript-eslint/no-use-before-define": "off",
     "@typescript-eslint/triple-slash-reference": "off",
 
+    "no-prototype-builtins": "off",
     "@typescript-eslint/no-unused-vars": ["warn", {
       "argsIgnorePattern": "^_"
     }]
