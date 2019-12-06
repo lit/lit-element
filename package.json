@@ -7,6 +7,7 @@
   "repository": "Polymer/lit-element",
   "main": "lit-element.js",
   "module": "lit-element.js",
+  "typings": "lit-element.d.ts",
   "directories": {
     "test": "test"
   },
@@ -27,7 +28,8 @@
     "test": "npm run build && npm run build:babel-test && wct",
     "checksize": "rollup -c ; rm lit-element.bundled.js",
     "format": "find src test | grep '\\.js$\\|\\.ts$' | xargs clang-format --style=file -i",
-    "lint": "tslint --project ./",
+    "lint": "npm run lint:eslint",
+    "lint:eslint": "eslint 'src/**/*.{js,ts}'",
     "prepublishOnly": "node check-version-tracker.js && npm run lint && npm test",
     "prepare": "npm run build",
     "regen-package-lock": "rm -rf node_modules package-lock.json; npm install",
@@ -35,6 +37,9 @@
     "release": "np --any-branch --yolo"
   },
   "author": "The Polymer Authors",
+  "dependencies": {
+    "lit-html": "^1.0.0"
+  },
   "devDependencies": {
     "@babel/cli": "^7.2.3",
     "@babel/plugin-proposal-class-properties": "^7.2.3",
@@ -42,10 +47,15 @@
     "@babel/plugin-transform-typescript": "^7.2.0",
     "@types/chai": "^4.0.1",
     "@types/mocha": "^5.2.4",
+    "@typescript-eslint/eslint-plugin": "^2.10.0",
+    "@typescript-eslint/parser": "^2.10.0",
     "@webcomponents/shadycss": "^1.8.0",
     "@webcomponents/webcomponentsjs": "^2.2.3",
     "chai": "^4.0.2",
     "clang-format": "^1.2.4",
+    "eslint": "^6.7.2",
+    "husky": "^3.1.0",
+    "lint-staged": "^9.5.0",
     "lit-element-benchmarks": "^0.1.0",
     "mocha": "^5.0.5",
     "np": "^4.0.2",
@@ -61,9 +71,16 @@
     "wct-mocha": "^1.0.0",
     "web-component-tester": "^6.9.2"
   },
-  "typings": "lit-element.d.ts",
-  "dependencies": {
-    "lit-html": "^1.0.0"
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "**/*.{js,ts}": [
+      "eslint --fix",
+      "git add"
+    ]
   },
   "publishConfig": {
     "access": "public"
