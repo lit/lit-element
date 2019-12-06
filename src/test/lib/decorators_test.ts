@@ -16,7 +16,7 @@ import {eventOptions, property} from '../../lib/decorators.js';
 import {customElement, html, LitElement, PropertyValues, query, queryAll} from '../../lit-element.js';
 import {generateElementName} from '../test-helpers.js';
 
-// tslint:disable:no-any ok in tests
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 let hasOptions;
 const supportsOptions = (function() {

@@ -25,8 +25,8 @@ import {LitElement} from '../lit-element.js';
 import {PropertyDeclaration, UpdatingElement} from './updating-element.js';
 
 export type Constructor<T> = {
-  // tslint:disable-next-line:no-any
-  new (...args: any[]): T
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  new (...args: any[]): T;
 };
 
 // From the TC39 Decorators proposal
@@ -55,7 +55,7 @@ const legacyCustomElement =
       // `Constructor<HTMLElement>` for some reason.
       // `Constructor<HTMLElement>` is helpful to make sure the decorator is
       // applied to elements however.
-      // tslint:disable-next-line:no-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       return clazz as any;
     };
 
@@ -140,7 +140,7 @@ const legacyProperty =
  * @ExportDecoratedItems
  */
 export function property(options?: PropertyDeclaration) {
-  // tslint:disable-next-line:no-any decorator
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return (protoOrDescriptor: Object|ClassElement, name?: PropertyKey): any =>
              (name !== undefined) ?
       legacyProperty(options!, protoOrDescriptor as Object, name) :
@@ -155,7 +155,7 @@ export function property(options?: PropertyDeclaration) {
  */
 export function query(selector: string) {
   return (protoOrDescriptor: Object|ClassElement,
-          // tslint:disable-next-line:no-any decorator
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           name?: PropertyKey): any => {
     const descriptor = {
       get(this: LitElement) {
@@ -178,7 +178,7 @@ export function query(selector: string) {
  */
 export function queryAll(selector: string) {
   return (protoOrDescriptor: Object|ClassElement,
-          // tslint:disable-next-line:no-any decorator
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           name?: PropertyKey): any => {
     const descriptor = {
       get(this: LitElement) {
@@ -218,7 +218,7 @@ const standardEventOptions =
     };
 
 const legacyEventOptions =
-    // tslint:disable-next-line:no-any legacy decorator
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (options: AddEventListenerOptions, proto: any, name: PropertyKey) => {
       Object.assign(proto[name], options);
     };
@@ -262,6 +262,6 @@ export function eventOptions(options: AddEventListenerOptions) {
               legacyEventOptions(options, protoOrDescriptor as Object, name) :
               standardEventOptions(
                   options, protoOrDescriptor as ClassElement)) as
-             // tslint:disable-next-line:no-any decorator
+             // eslint-disable-next-line @typescript-eslint/no-explicit-any
              any;
 }

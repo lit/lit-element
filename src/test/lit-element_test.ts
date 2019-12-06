@@ -18,7 +18,7 @@ import {generateElementName, stripExpressionDelimeters} from './test-helpers.js'
 
 const assert = chai.assert;
 
-// tslint:disable:no-any ok in tests
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 suite('LitElement', () => {
   let container: HTMLElement;

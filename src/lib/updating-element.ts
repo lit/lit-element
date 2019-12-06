@@ -131,7 +131,7 @@ type AttributeMap = Map<string, PropertyKey>;
  * Map of changed properties with old values. Takes an optional generic
  * interface corresponding to the declared element properties.
  */
-// tslint:disable-next-line:no-any
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type PropertyValues<T = any> = keyof T extends PropertyKey ? Map<keyof T, unknown> : never;
 
 export const defaultConverter: ComplexAttributeConverter = {
@@ -305,7 +305,7 @@ export abstract class UpdatingElement extends HTMLElement {
     }
     const key = typeof name === 'symbol' ? Symbol() : `__${name}`;
     Object.defineProperty(this.prototype, name, {
-      // tslint:disable-next-line:no-any no symbol in index
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       get(): any {
         return (this as {[key: string]: unknown})[key as string];
       },
@@ -352,7 +352,8 @@ export abstract class UpdatingElement extends HTMLElement {
       for (const p of propKeys) {
         // note, use of `any` is due to TypeSript lack of support for symbol in
         // index types
-        // tslint:disable-next-line:no-any no symbol in index
+        // no symbol in index
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         this.createProperty(p, (props as any)[p]);
       }
     }
@@ -489,7 +490,7 @@ export abstract class UpdatingElement extends HTMLElement {
   private _applyInstanceProperties() {
     // Use forEach so this works even if for/of loops are compiled to for loops
     // expecting arrays
-    // tslint:disable-next-line:no-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     this._instanceProperties!.forEach((v, p) => (this as any)[p] = v);
     this._instanceProperties = undefined;
   }
@@ -567,7 +568,7 @@ export abstract class UpdatingElement extends HTMLElement {
       // mark state reflecting
       this._updateState = this._updateState | STATE_IS_REFLECTING_TO_PROPERTY;
       this[propName as keyof this] =
-          // tslint:disable-next-line:no-any
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           ctor._propertyValueFromAttribute(value, options) as any;
       // mark state not reflecting
       this._updateState = this._updateState & ~STATE_IS_REFLECTING_TO_PROPERTY;
