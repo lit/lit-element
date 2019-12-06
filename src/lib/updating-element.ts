@@ -12,6 +12,8 @@
  * http://polymer.github.io/PATENTS.txt
  */
 
+/* eslint @typescript-eslint/camelcase: ["error", { allow: ["JSCompiler_renameProperty"] }] */
+
 /**
  * When using Closure Compiler, JSCompiler_renameProperty(property, object) is
  * replaced at compile time by the munged name for object[property]. We cannot
@@ -22,7 +24,7 @@ window.JSCompiler_renameProperty =
     <P extends PropertyKey>(prop: P, _obj: unknown): P => prop;
 
 declare global {
-  var JSCompiler_renameProperty: <P extends PropertyKey>(
+  let JSCompiler_renameProperty: <P extends PropertyKey>(
       prop: P, _obj: unknown) => P;
 
   interface Window {
