@@ -189,10 +189,9 @@ const STATE_HAS_UPDATED = 1;
 const STATE_UPDATE_REQUESTED = 1 << 2;
 const STATE_IS_REFLECTING_TO_ATTRIBUTE = 1 << 3;
 const STATE_IS_REFLECTING_TO_PROPERTY = 1 << 4;
-const STATE_HAS_CONNECTED = 1 << 5;
 type UpdateState = typeof STATE_HAS_UPDATED|typeof STATE_UPDATE_REQUESTED|
     typeof STATE_IS_REFLECTING_TO_ATTRIBUTE|
-    typeof STATE_IS_REFLECTING_TO_PROPERTY|typeof STATE_HAS_CONNECTED;
+    typeof STATE_IS_REFLECTING_TO_PROPERTY;
 
 /**
  * The Closure JS Compiler doesn't currently have good support for static
@@ -424,8 +423,8 @@ export abstract class UpdatingElement extends HTMLElement {
   // Initialize to an unresolved Promise so we can make sure the element has
   // connected before first update.
   private _updatePromise =
-      new Promise((res) => this._hasConnectedResolver = res);
-  private _hasConnectedResolver: (() => void)|undefined;
+      new Promise((res) => this._enableUpdatingResolver = res);
+  private _enableUpdatingResolver: (() => void)|undefined;
 
   /**
    * Map with keys for any properties that have changed since the last
@@ -495,14 +494,15 @@ export abstract class UpdatingElement extends HTMLElement {
   }
 
   connectedCallback() {
-    this._updateState = this._updateState | STATE_HAS_CONNECTED;
     // Ensure first connection completes an update. Updates cannot complete
-    // before connection and if one is pending connection the
-    // `_hasConnectionResolver` will exist. If so, resolve it to complete the
-    // update, otherwise requestUpdate.
-    if (this._hasConnectedResolver) {
-      this._hasConnectedResolver();
-      this._hasConnectedResolver = undefined;
+    // before connection.
+    this.enableUpdating();
+  }
+
+  protected enableUpdating() {
+    if (this._enableUpdatingResolver !== undefined) {
+      this._enableUpdatingResolver();
+      this._enableUpdatingResolver = undefined;
     }
   }
 

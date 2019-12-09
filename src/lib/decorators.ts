@@ -16,8 +16,7 @@
  * IMPORTANT: For compatibility with tsickle and the Closure JS compiler, all
  * property decorators (but not class decorators) in this file must:
  *
- * 1) Have an @ExportDecoratedItems annotation in its JSDoc.
- * 2) Be defined as a regular function, not an arrow function.
+ * 1) Be defined as a regular function, not an arrow function.
  */
 
 import {LitElement} from '../lit-element.js';
@@ -137,7 +136,6 @@ const legacyProperty =
  * corresponding attribute value. A `PropertyDeclaration` may optionally be
  * supplied to configure property features.
  *
- * @ExportDecoratedItems
  */
 export function property(options?: PropertyDeclaration) {
   // tslint:disable-next-line:no-any decorator
@@ -151,7 +149,6 @@ export function property(options?: PropertyDeclaration) {
  * A property decorator that converts a class property into a getter that
  * executes a querySelector on the element's renderRoot.
  *
- * @ExportDecoratedItems
  */
 export function query(selector: string) {
   return (protoOrDescriptor: Object|ClassElement,
@@ -174,7 +171,6 @@ export function query(selector: string) {
  * A property decorator that converts a class property into a getter
  * that executes a querySelectorAll on the element's renderRoot.
  *
- * @ExportDecoratedItems
  */
 export function queryAll(selector: string) {
   return (protoOrDescriptor: Object|ClassElement,
@@ -249,7 +245,6 @@ const legacyEventOptions =
  *       }
  *     }
  *
- * @ExportDecoratedItems
  */
 export function eventOptions(options: AddEventListenerOptions) {
   // Return value typed as any to prevent TypeScript from complaining that
@@ -264,4 +259,28 @@ export function eventOptions(options: AddEventListenerOptions) {
                   options, protoOrDescriptor as ClassElement)) as
              // tslint:disable-next-line:no-any decorator
              any;
+}
+
+/**
+ * A property decorator that converts a class property into a getter that
+ * returns the `assignedNodes` of the given named `slot`. Note, the type of
+ * this property should be annotated as `NodeListOf<HTMLElement>`.
+ */
+export function queryAssignedNodes(slotName: string = '', flatten: boolean = false) {
+  return (protoOrDescriptor: Object|ClassElement,
+          // tslint:disable-next-line:no-any decorator
+          name?: PropertyKey): any => {
+    const descriptor = {
+      get(this: LitElement) {
+        const selector = `slot${slotName ? `[name=${slotName}]` : ''}`;
+        const slot = this.renderRoot.querySelector(selector);
+        return slot && (slot as HTMLSlotElement).assignedNodes({flatten});
+      },
+      enumerable: true,
+      configurable: true,
+    };
+    return (name !== undefined) ?
+        legacyQuery(descriptor, protoOrDescriptor as Object, name) :
+        standardQuery(descriptor, protoOrDescriptor as ClassElement);
+  };
 }
