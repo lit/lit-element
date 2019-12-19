@@ -5,9 +5,9 @@
   "description": "Benchmarks for Polymer project libraries",
   "main": "index.js",
   "scripts": {
-    "prepare": "bash -c 'for dir in $(ls -1d */package.json | cut -d/ -f1); do (cd $dir && npm install); done'",
-    "format": "find . -name node_modules -prune -o -name \"*.js\" -print | xargs clang-format --style=file -i",
-    "tach": "tach"
+    "postinstall": "npm run install:subpackages",
+    "install:subpackages": "bash -c 'for dir in $(ls -1d */package.json | cut -d/ -f1); do (cd $dir && npm install); done'",
+    "format": "find . -name node_modules -prune -o -name \"*.js\" -print | xargs clang-format --style=file -i"
   },
   "repository": {
     "type": "git",
@@ -21,6 +21,6 @@
   "homepage": "https://github.com/PolymerLabs/benchmarks#readme",
   "dependencies": {
     "clang-format": "^1.2.4",
-    "tachometer": "^0.4.4"
+    "tachometer": "^0.4.15"
   }
 }

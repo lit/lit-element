@@ -14,6 +14,6 @@
   },
   "homepage": "https://github.com/PolymerLabs/benchmarks#readme",
   "dependencies": {
-    "lit-html": "^1.1.0"
+    "lit-html": "^1.1.2"
   }
 }
