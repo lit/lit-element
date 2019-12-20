@@ -64,19 +64,6 @@ export class LitElement extends UpdatingElement {
   private static _styles: CSSResult[]|undefined;
 
   /** @nocollapse */
-  protected static finalize() {
-    // The Closure JS Compiler does not always preserve the correct "this"
-    // when calling static super methods (b/137460243), so explicitly bind.
-    super.finalize.call(this);
-    // Prepare styling that is stamped at first render time. Styling
-    // is built from user provided `styles` or is inherited from the superclass.
-    this._styles =
-        this.hasOwnProperty(JSCompiler_renameProperty('styles', this)) ?
-        this._getUniqueStyles() :
-        this._styles || [];
-  }
-
-  /** @nocollapse */
   private static _getUniqueStyles(): CSSResult[] {
     // Take care not to call `this.styles` multiple times since this generates
     // new CSSResults each time.
@@ -84,7 +71,10 @@ export class LitElement extends UpdatingElement {
     // shared styles will generate new stylesheet objects, which is wasteful.
     // This should be addressed when a browser ships constructable
     // stylesheets.
-    const userStyles = this.styles!;
+    const userStyles = this.styles;
+    if (userStyles === undefined) {
+      return [];
+    }
     if (Array.isArray(userStyles)) {
       // De-duplicate styles preserving the _last_ instance in the set.
       // This is a performance optimization to avoid duplicated styles that can
@@ -109,6 +99,17 @@ export class LitElement extends UpdatingElement {
     return [userStyles];
   }
 
+  /** @nocollapse */
+  private static _initializeStyles() {
+    // Only initialize styles once per class
+    if (this.hasOwnProperty(JSCompiler_renameProperty('_styles', this))) {
+      return;
+    }
+    // Prepare styling that is stamped at first render time. Styling
+    // is built from user provided `styles` or is inherited from the superclass.
+    this._styles = this._getUniqueStyles();
+  }
+
   private _needsShimAdoptedStyleSheets?: boolean;
 
   /**
@@ -124,6 +125,7 @@ export class LitElement extends UpdatingElement {
    */
   protected initialize() {
     super.initialize();
+    (this.constructor as typeof LitElement)._initializeStyles();
     (this as {renderRoot: Element | DocumentFragment}).renderRoot =
         this.createRenderRoot();
     // Note, if renderRoot is not a shadowRoot, styles would/could apply to the

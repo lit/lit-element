@@ -265,7 +265,8 @@ export function eventOptions(options: AddEventListenerOptions) {
  * this property should be annotated as `NodeListOf<HTMLElement>`.
  *
  */
-export function queryAssignedNodes(slotName: string = '', flatten: boolean = false) {
+export function queryAssignedNodes(
+    slotName: string = '', flatten: boolean = false) {
   return (protoOrDescriptor: Object|ClassElement,
           // tslint:disable-next-line:no-any decorator
           name?: PropertyKey): any => {

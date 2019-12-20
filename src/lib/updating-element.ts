@@ -132,7 +132,8 @@ type AttributeMap = Map<string, PropertyKey>;
  * interface corresponding to the declared element properties.
  */
 // tslint:disable-next-line:no-any
-export type PropertyValues<T = any> = keyof T extends PropertyKey ? Map<keyof T, unknown> : never;
+export type PropertyValues<T = any> =
+    keyof T extends PropertyKey ? Map<keyof T, unknown>: never;
 
 export const defaultConverter: ComplexAttributeConverter = {
 

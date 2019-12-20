@@ -788,6 +788,40 @@ suite('Static get styles', () => {
         '4px');
   });
 
+  test('element class only gathers styles once', async () => {
+    const base = generateElementName();
+    let styleCounter = 0;
+    customElements.define(base, class extends LitElement {
+      static get styles() {
+        styleCounter++;
+        return css`:host {
+          border: 10px solid black;
+        }`;
+      }
+      render() {
+        return htmlWithStyles`<div>styled</div>`;
+      }
+    });
+    const el1 = document.createElement(base);
+    const el2 = document.createElement(base);
+    container.appendChild(el1);
+    container.appendChild(el2);
+    await Promise.all([
+      (el1 as LitElement).updateComplete,
+      (el2 as LitElement).updateComplete
+    ]);
+    assert.equal(
+        getComputedStyle(el1).getPropertyValue('border-top-width').trim(),
+        '10px',
+        'el1 styled correctly');
+    assert.equal(
+        getComputedStyle(el2).getPropertyValue('border-top-width').trim(),
+        '10px',
+        'el2 styled correctly');
+    assert.equal(
+        styleCounter, 1, 'styles property should only be accessed once');
+  });
+
   test(
       '`CSSResult` allows for String type coercion via toString()',
       async () => {

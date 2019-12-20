@@ -16,7 +16,8 @@ import {eventOptions, property} from '../../lib/decorators.js';
 import {customElement, html, LitElement, PropertyValues, query, queryAll, queryAssignedNodes} from '../../lit-element.js';
 import {generateElementName} from '../test-helpers.js';
 
-const flush = window.ShadyDOM && window.ShadyDOM.flush ? window.ShadyDOM.flush : () => {};
+const flush =
+    window.ShadyDOM && window.ShadyDOM.flush ? window.ShadyDOM.flush : () => {};
 
 // tslint:disable:no-any ok in tests
 
