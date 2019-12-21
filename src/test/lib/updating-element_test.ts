@@ -736,7 +736,7 @@ suite('UpdatingElement', () => {
     assert.deepEqual(el.arr, [1, 2, 3, 4]);
   });
 
-  if (Object.getOwnPropertySymbols) {
+  if ((Object as Partial<typeof Object>).getOwnPropertySymbols) {
     test('properties defined using symbols', async () => {
       const zug = Symbol();
 
