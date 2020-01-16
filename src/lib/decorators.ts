@@ -74,7 +74,16 @@ const standardCustomElement =
 /**
  * Class decorator factory that defines the decorated class as a custom element.
  *
- * @param tagName the name of the custom element to define
+ * ```
+ * @customElement('my-element')
+ * class MyElement {
+ *   render() {
+ *     return html``;
+ *   }
+ * }
+ * ```
+ *
+ * @param tagName The name of the custom element to define.
  */
 export const customElement = (tagName: string) =>
     (classOrDescriptor: Constructor<HTMLElement>|ClassDescriptor) =>
@@ -136,6 +145,13 @@ const legacyProperty =
  * corresponding attribute value. A `PropertyDeclaration` may optionally be
  * supplied to configure property features.
  *
+ * @example
+ *
+ *     class MyElement {
+ *       @property({ type: Boolean })
+ *       clicked = false;
+ *     }
+ *
  * @ExportDecoratedItems
  */
 export function property(options?: PropertyDeclaration) {
@@ -149,6 +165,24 @@ export function property(options?: PropertyDeclaration) {
 /**
  * A property decorator that converts a class property into a getter that
  * executes a querySelector on the element's renderRoot.
+ *
+ * @param selector A DOMString containing one or more selectors to match.
+ *
+ * See: https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelector
+ *
+ * @example
+ *
+ *     class MyElement {
+ *       @query('#first')
+ *       first;
+ *
+ *       render() {
+ *         return html`
+ *           <div id="first"></div>
+ *           <div id="second"></div>
+ *         `;
+ *       }
+ *     }
  */
 export function query(selector: string) {
   return (protoOrDescriptor: Object|ClassElement,
@@ -170,6 +204,24 @@ export function query(selector: string) {
 /**
  * A property decorator that converts a class property into a getter
  * that executes a querySelectorAll on the element's renderRoot.
+ *
+ * @param selector A DOMString containing one or more selectors to match.
+ *
+ * See: https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelectorAll
+ *
+ * @example
+ *
+ *     class MyElement {
+ *       @queryAll('div')
+ *       divs;
+ *
+ *       render() {
+ *         return html`
+ *           <div id="first"></div>
+ *           <div id="second"></div>
+ *         `;
+ *       }
+ *     }
  */
 export function queryAll(selector: string) {
   return (protoOrDescriptor: Object|ClassElement,
@@ -231,11 +283,14 @@ const legacyEventOptions =
  * @example
  *
  *     class MyElement {
- *
  *       clicked = false;
  *
  *       render() {
- *         return html`<div @click=${this._onClick}`><button></button></div>`;
+ *         return html`
+ *           <div @click=${this._onClick}`>
+ *             <button></button>
+ *           </div>
+ *         `;
  *       }
  *
  *       @eventOptions({capture: true})
