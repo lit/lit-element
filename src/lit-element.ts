@@ -11,8 +11,7 @@
  * subject to an additional IP rights grant found at
  * http://polymer.github.io/PATENTS.txt
  */
-import {TemplateResult} from 'lit-html';
-import {render} from 'lit-html/lib/shady-render.js';
+import {render, ShadyRenderOptions} from 'lit-html/lib/shady-render.js';
 
 import {PropertyValues, UpdatingElement} from './lib/updating-element.js';
 
@@ -45,15 +44,17 @@ export class LitElement extends UpdatingElement {
    * optimizations. See updating-element.ts for more information.
    */
   protected static['finalized'] = true;
+
   /**
-   * Render method used to render the lit-html TemplateResult to the element's
-   * DOM.
-   * @param {TemplateResult} Template to render.
-   * @param {Element|DocumentFragment} Node into which to render.
-   * @param {String} Element name.
+   * Render method used to render the value to the element's DOM.
+   * @param result The value to render.
+   * @param container Node into which to render.
+   * @param options Element name.
    * @nocollapse
    */
-  static render = render;
+  static render:
+      (result: unknown, container: Element|DocumentFragment,
+       options: ShadyRenderOptions) => void = render;
 
   /**
    * Array of styles to apply to the element. The styles should be defined
@@ -194,14 +195,11 @@ export class LitElement extends UpdatingElement {
    */
   protected update(changedProperties: PropertyValues) {
     super.update(changedProperties);
-    const templateResult = this.render() as unknown;
-    if (templateResult instanceof TemplateResult) {
-      (this.constructor as typeof LitElement)
-          .render(
-              templateResult,
-              this.renderRoot,
-              {scopeName: this.localName, eventContext: this});
-    }
+    (this.constructor as typeof LitElement)
+        .render(
+            this.render(),
+            this.renderRoot,
+            {scopeName: this.localName, eventContext: this});
     // When native Shadow DOM is used but adoptedStyles are not supported,
     // insert styling after rendering to ensure adoptedStyles have highest
     // priority.
@@ -216,10 +214,12 @@ export class LitElement extends UpdatingElement {
   }
 
   /**
-   * Invoked on each update to perform rendering tasks. This method must return
-   * a lit-html TemplateResult. Setting properties inside this method will *not*
-   * trigger the element to update.
+   * Invoked on each update to perform rendering tasks. This method may return
+   * any value renderable by lit-html's NodePart - typically a TemplateResult.
+   * Setting properties inside this method will *not* trigger the element to
+   * update.
    */
-  protected render(): TemplateResult|void {
+  protected render(): unknown {
+    return undefined;
   }
 }
