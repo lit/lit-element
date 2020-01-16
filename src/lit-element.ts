@@ -63,19 +63,32 @@ export class LitElement extends UpdatingElement {
 
   private static _styles: CSSResult[]|undefined;
 
+  /**
+   * Return the array of styles to apply to the element.
+   * Override this method to integrate into a style management system.
+   *
+   * @nocollapse
+   */
+  static getStyles(): CSSResult|CSSResultArray|undefined {
+    return this.styles;
+  }
+
   /** @nocollapse */
-  private static _getUniqueStyles(): CSSResult[] {
-    // Take care not to call `this.styles` multiple times since this generates
-    // new CSSResults each time.
+  private static _getUniqueStyles() {
+    // Only gather styles once per class
+    if (this.hasOwnProperty(JSCompiler_renameProperty('_styles', this))) {
+      return;
+    }
+    // Take care not to call `this.getStyles()` multiple times since this
+    // generates new CSSResults each time.
     // TODO(sorvell): Since we do not cache CSSResults by input, any
     // shared styles will generate new stylesheet objects, which is wasteful.
     // This should be addressed when a browser ships constructable
     // stylesheets.
-    const userStyles = this.styles;
+    const userStyles = this.getStyles();
     if (userStyles === undefined) {
-      return [];
-    }
-    if (Array.isArray(userStyles)) {
+      this._styles = [];
+    } else if (Array.isArray(userStyles)) {
       // De-duplicate styles preserving the _last_ instance in the set.
       // This is a performance optimization to avoid duplicated styles that can
       // occur especially when composing via subclassing.
@@ -94,20 +107,10 @@ export class LitElement extends UpdatingElement {
       const set = addStyles(userStyles, new Set<CSSResult>());
       const styles: CSSResult[] = [];
       set.forEach((v) => styles.unshift(v));
-      return styles;
+      this._styles = styles;
+    } else {
+      this._styles = [userStyles];
     }
-    return [userStyles];
-  }
-
-  /** @nocollapse */
-  private static _initializeStyles() {
-    // Only initialize styles once per class
-    if (this.hasOwnProperty(JSCompiler_renameProperty('_styles', this))) {
-      return;
-    }
-    // Prepare styling that is stamped at first render time. Styling
-    // is built from user provided `styles` or is inherited from the superclass.
-    this._styles = this._getUniqueStyles();
   }
 
   private _needsShimAdoptedStyleSheets?: boolean;
@@ -125,7 +128,7 @@ export class LitElement extends UpdatingElement {
    */
   protected initialize() {
     super.initialize();
-    (this.constructor as typeof LitElement)._initializeStyles();
+    (this.constructor as typeof LitElement)._getUniqueStyles();
     (this as {renderRoot: Element | DocumentFragment}).renderRoot =
         this.createRenderRoot();
     // Note, if renderRoot is not a shadowRoot, styles would/could apply to the
