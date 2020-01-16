@@ -127,7 +127,12 @@ type PropertyDeclarationMap = Map<PropertyKey, PropertyDeclaration>;
 
 type AttributeMap = Map<string, PropertyKey>;
 
-export type PropertyValues = Map<PropertyKey, unknown>;
+/**
+ * Map of changed properties with old values. Takes an optional generic
+ * interface corresponding to the declared element properties.
+ */
+// tslint:disable-next-line:no-any
+export type PropertyValues<T = any> = keyof T extends PropertyKey ? Map<keyof T, unknown> : never;
 
 export const defaultConverter: ComplexAttributeConverter = {
 
@@ -180,16 +185,13 @@ const defaultPropertyDeclaration: PropertyDeclaration = {
   hasChanged: notEqual
 };
 
-const microtaskPromise = Promise.resolve(true);
-
 const STATE_HAS_UPDATED = 1;
 const STATE_UPDATE_REQUESTED = 1 << 2;
 const STATE_IS_REFLECTING_TO_ATTRIBUTE = 1 << 3;
 const STATE_IS_REFLECTING_TO_PROPERTY = 1 << 4;
-const STATE_HAS_CONNECTED = 1 << 5;
 type UpdateState = typeof STATE_HAS_UPDATED|typeof STATE_UPDATE_REQUESTED|
     typeof STATE_IS_REFLECTING_TO_ATTRIBUTE|
-    typeof STATE_IS_REFLECTING_TO_PROPERTY|typeof STATE_HAS_CONNECTED;
+    typeof STATE_IS_REFLECTING_TO_PROPERTY;
 
 /**
  * The Closure JS Compiler doesn't currently have good support for static
@@ -418,8 +420,11 @@ export abstract class UpdatingElement extends HTMLElement {
 
   private _updateState: UpdateState = 0;
   private _instanceProperties: PropertyValues|undefined = undefined;
-  private _updatePromise: Promise<unknown> = microtaskPromise;
-  private _hasConnectedResolver: (() => void)|undefined = undefined;
+  // Initialize to an unresolved Promise so we can make sure the element has
+  // connected before first update.
+  private _updatePromise =
+      new Promise((res) => this._enableUpdatingResolver = res);
+  private _enableUpdatingResolver: (() => void)|undefined;
 
   /**
    * Map with keys for any properties that have changed since the last
@@ -489,14 +494,15 @@ export abstract class UpdatingElement extends HTMLElement {
   }
 
   connectedCallback() {
-    this._updateState = this._updateState | STATE_HAS_CONNECTED;
     // Ensure first connection completes an update. Updates cannot complete
-    // before connection and if one is pending connection the
-    // `_hasConnectionResolver` will exist. If so, resolve it to complete the
-    // update, otherwise requestUpdate.
-    if (this._hasConnectedResolver) {
-      this._hasConnectedResolver();
-      this._hasConnectedResolver = undefined;
+    // before connection.
+    this.enableUpdating();
+  }
+
+  protected enableUpdating() {
+    if (this._enableUpdatingResolver !== undefined) {
+      this._enableUpdatingResolver();
+      this._enableUpdatingResolver = undefined;
     }
   }
 
@@ -602,7 +608,7 @@ export abstract class UpdatingElement extends HTMLElement {
       }
     }
     if (!this._hasRequestedUpdate && shouldRequestUpdate) {
-      this._enqueueUpdate();
+      this._updatePromise = this._enqueueUpdate();
     }
   }
 
@@ -628,43 +634,23 @@ export abstract class UpdatingElement extends HTMLElement {
    * Sets up the element to asynchronously update.
    */
   private async _enqueueUpdate() {
-    // Mark state updating...
     this._updateState = this._updateState | STATE_UPDATE_REQUESTED;
-    let resolve!: (r: boolean) => void;
-    let reject!: (e: Error) => void;
-    const previousUpdatePromise = this._updatePromise;
-    this._updatePromise = new Promise((res, rej) => {
-      resolve = res;
-      reject = rej;
-    });
     try {
       // Ensure any previous update has resolved before updating.
       // This `await` also ensures that property changes are batched.
-      await previousUpdatePromise;
+      await this._updatePromise;
     } catch (e) {
       // Ignore any previous errors. We only care that the previous cycle is
       // done. Any error should have been handled in the previous update.
     }
-    // Make sure the element has connected before updating.
-    if (!this._hasConnected) {
-      await new Promise((res) => this._hasConnectedResolver = res);
+    const result = this.performUpdate();
+    // If `performUpdate` returns a Promise, we await it. This is done to
+    // enable coordinating updates with a scheduler. Note, the result is
+    // checked to avoid delaying an additional microtask unless we need to.
+    if (result != null) {
+      await result;
     }
-    try {
-      const result = this.performUpdate();
-      // If `performUpdate` returns a Promise, we await it. This is done to
-      // enable coordinating updates with a scheduler. Note, the result is
-      // checked to avoid delaying an additional microtask unless we need to.
-      if (result != null) {
-        await result;
-      }
-    } catch (e) {
-      reject(e);
-    }
-    resolve(!this._hasRequestedUpdate);
-  }
-
-  private get _hasConnected() {
-    return (this._updateState & STATE_HAS_CONNECTED);
+    return !this._hasRequestedUpdate;
   }
 
   private get _hasRequestedUpdate() {
@@ -710,7 +696,8 @@ export abstract class UpdatingElement extends HTMLElement {
       throw e;
     } finally {
       // Ensure element can accept additional updates after an exception.
-      this._markUpdated();
+      this._changedProperties = new Map();
+      this._updateState = this._updateState & ~STATE_UPDATE_REQUESTED;
     }
     if (shouldUpdate) {
       if (!(this._updateState & STATE_HAS_UPDATED)) {
@@ -719,11 +706,6 @@ export abstract class UpdatingElement extends HTMLElement {
       }
       this.updated(changedProperties);
     }
-  }
-
-  private _markUpdated() {
-    this._changedProperties = new Map();
-    this._updateState = this._updateState & ~STATE_UPDATE_REQUESTED;
   }
 
   /**

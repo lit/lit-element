@@ -8,11 +8,29 @@ slug: templates
 * ToC
 {:toc}
 
+Add a template to your component to define internal DOM to implement your component. 
+
+To encapsulate the templated DOM LitElement uses
+[shadow DOM](https://developers.google.com/web/fundamentals/web-components/shadowdom). 
+Shadow DOM provides three benefits:
+
+* DOM scoping. DOM APIs like `document.querySelector` won't find elements in the 
+  component's shadow DOM, so it's harder for global scripts to accidentally break your component.
+* Style scoping. You can write encapsulated styles for your shadow DOM that don't 
+  affect the rest of the DOM tree.
+* Composition. The component's shadow DOM (managed by the component) is separate from the component's children. You can choose how children are rendered in your templated DOM. Component users can add and remove children using standard DOM APIs without accidentally breaking anything in your shadow DOM.
+
+Where native shadow DOM isn't available, LitElement 
+uses the [Shady CSS](https://github.com/webcomponents/polyfills/tree/master/packages/shadycss) polyfill.
+
+
 ## Define and render a template
 
 To define a template for a LitElement component, write a `render` function for your element class:
 
 ```js
+import { LitElement, html } from 'lit-element';
+
 class MyElement extends LitElement {
   render() {
     return html`<p>template content</p>`;
@@ -20,9 +38,15 @@ class MyElement extends LitElement {
 }
 ```
 
-* Write your template in HTML inside a JavaScript template literal by enclosing the raw HTML in back-ticks (<code>``</code>). 
+*   Write your template in HTML inside a JavaScript [template literal](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals) by enclosing the raw HTML in back-ticks 
+    (<code>``</code>). 
 
-* Tag your template literal with the `html` helper function, so that `render` returns a lit-html `TemplateResult`.
+
+*   Tag your template literal with the [`html`](https://lit-html.polymer-project.org/api/modules/lit_html.html#html) 
+    tag function. 
+
+*   The component's `render` method can return anything that lit-html can render. Typically, it 
+    returns a single `TemplateResult` object (the same type returned by the `html` tag function).
 
 Example
 
@@ -31,6 +55,11 @@ Example
 ```
 
 {% include project.html folder="docs/templates/define" openFile="my-element.js" %}
+
+LitElement uses lit-html templates; this page summarizes the features of lit-html templates,
+for more details, see [Writing templates](https://lit-html.polymer-project.org/guide/writing-templates)
+and the [Template syntax reference](https://lit-html.polymer-project.org/guide/template-reference) 
+in the lit-html documentation.
 
 ### Design a performant template
 
@@ -45,7 +74,7 @@ To do this, make sure the `render` function:
 * Only depends on the element's properties.
 * Returns the same result when given the same property values.
 
-Also, avoid making DOM updates outside of `render`. Instead, express the element's template as a function of its state, and capture its state in properties. 
+Also, avoid making DOM updates outside of `render`. Instead, express the element's template as a function of its state, and capture its state in properties.
 
 The following code uses inefficient DOM manipulation:
 
@@ -90,6 +119,9 @@ render() {
 
 ### Use properties, loops, and conditionals in a template
 
+When defining your element's template, you can bind the element's properties to the 
+template; the template is re-rendered whenever the properties change.
+
 #### Properties
 
 To add a property value to a template, insert it with `${this.propName}`:
@@ -99,8 +131,8 @@ static get properties() {
   return { myProp: String };
 }
 ...
-render() { 
-  return html`<p>${this.myProp}</p>`; 
+render() {
+  return html`<p>${this.myProp}</p>`;
 }
 ```
 
@@ -134,13 +166,13 @@ html`
 
 {% include project.html folder="docs/templates/expressions" openFile="my-element.js" %}
 
-### Bind properties to child elements
+### Bind properties to templated elements
 
 You can insert JavaScript expressions as placeholders for HTML text content, attributes, Boolean attributes, properties, and event handlers.
 
 * Text content: `<p>${...}</p>`
 * Attribute: `<p id="${...}"></p>`
-* Boolean attribute: `?checked="${...}"`
+* Boolean attribute: `?disabled="${...}"`
 * Property: `.value="${...}"`
 * Event handler: `@event="${...}"`
 
@@ -168,10 +200,10 @@ Attribute values are always strings, so an attribute binding should return a val
 
 #### Bind to a boolean attribute
 
-Bind `prop3` to a boolean attribute: 
+Bind `prop3` to a boolean attribute:
 
 ```js
-html`<input type="checkbox" ?checked="${this.prop3}">i like pie</input>`
+html`<input type="text" ?disabled="${this.prop3}">`
 ```
 
 Boolean attributes are added if the expression evaluates to a truthy value, and removed if it evaluates to a falsy value.
@@ -204,25 +236,22 @@ _my-element.js_
 
 {% include project.html folder="docs/templates/databinding" openFile="my-element.js" %}
 
-### Render light DOM children with the slot element
+### Render children with the slot element {#slots}
 
-#### Shadow DOM vs light DOM
-
-Since the introduction of shadow DOM, we use the term "light DOM" to refer to nodes that appear in the main DOM tree.
-
-By default, if a custom element has light DOM children in HTML, they do not render at all:
+Your component may accept children (like a `<ul>` element can have `<li>` children). 
 
 ```html
 <my-element>
-  <p>I won't render</p>
+  <p>A child</p>
 </my-element>
 ```
+By default, if an element has a shadow tree, its children don't render at all. 
 
-You can make them render using the [`<slot>` element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/slot). 
+To render children, your template needs to include one or more [`<slot>` elements](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/slot), which act as placeholders for child nodes. 
 
 #### Use the `slot` element
 
-To render an element's light DOM children, create a `<slot>` for them in the element's template. For example:
+To render an element's children, create a `<slot>` for them in the element's template. For example:
 
 ```js
 render(){
@@ -234,7 +263,7 @@ render(){
 }
 ```
 
-Light DOM children will now render in the `<slot>`:
+Children will now render in the `<slot>`:
 
 ```html
 <my-element>
@@ -242,7 +271,9 @@ Light DOM children will now render in the `<slot>`:
 </my-element>
 ```
 
-Arbitrarily many light DOM children can populate a single slot:
+The children aren't _moved_ in the DOM tree, but they're rendered _as if_ they were children of the `<slot>`.
+
+Arbitrarily many children can populate a single slot:
 
 ```html
 <my-element>
@@ -256,7 +287,7 @@ Arbitrarily many light DOM children can populate a single slot:
 
 #### Use named slots
 
-To assign a light DOM child to a specific slot, ensure that the child's `slot` attribute matches the slot's `name` attribute:
+To assign a child to a specific slot, ensure that the child's `slot` attribute matches the slot's `name` attribute:
 
 ```js
 render(){
@@ -276,11 +307,11 @@ _index.html_
 </my-element>
 ```
 
-* **Named slots only accept light DOM children with a matching `slot` attribute.**
+* **Named slots only accept children with a matching `slot` attribute.**
 
   For example, `<slot name="one"></slot>` only accepts children with the attribute `slot="one"`.
 
-* **Light DOM children with a `slot` attribute will only be placed in a slot with a matching `name` attribute.**
+* **Children with a `slot` attribute will only be rendered in a slot with a matching `name` attribute.**
 
   For example, `<p slot="one">...</p>` will only be placed in `<slot name="one"></slot>`.
 
@@ -387,9 +418,9 @@ By default, LitElement creates an open `shadowRoot` and renders inside it, produ
     <p>child 2</p>
 ```
 
-To customize a component's render root, implement `createRenderRoot` and return the node you want the template to render into. 
+To customize a component's render root, implement `createRenderRoot` and return the node you want the template to render into.
 
-For example, to render the template into the main DOM tree as your element's light DOM:
+For example, to render the template into the main DOM tree as your element's children:
 
 ```text
 <my-element>
@@ -403,13 +434,13 @@ Implement `createRenderRoot` and return `this`:
 class LightDom extends LitElement {
   render() {
     return html`
-      <p>This template renders in light DOM.</p>
+      <p>This template renders without shadow DOM.</p>
     `;
   }
   createRenderRoot() {
   /**
-   * Render template in light DOM. Note that shadow DOM features like 
-   * encapsulated CSS are unavailable.
+   * Render template without shadow DOM. Note that shadow DOM features like 
+   * encapsulated CSS and slots are unavailable.
    */
     return this;
   }
@@ -432,7 +463,7 @@ render() { return html`<p>template</p>`; }
 // Property
 html`<p>${this.myProp}</p>`;
 
-// Loop 
+// Loop
 html`${this.myArray.map(i => html`<li>${i}</li>`)}`;
 
 // Conditional
@@ -446,12 +477,12 @@ html`${this.myBool?html`<p>foo</p>`:html`<p>bar</p>`}`;
 html`<p id="${...}">`;
 
 // Boolean attribute
-html`<input type="checkbox" ?checked="${...}">`;
+html`<input type="text" ?disabled="${...}">`;
 
 // Property
 html`<input .value="${...}">`;
 
-// Event handler 
+// Event handler
 html`<button @click="${this.doStuff}"></button>`;
 ```
 
@@ -497,12 +528,46 @@ render() { return html`<slot name="thing"></slot>`; }
 </my-element>
 ```
 
-## Further reading
-Since LitElement uses lit-html's `html` and `render` functions to render templates you can take advantage
-of the entire lit-html feature-set for writing your templates. You can find further information
-* [on the lit-html homepage](https://lit-html.polymer-project.org)
-* [in the Template Reference](https://lit-html.polymer-project.org/guide/template-reference)
+## Using other lit-html features
 
-Note: Since lit-html is a dependency of LitElement it is installed into node_modules folder when you install LitElement. You do not have to install
-lit-html yourself. It is recommended that you only use the version of lit-html that comes as a dependency of your version of LitElement to avoid
-version conflicts.
+Since LitElement uses the lit-html `html` tag function to define templates you can take advantage
+of the entire lit-html feature set for writing your templates. This includes lit-html _directives_, 
+special functions that customize the way lit-html renders a binding.
+
+To import features directly from lit-html, your project should add lit-html as a direct dependency.
+We recommend using the widest practical version range for lit-html, to minimize the chance of npm
+installing two different versions of lit-html:
+
+```bash
+npm i lit-element@^2.0.0
+npm i lit-html@^1.0.0
+```
+
+### Import and use a lit-html directive
+
+You can import and use a lit-html directive and use it as shown in the [lit-html documentation](https://lit-html.polymer-project.org/guide/template-reference#built-in-directives).
+
+```js
+import { LitElement, html } from 'lit-element';
+import { until } from 'lit-html/directives/until.js';
+
+const content = fetch('./content.txt').then(r => r.text());
+
+html`${until(content, html`<span>Loading...</span>`)}`
+```
+
+For a list of directives supplied with lit-html, see [Built-in directives](https://lit-html.polymer-project.org/guide/template-reference#built-in-directives) in the Template syntax reference.
+
+
+## Resources
+
+For more information on shadow DOM:
+
+* [Shadow DOM v1: Self-Contained Web Components](https://developers.google.com/web/fundamentals/web-components/shadowdom) on Web Fundamentals.
+* [Using shadow DOM](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_shadow_DOM) on MDN.
+
+For more information on lit-html templates:
+
+* [Writing templates](https://lit-html.polymer-project.org/guide/writing-templates)
+* [Template syntax reference](https://lit-html.polymer-project.org/guide/template-reference)
+

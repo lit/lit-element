@@ -14,10 +14,9 @@
 
 /**
  * IMPORTANT: For compatibility with tsickle and the Closure JS compiler, all
- * property decorators (but not class decorators) in this file must:
- *
- * 1) Have an @ExportDecoratedItems annotation in its JSDoc.
- * 2) Be defined as a regular function, not an arrow function.
+ * property decorators (but not class decorators) in this file that have
+ * an @ExportDecoratedItems annotation must be defined as a regular function,
+ * not an arrow function.
  */
 
 import {LitElement} from '../lit-element.js';
@@ -25,7 +24,8 @@ import {LitElement} from '../lit-element.js';
 import {PropertyDeclaration, UpdatingElement} from './updating-element.js';
 
 export type Constructor<T> = {
-  new (...args: unknown[]): T
+  // tslint:disable-next-line:no-any
+  new (...args: any[]): T
 };
 
 // From the TC39 Decorators proposal
@@ -149,8 +149,6 @@ export function property(options?: PropertyDeclaration) {
 /**
  * A property decorator that converts a class property into a getter that
  * executes a querySelector on the element's renderRoot.
- *
- * @ExportDecoratedItems
  */
 export function query(selector: string) {
   return (protoOrDescriptor: Object|ClassElement,
@@ -172,8 +170,6 @@ export function query(selector: string) {
 /**
  * A property decorator that converts a class property into a getter
  * that executes a querySelectorAll on the element's renderRoot.
- *
- * @ExportDecoratedItems
  */
 export function queryAll(selector: string) {
   return (protoOrDescriptor: Object|ClassElement,
@@ -247,8 +243,6 @@ const legacyEventOptions =
  *         this.clicked = true;
  *       }
  *     }
- *
- * @ExportDecoratedItems
  */
 export function eventOptions(options: AddEventListenerOptions) {
   // Return value typed as any to prevent TypeScript from complaining that
@@ -257,9 +251,35 @@ export function eventOptions(options: AddEventListenerOptions) {
   // TODO(kschaaf): unclear why it was only failing on this decorator and not
   // the others
   return ((protoOrDescriptor: Object|ClassElement, name?: string) =>
-           (name !== undefined) ?
-               legacyEventOptions(options, protoOrDescriptor as Object, name) :
-               standardEventOptions(options, protoOrDescriptor as ClassElement)) as
+              (name !== undefined) ?
+              legacyEventOptions(options, protoOrDescriptor as Object, name) :
+              standardEventOptions(
+                  options, protoOrDescriptor as ClassElement)) as
              // tslint:disable-next-line:no-any decorator
              any;
+}
+
+/**
+ * A property decorator that converts a class property into a getter that
+ * returns the `assignedNodes` of the given named `slot`. Note, the type of
+ * this property should be annotated as `NodeListOf<HTMLElement>`.
+ *
+ */
+export function queryAssignedNodes(slotName: string = '', flatten: boolean = false) {
+  return (protoOrDescriptor: Object|ClassElement,
+          // tslint:disable-next-line:no-any decorator
+          name?: PropertyKey): any => {
+    const descriptor = {
+      get(this: LitElement) {
+        const selector = `slot${slotName ? `[name=${slotName}]` : ''}`;
+        const slot = this.renderRoot.querySelector(selector);
+        return slot && (slot as HTMLSlotElement).assignedNodes({flatten});
+      },
+      enumerable: true,
+      configurable: true,
+    };
+    return (name !== undefined) ?
+        legacyQuery(descriptor, protoOrDescriptor as Object, name) :
+        standardQuery(descriptor, protoOrDescriptor as ClassElement);
+  };
 }

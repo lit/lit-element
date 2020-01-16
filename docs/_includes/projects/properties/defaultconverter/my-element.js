@@ -18,9 +18,9 @@ class MyElement extends LitElement {
     this.prop5 = { };
   }
 
-  attributeChangedCallback(name, oldval, newval) {
-    console.log('attribute change: ', name, newval);
-    super.attributeChangedCallback(name, oldval, newval);
+  attributeChangedCallback(name, oldVal, newVal) {
+    console.log('attribute change: ', name, newVal);
+    super.attributeChangedCallback(name, oldVal, newVal);
   }
 
   render() {
@@ -47,8 +47,8 @@ class MyElement extends LitElement {
     let randy = Math.floor(Math.random()*10);
     let myBool = this.getAttribute('prop3');
 
-    this.setAttribute('prop1', randy.toString);
-    this.setAttribute('prop2', randy.toString);
+    this.setAttribute('prop1', randy.toString());
+    this.setAttribute('prop2', randy.toString());
     this.setAttribute('prop3', myBool? '' : null);
     this.setAttribute('prop4', JSON.stringify([...this.prop4, randy]));
     this.setAttribute('prop5',

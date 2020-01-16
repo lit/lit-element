@@ -1,12 +1,15 @@
 interface ShadyCSS {
   styleElement(host: Element, overrideProps?: {[key: string]: string}): void;
   getComputedStyleValue(element: Element, property: string): string;
-  ScopingShim: undefined|{prepareAdoptedCssText(cssText: string[], name: string): void;};
+  ScopingShim: undefined|{
+    prepareAdoptedCssText(cssText: string[], name: string): void;
+  };
   nativeShadow: boolean;
 }
 
 interface ShadyDOM {
   inUse: boolean;
+  flush: () => void;
 }
 
 interface Window {

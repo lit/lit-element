@@ -13,8 +13,10 @@
  */
 
 import {eventOptions, property} from '../../lib/decorators.js';
-import {customElement, html, LitElement, PropertyValues, query, queryAll} from '../../lit-element.js';
+import {customElement, html, LitElement, PropertyValues, query, queryAll, queryAssignedNodes} from '../../lit-element.js';
 import {generateElementName} from '../test-helpers.js';
+
+const flush = window.ShadyDOM && window.ShadyDOM.flush ? window.ShadyDOM.flush : () => {};
 
 // tslint:disable:no-any ok in tests
 
@@ -386,6 +388,74 @@ suite('decorators', () => {
       // This is not true in ShadyDOM:
       // assert.instanceOf(divs, NodeList);
       assert.lengthOf(spans, 0);
+    });
+  });
+
+  suite('@queryAssignedNodes', () => {
+    @customElement('assigned-nodes-el' as keyof HTMLElementTagNameMap)
+    class D extends LitElement {
+      @queryAssignedNodes() defaultAssigned!: Node[];
+
+      // The `true` on the decorator indicates that results should be flattened.
+      @queryAssignedNodes('footer', true) footerAssigned!: Node[];
+
+      render() {
+        return html`
+          <slot></slot>
+          <slot name="footer"></slot>
+        `;
+      }
+    }
+
+    // Note, there are 2 elements here so that the `flatten` option of
+    // the decorator can be tested.
+    @customElement(generateElementName() as keyof HTMLElementTagNameMap)
+    class C extends LitElement {
+      @query('div') div!: HTMLDivElement;
+      @query('assigned-nodes-el') assignedNodesEl!: D;
+
+      render() {
+        return html`
+          <assigned-nodes-el><div>A</div><slot slot="footer"></slot></assigned-nodes-el>
+        `;
+      }
+    }
+
+    test('returns assignedNodes for slot', async () => {
+      const c = new C();
+      container.appendChild(c);
+      await c.updateComplete;
+      await c.assignedNodesEl.updateComplete;
+      // Note, `defaultAssigned` does not `flatten` so we test that the property
+      // reflects current state and state when nodes are added or removed.
+      assert.deepEqual(c.assignedNodesEl.defaultAssigned, [c.div]);
+      const child = document.createElement('div');
+      c.assignedNodesEl.appendChild(child);
+      flush();
+      assert.deepEqual(c.assignedNodesEl.defaultAssigned, [c.div, child]);
+      c.assignedNodesEl.removeChild(child);
+      flush();
+      assert.deepEqual(c.assignedNodesEl.defaultAssigned, [c.div]);
+    });
+
+    test('returns flattened assignedNodes for slot', async () => {
+      const c = new C();
+      container.appendChild(c);
+      await c.updateComplete;
+      await c.assignedNodesEl.updateComplete;
+      // Note, `defaultAssigned` does `flatten` so we test that the property
+      // reflects current state and state when nodes are added or removed to
+      // the light DOM of the element containing the element under test.
+      assert.deepEqual(c.assignedNodesEl.footerAssigned, []);
+      const child1 = document.createElement('div');
+      const child2 = document.createElement('div');
+      c.appendChild(child1);
+      c.appendChild(child2);
+      flush();
+      assert.deepEqual(c.assignedNodesEl.footerAssigned, [child1, child2]);
+      c.removeChild(child2);
+      flush();
+      assert.deepEqual(c.assignedNodesEl.footerAssigned, [child1]);
     });
   });
 

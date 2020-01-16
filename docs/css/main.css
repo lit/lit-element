@@ -343,6 +343,7 @@ section p {
   width: 240px;
   font-size: 14px;
   font-weight: 500;
+  z-index: 1;
 }
 
 .side-nav > #toggleNavButton {
@@ -363,10 +364,25 @@ section p {
   list-style-type: none;
   margin: 10px 0;
   line-height: 22px;
+  padding-left: 6px;
+  border-left: 4px solid transparent;
+}
+
+.side-nav li.active {
+  border-left: 4px solid #2196F3;
 }
 
 .side-nav li:not(.active) > a {
   color: #222;
+}
+
+.side-nav li.side-nav-header {
+  font-weight: 600;
+  padding-top: 12px;
+}
+
+.side-nav li.side-nav-indent {
+  margin-left: 8px;
 }
 
 /* Article area */
