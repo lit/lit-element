@@ -10,14 +10,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
    Unreleased section, uncommenting the header as necessary.
 -->
 
-## Unreleased
+<!-- ## [x.y.z] - YYYY-MM-DD -->
+<!-- ### Changed -->
 <!-- ### Added -->
-### Changed
-* The value returned by `render` is always rendered, even if it isn't a `TemplateResult`. ([#712](https://github.com/Polymer/lit-element/issues/712)
 <!-- ### Removed -->
 <!-- ### Fixed -->
 
 ## Unreleased
+
+### Changed
+* The value returned by `render` is always rendered, even if it isn't a `TemplateResult`. ([#712](https://github.com/Polymer/lit-element/issues/712)
 
 ### Added
 * Added `enableUpdating()` to `UpdatingElement` to enable customizing when updating is enabled [#860](https://github.com/Polymer/lit-element/pull/860).
@@ -27,8 +29,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 * Ensure `UpdatingElement` allows updates when properties are set after calling `super.update()`.
 `LitElement` renders when updates are triggered as a result of rendering ([#549](https://github.com/Polymer/lit-element/issues/549)).
 * Properties annotated with the `eventOptions` decorator will now survive property renaming optimizations when used with tsickle and Closure JS Compiler.
-
-<!-- ### Changed -->
 
 ## [2.2.1] - 2019-07-23
 ### Changed
