@@ -19,9 +19,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 * Added `enableUpdating()` to `UpdatingElement` to enable customizing when updating is enabled [#860](https://github.com/Polymer/lit-element/pull/860).
 * Added `queryAssignedNodes(slotName, flatten)` to enable querying assignedNodes for a given slot [#860](https://github.com/Polymer/lit-element/pull/860).
+* Added `getStyles()` to `LitElement` to allow hooks into style gathering for component sets [#866](https://github.com/Polymer/lit-element/pull/866).
 
 ### Fixed
 * Properties annotated with the `eventOptions` decorator will now survive property renaming optimizations when used with tsickle and Closure JS Compiler.
+* Moved style gathering from `finalize` to `initialize` to be more lazy, and create stylesheets on the first instance initializing [#866](https://github.com/Polymer/lit-element/pull/866).
 
 <!-- ### Changed -->
 
