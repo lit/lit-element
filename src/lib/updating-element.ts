@@ -688,15 +688,16 @@ export abstract class UpdatingElement extends HTMLElement {
       shouldUpdate = this.shouldUpdate(changedProperties);
       if (shouldUpdate) {
         this.update(changedProperties);
+      } else {
+        this._markUpdated();
       }
     } catch (e) {
       // Prevent `firstUpdated` and `updated` from running when there's an
       // update exception.
       shouldUpdate = false;
-      throw e;
-    } finally {
       // Ensure element can accept additional updates after an exception.
       this._markUpdated();
+      throw e;
     }
     if (shouldUpdate) {
       if (!(this._updateState & STATE_HAS_UPDATED)) {
