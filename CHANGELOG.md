@@ -9,16 +9,49 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
    PRs should document their user-visible changes (if any) in the
    Unreleased section, uncommenting the header as necessary.
 -->
+
+## Unreleased
 <!-- ### Added -->
-<!-- ### Changed -->
+### Changed
+* The value returned by `render` is always rendered, even if it isn't a `TemplateResult`. ([#712](https://github.com/Polymer/lit-element/issues/712)
 <!-- ### Removed -->
 <!-- ### Fixed -->
 
 ## Unreleased
 
+### Added
+* Added `enableUpdating()` to `UpdatingElement` to enable customizing when updating is enabled [#860](https://github.com/Polymer/lit-element/pull/860).
+* Added `queryAssignedNodes(slotName, flatten)` to enable querying assignedNodes for a given slot [#860](https://github.com/Polymer/lit-element/pull/860).
+
 ### Fixed
 * Ensure `UpdatingElement` allows updates when properties are set after calling `super.update()`.
 `LitElement` renders when updates are triggered as a result of rendering ([#549](https://github.com/Polymer/lit-element/issues/549)).
+* Properties annotated with the `eventOptions` decorator will now survive property renaming optimizations when used with tsickle and Closure JS Compiler.
+
+<!-- ### Changed -->
+
+## [2.2.1] - 2019-07-23
+### Changed
+* Elements should now override the new `_getUpdateComplete` method instead of the `updateComplete` getter, for compatibility with TypeScript ES5 output, which does not support calling a superclass getter (e.g.`super.updateComplete.then(...)`) due to [TypeScript#338](https://github.com/microsoft/TypeScript/issues/338).
+### Fixed
+* Fixed compatibility with Closure JS Compiler optimizations relating to static properties ([#732](https://github.com/Polymer/lit-element/issues/732)).
+
+## [2.2.0] - 2019-06-11
+### Added
+* css tagged template literals now allow numbers to be used in expressions ([#488](https://github.com/Polymer/lit-element/issues/488)).
+
+## [2.1.0] - 2019-03-21
+### Changed
+* `LitElement.renderRoot` is now `public readonly` instead of `protected`.
+
+### Fixed
+* Exceptions generated during update/render do not block subsequent updates ([#262](https://github.com/Polymer/lit-element/issues/262)).
+* Initial update is scheduled at construction time rather than connected time ([#594](https://github.com/Polymer/lit-element/issues/594)).
+* A reflecting property set immediately after a corresponding attribute
+now reflects properly ([#592](https://github.com/Polymer/lit-element/issues/592)).
+* Properties annotated with the `@query` and `@queryAll` decorators will now
+  survive property renaming optimizations when used with tsickle and Closure JS
+  Compiler.
 
 ## [2.0.1] - 2019-02-05
 ### Fixed

@@ -201,7 +201,7 @@ suite('Styling', () => {
         div = inner!.shadowRoot!.querySelector('div');
         assert.equal(
             getComputedStyleValue(div!, 'border-top-width').trim(), '2px');
-        el2!.shadowRoot!.appendChild(inner!);
+        el2.shadowRoot!.appendChild(inner!);
 
         // Workaround for Safari 9 Promise timing bugs.
         await el.updateComplete;
@@ -307,14 +307,14 @@ suite('Styling', () => {
 
         // Workaround for Safari 9 Promise timing bugs.
         await firstApplied.updateComplete && el.updateComplete &&
-            await (el.applied as I)!.updateComplete;
+            await (el.applied as I).updateComplete;
 
         await nextFrame();
         assert.equal(
-            getComputedStyleValue(firstApplied!, 'border-top-width').trim(),
+            getComputedStyleValue(firstApplied, 'border-top-width').trim(),
             '2px');
         assert.equal(
-            getComputedStyleValue(firstApplied!, 'margin-top').trim(), '10px');
+            getComputedStyleValue(firstApplied, 'margin-top').trim(), '10px');
         assert.equal(
             getComputedStyleValue(el.applied!, 'border-top-width').trim(),
             '10px');
@@ -459,6 +459,13 @@ suite('Static get styles', () => {
       // tslint:disable:no-any intentionally unsafe code
       css`div { border: ${`2px solid blue;` as any}}`;
     });
+  });
+
+  test('`css` allows real JavaScript numbers', async () => {
+    const spacer = 2;
+
+    const result = css`div { margin: ${spacer * 2}px; }`;
+    assert.equal(result.cssText, 'div { margin: 4px; }');
   });
 
   test('`CSSResult` cannot be constructed', async () => {
@@ -790,6 +797,62 @@ suite('Static get styles', () => {
         // document.body level.
         const bodyStyles = `${cssModule}`;
         assert.equal(bodyStyles, '.my-module { color: yellow; }');
+      });
+
+  test(
+      'Styles are not removed if the first rendered value is undefined.',
+      async () => {
+        const localName = generateElementName();
+
+        class SomeCustomElement extends LitElement {
+          static styles = css`:host {border: 4px solid black;}`;
+
+          renderUndefined: boolean;
+
+          constructor() {
+            super();
+            this.renderUndefined = true;
+          }
+
+          static get properties() {
+            return {
+              renderUndefined: {
+                type: Boolean,
+                value: true,
+              },
+            };
+          }
+
+          render() {
+            if (this.renderUndefined) {
+              return undefined;
+            }
+
+            return htmlWithStyles`Some text.`;
+          }
+        }
+        customElements.define(localName, SomeCustomElement);
+
+        const element = document.createElement(localName) as SomeCustomElement;
+        document.body.appendChild(element);
+
+        await (element as LitElement).updateComplete;
+        assert.equal(
+            getComputedStyle(element)
+                .getPropertyValue('border-top-width')
+                .trim(),
+            '4px');
+
+        element.renderUndefined = false;
+
+        await (element as LitElement).updateComplete;
+        assert.equal(
+            getComputedStyle(element)
+                .getPropertyValue('border-top-width')
+                .trim(),
+            '4px');
+
+        document.body.removeChild(element);
       });
 });
 

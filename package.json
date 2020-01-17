@@ -1,8 +1,9 @@
 {
   "name": "lit-element",
-  "version": "2.0.1",
-  "description": "Polymer based lit-html custom element",
+  "version": "2.2.1",
+  "description": "A simple base class for creating fast, lightweight web components",
   "license": "BSD-3-Clause",
+  "homepage": "https://lit-element.polymer-project.org/",
   "repository": "Polymer/lit-element",
   "main": "lit-element.js",
   "module": "lit-element.js",
@@ -27,10 +28,11 @@
     "checksize": "rollup -c ; rm lit-element.bundled.js",
     "format": "find src test | grep '\\.js$\\|\\.ts$' | xargs clang-format --style=file -i",
     "lint": "tslint --project ./",
-    "prepublishOnly": "npm run build",
+    "prepublishOnly": "node check-version-tracker.js && npm run lint && npm test",
     "prepare": "npm run build",
     "regen-package-lock": "rm -rf node_modules package-lock.json; npm install",
-    "publish-dev": "npm test && VERSION=${npm_package_version%-*}-dev.`git rev-parse --short HEAD` && npm version --no-git-tag-version $VERSION && npm publish --tag dev"
+    "publish-dev": "npm test && VERSION=${npm_package_version%-*}-dev.`git rev-parse --short HEAD` && npm version --no-git-tag-version $VERSION && npm publish --tag dev",
+    "release": "np --any-branch --yolo"
   },
   "author": "The Polymer Authors",
   "devDependencies": {
@@ -43,21 +45,25 @@
     "@webcomponents/shadycss": "^1.8.0",
     "@webcomponents/webcomponentsjs": "^2.2.3",
     "chai": "^4.0.2",
-    "mocha": "^5.0.5",
-    "rollup": "^0.64.1",
-    "rollup-plugin-filesize": "^4.0.1",
-    "rollup-plugin-node-resolve": "^3.4.0",
-    "rollup-plugin-terser": "^1.0.1",
+    "clang-format": "^1.2.4",
+    "lit-element-benchmarks": "^0.1.0",
+    "mocha": "^6.2.2",
+    "np": "^5.2.1",
+    "rollup": "^1.26.0",
+    "rollup-plugin-filesize": "^6.2.0",
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-terser": "^5.1.0",
+    "tachometer": "^0.4.16",
     "tslint": "^5.12.0",
-    "typedoc": "^0.8.0",
-    "typescript": "^3.2.2",
+    "typedoc": "^0.14.2",
+    "typescript": "^3.4.1",
     "uglify-es": "^3.3.9",
     "wct-mocha": "^1.0.0",
     "web-component-tester": "^6.9.2"
   },
   "typings": "lit-element.d.ts",
   "dependencies": {
-    "lit-html": "^1.0.0"
+    "lit-html": "^1.1.1"
   },
   "publishConfig": {
     "access": "public"

@@ -11,14 +11,13 @@
  * subject to an additional IP rights grant found at
  * http://polymer.github.io/PATENTS.txt
  */
-import {TemplateResult} from 'lit-html';
-import {render} from 'lit-html/lib/shady-render';
+import {render, ShadyRenderOptions} from 'lit-html/lib/shady-render.js';
 
 import {PropertyValues, UpdatingElement} from './lib/updating-element.js';
 
 export * from './lib/updating-element.js';
 export * from './lib/decorators.js';
-export {html, svg, TemplateResult, SVGTemplateResult} from 'lit-html/lit-html';
+export {html, svg, TemplateResult, SVGTemplateResult} from 'lit-html/lit-html.js';
 import {supportsAdoptingStyleSheets, CSSResult} from './lib/css-tag.js';
 export * from './lib/css-tag.js';
 
@@ -32,48 +31,30 @@ declare global {
 // This line will be used in regexes to search for LitElement usage.
 // TODO(justinfagnani): inject version number at build time
 (window['litElementVersions'] || (window['litElementVersions'] = []))
-    .push('2.0.1');
+    .push('2.2.1');
 
 export interface CSSResultArray extends Array<CSSResult|CSSResultArray> {}
-
-/**
- * Minimal implementation of Array.prototype.flat
- * @param arr the array to flatten
- * @param result the accumlated result
- */
-function arrayFlat(
-    styles: CSSResultArray, result: CSSResult[] = []): CSSResult[] {
-  for (let i = 0, length = styles.length; i < length; i++) {
-    const value = styles[i];
-    if (Array.isArray(value)) {
-      arrayFlat(value, result);
-    } else {
-      result.push(value);
-    }
-  }
-  return result;
-}
-
-/** Deeply flattens styles array. Uses native flat if available. */
-const flattenStyles = (styles: CSSResultArray): CSSResult[] =>
-    styles.flat ? styles.flat(Infinity) : arrayFlat(styles);
 
 export class LitElement extends UpdatingElement {
   /**
    * Ensure this class is marked as `finalized` as an optimization ensuring
    * it will not needlessly try to `finalize`.
+   *
+   * Note this property name is a string to prevent breaking Closure JS Compiler
+   * optimizations. See updating-element.ts for more information.
    */
-  protected static finalized = true;
+  protected static['finalized'] = true;
 
   /**
-   * Render method used to render the lit-html TemplateResult to the element's
-   * DOM.
-   * @param {TemplateResult} Template to render.
-   * @param {Element|DocumentFragment} Node into which to render.
-   * @param {String} Element name.
+   * Render method used to render the value to the element's DOM.
+   * @param result The value to render.
+   * @param container Node into which to render.
+   * @param options Element name.
    * @nocollapse
    */
-  static render = render;
+  static render:
+      (result: unknown, container: Element|DocumentFragment,
+       options: ShadyRenderOptions) => void = render;
 
   /**
    * Array of styles to apply to the element. The styles should be defined
@@ -85,7 +66,9 @@ export class LitElement extends UpdatingElement {
 
   /** @nocollapse */
   protected static finalize() {
-    super.finalize();
+    // The Closure JS Compiler does not always preserve the correct "this"
+    // when calling static super methods (b/137460243), so explicitly bind.
+    super.finalize.call(this);
     // Prepare styling that is stamped at first render time. Styling
     // is built from user provided `styles` or is inherited from the superclass.
     this._styles =
@@ -102,26 +85,29 @@ export class LitElement extends UpdatingElement {
     // shared styles will generate new stylesheet objects, which is wasteful.
     // This should be addressed when a browser ships constructable
     // stylesheets.
-    const userStyles = this.styles;
-    const styles: CSSResult[] = [];
+    const userStyles = this.styles!;
     if (Array.isArray(userStyles)) {
-      const flatStyles = flattenStyles(userStyles);
-      // As a performance optimization to avoid duplicated styling that can
-      // occur especially when composing via subclassing, de-duplicate styles
-      // preserving the last item in the list. The last item is kept to
-      // try to preserve cascade order with the assumption that it's most
-      // important that last added styles override previous styles.
-      const styleSet = flatStyles.reduceRight((set, s) => {
-        set.add(s);
-        // on IE set.add does not return the set.
-        return set;
-      }, new Set<CSSResult>());
-      // Array.from does not work on Set in IE
-      styleSet.forEach((v) => styles!.unshift(v));
-    } else if (userStyles) {
-      styles.push(userStyles);
+      // De-duplicate styles preserving the _last_ instance in the set.
+      // This is a performance optimization to avoid duplicated styles that can
+      // occur especially when composing via subclassing.
+      // The last item is kept to try to preserve the cascade order with the
+      // assumption that it's most important that last added styles override
+      // previous styles.
+      const addStyles =
+          (styles: CSSResultArray, set: Set<CSSResult>): Set<CSSResult> =>
+              styles.reduceRight(
+                  (set: Set<CSSResult>, s) =>
+                      // Note: On IE set.add() does not return the set
+                  Array.isArray(s) ? addStyles(s, set) : (set.add(s), set),
+                  set);
+      // Array.from does not work on Set in IE, otherwise return
+      // Array.from(addStyles(userStyles, new Set<CSSResult>())).reverse()
+      const set = addStyles(userStyles, new Set<CSSResult>());
+      const styles: CSSResult[] = [];
+      set.forEach((v) => styles.unshift(v));
+      return styles;
     }
-    return styles;
+    return [userStyles];
   }
 
   private _needsShimAdoptedStyleSheets?: boolean;
@@ -130,7 +116,7 @@ export class LitElement extends UpdatingElement {
    * Node or ShadowRoot into which element DOM should be rendered. Defaults
    * to an open shadowRoot.
    */
-  protected renderRoot?: Element|DocumentFragment;
+  readonly renderRoot!: Element|DocumentFragment;
 
   /**
    * Performs element initialization. By default this calls `createRenderRoot`
@@ -139,7 +125,8 @@ export class LitElement extends UpdatingElement {
    */
   protected initialize() {
     super.initialize();
-    this.renderRoot = this.createRenderRoot();
+    (this as {renderRoot: Element | DocumentFragment}).renderRoot =
+        this.createRenderRoot();
     // Note, if renderRoot is not a shadowRoot, styles would/could apply to the
     // element's getRootNode(). While this could be done, we're choosing not to
     // support this now since it would require different logic around de-duping.
@@ -179,7 +166,7 @@ export class LitElement extends UpdatingElement {
     // (3) shadowRoot.adoptedStyleSheets polyfilled: append styles after
     // rendering
     if (window.ShadyCSS !== undefined && !window.ShadyCSS.nativeShadow) {
-      window.ShadyCSS.ScopingShim.prepareAdoptedCssText(
+      window.ShadyCSS.ScopingShim!.prepareAdoptedCssText(
           styles.map((s) => s.cssText), this.localName);
     } else if (supportsAdoptingStyleSheets) {
       (this.renderRoot as ShadowRoot).adoptedStyleSheets =
@@ -204,18 +191,19 @@ export class LitElement extends UpdatingElement {
    * Updates the element. This method reflects property values to attributes
    * and calls `render` to render DOM via lit-html. Setting properties inside
    * this method will *not* trigger another update.
-   * * @param _changedProperties Map of changed properties with old values
+   * @param _changedProperties Map of changed properties with old values
    */
   protected update(changedProperties: PropertyValues) {
-    const templateResult = this.render() as unknown;
+    // Setting properties in `render` should not trigger an update. Since
+    // updates are allowed after super.update, it's important to call `render`
+    // before that.
+    const templateResult = this.render();
     super.update(changedProperties);
-    if (templateResult instanceof TemplateResult) {
-      (this.constructor as typeof LitElement)
-          .render(
-              templateResult,
-              this.renderRoot!,
-              {scopeName: this.localName!, eventContext: this});
-    }
+    (this.constructor as typeof LitElement)
+        .render(
+            templateResult,
+            this.renderRoot,
+            {scopeName: this.localName, eventContext: this});
     // When native Shadow DOM is used but adoptedStyles are not supported,
     // insert styling after rendering to ensure adoptedStyles have highest
     // priority.
@@ -224,16 +212,18 @@ export class LitElement extends UpdatingElement {
       (this.constructor as typeof LitElement)._styles!.forEach((s) => {
         const style = document.createElement('style');
         style.textContent = s.cssText;
-        this.renderRoot!.appendChild(style);
+        this.renderRoot.appendChild(style);
       });
     }
   }
 
   /**
-   * Invoked on each update to perform rendering tasks. This method must return
-   * a lit-html TemplateResult. Setting properties inside this method will *not*
-   * trigger the element to update.
+   * Invoked on each update to perform rendering tasks. This method may return
+   * any value renderable by lit-html's NodePart - typically a TemplateResult.
+   * Setting properties inside this method will *not* trigger the element to
+   * update.
    */
-  protected render(): TemplateResult|void {
+  protected render(): unknown {
+    return undefined;
   }
 }

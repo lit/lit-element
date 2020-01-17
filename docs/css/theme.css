@@ -17,6 +17,10 @@ h4 {
   background: linear-gradient(315deg, #8FCDFF 0%, #2196F3 100%);
 }
 
+.nav-item.active {
+  border-bottom: 2px solid #fff;
+}
+
 .hero-title,
 .hero-link,
 .main-nav {
@@ -33,4 +37,22 @@ h4 {
 
 .hero-link.link-with-arrow::before {
   content: url('data:image/svg+xml; utf8, <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="%23FFFFFF"><path d="M21.5 12.495L16 18h-3l4.498-4.5H3v-2h14.498L13 7h3z"/></svg>');
+}
+
+.fixed-width-caption {
+  min-width: 300px;
+  max-width: 300px;
+  margin-bottom: 0;
+}
+
+@media screen and (max-width: 640px) {
+  .fixed-width-caption {
+    min-width: unset;
+    max-width: unset;
+  }
+}
+
+.inline-action-buttons > * {
+  display: inline-block;
+  margin-right: 20px;
 }
