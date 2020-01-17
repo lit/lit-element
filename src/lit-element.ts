@@ -199,10 +199,14 @@ export class LitElement extends UpdatingElement {
    * @param _changedProperties Map of changed properties with old values
    */
   protected update(changedProperties: PropertyValues) {
+    // Setting properties in `render` should not trigger an update. Since
+    // updates are allowed after super.update, it's important to call `render`
+    // before that.
+    const templateResult = this.render();
     super.update(changedProperties);
     (this.constructor as typeof LitElement)
         .render(
-            this.render(),
+            templateResult,
             this.renderRoot,
             {scopeName: this.localName, eventContext: this});
     // When native Shadow DOM is used but adoptedStyles are not supported,
