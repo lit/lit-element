@@ -195,6 +195,41 @@ suite('LitElement', () => {
     assert.equal(window['litElementVersions'].length, 1);
   });
 
+  test('event fired during rendering element can trigger an update', async () => {
+    class E extends LitElement {
+      connectedCallback() {
+        super.connectedCallback();
+        this.dispatchEvent(new CustomEvent('foo', {bubbles: true, detail: 'foo'}));
+      }
+    }
+    customElements.define('x-child-61012', E);
+
+    class F extends LitElement {
+
+      static get properties() {
+        return {foo: {type: String}};
+      }
+
+      foo = '';
+
+      render() {
+        return html`<x-child-61012 @foo=${this._handleFoo}></x-child-61012><span>${this.foo}</span>`;
+      }
+
+      _handleFoo(e: CustomEvent) {
+        this.foo = e.detail;
+      }
+
+    }
+
+    customElements.define(generateElementName(), F);
+    const el = new F();
+    container.appendChild(el);
+    // eslint-disable-next-line no-empty
+    while (!(await el.updateComplete)) {}
+    assert.equal(el.shadowRoot!.textContent, 'foo');
+  });
+
   test(
       'exceptions in `render` throw but do not prevent further updates',
       async () => {

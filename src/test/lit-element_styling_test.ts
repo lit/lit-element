@@ -788,6 +788,40 @@ suite('Static get styles', () => {
         '4px');
   });
 
+  test('element class only gathers styles once', async () => {
+    const base = generateElementName();
+    let styleCounter = 0;
+    customElements.define(base, class extends LitElement {
+      static get styles() {
+        styleCounter++;
+        return css`:host {
+          border: 10px solid black;
+        }`;
+      }
+      render() {
+        return htmlWithStyles`<div>styled</div>`;
+      }
+    });
+    const el1 = document.createElement(base);
+    const el2 = document.createElement(base);
+    container.appendChild(el1);
+    container.appendChild(el2);
+    await Promise.all([
+      (el1 as LitElement).updateComplete,
+      (el2 as LitElement).updateComplete
+    ]);
+    assert.equal(
+        getComputedStyle(el1).getPropertyValue('border-top-width').trim(),
+        '10px',
+        'el1 styled correctly');
+    assert.equal(
+        getComputedStyle(el2).getPropertyValue('border-top-width').trim(),
+        '10px',
+        'el2 styled correctly');
+    assert.equal(
+        styleCounter, 1, 'styles property should only be accessed once');
+  });
+
   test(
       '`CSSResult` allows for String type coercion via toString()',
       async () => {
@@ -797,6 +831,62 @@ suite('Static get styles', () => {
         // document.body level.
         const bodyStyles = `${cssModule}`;
         assert.equal(bodyStyles, '.my-module { color: yellow; }');
+      });
+
+  test(
+      'Styles are not removed if the first rendered value is undefined.',
+      async () => {
+        const localName = generateElementName();
+
+        class SomeCustomElement extends LitElement {
+          static styles = css`:host {border: 4px solid black;}`;
+
+          renderUndefined: boolean;
+
+          constructor() {
+            super();
+            this.renderUndefined = true;
+          }
+
+          static get properties() {
+            return {
+              renderUndefined: {
+                type: Boolean,
+                value: true,
+              },
+            };
+          }
+
+          render() {
+            if (this.renderUndefined) {
+              return undefined;
+            }
+
+            return htmlWithStyles`Some text.`;
+          }
+        }
+        customElements.define(localName, SomeCustomElement);
+
+        const element = document.createElement(localName) as SomeCustomElement;
+        document.body.appendChild(element);
+
+        await (element as LitElement).updateComplete;
+        assert.equal(
+            getComputedStyle(element)
+                .getPropertyValue('border-top-width')
+                .trim(),
+            '4px');
+
+        element.renderUndefined = false;
+
+        await (element as LitElement).updateComplete;
+        assert.equal(
+            getComputedStyle(element)
+                .getPropertyValue('border-top-width')
+                .trim(),
+            '4px');
+
+        document.body.removeChild(element);
       });
 });
 

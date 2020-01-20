@@ -10,18 +10,27 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
    Unreleased section, uncommenting the header as necessary.
 -->
 
-## Unreleased
+<!-- ## [x.y.z] - YYYY-MM-DD -->
+<!-- ### Changed -->
 <!-- ### Added -->
 <!-- ### Removed -->
+<!-- ### Fixed -->
+
+## Unreleased
+
+### Changed
+* The value returned by `render` is always rendered, even if it isn't a `TemplateResult`. ([#712](https://github.com/Polymer/lit-element/issues/712)
 
 ### Added
 * Added `enableUpdating()` to `UpdatingElement` to enable customizing when updating is enabled [#860](https://github.com/Polymer/lit-element/pull/860).
 * Added `queryAssignedNodes(slotName, flatten)` to enable querying assignedNodes for a given slot [#860](https://github.com/Polymer/lit-element/pull/860).
+* Added `getStyles()` to `LitElement` to allow hooks into style gathering for component sets [#866](https://github.com/Polymer/lit-element/pull/866).
 
 ### Fixed
+* Ensure `UpdatingElement` allows updates when properties are set after calling `super.update()`.
+`LitElement` renders when updates are triggered as a result of rendering ([#549](https://github.com/Polymer/lit-element/issues/549)).
 * Properties annotated with the `eventOptions` decorator will now survive property renaming optimizations when used with tsickle and Closure JS Compiler.
-
-<!-- ### Changed -->
+* Moved style gathering from `finalize` to `initialize` to be more lazy, and create stylesheets on the first instance initializing [#866](https://github.com/Polymer/lit-element/pull/866).
 
 ## [2.2.1] - 2019-07-23
 ### Changed

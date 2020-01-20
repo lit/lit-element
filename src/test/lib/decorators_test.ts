@@ -12,11 +12,14 @@
  * http://polymer.github.io/PATENTS.txt
  */
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import {eventOptions, property} from '../../lib/decorators.js';
 import {customElement, html, LitElement, PropertyValues, query, queryAll, queryAssignedNodes} from '../../lit-element.js';
 import {generateElementName} from '../test-helpers.js';
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
+const flush =
+    window.ShadyDOM && window.ShadyDOM.flush ? window.ShadyDOM.flush : () => {};
 
 let hasOptions;
 const supportsOptions = (function() {

@@ -736,7 +736,7 @@ suite('UpdatingElement', () => {
     assert.deepEqual(el.arr, [1, 2, 3, 4]);
   });
 
-  if (Object.getOwnPropertySymbols) {
+  if ((Object as Partial<typeof Object>).getOwnPropertySymbols) {
     test('properties defined using symbols', async () => {
       const zug = Symbol();
 
@@ -1427,6 +1427,38 @@ suite('UpdatingElement', () => {
     assert.equal(el.foo, 6);
     assert.equal(el.updateCount, 2);
     assert.equal(el.updatedText, '6');
+  });
+
+  test('setting properties in update after calling `super.update` *does* trigger update', async () => {
+    class E extends UpdatingElement {
+      static get properties() {
+        return {foo: {}};
+      }
+      promiseFulfilled = false;
+      foo = 0;
+      updateCount = 0;
+      updatedText = '';
+
+      update(props: PropertyValues) {
+        this.updateCount++;
+        super.update(props);
+        if (this.foo < 1) {
+          this.foo++;
+        }
+      }
+
+      updated() {
+        this.updatedText = `${this.foo}`;
+      }
+    }
+    customElements.define(generateElementName(), E);
+    const el = new E();
+    container.appendChild(el);
+    // eslint-disable-next-line no-empty
+    while (!(await el.updateComplete)) {}
+    assert.equal(el.foo, 1);
+    assert.equal(el.updateCount, 2);
+    assert.equal(el.updatedText, '1');
   });
 
   test(

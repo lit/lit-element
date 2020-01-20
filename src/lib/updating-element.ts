@@ -693,16 +693,16 @@ export abstract class UpdatingElement extends HTMLElement {
       shouldUpdate = this.shouldUpdate(changedProperties);
       if (shouldUpdate) {
         this.update(changedProperties);
+      } else {
+        this._markUpdated();
       }
     } catch (e) {
       // Prevent `firstUpdated` and `updated` from running when there's an
       // update exception.
       shouldUpdate = false;
-      throw e;
-    } finally {
       // Ensure element can accept additional updates after an exception.
-      this._changedProperties = new Map();
-      this._updateState = this._updateState & ~STATE_UPDATE_REQUESTED;
+      this._markUpdated();
+      throw e;
     }
     if (shouldUpdate) {
       if (!(this._updateState & STATE_HAS_UPDATED)) {
@@ -711,6 +711,11 @@ export abstract class UpdatingElement extends HTMLElement {
       }
       this.updated(changedProperties);
     }
+  }
+
+  private _markUpdated() {
+    this._changedProperties = new Map();
+    this._updateState = this._updateState & ~STATE_UPDATE_REQUESTED;
   }
 
   /**
@@ -780,6 +785,7 @@ export abstract class UpdatingElement extends HTMLElement {
           (v, k) => this._propertyToAttribute(k, this[k as keyof this], v));
       this._reflectingProperties = undefined;
     }
+    this._markUpdated();
   }
 
   /**

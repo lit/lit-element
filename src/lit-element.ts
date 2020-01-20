@@ -11,8 +11,7 @@
  * subject to an additional IP rights grant found at
  * http://polymer.github.io/PATENTS.txt
  */
-import {TemplateResult} from 'lit-html';
-import {render} from 'lit-html/lib/shady-render.js';
+import {render, ShadyRenderOptions} from 'lit-html/lib/shady-render.js';
 
 import {PropertyValues, UpdatingElement} from './lib/updating-element.js';
 
@@ -45,15 +44,17 @@ export type CSSResultArray = Array<CSSResult|CSSResultArray>;
    * optimizations. See updating-element.ts for more information.
    */
   protected static['finalized'] = true;
+
   /**
-   * Render method used to render the lit-html TemplateResult to the element's
-   * DOM.
-   * @param {TemplateResult} Template to render.
-   * @param {Element|DocumentFragment} Node into which to render.
-   * @param {String} Element name.
+   * Render method used to render the value to the element's DOM.
+   * @param result The value to render.
+   * @param container Node into which to render.
+   * @param options Element name.
    * @nocollapse
    */
-  static render = render;
+  static render:
+      (result: unknown, container: Element|DocumentFragment,
+       options: ShadyRenderOptions) => void = render;
 
   /**
    * Array of styles to apply to the element. The styles should be defined
@@ -63,29 +64,32 @@ export type CSSResultArray = Array<CSSResult|CSSResultArray>;
 
   private static _styles: CSSResult[]|undefined;
 
-  /** @nocollapse */
-  protected static finalize() {
-    // The Closure JS Compiler does not always preserve the correct "this"
-    // when calling static super methods (b/137460243), so explicitly bind.
-    super.finalize.call(this);
-    // Prepare styling that is stamped at first render time. Styling
-    // is built from user provided `styles` or is inherited from the superclass.
-    this._styles =
-        this.hasOwnProperty(JSCompiler_renameProperty('styles', this)) ?
-        this._getUniqueStyles() :
-        this._styles || [];
+  /**
+   * Return the array of styles to apply to the element.
+   * Override this method to integrate into a style management system.
+   *
+   * @nocollapse
+   */
+  static getStyles(): CSSResult|CSSResultArray|undefined {
+    return this.styles;
   }
 
   /** @nocollapse */
-  private static _getUniqueStyles(): CSSResult[] {
-    // Take care not to call `this.styles` multiple times since this generates
-    // new CSSResults each time.
+  private static _getUniqueStyles() {
+    // Only gather styles once per class
+    if (this.hasOwnProperty(JSCompiler_renameProperty('_styles', this))) {
+      return;
+    }
+    // Take care not to call `this.getStyles()` multiple times since this
+    // generates new CSSResults each time.
     // TODO(sorvell): Since we do not cache CSSResults by input, any
     // shared styles will generate new stylesheet objects, which is wasteful.
     // This should be addressed when a browser ships constructable
     // stylesheets.
-    const userStyles = this.styles!;
-    if (Array.isArray(userStyles)) {
+    const userStyles = this.getStyles();
+    if (userStyles === undefined) {
+      this._styles = [];
+    } else if (Array.isArray(userStyles)) {
       // De-duplicate styles preserving the _last_ instance in the set.
       // This is a performance optimization to avoid duplicated styles that can
       // occur especially when composing via subclassing.
@@ -104,9 +108,10 @@ export type CSSResultArray = Array<CSSResult|CSSResultArray>;
       const set = addStyles(userStyles, new Set<CSSResult>());
       const styles: CSSResult[] = [];
       set.forEach((v) => styles.unshift(v));
-      return styles;
+      this._styles = styles;
+    } else {
+      this._styles = [userStyles];
     }
-    return [userStyles];
   }
 
   private _needsShimAdoptedStyleSheets?: boolean;
@@ -124,6 +129,7 @@ export type CSSResultArray = Array<CSSResult|CSSResultArray>;
    */
   protected initialize() {
     super.initialize();
+    (this.constructor as typeof LitElement)._getUniqueStyles();
     (this as {renderRoot: Element | DocumentFragment}).renderRoot =
         this.createRenderRoot();
     // Note, if renderRoot is not a shadowRoot, styles would/could apply to the
@@ -193,15 +199,16 @@ export type CSSResultArray = Array<CSSResult|CSSResultArray>;
    * @param _changedProperties Map of changed properties with old values
    */
   protected update(changedProperties: PropertyValues) {
+    // Setting properties in `render` should not trigger an update. Since
+    // updates are allowed after super.update, it's important to call `render`
+    // before that.
+    const templateResult = this.render();
     super.update(changedProperties);
-    const templateResult = this.render() as unknown;
-    if (templateResult instanceof TemplateResult) {
-      (this.constructor as typeof LitElement)
-          .render(
-              templateResult,
-              this.renderRoot,
-              {scopeName: this.localName, eventContext: this});
-    }
+    (this.constructor as typeof LitElement)
+        .render(
+            templateResult,
+            this.renderRoot,
+            {scopeName: this.localName, eventContext: this});
     // When native Shadow DOM is used but adoptedStyles are not supported,
     // insert styling after rendering to ensure adoptedStyles have highest
     // priority.
@@ -216,10 +223,12 @@ export type CSSResultArray = Array<CSSResult|CSSResultArray>;
   }
 
   /**
-   * Invoked on each update to perform rendering tasks. This method must return
-   * a lit-html TemplateResult. Setting properties inside this method will *not*
-   * trigger the element to update.
+   * Invoked on each update to perform rendering tasks. This method may return
+   * any value renderable by lit-html's NodePart - typically a TemplateResult.
+   * Setting properties inside this method will *not* trigger the element to
+   * update.
    */
-  protected render(): TemplateResult|void {
+  protected render(): unknown {
+    return undefined;
   }
 }
