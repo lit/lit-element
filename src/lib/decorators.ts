@@ -145,6 +145,9 @@ const legacyProperty =
  * corresponding attribute value. A `PropertyDeclaration` may optionally be
  * supplied to configure property features.
  *
+ * This decorator should only be used for public fields. Private or protected
+ * fields should use the internalProperty decorator.
+ *
  * @example
  *
  *     class MyElement {
@@ -160,6 +163,27 @@ export function property(options?: PropertyDeclaration) {
              (name !== undefined) ?
       legacyProperty(options!, protoOrDescriptor as Object, name) :
       standardProperty(options!, protoOrDescriptor as ClassElement);
+}
+
+export interface InternalPropertyDeclaration<Type = unknown> {
+  /**
+   * A function that indicates if a property should be considered changed when
+   * it is set. The function should take the `newValue` and `oldValue` and
+   * return `true` if an update should be requested.
+   */
+  hasChanged?(value: Type, oldValue: Type): boolean;
+}
+
+/**
+ * Declares a private or protected property that still triggers updates to the
+ * element when it changes.
+ *
+ * Properties declared this way must not be used from HTML or HTML templating
+ * systems, they're solely for properties internal to the element. These
+ * properties may be renamed by optimization tools like closure compiler.
+ */
+export function internalProperty(options?: InternalPropertyDeclaration) {
+  return property({attribute: false, hasChanged: options?.hasChanged});
 }
 
 /**
