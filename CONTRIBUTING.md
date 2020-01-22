@@ -41,7 +41,7 @@ Docs source is in the `docs` folder. To build the site yourself, see the instruc
 
 The Polymer team heavily uses (and loves!) GitHub for all of our software management. We use GitHub issues to track all bugs and features.
 
-If you find an issue, please do file it on the repository. The [Polymer/polymer issues](https://github.com/polymer/polymer/issues) should be used only for issues on the Polymer library itself - bugs somewhere in the core codebase.
+If you find an issue, please do file it on the repository. The [lit-element issues](https://github.com/Polymer/lit-element/issues) should be used only for issues on the lit-element library itself - bugs somewhere in the core codebase.
 
 For issues with elements the team maintains, please file directly on the element's repository. If you're not sure if a bug stems from the element or the library, air toward filing it on the element and we'll move the issue if necessary.
 
