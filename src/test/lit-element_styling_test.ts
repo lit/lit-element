@@ -321,6 +321,42 @@ suite('Styling', () => {
         assert.equal(
             getComputedStyleValue(el.applied!, 'margin-top').trim(), '2px');
       });
+
+  suite('CSS Shadow Parts', () => {
+    test('first render', async () => {
+      customElements.define('parts-1a', class extends LitElement {
+        static get styles() {
+          return css`
+            parts-1b::part(p) {
+              color: red;
+            }
+          `;
+        }
+
+        render() {
+          return htmlWithStyles`
+            <parts-1b></parts-1b>
+          `;
+        }
+      });
+
+      customElements.define('parts-1b', class extends LitElement {
+        render() {
+          return htmlWithStyles`
+            <div part="p">red</div>
+          `;
+        }
+      });
+
+      const a = document.createElement('parts-1a');
+      container.appendChild(a);
+      await nextFrame();
+      await nextFrame();
+      const b = a.shadowRoot!.querySelector('parts-1b')!;
+      const part = b.shadowRoot!.querySelector('[part]')!;
+      assert.equal(getComputedStyleValue(part, 'color'), 'rgb(255, 0, 0)');
+    });
+  });
 });
 
 suite('Static get styles', () => {
