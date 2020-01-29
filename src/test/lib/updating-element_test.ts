@@ -736,6 +736,29 @@ suite('UpdatingElement', () => {
     assert.deepEqual(el.arr, [1, 2, 3, 4]);
   });
 
+  test('array and object attributes deserialize from html when value is no valid ', async () => {
+    class E extends UpdatingElement {
+      static get properties() {
+        return {
+          obj: {type: Object},
+          arr: {type: Array}
+        };
+      }
+
+      obj?: any;
+      arr?: any;
+    }
+    const name = generateElementName();
+    customElements.define(name, E);
+    container.innerHTML = `<${name}
+      obj='{InvalidJsonFormat}'
+      arr='[a,b,c,d]'></${name}>`;
+    const el = container.firstChild as E;
+    await el.updateComplete;
+    assert.deepEqual(el.obj, {});
+    assert.deepEqual(el.arr, []);
+  });
+
   if ((Object as Partial<typeof Object>).getOwnPropertySymbols) {
     test('properties defined using symbols', async () => {
       const zug = Symbol();
