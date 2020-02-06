@@ -1,3 +1,21 @@
-<!-- Instructions: https://github.com/Polymer/lit-element/blob/master/CONTRIBUTING.md#contributing-pull-requests -->
-### Reference Issue
-<!-- Example: Fixes #1234 -->
+<!--
+  Instructions
+
+  Please read: https://github.com/Polymer/lit-element/blob/master/CONTRIBUTING.md#contributing-pull-requests
+
+  All code PRs must have an associated issue, tests, and update the changelog.
+  Without these your PR may languish or simply be closed.
+-->
+
+<!-- Description -->
+<!-- Please include "Fixes #X" so GitHub can track PRs against issues. -->
+
+This PR is a:
+- [ ] Bug Fix
+- [ ] Feature
+
+Checklist:
+- [ ] Issue 
+- [ ] Tests
+- [ ] Update CHANGELOG.md
+- [ ] CLA
