@@ -518,10 +518,14 @@ export abstract class UpdatingElement extends HTMLElement {
   /**
    * Synchronizes property values when attributes change.
    */
-  attributeChangedCallback(name: string, old: string|null, value: string|null) {
-    if (old !== value) {
+  attributeChangedCallback(name: string, old: string|null, value: string|null, namespace: string) {
+    if (this.attributeShouldChangeProperty(name, old, value, namespace)) {
       this._attributeToProperty(name, value);
     }
+  }
+
+  protected attributeShouldChangeProperty(_name: string, old: string|null, value: string|null, _namespace: string|null) {
+    return old !== value;
   }
 
   private _propertyToAttribute(

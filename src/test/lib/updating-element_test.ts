@@ -1922,6 +1922,46 @@ suite('UpdatingElement', () => {
     assert.equal(el._updateCount, 3);
   });
 
+  test('can override `attributeShouldChangeProperty` to see every attribute change', async () => {
+    class E extends UpdatingElement {
+      _updateCount = 0;
+      foo?: string;
+      bar?: string;
+      static get properties() {
+        return {foo: {type: String, hasChanged: () => true}, bar: {type: String, hasChanged: () => true}};
+      }
+      attributeShouldChangeProperty() {
+        return true;
+      }
+      update(changedProperties: PropertyValues) {
+        this._updateCount++;
+        super.update(changedProperties);
+      }
+    }
+    customElements.define(generateElementName(), E);
+
+    const el = new E();
+    container.appendChild(el);
+    await el.updateComplete;
+    assert.equal(el._updateCount, 1);
+
+    el.setAttribute('foo', 'foo');;
+    el.setAttribute('bar', 'bar');;
+    await el.updateComplete;
+    assert.equal(el.foo, 'foo');
+    assert.equal(el.bar, 'bar');
+    assert.equal(el._updateCount, 2);
+    el.setAttribute('foo', 'foo');;
+    el.setAttribute('bar', 'bar');;
+    await el.updateComplete;
+    assert.equal(el._updateCount, 3);
+
+    el.removeAttribute('foo');
+    await el.updateComplete;
+    assert.equal(el.foo, null);
+    assert.equal(el._updateCount, 4);
+  });
+
   test(
       'setting properties in `updated` does trigger update and does not block updateComplete',
       async () => {
