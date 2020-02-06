@@ -15,7 +15,7 @@ This PR is a:
 - [ ] Feature
 
 Checklist:
-- [ ] Issue 
+- [ ] Description includes issue this PR fixes
 - [ ] Tests
 - [ ] Update CHANGELOG.md
 - [ ] Submitter has signed the CLA
