@@ -18,4 +18,4 @@ Checklist:
 - [ ] Issue 
 - [ ] Tests
 - [ ] Update CHANGELOG.md
-- [ ] CLA
+- [ ] Submitter has signed the CLA
