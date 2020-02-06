@@ -17,5 +17,5 @@ This PR is a:
 Checklist:
 - [ ] Description includes issue this PR fixes
 - [ ] Tests
-- [ ] Update CHANGELOG.md
+- [ ] PR includes update to CHANGELOG.md
 - [ ] Submitter has signed the CLA
