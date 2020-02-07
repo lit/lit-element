@@ -112,6 +112,14 @@ export interface PropertyDeclaration<Type = unknown, TypeHint = unknown> {
    * the property changes.
    */
   readonly noAccessor?: boolean;
+
+  /**
+   * Indicates fallback value will be return when parsing in
+   * `fromAttribute` catch an exception.
+   * By default, fallback value is `undefined`
+   */
+  // tslint:disable-next-line:no-any
+  readonly onError?: any;
 }
 
 /**
@@ -157,18 +165,12 @@ export const defaultConverter: ComplexAttributeConverter = {
       case Number:
         return value === null ? null : Number(value);
       case Object:
-        try {
-          return JSON.parse(value!);
-        } catch (e) {
-          // Ignore any previous errors. Only return a empty object
-          return {};
-        }
       case Array:
         try {
           return JSON.parse(value!);
         } catch (e) {
-          // Ignore any previous errors. Only return a empty array
-          return [];
+          // Ignore any previous errors. Only return a empty object
+          return defaultPropertyDeclaration.onError;
         }
     }
     return value;
@@ -194,7 +196,8 @@ const defaultPropertyDeclaration: PropertyDeclaration = {
   type: String,
   converter: defaultConverter,
   reflect: false,
-  hasChanged: notEqual
+  hasChanged: notEqual,
+  onError: undefined
 };
 
 const STATE_HAS_UPDATED = 1;

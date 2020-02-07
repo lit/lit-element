@@ -755,8 +755,8 @@ suite('UpdatingElement', () => {
       arr='[a,b,c,d]'></${name}>`;
     const el = container.firstChild as E;
     await el.updateComplete;
-    assert.deepEqual(el.obj, {});
-    assert.deepEqual(el.arr, []);
+    assert.deepEqual(el.obj, undefined);
+    assert.deepEqual(el.arr, undefined);
   });
 
   if ((Object as Partial<typeof Object>).getOwnPropertySymbols) {
