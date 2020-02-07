@@ -1880,8 +1880,8 @@ suite('UpdatingElement', () => {
       get bar() {
         return this.getAttribute('bar') || 'defaultBar';
       }
-      attributeChangedCallback(name: string, old: string, value: string) {
-        super.attributeChangedCallback(name, old, value);
+      attributeChangedCallback(name: string, old: string, value: string, namespace: string) {
+        super.attributeChangedCallback(name, old, value, namespace);
         this.requestUpdate(name, old);
       }
       update(changedProperties: PropertyValues) {
@@ -1945,14 +1945,14 @@ suite('UpdatingElement', () => {
     await el.updateComplete;
     assert.equal(el._updateCount, 1);
 
-    el.setAttribute('foo', 'foo');;
-    el.setAttribute('bar', 'bar');;
+    el.setAttribute('foo', 'foo');
+    el.setAttribute('bar', 'bar');
     await el.updateComplete;
     assert.equal(el.foo, 'foo');
     assert.equal(el.bar, 'bar');
     assert.equal(el._updateCount, 2);
-    el.setAttribute('foo', 'foo');;
-    el.setAttribute('bar', 'bar');;
+    el.setAttribute('foo', 'foo');
+    el.setAttribute('bar', 'bar');
     await el.updateComplete;
     assert.equal(el._updateCount, 3);
 
