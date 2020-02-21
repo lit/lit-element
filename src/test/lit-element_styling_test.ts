@@ -666,7 +666,7 @@ suite('Static get styles', () => {
     customElements.define(sub, class extends BaseClass {
       static get styles() {
         return [
-          super.styles!,
+          super.styles,
           css`span {
             display: block;
             border: 3px solid blue;
@@ -685,7 +685,7 @@ suite('Static get styles', () => {
     customElements.define(subsub, class extends BaseClass {
       static get styles() {
         return [
-          super.styles!,
+          super.styles,
           css`p {
             display: block;
             border: 4px solid blue;
