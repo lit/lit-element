@@ -34,8 +34,8 @@ export class CSSResult {
   // stylesheets are not created until the first element instance is made.
   get styleSheet(): CSSStyleSheet|null {
     if (this._styleSheet === undefined) {
-      // Note, if `supportsAdoptingShadowStyleSheets` is supported then we
-      // assume CSSStyleSheet is constructable.
+      // Note, if `supportsAdoptingShadowStyleSheets` is true then we assume
+      // CSSStyleSheet is constructable.
       if (supportsAdoptingShadowStyleSheets) {
         this._styleSheet = new CSSStyleSheet();
         this._styleSheet.replaceSync(this.cssText);
