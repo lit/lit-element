@@ -82,7 +82,7 @@ export class LitElement extends UpdatingElement {
 
   /**
    * Array of styles to apply to the element. The styles should be defined
-   * using the [[`css`]] tag function.
+   * using the `css` tag function or via constructible stylesheets.
    */
   static styles?: CSSResultOrNative|CSSResultArray;
 
@@ -145,7 +145,7 @@ export class LitElement extends UpdatingElement {
       });
     } else {
       // This is only possible when a user passes a CSSStyleSheet that was
-      // read from a <style> or <link rel="stylesheet"> tag, which are not
+      // obtained from a <style> or <link rel="stylesheet"> tag: these are not
       // constructible stylesheets.
       work.forEach((resultOrNative) => {
         if (resultOrNative instanceof CSSStyleSheet) {
