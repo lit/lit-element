@@ -94,7 +94,7 @@ export class LitElement extends UpdatingElement {
     }
     // Take care not to call `this.getStyles()` multiple times since this
     // generates new CSSResults each time.
-    const userStyles = this.styles!;
+    const userStyles = this.getStyles();
     const work = [];
 
     if (Array.isArray(userStyles)) {

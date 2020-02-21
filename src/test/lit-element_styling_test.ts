@@ -792,10 +792,16 @@ suite('Static get styles', () => {
 
   test('element class only gathers styles once', async () => {
     const base = generateElementName();
-    let styleCounter = 0;
+    let getStylesCounter = 0;
+    let stylesCounter = 0;
     customElements.define(base, class extends LitElement {
+      static getStyles() {
+        getStylesCounter++;
+        return super.getStyles();
+      }
+
       static get styles() {
-        styleCounter++;
+        stylesCounter++;
         return css`:host {
           border: 10px solid black;
         }`;
@@ -821,7 +827,9 @@ suite('Static get styles', () => {
         '10px',
         'el2 styled correctly');
     assert.equal(
-        styleCounter, 1, 'styles property should only be accessed once');
+        stylesCounter, 1, 'styles property should only be accessed once');
+    assert.equal(
+      getStylesCounter, 1, 'getStyles() should be called once');
   });
 
   test(
