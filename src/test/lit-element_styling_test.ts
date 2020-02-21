@@ -922,10 +922,12 @@ suite('Static get styles', () => {
         const el = document.createElement(base);
         container.appendChild(el);
         await (el as LitElement).updateComplete;
-        const div = el.shadowRoot!.querySelector('div');
-
+        const div = el.shadowRoot!.querySelector('div')!;
         assert.equal(
-          getComputedStyle(div!).getPropertyValue('background').trim(), 'blue');
+            getComputedStyle(div)
+                .getPropertyValue('border-top-width')
+                .trim(),
+            '4px');
       });
 });
 
