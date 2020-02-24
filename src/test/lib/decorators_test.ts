@@ -13,7 +13,7 @@
  */
 
 import {eventOptions, property} from '../../lib/decorators.js';
-import {customElement, html, LitElement, PropertyValues, query, queryAll, queryAssignedNodes} from '../../lit-element.js';
+import {customElement, html, LitElement, PropertyValues, query, queryAll, queryAssignedNodes, asyncQuery} from '../../lit-element.js';
 import {generateElementName} from '../test-helpers.js';
 
 const flush =
@@ -457,6 +457,77 @@ suite('decorators', () => {
       c.removeChild(child2);
       flush();
       assert.deepEqual(c.assignedNodesEl.footerAssigned, [child1]);
+    });
+  });
+
+  suite('@asyncQuery', () => {
+    @customElement('dep-el' as keyof HTMLElementTagNameMap)
+    class D extends LitElement {
+
+      wasUpdated = false;
+
+      render() {
+        return html`dep`;
+      }
+
+      firstUpdated() {
+        this.wasUpdated = true;
+      }
+    }
+
+
+    @customElement(generateElementName() as keyof HTMLElementTagNameMap)
+    class C extends LitElement {
+      @asyncQuery('#blah') blah!: Promise<HTMLDivElement>;
+
+      @asyncQuery('dep-el') dep!: Promise<D>;
+
+      @asyncQuery('span') nope!: Promise<HTMLSpanElement|null>;
+
+      @property()
+      foo = false;
+
+      render() {
+        return html`
+          <div>Not this one</div>
+          ${this.foo ?
+            html`<div id="blah" foo>This one</div><dep-el foo></dep-el>` :
+            html`<div id="blah">This one</div><dep-el></dep-el>` }
+        `;
+      }
+    }
+
+    test('returns an element when it exists after update', async () => {
+      const c = new C();
+      container.appendChild(c);
+      let div = await c.blah;
+      assert.instanceOf(div, HTMLDivElement);
+      assert.isFalse(div.hasAttribute('foo'));
+      c.foo = true;
+      div = await c.blah;
+      assert.instanceOf(div, HTMLDivElement);
+      assert.isTrue(div.hasAttribute('foo'));
+    });
+
+    test('returns an element when it exists after update that is itself updated', async () => {
+      const c = new C();
+      container.appendChild(c);
+      let dep = await c.dep;
+      assert.instanceOf(dep, D);
+      assert.isFalse(dep.hasAttribute('foo'));
+      assert.isTrue(dep.wasUpdated);
+      c.foo = true;
+      dep = await c.dep;
+      assert.instanceOf(dep, D);
+      assert.isTrue(dep.hasAttribute('foo'));
+      assert.isTrue(dep.wasUpdated);
+    });
+
+    test('returns null when no match', async () => {
+      const c = new C();
+      container.appendChild(c);
+      const span = await c.nope;
+      assert.isNull(span);
     });
   });
 
