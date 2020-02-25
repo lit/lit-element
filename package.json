@@ -46,15 +46,15 @@
     "@babel/plugin-transform-typescript": "^7.2.0",
     "@types/chai": "^4.0.1",
     "@types/mocha": "^5.2.4",
-    "@typescript-eslint/eslint-plugin": "^2.16.0",
-    "@typescript-eslint/parser": "^2.16.0",
+    "@typescript-eslint/eslint-plugin": "^2.21.0",
+    "@typescript-eslint/parser": "^2.21.0",
     "@webcomponents/shadycss": "^1.8.0",
     "@webcomponents/webcomponentsjs": "^2.2.3",
     "chai": "^4.0.2",
     "clang-format": "^1.2.4",
     "eslint": "^6.8.0",
-    "husky": "^4.0.0",
-    "lint-staged": "^9.5.0",
+    "husky": "^4.2.0",
+    "lint-staged": "^10.0.0",
     "lit-element-benchmarks": "^0.1.0",
     "mocha": "^6.2.2",
     "np": "^5.2.1",
@@ -76,8 +76,7 @@
   },
   "lint-staged": {
     "**/*.{js,ts}": [
-      "eslint --fix",
-      "git add"
+      "eslint --fix"
     ]
   },
   "publishConfig": {
