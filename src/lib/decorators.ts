@@ -259,7 +259,9 @@ export function asyncQuery(selector: string) {
         await this.updateComplete;
         const el = this.renderRoot.querySelector(selector);
         // if this is a LitElement, then await updateComplete
-        await (el && (el as LitElement).updateComplete);
+        if (el) {
+          await (el as LitElement).updateComplete;
+        }
         return el;
       },
       enumerable: true,
