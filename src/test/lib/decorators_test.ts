@@ -461,26 +461,10 @@ suite('decorators', () => {
   });
 
   suite('@asyncQuery', () => {
-    @customElement('dep-el' as keyof HTMLElementTagNameMap)
-    class D extends LitElement {
-
-      wasUpdated = false;
-
-      render() {
-        return html`dep`;
-      }
-
-      firstUpdated() {
-        this.wasUpdated = true;
-      }
-    }
-
 
     @customElement(generateElementName() as keyof HTMLElementTagNameMap)
     class C extends LitElement {
       @asyncQuery('#blah') blah!: Promise<HTMLDivElement>;
-
-      @asyncQuery('dep-el') dep!: Promise<D>;
 
       @asyncQuery('span') nope!: Promise<HTMLSpanElement|null>;
 
@@ -491,8 +475,8 @@ suite('decorators', () => {
         return html`
           <div>Not this one</div>
           ${this.foo ?
-            html`<div id="blah" foo>This one</div><dep-el foo></dep-el>` :
-            html`<div id="blah">This one</div><dep-el></dep-el>` }
+            html`<div id="blah" foo>This one</div>` :
+            html`<div id="blah">This one</div>` }
         `;
       }
     }
@@ -507,20 +491,6 @@ suite('decorators', () => {
       div = await c.blah;
       assert.instanceOf(div, HTMLDivElement);
       assert.isTrue(div.hasAttribute('foo'));
-    });
-
-    test('returns an element when it exists after update that is itself updated', async () => {
-      const c = new C();
-      container.appendChild(c);
-      let dep = await c.dep;
-      assert.instanceOf(dep, D);
-      assert.isFalse(dep.hasAttribute('foo'));
-      assert.isTrue(dep.wasUpdated);
-      c.foo = true;
-      dep = await c.dep;
-      assert.instanceOf(dep, D);
-      assert.isTrue(dep.hasAttribute('foo'));
-      assert.isTrue(dep.wasUpdated);
     });
 
     test('returns null when no match', async () => {

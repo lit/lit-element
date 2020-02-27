@@ -207,6 +207,11 @@ export function internalProperty(options?: InternalPropertyDeclaration) {
  *         `;
  *       }
  *     }
+ *
+ *     // external usage
+ *     async doSomethingWithFirst() {
+ *      (await aMyElement.first).doSomething();
+ *     }
  */
 export function query(selector: string) {
   return (protoOrDescriptor: Object|ClassElement,
@@ -229,8 +234,9 @@ export function query(selector: string) {
  * A property decorator that converts a class property into a getter that
  * returns a promise that resolves to the result of a querySelector on the
  * element's renderRoot done after the element's `updateComplete` promise
- * resolves and after the queried element's `updateComplete` promise resolves
- * (if it is a LitElement).
+ * resolves. When queried property may change with element state, this decorator
+ * can be used instead of requiring users to await the `updateComplete` before
+ * accessing the property.
  *
  * @param selector A DOMString containing one or more selectors to match.
  *
@@ -257,12 +263,7 @@ export function asyncQuery(selector: string) {
     const descriptor = {
       async get(this: LitElement) {
         await this.updateComplete;
-        const el = this.renderRoot.querySelector(selector);
-        // if this is a LitElement, then await updateComplete
-        if (el) {
-          await (el as LitElement).updateComplete;
-        }
-        return el;
+        return this.renderRoot.querySelector(selector);
       },
       enumerable: true,
       configurable: true,
