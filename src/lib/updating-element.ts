@@ -112,6 +112,12 @@ export interface PropertyDeclaration<Type = unknown, TypeHint = unknown> {
    * the property changes.
    */
   readonly noAccessor?: boolean;
+
+  /**
+   * Replaces the value of the property with the output of the function if the
+   * property has no value or is `undefined`.
+   */
+  readonly default?: () => Type;
 }
 
 /**
@@ -310,9 +316,13 @@ export abstract class UpdatingElement extends HTMLElement {
         return (this as {[key: string]: unknown})[key as string];
       },
       set(this: UpdatingElement, value: unknown) {
+        const newValue = (options?.default && value === undefined)
+          ? options.default()
+          : value;
+
         const oldValue =
             (this as {} as {[key: string]: unknown})[name as string];
-        (this as {} as {[key: string]: unknown})[key as string] = value;
+        (this as {} as {[key: string]: unknown})[key as string] = newValue;
         (this as unknown as UpdatingElement)._requestUpdate(name, oldValue);
       },
       configurable: true,
@@ -421,6 +431,7 @@ export abstract class UpdatingElement extends HTMLElement {
 
   private _updateState: UpdateState = 0;
   private _instanceProperties: PropertyValues|undefined = undefined;
+  private _initializedDefaults: boolean = false;
   // Initialize to an unresolved Promise so we can make sure the element has
   // connected before first update.
   private _updatePromise =
@@ -683,6 +694,19 @@ export abstract class UpdatingElement extends HTMLElement {
     if (this._instanceProperties) {
       this._applyInstanceProperties();
     }
+    if (!this._initializedDefaults) {
+      this._initializedDefaults = true;
+      // Initialize undefined properties if they have a default value
+      (this.constructor as typeof UpdatingElement)._classProperties!.forEach((v, p) => {
+        // Avoid calling the getter if not necessary, check default prop first
+        // tslint:disable-next-line:no-any
+        if (v?.default && (this as any)[p] === undefined) {
+          // tslint:disable-next-line:no-any
+          (this as any)[p] = v.default();
+        }
+      });
+    }
+
     let shouldUpdate = false;
     const changedProperties = this._changedProperties;
     try {
