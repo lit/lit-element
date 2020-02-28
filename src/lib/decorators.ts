@@ -230,6 +230,11 @@ export function query(selector: string) {
   };
 }
 
+// Note, in the future, we may extend this decorator to support the use case
+// where the queried element may need to do work to become ready to interact
+// with (e.g. load some implementation code). If so, we might elect to
+// add a second argument defining a function that can be run to make the
+// queried element loaded/updated/ready.
 /**
  * A property decorator that converts a class property into a getter that
  * returns a promise that resolves to the result of a querySelector on the
