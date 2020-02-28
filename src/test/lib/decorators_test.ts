@@ -13,7 +13,7 @@
  */
 
 import {eventOptions, property} from '../../lib/decorators.js';
-import {customElement, html, LitElement, PropertyValues, query, queryAll, queryAssignedNodes, asyncQuery} from '../../lit-element.js';
+import {customElement, html, LitElement, PropertyValues, query, queryAll, queryAssignedNodes, queryAsync} from '../../lit-element.js';
 import {generateElementName} from '../test-helpers.js';
 
 const flush =
@@ -460,13 +460,13 @@ suite('decorators', () => {
     });
   });
 
-  suite('@asyncQuery', () => {
+  suite('@queryAsync', () => {
 
     @customElement(generateElementName() as keyof HTMLElementTagNameMap)
     class C extends LitElement {
-      @asyncQuery('#blah') blah!: Promise<HTMLDivElement>;
+      @queryAsync('#blah') blah!: Promise<HTMLDivElement>;
 
-      @asyncQuery('span') nope!: Promise<HTMLSpanElement|null>;
+      @queryAsync('span') nope!: Promise<HTMLSpanElement|null>;
 
       @property()
       foo = false;

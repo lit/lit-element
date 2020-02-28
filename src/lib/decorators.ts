@@ -250,7 +250,7 @@ export function query(selector: string) {
  * @example
  *
  *     class MyElement {
- *       @asyncQuery('#first')
+ *       @queryAsync('#first')
  *       first;
  *
  *       render() {
@@ -261,7 +261,7 @@ export function query(selector: string) {
  *       }
  *     }
  */
-export function asyncQuery(selector: string) {
+export function queryAsync(selector: string) {
   return (protoOrDescriptor: Object|ClassElement,
           // tslint:disable-next-line:no-any decorator
           name?: PropertyKey): any => {
