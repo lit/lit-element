@@ -239,9 +239,9 @@ export function query(selector: string) {
  * A property decorator that converts a class property into a getter that
  * returns a promise that resolves to the result of a querySelector on the
  * element's renderRoot done after the element's `updateComplete` promise
- * resolves. When queried property may change with element state, this decorator
- * can be used instead of requiring users to await the `updateComplete` before
- * accessing the property.
+ * resolves. When the queried property may change with element state, this
+ * decorator can be used instead of requiring users to await the
+ * `updateComplete` before accessing the property.
  *
  * @param selector A DOMString containing one or more selectors to match.
  *
