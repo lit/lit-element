@@ -208,10 +208,6 @@ export function internalProperty(options?: InternalPropertyDeclaration) {
  *       }
  *     }
  *
- *     // external usage
- *     async doSomethingWithFirst() {
- *      (await aMyElement.first).doSomething();
- *     }
  */
 export function query(selector: string) {
   return (protoOrDescriptor: Object|ClassElement,
@@ -259,6 +255,11 @@ export function query(selector: string) {
  *           <div id="second"></div>
  *         `;
  *       }
+ *     }
+ *
+ *     // external usage
+ *     async doSomethingWithFirst() {
+ *      (await aMyElement.first).doSomething();
  *     }
  */
 export function queryAsync(selector: string) {
