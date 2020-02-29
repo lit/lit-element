@@ -679,6 +679,9 @@ export abstract class UpdatingElement extends HTMLElement {
    * ```
    */
   protected performUpdate(): void|Promise<unknown> {
+    if (!this._hasRequestedUpdate) {
+      return;
+    }
     // Mixin instance properties once, if they exist.
     if (this._instanceProperties) {
       this._applyInstanceProperties();
@@ -707,6 +710,16 @@ export abstract class UpdatingElement extends HTMLElement {
       }
       this.updated(changedProperties);
     }
+  }
+
+  /**
+   * Forces a synchronous update.
+   */
+  forceUpdate(name?: PropertyKey, oldValue?: unknown) {
+    if (name || !this._hasRequestedUpdate) {
+      this.requestUpdateInternal(name, oldValue);
+    }
+    this.performUpdate();
   }
 
   private _markUpdated() {

@@ -75,6 +75,28 @@ suite('UpdatingElement', () => {
         assert.equal(el.updateCount, 2);
       });
 
+  test('Can call `forceUpdate()` to make update synchronous', async () => {
+        class E extends UpdatingElement {
+          updateCount = 0;
+          updated() {
+            this.updateCount++;
+          }
+        }
+        customElements.define(generateElementName(), E);
+        const el = new E();
+        container.appendChild(el);
+        el.forceUpdate();
+        assert.equal(el.updateCount, 1);
+        el.forceUpdate();
+        assert.equal(el.updateCount, 2);
+        el.requestUpdate();
+        el.forceUpdate();
+        assert.equal(el.updateCount, 3);
+        el.forceUpdate();
+        await el.updateComplete;
+        assert.equal(el.updateCount, 4);
+      });
+
   test('`shouldUpdate` controls update', async () => {
     class E extends UpdatingElement {
       needsUpdate = true;
