@@ -112,6 +112,10 @@ export interface PropertyDeclaration<Type = unknown, TypeHint = unknown> {
    * the property changes.
    */
   readonly noAccessor?: boolean;
+
+  // Allows extension while preserving the ability to use the
+  // @property decorator.
+  [index: string]: any;
 }
 
 /**
@@ -293,8 +297,7 @@ export abstract class UpdatingElement extends HTMLElement {
     // Note, since this can be called by the `@property` decorator which
     // is called before `finalize`, we ensure storage exists for property
     // metadata.
-    this._ensureClassProperties();
-    this._classProperties!.set(name, options);
+    this.setOptionsForProperty(name, options);
     // Do not generate an accessor if the prototype already has one, since
     // it would be lost otherwise and that would never be the user's intention;
     // Instead, we expect users to call `requestUpdate` themselves from
@@ -313,11 +316,22 @@ export abstract class UpdatingElement extends HTMLElement {
         const oldValue =
             (this as {} as {[key: string]: unknown})[name as string];
         (this as {} as {[key: string]: unknown})[key as string] = value;
-        (this as unknown as UpdatingElement)._requestUpdate(name, oldValue);
+        (this as unknown as UpdatingElement).requestUpdateInternal(name, oldValue);
       },
       configurable: true,
       enumerable: true
     });
+  }
+
+  static setOptionsForProperty(name: PropertyKey,
+    options: PropertyDeclaration = defaultPropertyDeclaration) {
+    this._ensureClassProperties();
+    this._classProperties!.set(name, options);
+  }
+
+  static getOptionsForProperty(name: PropertyKey) {
+    this._ensureClassProperties();
+    return this._classProperties!.get(name);
   }
 
   /**
@@ -452,7 +466,7 @@ export abstract class UpdatingElement extends HTMLElement {
     this._saveInstanceProperties();
     // ensures first update will be caught by an early access of
     // `updateComplete`
-    this._requestUpdate();
+    this.requestUpdateInternal();
   }
 
   /**
@@ -576,11 +590,11 @@ export abstract class UpdatingElement extends HTMLElement {
   }
 
   /**
-   * This private version of `requestUpdate` does not access or return the
+   * This protected version of `requestUpdate` does not access or return the
    * `updateComplete` promise. This promise can be overridden and is therefore
    * not free to access.
    */
-  private _requestUpdate(name?: PropertyKey, oldValue?: unknown) {
+  protected requestUpdateInternal(name?: PropertyKey, oldValue?: unknown) {
     let shouldRequestUpdate = true;
     // If we have a property key, perform property update steps.
     if (name !== undefined) {
@@ -627,7 +641,7 @@ export abstract class UpdatingElement extends HTMLElement {
    * @returns {Promise} A Promise that is resolved when the update completes.
    */
   requestUpdate(name?: PropertyKey, oldValue?: unknown) {
-    this._requestUpdate(name, oldValue);
+    this.requestUpdateInternal(name, oldValue);
     return this.updateComplete;
   }
 

@@ -12,8 +12,8 @@
  * http://polymer.github.io/PATENTS.txt
  */
 
-import {property} from '../../lib/decorators.js';
-import {ComplexAttributeConverter, PropertyDeclarations, PropertyValues, UpdatingElement} from '../../lib/updating-element.js';
+import {property, customElement} from '../../lib/decorators.js';
+import {ComplexAttributeConverter, PropertyDeclarations, PropertyValues, UpdatingElement, PropertyDeclaration} from '../../lib/updating-element.js';
 import {generateElementName} from '../test-helpers.js';
 
 // tslint:disable:no-any ok in tests
@@ -1801,6 +1801,58 @@ suite('UpdatingElement', () => {
         assert.equal(sub.updatedText, '5');
         assert.equal(sub.getAttribute('foo'), '5');
       });
+
+  test.only('can implement createProperty to customize property options and accessors', async () => {
+
+    interface MyPropertyDeclaration<TypeHint = unknown> extends PropertyDeclaration {
+      validator?: (value: any) => TypeHint;
+    }
+
+    @customElement(generateElementName())
+    class E extends UpdatingElement {
+
+      static createProperty(
+        name: PropertyKey,
+        options: MyPropertyDeclaration) {
+        this.setOptionsForProperty(name, options);
+        if (options.noAccessor || this.prototype.hasOwnProperty(name)) {
+          return;
+        }
+        const key = typeof name === 'symbol' ? Symbol() : `__${name}`;
+        Object.defineProperty(this.prototype, name, {
+          // tslint:disable-next-line:no-any no symbol in index
+          get(): any {
+            return (this as {[key: string]: unknown})[key as string];
+          },
+          set(this: E, value: unknown) {
+            const oldValue =
+                (this as {} as {[key: string]: unknown})[name as string];
+            if (options.validator) {
+              value = options.validator(value);
+            }
+            (this as {} as {[key: string]: unknown})[key as string] = value;
+            (this as unknown as E).requestUpdateInternal(name, oldValue);
+          },
+          configurable: true,
+          enumerable: true
+        });
+      }
+
+      @property({type: Number, validator: (value: number) => Math.min(10, Math.max(value, 0))})
+      foo = 5;
+
+      @property({})
+      bar = 'bar';
+    }
+
+    const el = new E();
+    container.appendChild(el);
+    await el.updateComplete;
+    el.foo = 20;
+    assert.equal(el.foo, 10);
+    el.foo = -5;
+    assert.equal(el.foo, 0);
+  });
 
   test('attribute-based property storage', async () => {
     class E extends UpdatingElement {
