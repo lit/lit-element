@@ -13,7 +13,7 @@
  */
 
 import {property, customElement} from '../../lib/decorators.js';
-import {ComplexAttributeConverter, PropertyDeclarations, PropertyValues, UpdatingElement, PropertyDeclaration} from '../../lib/updating-element.js';
+import {ComplexAttributeConverter, PropertyDeclarations, PropertyValues, UpdatingElement, PropertyDeclaration, defaultConverter} from '../../lib/updating-element.js';
 import {generateElementName} from '../test-helpers.js';
 
 // tslint:disable:no-any ok in tests
@@ -1802,7 +1802,65 @@ suite('UpdatingElement', () => {
         assert.equal(sub.getAttribute('foo'), '5');
       });
 
-  test.only('can implement createProperty to customize property options and accessors', async () => {
+    test('can provide a default property declaration by implementing createProperty', async () => {
+
+        const SpecialNumber = {};
+
+        const myPropertyDeclaration = {
+          type: SpecialNumber,
+          reflect: true,
+          converter: {
+            toAttribute: function(value: unknown, type?: unknown): unknown {
+              switch (type) {
+                case String:
+                  return value === undefined ? null : value;
+                default:
+                return defaultConverter.toAttribute!(value, type);
+              }
+            },
+            fromAttribute: function(value: string|null, type?: unknown) {
+              switch (type) {
+                case SpecialNumber:
+                  return Number(value) + 10;
+                default:
+                return defaultConverter.fromAttribute!(value, type);
+              }
+            }
+          }
+        };
+
+        @customElement(generateElementName())
+        class E extends UpdatingElement {
+
+          static createProperty(
+            name: PropertyKey,
+            options: PropertyDeclaration) {
+            options = Object.assign(Object.create(myPropertyDeclaration), options);
+            super.createProperty(name, options);
+          }
+
+          @property()
+          foo = 5;
+
+          @property({type: String})
+          bar? = 'bar';
+        }
+
+        const el = new E();
+        container.appendChild(el);
+        el.setAttribute('foo', '10');
+        el.setAttribute('bar', 'attrBar');
+        await el.updateComplete;
+        assert.equal(el.foo, 20);
+        assert.equal(el.bar, 'attrBar');
+        el.foo = 5;
+        el.bar = undefined;
+        await el.updateComplete;
+        assert.equal(el.getAttribute('foo'), '5');
+        assert.isFalse(el.hasAttribute('bar'));
+      });
+
+  test('can customize property options and accessor creation by implementing createProperty', async () => {
 
     interface MyPropertyDeclaration<TypeHint = unknown> extends PropertyDeclaration {
       validator?: (value: any) => TypeHint;
