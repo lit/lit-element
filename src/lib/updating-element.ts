@@ -726,16 +726,6 @@ export abstract class UpdatingElement extends HTMLElement {
     }
   }
 
-  /**
-   * Forces a synchronous update.
-   */
-  forceUpdate(name?: PropertyKey, oldValue?: unknown) {
-    if (name || !this._hasRequestedUpdate) {
-      this.requestUpdateInternal(name, oldValue);
-    }
-    this.performUpdate();
-  }
-
   private _markUpdated() {
     this._changedProperties = new Map();
     this._updateState = this._updateState & ~STATE_UPDATE_REQUESTED;

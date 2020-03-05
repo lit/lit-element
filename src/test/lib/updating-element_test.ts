@@ -75,28 +75,6 @@ suite('UpdatingElement', () => {
         assert.equal(el.updateCount, 2);
       });
 
-  test('Can call `forceUpdate()` to make update synchronous', async () => {
-        class E extends UpdatingElement {
-          updateCount = 0;
-          updated() {
-            this.updateCount++;
-          }
-        }
-        customElements.define(generateElementName(), E);
-        const el = new E();
-        container.appendChild(el);
-        el.forceUpdate();
-        assert.equal(el.updateCount, 1);
-        el.forceUpdate();
-        assert.equal(el.updateCount, 2);
-        el.requestUpdate();
-        el.forceUpdate();
-        assert.equal(el.updateCount, 3);
-        el.forceUpdate();
-        await el.updateComplete;
-        assert.equal(el.updateCount, 4);
-      });
-
   test('`shouldUpdate` controls update', async () => {
     class E extends UpdatingElement {
       needsUpdate = true;
@@ -1932,6 +1910,73 @@ suite('UpdatingElement', () => {
     assert.equal(el.foo, 10);
     el.foo = -5;
     assert.equal(el.foo, 0);
+  });
+
+  test.only('can make properties sync by createProperty', async () => {
+
+    interface MyPropertyDeclaration extends PropertyDeclaration {
+      sync: boolean
+    }
+
+    @customElement(generateElementName())
+    class E extends UpdatingElement {
+
+      static createProperty(
+        name: PropertyKey,
+        options: MyPropertyDeclaration) {
+        this.setOptionsForProperty(name, options);
+        if (options.noAccessor || this.prototype.hasOwnProperty(name)) {
+          return;
+        }
+        const key = typeof name === 'symbol' ? Symbol() : `__${name}`;
+        Object.defineProperty(this.prototype, name, {
+          // tslint:disable-next-line:no-any no symbol in index
+          get(): any {
+            return (this as {[key: string]: unknown})[key as string];
+          },
+          set(this: E, value: unknown) {
+            const oldValue =
+                (this as {} as {[key: string]: unknown})[name as string];
+            (this as {} as {[key: string]: unknown})[key as string] = value;
+            (this as unknown as E).requestUpdateInternal(name, oldValue);
+            if (options.sync && this.hasUpdated) {
+              (this as unknown as E).performUpdate();
+            }
+          },
+          configurable: true,
+          enumerable: true
+        });
+      }
+
+      updateCount = 0;
+
+      updated() {
+        this.updateCount++;
+      }
+
+      @property({type: Number, sync: true, reflect: true})
+      foo = 5;
+
+      @property({})
+      bar = 'bar';
+
+    }
+
+    const el = new E();
+    container.appendChild(el);
+    await el.updateComplete;
+    el.foo = 10;
+    assert.equal(el.updateCount, 2);
+    el.foo = 1;
+    el.foo = 2;
+    assert.equal(el.updateCount, 4);
+    el.foo = 3;
+    await el.updateComplete;
+    assert.equal(el.updateCount, 5);
+    el.bar = 'bar2';
+    assert.equal(el.updateCount, 5);
+    await el.updateComplete;
+    assert.equal(el.updateCount, 6);
   });
 
   test('attribute-based property storage', async () => {
