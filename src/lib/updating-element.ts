@@ -51,7 +51,7 @@ export interface ComplexAttributeConverter<Type = unknown, TypeHint = unknown> {
 }
 
 type AttributeConverter<Type = unknown, TypeHint = unknown> =
-    ComplexAttributeConverter<Type>|((value: string, type?: TypeHint) => Type);
+    ComplexAttributeConverter<Type>|((value: string|null, type?: TypeHint) => Type);
 
 /**
  * Defines options for a property accessor.
@@ -115,7 +115,7 @@ export interface PropertyDeclaration<Type = unknown, TypeHint = unknown> {
 
   // Allows extension while preserving the ability to use the
   // @property decorator.
-  [index: string]: any;
+  [index: string]: unknown;
 }
 
 /**
@@ -172,6 +172,9 @@ export const defaultConverter: ComplexAttributeConverter = {
 export interface HasChanged {
   (value: unknown, old: unknown): boolean;
 }
+
+export type PropertyDescriptorFactory = (options: PropertyDeclaration,
+  key: string|symbol,descriptor: PropertyDescriptor) => PropertyDescriptor|null|void;
 
 /**
  * Change function that returns true if `value` is different from `oldValue`.
@@ -293,11 +296,13 @@ export abstract class UpdatingElement extends HTMLElement {
    */
   static createProperty(
       name: PropertyKey,
-      options: PropertyDeclaration = defaultPropertyDeclaration) {
+      options: PropertyDeclaration = defaultPropertyDeclaration,
+      descriptorFactory?: PropertyDescriptorFactory) {
     // Note, since this can be called by the `@property` decorator which
     // is called before `finalize`, we ensure storage exists for property
     // metadata.
-    this.setOptionsForProperty(name, options);
+    this._ensureClassProperties();
+    this._classProperties!.set(name, options);
     // Do not generate an accessor if the prototype already has one, since
     // it would be lost otherwise and that would never be the user's intention;
     // Instead, we expect users to call `requestUpdate` themselves from
@@ -307,7 +312,7 @@ export abstract class UpdatingElement extends HTMLElement {
       return;
     }
     const key = typeof name === 'symbol' ? Symbol() : `__${name}`;
-    Object.defineProperty(this.prototype, name, {
+    let descriptor: PropertyDescriptor|null|void = {
       // tslint:disable-next-line:no-any no symbol in index
       get(): any {
         return (this as {[key: string]: unknown})[key as string];
@@ -320,18 +325,18 @@ export abstract class UpdatingElement extends HTMLElement {
       },
       configurable: true,
       enumerable: true
-    });
+    };
+    if (typeof descriptorFactory === 'function') {
+      descriptor = descriptorFactory(options, key, descriptor);
+    }
+    if (descriptor != null) {
+      Object.defineProperty(this.prototype, name, descriptor);
+    }
   }
 
-  static setOptionsForProperty(name: PropertyKey,
-    options: PropertyDeclaration = defaultPropertyDeclaration) {
-    this._ensureClassProperties();
-    this._classProperties!.set(name, options);
-  }
-
-  static getOptionsForProperty(name: PropertyKey) {
-    this._ensureClassProperties();
-    return this._classProperties!.get(name);
+  protected static getDeclarationForProperty(name: PropertyKey) {
+    return this._classProperties && this._classProperties.get(name) ||
+      defaultPropertyDeclaration;
   }
 
   /**
@@ -406,9 +411,10 @@ export abstract class UpdatingElement extends HTMLElement {
   private static _propertyValueFromAttribute(
       value: string|null, options: PropertyDeclaration) {
     const type = options.type;
-    const converter = options.converter || defaultConverter;
+    const converter = options.converter ||
+      defaultPropertyDeclaration.converter;
     const fromAttribute =
-        (typeof converter === 'function' ? converter : converter.fromAttribute);
+        (typeof converter === 'function' ? converter : converter!.fromAttribute);
     return fromAttribute ? fromAttribute(value, type) : value;
   }
 
@@ -426,11 +432,14 @@ export abstract class UpdatingElement extends HTMLElement {
       return;
     }
     const type = options.type;
-    const converter = options.converter;
-    const toAttribute =
-        converter && (converter as ComplexAttributeConverter).toAttribute ||
-        defaultConverter.toAttribute;
-    return toAttribute!(value, type);
+    let converter = options.converter;
+    let toAttribute =
+        converter && (converter as ComplexAttributeConverter).toAttribute;
+    if (!toAttribute) {
+      converter = defaultPropertyDeclaration.converter;
+      toAttribute = converter && (converter as ComplexAttributeConverter).toAttribute;
+    }
+    return toAttribute ? toAttribute(value, type) : value;
   }
 
   private _updateState: UpdateState = 0;
@@ -577,8 +586,7 @@ export abstract class UpdatingElement extends HTMLElement {
     const ctor = (this.constructor as typeof UpdatingElement);
     const propName = ctor._attributeToPropertyMap.get(name);
     if (propName !== undefined) {
-      const options =
-          ctor._classProperties!.get(propName) || defaultPropertyDeclaration;
+      const options = ctor.getDeclarationForProperty(propName);
       // mark state reflecting
       this._updateState = this._updateState | STATE_IS_REFLECTING_TO_PROPERTY;
       this[propName as keyof this] =
@@ -599,8 +607,7 @@ export abstract class UpdatingElement extends HTMLElement {
     // If we have a property key, perform property update steps.
     if (name !== undefined) {
       const ctor = this.constructor as typeof UpdatingElement;
-      const options =
-          ctor._classProperties!.get(name) || defaultPropertyDeclaration;
+      const options = ctor.getDeclarationForProperty(name);
       if (ctor._valueHasChanged(
               this[name as keyof this], oldValue, options.hasChanged)) {
         if (!this._changedProperties.has(name)) {

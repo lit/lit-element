@@ -13,7 +13,7 @@
  */
 
 import {property, customElement} from '../../lib/decorators.js';
-import {ComplexAttributeConverter, PropertyDeclarations, PropertyValues, UpdatingElement, PropertyDeclaration, defaultConverter} from '../../lib/updating-element.js';
+import {ComplexAttributeConverter, PropertyDeclarations, PropertyValues, UpdatingElement, PropertyDeclaration, PropertyDescriptorFactory, defaultConverter} from '../../lib/updating-element.js';
 import {generateElementName} from '../test-helpers.js';
 
 // tslint:disable:no-any ok in tests
@@ -1834,9 +1834,10 @@ suite('UpdatingElement', () => {
 
           static createProperty(
             name: PropertyKey,
-            options: PropertyDeclaration) {
+            options: PropertyDeclaration, descriptorFactory: PropertyDescriptorFactory) {
+            // Always mix into defaults to preserve custom converter.
             options = Object.assign(Object.create(myPropertyDeclaration), options);
-            super.createProperty(name, options);
+            super.createProperty(name, options, descriptorFactory);
           }
 
           @property()
@@ -1872,28 +1873,20 @@ suite('UpdatingElement', () => {
       static createProperty(
         name: PropertyKey,
         options: MyPropertyDeclaration) {
-        this.setOptionsForProperty(name, options);
-        if (options.noAccessor || this.prototype.hasOwnProperty(name)) {
-          return;
-        }
-        const key = typeof name === 'symbol' ? Symbol() : `__${name}`;
-        Object.defineProperty(this.prototype, name, {
-          // tslint:disable-next-line:no-any no symbol in index
-          get(): any {
-            return (this as {[key: string]: unknown})[key as string];
-          },
-          set(this: E, value: unknown) {
-            const oldValue =
-                (this as {} as {[key: string]: unknown})[name as string];
-            if (options.validator) {
-              value = options.validator(value);
-            }
-            (this as {} as {[key: string]: unknown})[key as string] = value;
-            (this as unknown as E).requestUpdateInternal(name, oldValue);
-          },
-          configurable: true,
-          enumerable: true
-        });
+          const descriptorFactory = (options: MyPropertyDeclaration,
+            _key: string|symbol, descriptor: PropertyDescriptor) => ({
+            // tslint:disable-next-line:no-any no symbol in index
+            get: descriptor.get,
+            set(this: E, value: unknown) {
+              if (options.validator) {
+                value = options.validator(value);
+              }
+              descriptor.set?.call(this, value);
+            },
+            configurable: descriptor.configurable,
+            enumerable: descriptor.enumerable
+          });
+          super.createProperty(name, options, descriptorFactory);
       }
 
       @property({type: Number, validator: (value: number) => Math.min(10, Math.max(value, 0))})
