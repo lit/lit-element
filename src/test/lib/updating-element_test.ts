@@ -1865,6 +1865,7 @@ suite('UpdatingElement', () => {
 
     interface MyPropertyDeclaration<TypeHint = unknown> extends PropertyDeclaration {
       validator?: (value: any) => TypeHint;
+      observer?: (oldValue: TypeHint) => void;
     }
 
     @customElement(generateElementName())
@@ -1889,11 +1890,29 @@ suite('UpdatingElement', () => {
           super.createProperty(name, options, descriptorFactory);
       }
 
+      updated(changedProperties: PropertyValues) {
+        super.updated(changedProperties);
+        changedProperties.forEach((value: unknown, key: PropertyKey) => {
+          const options = (this.constructor as typeof UpdatingElement)
+            .getDeclarationForProperty(key) as MyPropertyDeclaration;
+          const observer = options.observer;
+          if (typeof observer === 'function') {
+            observer.call(this, value);
+          }
+        });
+      }
+
       @property({type: Number, validator: (value: number) => Math.min(10, Math.max(value, 0))})
       foo = 5;
 
       @property({})
       bar = 'bar';
+
+      // tslint:disable-next-line:no-any
+      _observedZot?: any;
+
+      @property({observer: function(this: E, oldValue: string) { this._observedZot = {value: this.zot, oldValue}; } })
+      zot = '';
     }
 
     const el = new E();
@@ -1901,8 +1920,14 @@ suite('UpdatingElement', () => {
     await el.updateComplete;
     el.foo = 20;
     assert.equal(el.foo, 10);
+    assert.deepEqual(el._observedZot, {value: '', oldValue: undefined});
     el.foo = -5;
     assert.equal(el.foo, 0);
+    el.bar = 'bar2';
+    assert.equal(el.bar, 'bar2');
+    el.zot = 'zot';
+    await el.updateComplete;
+    assert.deepEqual(el._observedZot, {value: 'zot', oldValue: ''});
   });
 
   test('attribute-based property storage', async () => {
