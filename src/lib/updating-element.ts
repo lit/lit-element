@@ -174,7 +174,7 @@ export interface HasChanged {
 }
 
 export type PropertyDescriptorFactory = (options: PropertyDeclaration,
-  key: string|symbol,descriptor: PropertyDescriptor) => PropertyDescriptor|null|void;
+  descriptor: PropertyDescriptor, key: string|symbol) => PropertyDescriptor|null|void;
 
 /**
  * Change function that returns true if `value` is different from `oldValue`.
@@ -327,7 +327,7 @@ export abstract class UpdatingElement extends HTMLElement {
       enumerable: true
     };
     if (typeof descriptorFactory === 'function') {
-      descriptor = descriptorFactory(options, key, descriptor);
+      descriptor = descriptorFactory(options, descriptor, key);
     }
     if (descriptor != null) {
       Object.defineProperty(this.prototype, name, descriptor);

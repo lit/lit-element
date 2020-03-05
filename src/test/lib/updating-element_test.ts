@@ -1874,7 +1874,7 @@ suite('UpdatingElement', () => {
         name: PropertyKey,
         options: MyPropertyDeclaration) {
           const descriptorFactory = (options: MyPropertyDeclaration,
-            _key: string|symbol, descriptor: PropertyDescriptor) => ({
+            descriptor: PropertyDescriptor) => ({
             // tslint:disable-next-line:no-any no symbol in index
             get: descriptor.get,
             set(this: E, value: unknown) {
