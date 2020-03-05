@@ -1919,7 +1919,7 @@ suite('UpdatingElement', () => {
         options: PropertyDeclaration,
         descriptorFactory: PropertyDescriptorFactory) {
 
-        descriptorFactory = (options: PropertyDeclaration, _key: symbol|string, descriptor: PropertyDescriptor) => {
+        descriptorFactory = (options: PropertyDeclaration, descriptor: PropertyDescriptor) => {
           const setter = descriptor.set!;
           return Object.assign(descriptor, {
             set(this: E, value: unknown) {
