@@ -1905,7 +1905,7 @@ suite('UpdatingElement', () => {
     assert.equal(el.foo, 0);
   });
 
-  test.only('can make properties sync by createProperty', async () => {
+  test('can make properties sync by createProperty', async () => {
 
     interface MyPropertyDeclaration extends PropertyDeclaration {
       sync: boolean
@@ -1916,29 +1916,21 @@ suite('UpdatingElement', () => {
 
       static createProperty(
         name: PropertyKey,
-        options: MyPropertyDeclaration) {
-        this.setOptionsForProperty(name, options);
-        if (options.noAccessor || this.prototype.hasOwnProperty(name)) {
-          return;
-        }
-        const key = typeof name === 'symbol' ? Symbol() : `__${name}`;
-        Object.defineProperty(this.prototype, name, {
-          // tslint:disable-next-line:no-any no symbol in index
-          get(): any {
-            return (this as {[key: string]: unknown})[key as string];
-          },
-          set(this: E, value: unknown) {
-            const oldValue =
-                (this as {} as {[key: string]: unknown})[name as string];
-            (this as {} as {[key: string]: unknown})[key as string] = value;
-            (this as unknown as E).requestUpdateInternal(name, oldValue);
-            if (options.sync && this.hasUpdated) {
-              (this as unknown as E).performUpdate();
+        options: PropertyDeclaration,
+        descriptorFactory: PropertyDescriptorFactory) {
+
+        descriptorFactory = (options: PropertyDeclaration, _key: symbol|string, descriptor: PropertyDescriptor) => {
+          const setter = descriptor.set!;
+          return Object.assign(descriptor, {
+            set(this: E, value: unknown) {
+              setter.call(this, value);
+              if ((options as MyPropertyDeclaration).sync && this.hasUpdated) {
+                (this as unknown as E).performUpdate();
+              }
             }
-          },
-          configurable: true,
-          enumerable: true
-        });
+          });
+        };
+        super.createProperty(name, options, descriptorFactory);
       }
 
       updateCount = 0;
