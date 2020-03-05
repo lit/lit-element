@@ -1844,7 +1844,7 @@ suite('UpdatingElement', () => {
           foo = 5;
 
           @property({type: String})
-          bar? = 'bar';
+          bar?: string = 'bar';
         }
 
         const el = new E();
