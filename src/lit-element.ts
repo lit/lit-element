@@ -35,6 +35,12 @@ declare global {
 
 export interface CSSResultArray extends Array<CSSResult|CSSResultArray> {}
 
+/**
+ * Sentinal value used to avoid calling lit-html's render function when
+ * subclasses do not implement `render`
+ */
+const renderNotImplemented = {};
+
 export class LitElement extends UpdatingElement {
   /**
    * Ensure this class is marked as `finalized` as an optimization ensuring
@@ -204,11 +210,14 @@ export class LitElement extends UpdatingElement {
     // before that.
     const templateResult = this.render();
     super.update(changedProperties);
-    (this.constructor as typeof LitElement)
-        .render(
-            templateResult,
-            this.renderRoot,
-            {scopeName: this.localName, eventContext: this});
+    // If render is not implemented by the component, don't call lit-html render
+    if (templateResult !== renderNotImplemented) {
+      (this.constructor as typeof LitElement)
+          .render(
+              templateResult,
+              this.renderRoot,
+              {scopeName: this.localName, eventContext: this});
+    }
     // When native Shadow DOM is used but adoptedStyles are not supported,
     // insert styling after rendering to ensure adoptedStyles have highest
     // priority.
@@ -229,6 +238,6 @@ export class LitElement extends UpdatingElement {
    * update.
    */
   protected render(): unknown {
-    return undefined;
+    return renderNotImplemented;
   }
 }

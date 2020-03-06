@@ -195,39 +195,42 @@ suite('LitElement', () => {
     assert.equal(window['litElementVersions'].length, 1);
   });
 
-  test('event fired during rendering element can trigger an update', async () => {
-    class E extends LitElement {
-      connectedCallback() {
-        super.connectedCallback();
-        this.dispatchEvent(new CustomEvent('foo', {bubbles: true, detail: 'foo'}));
-      }
-    }
-    customElements.define('x-child-61012', E);
+  test(
+      'event fired during rendering element can trigger an update',
+      async () => {
+        class E extends LitElement {
+          connectedCallback() {
+            super.connectedCallback();
+            this.dispatchEvent(
+                new CustomEvent('foo', {bubbles: true, detail: 'foo'}));
+          }
+        }
+        customElements.define('x-child-61012', E);
 
-    class F extends LitElement {
+        class F extends LitElement {
+          static get properties() {
+            return {foo: {type: String}};
+          }
 
-      static get properties() {
-        return {foo: {type: String}};
-      }
+          foo = '';
 
-      foo = '';
+          render() {
+            return html`<x-child-61012 @foo=${
+                this._handleFoo}></x-child-61012><span>${this.foo}</span>`;
+          }
 
-      render() {
-        return html`<x-child-61012 @foo=${this._handleFoo}></x-child-61012><span>${this.foo}</span>`;
-      }
+          _handleFoo(e: CustomEvent) {
+            this.foo = e.detail;
+          }
+        }
 
-      _handleFoo(e: CustomEvent) {
-        this.foo = e.detail;
-      }
-
-    }
-
-    customElements.define(generateElementName(), F);
-    const el = new F();
-    container.appendChild(el);
-    while (!(await el.updateComplete)) {}
-    assert.equal(el.shadowRoot!.textContent, 'foo');
-  });
+        customElements.define(generateElementName(), F);
+        const el = new F();
+        container.appendChild(el);
+        while (!(await el.updateComplete)) {
+        }
+        assert.equal(el.shadowRoot!.textContent, 'foo');
+      });
 
   test(
       'exceptions in `render` throw but do not prevent further updates',
@@ -265,5 +268,33 @@ suite('LitElement', () => {
         await a.updateComplete;
         assert.equal(a.foo, 20);
         assert.equal(a.shadowRoot!.textContent, '20');
+      });
+
+  test(
+      'if `render` is unimplemented, do not overwrite renderRoot', async () => {
+        class A extends LitElement {
+          addedDom: HTMLElement|null = null;
+          createRenderRoot() {
+            return this;
+          }
+          connectedCallback() {
+            super.connectedCallback();
+            this.addedDom = this.renderRoot.querySelector('div');
+          }
+        }
+        customElements.define(generateElementName(), A);
+        const a = new A();
+        const testDom = document.createElement('div');
+        a.appendChild(testDom);
+        container.appendChild(a);
+        await a.updateComplete;
+        assert.equal(
+            a.addedDom,
+            testDom,
+            'testDom should be found in connectedCallback');
+        assert.equal(
+            testDom.parentNode,
+            a,
+            'testDom should be a child of the component');
       });
 });
