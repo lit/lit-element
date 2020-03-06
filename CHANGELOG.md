@@ -32,6 +32,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 `LitElement` renders when updates are triggered as a result of rendering ([#549](https://github.com/Polymer/lit-element/issues/549)).
 * Properties annotated with the `eventOptions` decorator will now survive property renaming optimizations when used with tsickle and Closure JS Compiler.
 * Moved style gathering from `finalize` to `initialize` to be more lazy, and create stylesheets on the first instance initializing [#866](https://github.com/Polymer/lit-element/pull/866).
+* Fixed behavior change for components that do not implement `render()` introduced in ([#712](https://github.com/Polymer/lit-element/pull/712)) ([#917](https://github.com/Polymer/lit-element/pull/917))
 
 ## [2.2.1] - 2019-07-23
 ### Changed
