@@ -649,7 +649,7 @@ suite('Static get styles', () => {
 
   test('can extend and augment `styles`', async () => {
     const base = generateElementName();
-    customElements.define(base, class extends LitElement {
+    class BaseClass extends LitElement {
       static get styles() {
         return css`div {
           border: 2px solid blue;
@@ -660,10 +660,10 @@ suite('Static get styles', () => {
         return htmlWithStyles`
         <div>Testing1</div>`;
       }
-    });
-
+    }
+    customElements.define(base, BaseClass);
     const sub = generateElementName();
-    customElements.define(sub, class extends customElements.get(base) {
+    customElements.define(sub, class extends BaseClass {
       static get styles() {
         return [
           super.styles,
@@ -671,7 +671,7 @@ suite('Static get styles', () => {
             display: block;
             border: 3px solid blue;
           }`
-        ];
+        ] as any;
       }
 
       render() {
@@ -682,7 +682,7 @@ suite('Static get styles', () => {
     });
 
     const subsub = generateElementName();
-    customElements.define(subsub, class extends customElements.get(sub) {
+    customElements.define(subsub, class extends BaseClass {
       static get styles() {
         return [
           super.styles,
@@ -690,7 +690,7 @@ suite('Static get styles', () => {
             display: block;
             border: 4px solid blue;
           }`
-        ];
+        ] as any;
       }
 
       render() {
@@ -719,7 +719,7 @@ suite('Static get styles', () => {
 
   test('can extend and override `styles`', async () => {
     const base = generateElementName();
-    customElements.define(base, class extends LitElement {
+    class BaseClass extends LitElement {
       static get styles() {
         return css`div {
           border: 2px solid blue;
@@ -730,10 +730,11 @@ suite('Static get styles', () => {
         return htmlWithStyles`
         <div>Testing1</div>`;
       }
-    });
+    }
+    customElements.define(base, BaseClass);
 
     const sub = generateElementName();
-    customElements.define(sub, class extends customElements.get(base) {
+    customElements.define(sub, class extends BaseClass {
       static get styles() {
         return css`div {
           border: 3px solid blue;
@@ -742,7 +743,7 @@ suite('Static get styles', () => {
     });
 
     const subsub = generateElementName();
-    customElements.define(subsub, class extends customElements.get(sub) {
+    customElements.define(subsub, class extends BaseClass {
       static get styles() {
         return css`div {
           border: 4px solid blue;
@@ -768,12 +769,13 @@ suite('Static get styles', () => {
 
   test('elements should inherit `styles` by default', async () => {
     const base = generateElementName();
-    customElements.define(base, class extends LitElement {
+    class BaseClass extends LitElement {
       static styles = css`div {border: 4px solid black;}`;
-    });
+    }
+    customElements.define(base, BaseClass);
 
     const sub = generateElementName();
-    customElements.define(sub, class extends customElements.get(base) {
+    customElements.define(sub, class extends BaseClass {
       render() {
         return htmlWithStyles`<div></div>`;
       }
