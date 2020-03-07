@@ -277,10 +277,6 @@ suite('LitElement', () => {
           createRenderRoot() {
             return this;
           }
-          connectedCallback() {
-            super.connectedCallback();
-            this.addedDom = this.renderRoot.querySelector('div');
-          }
         }
         customElements.define(generateElementName(), A);
         const a = new A();
@@ -288,10 +284,6 @@ suite('LitElement', () => {
         a.appendChild(testDom);
         container.appendChild(a);
         await a.updateComplete;
-        assert.equal(
-            a.addedDom,
-            testDom,
-            'testDom should be found in connectedCallback');
         assert.equal(
             testDom.parentNode,
             a,
