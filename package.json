@@ -63,7 +63,7 @@
   },
   "typings": "lit-element.d.ts",
   "dependencies": {
-    "lit-html": "^1.1.1"
+    "lit-html": "file://../lit-html"
   },
   "publishConfig": {
     "access": "public"
