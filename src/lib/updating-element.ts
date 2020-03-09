@@ -325,7 +325,7 @@ export abstract class UpdatingElement extends HTMLElement {
         const oldValue =
             (this as {} as {[key: string]: unknown})[name as string];
         (this as {} as {[key: string]: unknown})[key as string] = value;
-        (this as unknown as UpdatingElement).requestUpdateInternal(name, oldValue);
+        (this as unknown as UpdatingElement)._requestUpdate(name, oldValue);
       },
       configurable: true,
       enumerable: true
@@ -473,7 +473,7 @@ export abstract class UpdatingElement extends HTMLElement {
     this._saveInstanceProperties();
     // ensures first update will be caught by an early access of
     // `updateComplete`
-    this.requestUpdateInternal();
+    this._requestUpdate();
   }
 
   /**
@@ -596,11 +596,11 @@ export abstract class UpdatingElement extends HTMLElement {
   }
 
   /**
-   * This protected version of `requestUpdate` does not access or return the
+   * This private version of `requestUpdate` does not access or return the
    * `updateComplete` promise. This promise can be overridden and is therefore
    * not free to access.
    */
-  protected requestUpdateInternal(name?: PropertyKey, oldValue?: unknown) {
+  private _requestUpdate(name?: PropertyKey, oldValue?: unknown) {
     let shouldRequestUpdate = true;
     // If we have a property key, perform property update steps.
     if (name !== undefined) {
@@ -646,7 +646,7 @@ export abstract class UpdatingElement extends HTMLElement {
    * @returns {Promise} A Promise that is resolved when the update completes.
    */
   requestUpdate(name?: PropertyKey, oldValue?: unknown) {
-    this.requestUpdateInternal(name, oldValue);
+    this._requestUpdate(name, oldValue);
     return this.updateComplete;
   }
 

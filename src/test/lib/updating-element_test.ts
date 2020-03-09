@@ -1874,14 +1874,17 @@ suite('UpdatingElement', () => {
       static createPropertyDescriptor(name: PropertyKey, key: string|symbol, options: MyPropertyDeclaration) {
         const defaultDescriptor = super.createPropertyDescriptor(name, key, options);
         return {
-          // tslint:disable-next-line:no-any no symbol in index
           get: defaultDescriptor!.get,
           set(this: E, value: unknown) {
+            const oldValue =
+              (this as unknown as {[key: string]: unknown})[name as string];
             if (options.validator) {
               value = options.validator(value);
             }
-            defaultDescriptor.set?.call(this, value);
+            (this as unknown as {[key: string]: unknown})[key as string] = value;
+            (this as unknown as UpdatingElement).requestUpdate(name, oldValue);
           },
+
           configurable: defaultDescriptor.configurable,
           enumerable: defaultDescriptor.enumerable
         };
