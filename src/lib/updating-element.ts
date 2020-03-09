@@ -173,9 +173,6 @@ export interface HasChanged {
   (value: unknown, old: unknown): boolean;
 }
 
-export type PropertyDescriptorFactory = (options: PropertyDeclaration,
-  descriptor: PropertyDescriptor, key: string|symbol) => PropertyDescriptor|null|void;
-
 /**
  * Change function that returns true if `value` is different from `oldValue`.
  * This method is used as the default for a property's `hasChanged` function.
@@ -296,8 +293,7 @@ export abstract class UpdatingElement extends HTMLElement {
    */
   static createProperty(
       name: PropertyKey,
-      options: PropertyDeclaration = defaultPropertyDeclaration,
-      descriptorFactory?: PropertyDescriptorFactory) {
+      options: PropertyDeclaration = defaultPropertyDeclaration) {
     // Note, since this can be called by the `@property` decorator which
     // is called before `finalize`, we ensure storage exists for property
     // metadata.
@@ -312,7 +308,15 @@ export abstract class UpdatingElement extends HTMLElement {
       return;
     }
     const key = typeof name === 'symbol' ? Symbol() : `__${name}`;
-    let descriptor: PropertyDescriptor|null|void = {
+    const descriptor = this.createPropertyDescriptor(name, key, options);
+    if (descriptor !== undefined) {
+      Object.defineProperty(this.prototype, name, descriptor);
+    }
+  }
+
+  protected static createPropertyDescriptor(name: PropertyKey,
+    key: string|symbol, _options: PropertyDeclaration,) {
+    return {
       // tslint:disable-next-line:no-any no symbol in index
       get(): any {
         return (this as {[key: string]: unknown})[key as string];
@@ -321,17 +325,11 @@ export abstract class UpdatingElement extends HTMLElement {
         const oldValue =
             (this as {} as {[key: string]: unknown})[name as string];
         (this as {} as {[key: string]: unknown})[key as string] = value;
-        (this as unknown as UpdatingElement).requestUpdateInternal(name, oldValue);
+        (this as unknown as UpdatingElement)._requestUpdate(name, oldValue);
       },
       configurable: true,
       enumerable: true
     };
-    if (typeof descriptorFactory === 'function') {
-      descriptor = descriptorFactory(options, descriptor, key);
-    }
-    if (descriptor != null) {
-      Object.defineProperty(this.prototype, name, descriptor);
-    }
   }
 
   protected static getDeclarationForProperty(name: PropertyKey) {
@@ -475,7 +473,7 @@ export abstract class UpdatingElement extends HTMLElement {
     this._saveInstanceProperties();
     // ensures first update will be caught by an early access of
     // `updateComplete`
-    this.requestUpdateInternal();
+    this._requestUpdate();
   }
 
   /**
@@ -598,11 +596,11 @@ export abstract class UpdatingElement extends HTMLElement {
   }
 
   /**
-   * This protected version of `requestUpdate` does not access or return the
+   * This private version of `requestUpdate` does not access or return the
    * `updateComplete` promise. This promise can be overridden and is therefore
    * not free to access.
    */
-  protected requestUpdateInternal(name?: PropertyKey, oldValue?: unknown) {
+  private _requestUpdate(name?: PropertyKey, oldValue?: unknown) {
     let shouldRequestUpdate = true;
     // If we have a property key, perform property update steps.
     if (name !== undefined) {
@@ -648,7 +646,7 @@ export abstract class UpdatingElement extends HTMLElement {
    * @returns {Promise} A Promise that is resolved when the update completes.
    */
   requestUpdate(name?: PropertyKey, oldValue?: unknown) {
-    this.requestUpdateInternal(name, oldValue);
+    this._requestUpdate(name, oldValue);
     return this.updateComplete;
   }
 
