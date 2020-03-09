@@ -174,7 +174,7 @@ export interface HasChanged {
 }
 
 export type PropertyDescriptorFactory = (options: PropertyDeclaration,
-  descriptor: PropertyDescriptor, key: string|symbol) => PropertyDescriptor|null|void;
+  descriptor: PropertyDescriptor, key: string|symbol) => PropertyDescriptor|undefined;
 
 /**
  * Change function that returns true if `value` is different from `oldValue`.
@@ -312,7 +312,7 @@ export abstract class UpdatingElement extends HTMLElement {
       return;
     }
     const key = typeof name === 'symbol' ? Symbol() : `__${name}`;
-    let descriptor: PropertyDescriptor|null|void = {
+    let descriptor: PropertyDescriptor|undefined = {
       // tslint:disable-next-line:no-any no symbol in index
       get(): any {
         return (this as {[key: string]: unknown})[key as string];
@@ -329,7 +329,7 @@ export abstract class UpdatingElement extends HTMLElement {
     if (typeof descriptorFactory === 'function') {
       descriptor = descriptorFactory(options, descriptor, key);
     }
-    if (descriptor != null) {
+    if (descriptor !== undefined) {
       Object.defineProperty(this.prototype, name, descriptor);
     }
   }
