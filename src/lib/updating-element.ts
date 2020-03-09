@@ -173,9 +173,6 @@ export interface HasChanged {
   (value: unknown, old: unknown): boolean;
 }
 
-export type PropertyDescriptorFactory = (options: PropertyDeclaration,
-  descriptor: PropertyDescriptor, key: string|symbol) => PropertyDescriptor|undefined;
-
 /**
  * Change function that returns true if `value` is different from `oldValue`.
  * This method is used as the default for a property's `hasChanged` function.
@@ -296,8 +293,7 @@ export abstract class UpdatingElement extends HTMLElement {
    */
   static createProperty(
       name: PropertyKey,
-      options: PropertyDeclaration = defaultPropertyDeclaration,
-      descriptorFactory?: PropertyDescriptorFactory) {
+      options: PropertyDeclaration = defaultPropertyDeclaration) {
     // Note, since this can be called by the `@property` decorator which
     // is called before `finalize`, we ensure storage exists for property
     // metadata.
@@ -312,7 +308,15 @@ export abstract class UpdatingElement extends HTMLElement {
       return;
     }
     const key = typeof name === 'symbol' ? Symbol() : `__${name}`;
-    let descriptor: PropertyDescriptor|undefined = {
+    const descriptor = this.createPropertyDescriptor(name, key, options);
+    if (descriptor !== undefined) {
+      Object.defineProperty(this.prototype, name, descriptor);
+    }
+  }
+
+  protected static createPropertyDescriptor(name: PropertyKey,
+    key: string|symbol, _options: PropertyDeclaration,) {
+    return {
       // tslint:disable-next-line:no-any no symbol in index
       get(): any {
         return (this as {[key: string]: unknown})[key as string];
@@ -326,12 +330,6 @@ export abstract class UpdatingElement extends HTMLElement {
       configurable: true,
       enumerable: true
     };
-    if (typeof descriptorFactory === 'function') {
-      descriptor = descriptorFactory(options, descriptor, key);
-    }
-    if (descriptor !== undefined) {
-      Object.defineProperty(this.prototype, name, descriptor);
-    }
   }
 
   protected static getDeclarationForProperty(name: PropertyKey) {

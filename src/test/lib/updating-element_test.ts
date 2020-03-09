@@ -1,4 +1,4 @@
-/**
+ /**
  * @license
  * Copyright (c) 2018 The Polymer Project Authors. All rights reserved.
  * This code may only be used under the BSD style license found at
@@ -13,7 +13,7 @@
  */
 
 import {property, customElement} from '../../lib/decorators.js';
-import {ComplexAttributeConverter, PropertyDeclarations, PropertyValues, UpdatingElement, PropertyDeclaration, PropertyDescriptorFactory, defaultConverter} from '../../lib/updating-element.js';
+import {ComplexAttributeConverter, PropertyDeclarations, PropertyValues, UpdatingElement, PropertyDeclaration, defaultConverter} from '../../lib/updating-element.js';
 import {generateElementName} from '../test-helpers.js';
 
 // tslint:disable:no-any ok in tests
@@ -1802,7 +1802,7 @@ suite('UpdatingElement', () => {
         assert.equal(sub.getAttribute('foo'), '5');
       });
 
-    test('can provide a default property declaration by implementing createProperty', async () => {
+    test('can provide a default property declaration', async () => {
 
         const SpecialNumber = {};
 
@@ -1834,10 +1834,10 @@ suite('UpdatingElement', () => {
 
           static createProperty(
             name: PropertyKey,
-            options: PropertyDeclaration, descriptorFactory: PropertyDescriptorFactory) {
+            options: PropertyDeclaration) {
             // Always mix into defaults to preserve custom converter.
             options = Object.assign(Object.create(myPropertyDeclaration), options);
-            super.createProperty(name, options, descriptorFactory);
+            super.createProperty(name, options);
           }
 
           @property()
@@ -1861,7 +1861,7 @@ suite('UpdatingElement', () => {
         assert.isFalse(el.hasAttribute('bar'));
       });
 
-  test('can customize property options and accessor creation by implementing createProperty', async () => {
+  test('can customize property options and accessor creation', async () => {
 
     interface MyPropertyDeclaration<TypeHint = unknown> extends PropertyDeclaration {
       validator?: (value: any) => TypeHint;
@@ -1871,23 +1871,20 @@ suite('UpdatingElement', () => {
     @customElement(generateElementName())
     class E extends UpdatingElement {
 
-      static createProperty(
-        name: PropertyKey,
-        options: MyPropertyDeclaration) {
-          const descriptorFactory = (options: MyPropertyDeclaration,
-            descriptor: PropertyDescriptor) => ({
-            // tslint:disable-next-line:no-any no symbol in index
-            get: descriptor.get,
-            set(this: E, value: unknown) {
-              if (options.validator) {
-                value = options.validator(value);
-              }
-              descriptor.set?.call(this, value);
-            },
-            configurable: descriptor.configurable,
-            enumerable: descriptor.enumerable
-          });
-          super.createProperty(name, options, descriptorFactory);
+      static createPropertyDescriptor(name: PropertyKey, key: string|symbol, options: MyPropertyDeclaration) {
+        const defaultDescriptor = super.createPropertyDescriptor(name, key, options);
+        return {
+          // tslint:disable-next-line:no-any no symbol in index
+          get: defaultDescriptor!.get,
+          set(this: E, value: unknown) {
+            if (options.validator) {
+              value = options.validator(value);
+            }
+            defaultDescriptor.set?.call(this, value);
+          },
+          configurable: defaultDescriptor.configurable,
+          enumerable: defaultDescriptor.enumerable
+        };
       }
 
       updated(changedProperties: PropertyValues) {

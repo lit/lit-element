@@ -19,7 +19,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## Unreleased
 
 ### Changed
-* The static `createProperty` method has a new argument to allow easier customization of property accessors. A `descriptorFactory(options, descriptor, key)` can be optionally passed and should return a `PropertyDescriptor` to install on the property. If no descriptor is returned, a property accessors will not be created. ([#911](https://github.com/Polymer/lit-element/issues/911))
+* Added a static `createPropertyDescriptor` method to allow easier customization of property accessors. This method should return a a `PropertyDescriptor` to install on the property. If no descriptor is returned, a property accessor is not be created. ([#911](https://github.com/Polymer/lit-element/issues/911))
 * The value returned by `render` is always rendered, even if it isn't a `TemplateResult`. ([#712](https://github.com/Polymer/lit-element/issues/712))
 
 ### Added
