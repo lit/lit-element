@@ -314,6 +314,29 @@ export abstract class UpdatingElement extends HTMLElement {
     }
   }
 
+  /**
+   * Creates a property descriptor to be defined on the given named property.
+   * If no descriptor is returned, the property will not become an accessor.
+   * For example,
+   *
+   *   class MyElement extends LitElement {
+   *     static createPropertyDescriptor(name, key, options) {
+   *       const defaultDescriptor = super.createPropertyDescriptor(name, key, options);
+   *       const setter = defaultDescriptor.set;
+   *       return {
+   *         get: defaultDescriptor.get,
+   *         set(value) {
+   *           setter.call(this, value);
+   *           // custom action.
+   *         },
+   *         configurable: true,
+   *         enumerable: true
+   *       }
+   *     }
+   *   }
+   *
+   * @nocollapse
+   */
   protected static createPropertyDescriptor(name: PropertyKey,
     key: string|symbol, _options: PropertyDeclaration,) {
     return {
@@ -698,6 +721,9 @@ export abstract class UpdatingElement extends HTMLElement {
    * ```
    */
   protected performUpdate(): void|Promise<unknown> {
+    if (!this._hasRequestedUpdate) {
+      return;
+    }
     // Mixin instance properties once, if they exist.
     if (this._instanceProperties) {
       this._applyInstanceProperties();
