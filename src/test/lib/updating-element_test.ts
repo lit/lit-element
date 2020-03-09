@@ -1930,7 +1930,7 @@ suite('UpdatingElement', () => {
     assert.deepEqual(el._observedZot, {value: 'zot', oldValue: ''});
   });
 
-  test('can make properties sync by createProperty', async () => {
+  test('can customize properties to update synchronously', async () => {
 
     interface MyPropertyDeclaration extends PropertyDeclaration {
       sync: boolean
@@ -1939,23 +1939,20 @@ suite('UpdatingElement', () => {
     @customElement(generateElementName())
     class E extends UpdatingElement {
 
-      static createProperty(
+      static createPropertyDescriptor(
         name: PropertyKey,
-        options: PropertyDeclaration,
-        descriptorFactory: PropertyDescriptorFactory) {
-
-        descriptorFactory = (options: PropertyDeclaration, descriptor: PropertyDescriptor) => {
-          const setter = descriptor.set!;
-          return Object.assign(descriptor, {
-            set(this: E, value: unknown) {
-              setter.call(this, value);
-              if ((options as MyPropertyDeclaration).sync && this.hasUpdated) {
-                (this as unknown as E).performUpdate();
-              }
+        key: string|symbol,
+        options: MyPropertyDeclaration) {
+        const defaultDescriptor = super.createPropertyDescriptor(name, key, options);
+        const setter = defaultDescriptor.set;
+        return Object.assign(defaultDescriptor, {
+          set(this: E, value: unknown) {
+            setter.call(this, value);
+            if (options.sync && this.hasUpdated) {
+              (this as unknown as E).performUpdate();
             }
-          });
-        };
-        super.createProperty(name, options, descriptorFactory);
+          }
+        });
       }
 
       updateCount = 0;
