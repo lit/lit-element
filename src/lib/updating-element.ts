@@ -297,6 +297,7 @@ export abstract class UpdatingElement extends HTMLElement {
    * `createPropertyDescriptor` internally to get a descriptor to install.
    * To customize what properties do when they are get or set, override
    * `createPropertyDescriptor`. To customize the options for a property,
+   * implement `createProperty` like this:
    *
    * static createProperty(name, options) {
    *   options = Object.assign(options, {myOption: true});
