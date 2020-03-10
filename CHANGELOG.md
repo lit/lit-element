@@ -19,7 +19,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## Unreleased
 
 ### Changed
-* The value returned by `render` is always rendered, even if it isn't a `TemplateResult`. ([#712](https://github.com/Polymer/lit-element/issues/712)
+* Added a static `getPropertyDescriptor` method to allow easier customization of property accessors. This method should return a a `PropertyDescriptor` to install on the property. If no descriptor is returned, a property accessor is not be created. ([#911](https://github.com/Polymer/lit-element/issues/911))
+* The value returned by `render` is always rendered, even if it isn't a `TemplateResult`. ([#712](https://github.com/Polymer/lit-element/issues/712))
 
 ### Added
 * Added `@queryAsync(selector)` decorator which returns a Promise that resolves to the result of querying for the given selector after the element's `updateComplete` Promise resolves ([#903](https://github.com/Polymer/lit-element/issues/903)).

@@ -51,7 +51,7 @@ export interface ComplexAttributeConverter<Type = unknown, TypeHint = unknown> {
 }
 
 type AttributeConverter<Type = unknown, TypeHint = unknown> =
-    ComplexAttributeConverter<Type>|((value: string, type?: TypeHint) => Type);
+    ComplexAttributeConverter<Type>|((value: string|null, type?: TypeHint) => Type);
 
 /**
  * Defines options for a property accessor.
@@ -112,6 +112,10 @@ export interface PropertyDeclaration<Type = unknown, TypeHint = unknown> {
    * the property changes.
    */
   readonly noAccessor?: boolean;
+
+  // Allows extension while preserving the ability to use the
+  // @property decorator.
+  [index: string]: unknown;
 }
 
 /**
@@ -281,10 +285,25 @@ export abstract class UpdatingElement extends HTMLElement {
   }
 
   /**
-   * Creates a property accessor on the element prototype if one does not exist.
+   * Creates a property accessor on the element prototype if one does not exist
+   * and stores a PropertyDeclaration for the property with the given options.
    * The property setter calls the property's `hasChanged` property option
    * or uses a strict identity check to determine whether or not to request
    * an update.
+   *
+   * This method may be overridden to customize properties; however,
+   * when doing so, it's important to call `super.createProperty` to ensure
+   * the property is setup correctly. This method calls
+   * `getPropertyDescriptor` internally to get a descriptor to install.
+   * To customize what properties do when they are get or set, override
+   * `getPropertyDescriptor`. To customize the options for a property,
+   * implement `createProperty` like this:
+   *
+   * static createProperty(name, options) {
+   *   options = Object.assign(options, {myOption: true});
+   *   super.createProperty(name, options);
+   * }
+   *
    * @nocollapse
    */
   static createProperty(
@@ -304,7 +323,38 @@ export abstract class UpdatingElement extends HTMLElement {
       return;
     }
     const key = typeof name === 'symbol' ? Symbol() : `__${name}`;
-    Object.defineProperty(this.prototype, name, {
+    const descriptor = this.getPropertyDescriptor(name, key, options);
+    if (descriptor !== undefined) {
+      Object.defineProperty(this.prototype, name, descriptor);
+    }
+  }
+
+  /**
+   * Returns a property descriptor to be defined on the given named property.
+   * If no descriptor is returned, the property will not become an accessor.
+   * For example,
+   *
+   *   class MyElement extends LitElement {
+   *     static getPropertyDescriptor(name, key, options) {
+   *       const defaultDescriptor = super.getPropertyDescriptor(name, key, options);
+   *       const setter = defaultDescriptor.set;
+   *       return {
+   *         get: defaultDescriptor.get,
+   *         set(value) {
+   *           setter.call(this, value);
+   *           // custom action.
+   *         },
+   *         configurable: true,
+   *         enumerable: true
+   *       }
+   *     }
+   *   }
+   *
+   * @nocollapse
+   */
+  protected static getPropertyDescriptor(name: PropertyKey,
+    key: string|symbol, _options: PropertyDeclaration) {
+    return {
       // tslint:disable-next-line:no-any no symbol in index
       get(): any {
         return (this as {[key: string]: unknown})[key as string];
@@ -317,7 +367,23 @@ export abstract class UpdatingElement extends HTMLElement {
       },
       configurable: true,
       enumerable: true
-    });
+    };
+  }
+
+  /**
+   * Returns the property options associated with the given property.
+   * These options are defined with a PropertyDeclaration via the `properties`
+   * object or the `@property` decorator and are registered in
+   * `createProperty(...)`.
+   *
+   * Note, this method should be considered "final" and not overridden. To
+   * customize the options for a given property, override `createProperty`.
+   *
+   * @final
+   */
+  protected static getPropertyOptions(name: PropertyKey) {
+    return this._classProperties && this._classProperties.get(name) ||
+      defaultPropertyDeclaration;
   }
 
   /**
@@ -563,8 +629,7 @@ export abstract class UpdatingElement extends HTMLElement {
     const ctor = (this.constructor as typeof UpdatingElement);
     const propName = ctor._attributeToPropertyMap.get(name);
     if (propName !== undefined) {
-      const options =
-          ctor._classProperties!.get(propName) || defaultPropertyDeclaration;
+      const options = ctor.getPropertyOptions(propName);
       // mark state reflecting
       this._updateState = this._updateState | STATE_IS_REFLECTING_TO_PROPERTY;
       this[propName as keyof this] =
@@ -585,8 +650,7 @@ export abstract class UpdatingElement extends HTMLElement {
     // If we have a property key, perform property update steps.
     if (name !== undefined) {
       const ctor = this.constructor as typeof UpdatingElement;
-      const options =
-          ctor._classProperties!.get(name) || defaultPropertyDeclaration;
+      const options = ctor.getPropertyOptions(name);
       if (ctor._valueHasChanged(
               this[name as keyof this], oldValue, options.hasChanged)) {
         if (!this._changedProperties.has(name)) {
