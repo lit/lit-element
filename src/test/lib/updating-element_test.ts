@@ -1871,8 +1871,8 @@ suite('UpdatingElement', () => {
     @customElement(generateElementName())
     class E extends UpdatingElement {
 
-      static createPropertyDescriptor(name: PropertyKey, key: string|symbol, options: MyPropertyDeclaration) {
-        const defaultDescriptor = super.createPropertyDescriptor(name, key, options);
+      static getPropertyDescriptor(name: PropertyKey, key: string|symbol, options: MyPropertyDeclaration) {
+        const defaultDescriptor = super.getPropertyDescriptor(name, key, options);
         return {
           get: defaultDescriptor.get,
           set(this: E, value: unknown) {

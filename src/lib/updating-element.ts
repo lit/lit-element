@@ -294,9 +294,9 @@ export abstract class UpdatingElement extends HTMLElement {
    * This method may be overridden to customize properties; however,
    * when doing so, it's important to call `super.createProperty` to ensure
    * the property is setup correctly. This method calls
-   * `createPropertyDescriptor` internally to get a descriptor to install.
+   * `getPropertyDescriptor` internally to get a descriptor to install.
    * To customize what properties do when they are get or set, override
-   * `createPropertyDescriptor`. To customize the options for a property,
+   * `getPropertyDescriptor`. To customize the options for a property,
    * implement `createProperty` like this:
    *
    * static createProperty(name, options) {
@@ -323,20 +323,20 @@ export abstract class UpdatingElement extends HTMLElement {
       return;
     }
     const key = typeof name === 'symbol' ? Symbol() : `__${name}`;
-    const descriptor = this.createPropertyDescriptor(name, key, options);
+    const descriptor = this.getPropertyDescriptor(name, key, options);
     if (descriptor !== undefined) {
       Object.defineProperty(this.prototype, name, descriptor);
     }
   }
 
   /**
-   * Creates a property descriptor to be defined on the given named property.
+   * Returns a property descriptor to be defined on the given named property.
    * If no descriptor is returned, the property will not become an accessor.
    * For example,
    *
    *   class MyElement extends LitElement {
-   *     static createPropertyDescriptor(name, key, options) {
-   *       const defaultDescriptor = super.createPropertyDescriptor(name, key, options);
+   *     static getPropertyDescriptor(name, key, options) {
+   *       const defaultDescriptor = super.getPropertyDescriptor(name, key, options);
    *       const setter = defaultDescriptor.set;
    *       return {
    *         get: defaultDescriptor.get,
@@ -352,7 +352,7 @@ export abstract class UpdatingElement extends HTMLElement {
    *
    * @nocollapse
    */
-  protected static createPropertyDescriptor(name: PropertyKey,
+  protected static getPropertyDescriptor(name: PropertyKey,
     key: string|symbol, _options: PropertyDeclaration) {
     return {
       // tslint:disable-next-line:no-any no symbol in index
@@ -379,6 +379,7 @@ export abstract class UpdatingElement extends HTMLElement {
    * Note, this method should be considered "final" and not overridden. To
    * customize the options for a given property, override `createProperty`.
    *
+   * @final
    */
   protected static getPropertyOptions(name: PropertyKey) {
     return this._classProperties && this._classProperties.get(name) ||
