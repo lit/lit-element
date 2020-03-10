@@ -456,9 +456,9 @@ export abstract class UpdatingElement extends HTMLElement {
   private static _propertyValueFromAttribute(
       value: string|null, options: PropertyDeclaration) {
     const type = options.type;
-  const converter = options.converter || defaultConverter;
+    const converter = options.converter || defaultConverter;
     const fromAttribute =
-      (typeof converter === 'function' ? converter : converter.fromAttribute);
+        (typeof converter === 'function' ? converter : converter.fromAttribute);
     return fromAttribute ? fromAttribute(value, type) : value;
   }
 
@@ -476,11 +476,11 @@ export abstract class UpdatingElement extends HTMLElement {
       return;
     }
     const type = options.type;
-  const converter = options.converter;
-  const toAttribute =
-      converter && (converter as ComplexAttributeConverter).toAttribute ||
-      defaultConverter.toAttribute;
-  return toAttribute!(value, type);
+    const converter = options.converter;
+    const toAttribute =
+        converter && (converter as ComplexAttributeConverter).toAttribute ||
+        defaultConverter.toAttribute;
+    return toAttribute!(value, type);
   }
 
   private _updateState: UpdateState = 0;
