@@ -1,4 +1,4 @@
- /**
+/**
  * @license
  * Copyright (c) 2018 The Polymer Project Authors. All rights reserved.
  * This code may only be used under the BSD style license found at
@@ -1874,7 +1874,7 @@ suite('UpdatingElement', () => {
       static createPropertyDescriptor(name: PropertyKey, key: string|symbol, options: MyPropertyDeclaration) {
         const defaultDescriptor = super.createPropertyDescriptor(name, key, options);
         return {
-          get: defaultDescriptor!.get,
+          get: defaultDescriptor.get,
           set(this: E, value: unknown) {
             const oldValue =
               (this as unknown as {[key: string]: unknown})[name as string];
@@ -1894,7 +1894,7 @@ suite('UpdatingElement', () => {
         super.updated(changedProperties);
         changedProperties.forEach((value: unknown, key: PropertyKey) => {
           const options = (this.constructor as typeof UpdatingElement)
-            .getDeclarationForProperty(key) as MyPropertyDeclaration;
+            .getPropertyOptions(key) as MyPropertyDeclaration;
           const observer = options.observer;
           if (typeof observer === 'function') {
             observer.call(this, value);
