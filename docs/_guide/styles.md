@@ -571,7 +571,7 @@ CSS inheritance lets parent and host elements propagate certain CSS properties t
 
 Not all CSS properties inherit. Inherited CSS properties include:
 
-* `color` and `background-color`
+* `color`
 * `font-family` and other `font-*` properties
 * All CSS custom properties (`--*`)
 
