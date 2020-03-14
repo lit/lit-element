@@ -627,7 +627,10 @@ export abstract class UpdatingElement extends HTMLElement {
       return;
     }
     const ctor = (this.constructor as typeof UpdatingElement);
-    const propName = ctor._attributeToPropertyMap.get(name);
+    // Note, hint this as an `AttributeMap` so closure clearly understands
+    // the type; it has issues with tracking types through statics
+    // tslint:disable-next-line:no-unnecessary-type-assertion
+    const propName = (ctor._attributeToPropertyMap as AttributeMap).get(name);
     if (propName !== undefined) {
       const options = ctor.getPropertyOptions(propName);
       // mark state reflecting
