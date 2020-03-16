@@ -379,6 +379,7 @@ export abstract class UpdatingElement extends HTMLElement {
    * Note, this method should be considered "final" and not overridden. To
    * customize the options for a given property, override `createProperty`.
    *
+   * @nocollapse
    * @final
    */
   protected static getPropertyOptions(name: PropertyKey) {
