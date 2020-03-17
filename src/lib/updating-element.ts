@@ -786,16 +786,16 @@ export abstract class UpdatingElement extends HTMLElement {
    * a property was set inside `updated()`. If the Promise is rejected, an
    * exception was thrown during the update.
    *
-   * To await additional asynchronous work, override the `_getUpdateComplete`
+   * To await additional asynchronous work, override the `getUpdateComplete`
    * method. For example, it is sometimes useful to await a rendered element
    * before fulfilling this Promise. To do this, first await
-   * `super._getUpdateComplete()`, then any subsequent state.
+   * `super.getUpdateComplete()`, then any subsequent state.
    *
    * @returns {Promise} The Promise returns a boolean that indicates if the
    * update resolved without triggering another update.
    */
   get updateComplete() {
-    return this._getUpdateComplete();
+    return this.getUpdateComplete();
   }
 
   /**
@@ -808,13 +808,13 @@ export abstract class UpdatingElement extends HTMLElement {
    * This method should be overridden instead. For example:
    *
    *   class MyElement extends LitElement {
-   *     async _getUpdateComplete() {
-   *       await super._getUpdateComplete();
+   *     async getUpdateComplete() {
+   *       await super.getUpdateComplete();
    *       await this._myChild.updateComplete;
    *     }
    *   }
    */
-  protected _getUpdateComplete() {
+  protected getUpdateComplete() {
     return this._updatePromise;
   }
 
