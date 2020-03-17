@@ -43,11 +43,11 @@ LitElement also inherits the default [lifecycle callbacks](https://developer.moz
 
 <div class="alert alert-info">
 
-**Be aware that adoptedCallback is not polyfilled.** 
+**Be aware that adoptedCallback is not polyfilled.**
 
 </div>
 
-**All lifecycle methods need to call the super method.** 
+**All lifecycle methods need to call the super method.**
 
 Example:
 
@@ -289,14 +289,14 @@ The `updateComplete` Promise resolves when the element has finished updating. Us
 
 #### Overriding updateComplete {#overriding-updatecomplete}
 
-To await additional state before fulfilling the `updateComplete` promise, override the `_getUpdateComplete` method. For example, it may be useful to await the update of a child element here. First await `super._getUpdateComplete()`, then any subsequent state.
+To await additional state before fulfilling the `updateComplete` promise, override the `getUpdateComplete` method. For example, it may be useful to await the update of a child element here. First await `super.getUpdateComplete()`, then any subsequent state.
 
-It's recommended to override the `_getUpdateComplete` method instead of the `updateComplete` getter to ensure compatibility with users who are using TypeScript's ES5 output (see [TypeScript#338](https://github.com/microsoft/TypeScript/issues/338)).
+It's recommended to override the `getUpdateComplete` method instead of the `updateComplete` getter to ensure compatibility with users who are using TypeScript's ES5 output (see [TypeScript#338](https://github.com/microsoft/TypeScript/issues/338)).
 
   ```js
   class MyElement extends LitElement {
-    async _getUpdateComplete() {
-      await super._getUpdateComplete();
+    async getUpdateComplete() {
+      await super.getUpdateComplete();
       await this._myChild.updateComplete;
     }
   }
