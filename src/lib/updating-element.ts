@@ -113,9 +113,6 @@ export interface PropertyDeclaration<Type = unknown, TypeHint = unknown> {
    */
   readonly noAccessor?: boolean;
 
-  // Allows extension while preserving the ability to use the
-  // @property decorator.
-  [index: string]: unknown;
 }
 
 /**
