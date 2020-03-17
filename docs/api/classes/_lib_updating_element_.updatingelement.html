@@ -267,10 +267,10 @@
 										a property was set inside <code>updated()</code>. If the Promise is rejected, an
 									exception was thrown during the update.</p>
 								</div>
-								<p>To await additional asynchronous work, override the <code>_getUpdateComplete</code>
+								<p>To await additional asynchronous work, override the <code>getUpdateComplete</code>
 									method. For example, it is sometimes useful to await a rendered element
 									before fulfilling this Promise. To do this, first await
-								<code>super._getUpdateComplete()</code>, then any subsequent state.</p>
+								<code>super.getUpdateComplete()</code>, then any subsequent state.</p>
 							</div>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">&gt;</span></h4>
 							<p>The Promise returns a boolean that indicates if the
