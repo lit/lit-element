@@ -1868,6 +1868,12 @@ suite('UpdatingElement', () => {
       observer?: (oldValue: TypeHint) => void;
     }
 
+    interface MyPropertyDeclarations {
+      readonly [key: string]: PropertyDeclaration|MyPropertyDeclaration;
+    }
+
+    const myProperty = (options: MyPropertyDeclaration) => property(options);
+
     @customElement(generateElementName())
     class E extends UpdatingElement {
 
@@ -1902,7 +1908,8 @@ suite('UpdatingElement', () => {
         });
       }
 
-      @property({type: Number, validator: (value: number) => Math.min(10, Math.max(value, 0))})
+      // provide custom deorator expecting extended type
+      @myProperty({type: Number, validator: (value: number) => Math.min(10, Math.max(value, 0))})
       foo = 5;
 
       @property({})
@@ -1911,23 +1918,48 @@ suite('UpdatingElement', () => {
       // tslint:disable-next-line:no-any
       _observedZot?: any;
 
-      @property({observer: function(this: E, oldValue: string) { this._observedZot = {value: this.zot, oldValue}; } })
+      // tslint:disable-next-line:no-any
+      _observedZot2?: any;
+
+      // use regular decorator and cast to type
+      @property({observer: function(this: E, oldValue: string) { this._observedZot = {value: this.zot, oldValue}; } } as PropertyDeclaration)
       zot = '';
+
+      zot2 = '';
+
+      foo2 = 5;
+
+      // custom typed properties
+      static get properties(): MyPropertyDeclarations {
+        return {
+          // object cast as type
+          zot2: {observer: function(this: E, oldValue: string) { this._observedZot2 = {value: this.zot2, oldValue}; } } as PropertyDeclaration,
+          // object satisfying defined custom type.
+          foo2: {type: Number, validator: (value: number) => Math.min(10, Math.max(value, 0))}
+        };
+      }
     }
 
     const el = new E();
     container.appendChild(el);
     await el.updateComplete;
     el.foo = 20;
+    el.foo2 = 20;
     assert.equal(el.foo, 10);
+    assert.equal(el.foo2, 10);
     assert.deepEqual(el._observedZot, {value: '', oldValue: undefined});
+    assert.deepEqual(el._observedZot2, {value: '', oldValue: undefined});
     el.foo = -5;
+    el.foo2 = -5;
     assert.equal(el.foo, 0);
+    assert.equal(el.foo2, 0);
     el.bar = 'bar2';
     assert.equal(el.bar, 'bar2');
     el.zot = 'zot';
+    el.zot2 = 'zot';
     await el.updateComplete;
     assert.deepEqual(el._observedZot, {value: 'zot', oldValue: ''});
+    assert.deepEqual(el._observedZot2, {value: 'zot', oldValue: ''});
   });
 
   test('attribute-based property storage', async () => {
