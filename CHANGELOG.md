@@ -19,13 +19,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [2.3.0-pre.1] - 2020-03-17
 
 ### Changed
-* Added a static `getPropertyDescriptor` method to allow easier customization of property accessors. This method should return a a `PropertyDescriptor` to install on the property. If no descriptor is returned, a property accessor is not be created. ([#911](https://github.com/Polymer/lit-element/issues/911))
+* Added a static `getPropertyDescriptor` method to allow easier customization of property accessors. This method should return a a `PropertyDescriptor` to install on the property. If no descriptor is returned, no property accessor is created. ([#911](https://github.com/Polymer/lit-element/issues/911))
 * The value returned by `render` is always rendered, even if it isn't a `TemplateResult`. ([#712](https://github.com/Polymer/lit-element/issues/712))
 
 ### Added
 * Added `@queryAsync(selector)` decorator which returns a Promise that resolves to the result of querying for the given selector after the element's `updateComplete` Promise resolves ([#903](https://github.com/Polymer/lit-element/issues/903)).
 * Added `enableUpdating()` to `UpdatingElement` to enable customizing when updating is enabled [#860](https://github.com/Polymer/lit-element/pull/860).
-* Added `queryAssignedNodes(slotName, flatten)` to enable querying assignedNodes for a given slot [#860](https://github.com/Polymer/lit-element/pull/860).
+* Added `@queryAssignedNodes(slotName, flatten)` decorator to enable querying assignedNodes for a given slot [#860](https://github.com/Polymer/lit-element/pull/860).
 * Added `getStyles()` to `LitElement` to allow hooks into style gathering for component sets [#866](https://github.com/Polymer/lit-element/pull/866).
 
 ### Fixed
