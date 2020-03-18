@@ -12,8 +12,8 @@
  * http://polymer.github.io/PATENTS.txt
  */
 
-import {property, customElement} from '../../lib/decorators.js';
-import {ComplexAttributeConverter, PropertyDeclarations, PropertyValues, UpdatingElement, PropertyDeclaration, defaultConverter} from '../../lib/updating-element.js';
+import {customElement, property} from '../../lib/decorators.js';
+import {ComplexAttributeConverter, defaultConverter, PropertyDeclaration, PropertyDeclarations, PropertyValues, UpdatingElement} from '../../lib/updating-element.js';
 import {generateElementName} from '../test-helpers.js';
 
 // tslint:disable:no-any ok in tests
@@ -1429,36 +1429,39 @@ suite('UpdatingElement', () => {
     assert.equal(el.updatedText, '6');
   });
 
-  test('setting properties in update after calling `super.update` *does* trigger update', async () => {
-    class E extends UpdatingElement {
-      static get properties() {
-        return {foo: {}};
-      }
-      promiseFulfilled = false;
-      foo = 0;
-      updateCount = 0;
-      updatedText = '';
+  test(
+      'setting properties in update after calling `super.update` *does* trigger update',
+      async () => {
+        class E extends UpdatingElement {
+          static get properties() {
+            return {foo: {}};
+          }
+          promiseFulfilled = false;
+          foo = 0;
+          updateCount = 0;
+          updatedText = '';
 
-      update(props: PropertyValues) {
-        this.updateCount++;
-        super.update(props);
-        if (this.foo < 1) {
-          this.foo++;
+          update(props: PropertyValues) {
+            this.updateCount++;
+            super.update(props);
+            if (this.foo < 1) {
+              this.foo++;
+            }
+          }
+
+          updated() {
+            this.updatedText = `${this.foo}`;
+          }
         }
-      }
-
-      updated() {
-        this.updatedText = `${this.foo}`;
-      }
-    }
-    customElements.define(generateElementName(), E);
-    const el = new E();
-    container.appendChild(el);
-    while (!(await el.updateComplete)) {}
-    assert.equal(el.foo, 1);
-    assert.equal(el.updateCount, 2);
-    assert.equal(el.updatedText, '1');
-  });
+        customElements.define(generateElementName(), E);
+        const el = new E();
+        container.appendChild(el);
+        while (!(await el.updateComplete)) {
+        }
+        assert.equal(el.foo, 1);
+        assert.equal(el.updateCount, 2);
+        assert.equal(el.updatedText, '1');
+      });
 
   test(
       'setting properties in update reflects to attribute and is included in `changedProperties`',
@@ -1802,68 +1805,62 @@ suite('UpdatingElement', () => {
         assert.equal(sub.getAttribute('foo'), '5');
       });
 
-    test('can provide a default property declaration', async () => {
+  test('can provide a default property declaration', async () => {
+    const SpecialNumber = {};
 
-        const SpecialNumber = {};
-
-        const myPropertyDeclaration = {
-          type: SpecialNumber,
-          reflect: true,
-          converter: {
-            toAttribute: function(value: unknown, type?: unknown): unknown {
-              switch (type) {
-                case String:
-                  return value === undefined ? null : value;
-                default:
-                return defaultConverter.toAttribute!(value, type);
-              }
-            },
-            fromAttribute: function(value: string|null, type?: unknown) {
-              switch (type) {
-                case SpecialNumber:
-                  return Number(value) + 10;
-                default:
-                return defaultConverter.fromAttribute!(value, type);
-              }
-            }
+    const myPropertyDeclaration = {
+      type: SpecialNumber,
+      reflect: true,
+      converter: {
+        toAttribute: function(value: unknown, type?: unknown): unknown {
+          switch (type) {
+            case String:
+              return value === undefined ? null : value;
+            default:
+              return defaultConverter.toAttribute!(value, type);
           }
-        };
-
-        @customElement(generateElementName())
-        class E extends UpdatingElement {
-
-          static createProperty(
-            name: PropertyKey,
-            options: PropertyDeclaration) {
-            // Always mix into defaults to preserve custom converter.
-            options = Object.assign(Object.create(myPropertyDeclaration), options);
-            super.createProperty(name, options);
+        },
+        fromAttribute: function(value: string|null, type?: unknown) {
+          switch (type) {
+            case SpecialNumber:
+              return Number(value) + 10;
+            default:
+              return defaultConverter.fromAttribute!(value, type);
           }
-
-          @property()
-          foo = 5;
-
-          @property({type: String})
-          bar?: string = 'bar';
         }
+      }
+    };
 
-        const el = new E();
-        container.appendChild(el);
-        el.setAttribute('foo', '10');
-        el.setAttribute('bar', 'attrBar');
-        await el.updateComplete;
-        assert.equal(el.foo, 20);
-        assert.equal(el.bar, 'attrBar');
-        el.foo = 5;
-        el.bar = undefined;
-        await el.updateComplete;
-        assert.equal(el.getAttribute('foo'), '5');
-        assert.isFalse(el.hasAttribute('bar'));
-      });
+    @customElement(generateElementName())
+    class E extends UpdatingElement {
+      static createProperty(name: PropertyKey, options: PropertyDeclaration) {
+        // Always mix into defaults to preserve custom converter.
+        options = Object.assign(Object.create(myPropertyDeclaration), options);
+        super.createProperty(name, options);
+      }
+
+      @property() foo = 5;
+
+      @property({type: String}) bar?: string = 'bar';
+    }
+
+    const el = new E();
+    container.appendChild(el);
+    el.setAttribute('foo', '10');
+    el.setAttribute('bar', 'attrBar');
+    await el.updateComplete;
+    assert.equal(el.foo, 20);
+    assert.equal(el.bar, 'attrBar');
+    el.foo = 5;
+    el.bar = undefined;
+    await el.updateComplete;
+    assert.equal(el.getAttribute('foo'), '5');
+    assert.isFalse(el.hasAttribute('bar'));
+  });
 
   test('can customize property options and accessor creation', async () => {
-
-    interface MyPropertyDeclaration<TypeHint = unknown> extends PropertyDeclaration {
+    interface MyPropertyDeclaration<TypeHint = unknown> extends
+        PropertyDeclaration {
       validator?: (value: any) => TypeHint;
       observer?: (oldValue: TypeHint) => void;
     }
@@ -1876,18 +1873,21 @@ suite('UpdatingElement', () => {
 
     @customElement(generateElementName())
     class E extends UpdatingElement {
-
-      static getPropertyDescriptor(name: PropertyKey, key: string|symbol, options: MyPropertyDeclaration) {
-        const defaultDescriptor = super.getPropertyDescriptor(name, key, options);
+      static getPropertyDescriptor(
+          name: PropertyKey, key: string|symbol,
+          options: MyPropertyDeclaration) {
+        const defaultDescriptor =
+            super.getPropertyDescriptor(name, key, options);
         return {
           get: defaultDescriptor.get,
           set(this: E, value: unknown) {
             const oldValue =
-              (this as unknown as {[key: string]: unknown})[name as string];
+                (this as unknown as {[key: string]: unknown})[name as string];
             if (options.validator) {
               value = options.validator(value);
             }
-            (this as unknown as {[key: string]: unknown})[key as string] = value;
+            (this as unknown as {[key: string]: unknown})[key as string] =
+                value;
             (this as unknown as UpdatingElement).requestUpdate(name, oldValue);
           },
 
@@ -1900,7 +1900,7 @@ suite('UpdatingElement', () => {
         super.updated(changedProperties);
         changedProperties.forEach((value: unknown, key: PropertyKey) => {
           const options = (this.constructor as typeof UpdatingElement)
-            .getPropertyOptions(key) as MyPropertyDeclaration;
+                              .getPropertyOptions(key) as MyPropertyDeclaration;
           const observer = options.observer;
           if (typeof observer === 'function') {
             observer.call(this, value);
@@ -1909,11 +1909,13 @@ suite('UpdatingElement', () => {
       }
 
       // provide custom deorator expecting extended type
-      @myProperty({type: Number, validator: (value: number) => Math.min(10, Math.max(value, 0))})
+      @myProperty({
+        type: Number,
+        validator: (value: number) => Math.min(10, Math.max(value, 0))
+      })
       foo = 5;
 
-      @property({})
-      bar = 'bar';
+      @property({}) bar = 'bar';
 
       // tslint:disable-next-line:no-any
       _observedZot?: any;
@@ -1922,7 +1924,11 @@ suite('UpdatingElement', () => {
       _observedZot2?: any;
 
       // use regular decorator and cast to type
-      @property({observer: function(this: E, oldValue: string) { this._observedZot = {value: this.zot, oldValue}; } } as PropertyDeclaration)
+      @property({
+        observer: function(this: E, oldValue: string) {
+          this._observedZot = {value: this.zot, oldValue};
+        }
+      } as PropertyDeclaration)
       zot = '';
 
       zot2 = '';
@@ -1933,9 +1939,16 @@ suite('UpdatingElement', () => {
       static get properties(): MyPropertyDeclarations {
         return {
           // object cast as type
-          zot2: {observer: function(this: E, oldValue: string) { this._observedZot2 = {value: this.zot2, oldValue}; } } as PropertyDeclaration,
+          zot2: {
+            observer: function(this: E, oldValue: string) {
+              this._observedZot2 = {value: this.zot2, oldValue};
+            }
+          } as PropertyDeclaration,
           // object satisfying defined custom type.
-          foo2: {type: Number, validator: (value: number) => Math.min(10, Math.max(value, 0))}
+          foo2: {
+            type: Number,
+            validator: (value: number) => Math.min(10, Math.max(value, 0))
+          }
         };
       }
     }

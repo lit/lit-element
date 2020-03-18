@@ -461,22 +461,20 @@ suite('decorators', () => {
   });
 
   suite('@queryAsync', () => {
-
     @customElement(generateElementName() as keyof HTMLElementTagNameMap)
     class C extends LitElement {
       @queryAsync('#blah') blah!: Promise<HTMLDivElement>;
 
       @queryAsync('span') nope!: Promise<HTMLSpanElement|null>;
 
-      @property()
-      foo = false;
+      @property() foo = false;
 
       render() {
         return html`
           <div>Not this one</div>
-          ${this.foo ?
-            html`<div id="blah" foo>This one</div>` :
-            html`<div id="blah">This one</div>` }
+          ${
+            this.foo ? html`<div id="blah" foo>This one</div>` :
+                       html`<div id="blah">This one</div>`}
         `;
       }
     }

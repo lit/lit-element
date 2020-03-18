@@ -51,7 +51,8 @@ export interface ComplexAttributeConverter<Type = unknown, TypeHint = unknown> {
 }
 
 type AttributeConverter<Type = unknown, TypeHint = unknown> =
-    ComplexAttributeConverter<Type>|((value: string|null, type?: TypeHint) => Type);
+    ComplexAttributeConverter<Type>|
+    ((value: string|null, type?: TypeHint) => Type);
 
 /**
  * Defines options for a property accessor.
@@ -112,7 +113,6 @@ export interface PropertyDeclaration<Type = unknown, TypeHint = unknown> {
    * the property changes.
    */
   readonly noAccessor?: boolean;
-
 }
 
 /**
@@ -333,7 +333,8 @@ export abstract class UpdatingElement extends HTMLElement {
    *
    *   class MyElement extends LitElement {
    *     static getPropertyDescriptor(name, key, options) {
-   *       const defaultDescriptor = super.getPropertyDescriptor(name, key, options);
+   *       const defaultDescriptor =
+   *           super.getPropertyDescriptor(name, key, options);
    *       const setter = defaultDescriptor.set;
    *       return {
    *         get: defaultDescriptor.get,
@@ -349,8 +350,8 @@ export abstract class UpdatingElement extends HTMLElement {
    *
    * @nocollapse
    */
-  protected static getPropertyDescriptor(name: PropertyKey,
-    key: string|symbol, _options: PropertyDeclaration) {
+  protected static getPropertyDescriptor(
+      name: PropertyKey, key: string|symbol, _options: PropertyDeclaration) {
     return {
       // tslint:disable-next-line:no-any no symbol in index
       get(): any {
@@ -381,7 +382,7 @@ export abstract class UpdatingElement extends HTMLElement {
    */
   protected static getPropertyOptions(name: PropertyKey) {
     return this._classProperties && this._classProperties.get(name) ||
-      defaultPropertyDeclaration;
+        defaultPropertyDeclaration;
   }
 
   /**

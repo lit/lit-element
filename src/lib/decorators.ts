@@ -286,7 +286,8 @@ export function queryAsync(selector: string) {
  *
  * @param selector A DOMString containing one or more selectors to match.
  *
- * See: https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelectorAll
+ * See:
+ * https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelectorAll
  *
  * @example
  *
