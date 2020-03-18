@@ -333,9 +333,13 @@ export abstract class UpdatingElement extends HTMLElement {
    *
    *   class MyElement extends LitElement {
    *     static getPropertyDescriptor(name, key, options) {
-   *       const defaultDescriptor = super.getPropertyDescriptor(name, key,
-   * options); const setter = defaultDescriptor.set; return { get:
-   * defaultDescriptor.get, set(value) { setter.call(this, value);
+   *       const defaultDescriptor =
+   *           super.getPropertyDescriptor(name, key, options);
+   *       const setter = defaultDescriptor.set;
+   *       return {
+   *         get: defaultDescriptor.get,
+   *         set(value) {
+   *           setter.call(this, value);
    *           // custom action.
    *         },
    *         configurable: true,
