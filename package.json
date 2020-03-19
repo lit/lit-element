@@ -18,7 +18,8 @@
     "/lit-element.d.ts",
     "/lit-element.d.ts.map",
     "/lit-element.js",
-    "/lit-element.js.map"
+    "/lit-element.js.map",
+    "/ts3.4/"
   ],
   "scripts": {
     "build": "tsc && downlevel-dts . ts3.4 && cp tsconfig.json ./ts3.4/",
