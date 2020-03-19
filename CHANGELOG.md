@@ -11,10 +11,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 -->
 
 <!-- ## [x.y.z] - YYYY-MM-DD -->
+<!-- ## Unreleased -->
 <!-- ### Changed -->
 <!-- ### Added -->
 <!-- ### Removed -->
 <!-- ### Fixed -->
+
+## [2.3.1] - 2020-03-19
+
+### Fixed
+* Add TypeScript type declarations for older versions of TypeScript. We're currently testing back to TS 3.4. We can't commit to never breaking TypeScript builds, but we'll be supporting older versions as best we can.
 
 ## [2.3.0] - 2020-03-18
 
