@@ -9,7 +9,7 @@ part of the polymer project is also subject to an additional IP rights grant
 found at http://polymer.github.io/PATENTS.txt
 */
 
-export const supportsAdoptingShadowStyleSheets =
+export const supportsAdoptingStyleSheets =
     (window.ShadowRoot) &&
     ('adoptedStyleSheets' in ShadowRoot.prototype) &&
     ('replace' in CSSStyleSheet.prototype);
@@ -34,9 +34,9 @@ export class CSSResult {
   // stylesheets are not created until the first element instance is made.
   get styleSheet(): CSSStyleSheet|null {
     if (this._styleSheet === undefined) {
-      // Note, if `supportsAdoptingShadowStyleSheets` is true then we assume
+      // Note, if `supportsAdoptingStyleSheets` is true then we assume
       // CSSStyleSheet is constructable.
-      if (supportsAdoptingShadowStyleSheets) {
+      if (supportsAdoptingStyleSheets) {
         this._styleSheet = new CSSStyleSheet();
         this._styleSheet.replaceSync(this.cssText);
       } else {

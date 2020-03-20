@@ -18,7 +18,7 @@ import {PropertyValues, UpdatingElement} from './lib/updating-element.js';
 export * from './lib/updating-element.js';
 export * from './lib/decorators.js';
 export {html, svg, TemplateResult, SVGTemplateResult} from 'lit-html/lit-html.js';
-import {supportsAdoptingShadowStyleSheets, CSSResult} from './lib/css-tag.js';
+import {supportsAdoptingStyleSheets, CSSResult} from './lib/css-tag.js';
 export * from './lib/css-tag.js';
 
 declare global {
@@ -71,6 +71,11 @@ export class LitElement extends UpdatingElement {
   static styles?: CSSResultOrNative|CSSResultArray;
 
   private static _styles: CSSResult[]|undefined;
+
+  /**
+   * Native CSSStyleSheet to apply to the element. Used over `_styles` when
+   * native support is available.
+   */
   private static _nativeStyles: CSSStyleSheet[]|undefined;
 
   /**
@@ -86,7 +91,7 @@ export class LitElement extends UpdatingElement {
   /** @nocollapse */
   private static _getUniqueStyles() {
     // Only gather styles once per class
-    const property = supportsAdoptingShadowStyleSheets ?
+    const property = supportsAdoptingStyleSheets ?
         JSCompiler_renameProperty('_nativeStyles', this) :
         JSCompiler_renameProperty('_styles', this);
     if (this.hasOwnProperty(property)) {
@@ -119,7 +124,7 @@ export class LitElement extends UpdatingElement {
       work.push(userStyles);
     }
 
-    if (supportsAdoptingShadowStyleSheets) {
+    if (supportsAdoptingStyleSheets) {
       // Convert all CSSResult instances to native CSSStyleSheet.
       this._nativeStyles = work.map((resultOrNative) => {
         if (resultOrNative instanceof CSSResult) {
@@ -178,8 +183,8 @@ export class LitElement extends UpdatingElement {
   }
 
   /**
-   * Applies styling to the element shadowRoot using the private styles
-   * properties. Styling will apply using `shadowRoot.adoptedStyleSheets` where
+   * Applies styling to the element shadowRoot using the `static get styles`
+   * property. Styling will apply using `shadowRoot.adoptedStyleSheets` where
    * available and will fallback otherwise. When Shadow DOM is polyfilled,
    * ShadyCSS scopes styles and adds them to the document. When Shadow DOM
    * is available but `adoptedStyleSheets` is not, styles are appended to the
@@ -187,7 +192,7 @@ export class LitElement extends UpdatingElement {
    * behavior](https://wicg.github.io/construct-stylesheets/#using-constructed-stylesheets).
    */
   protected adoptStyles() {
-    if (supportsAdoptingShadowStyleSheets) {
+    if (supportsAdoptingStyleSheets) {
       (this.renderRoot as ShadowRoot).adoptedStyleSheets =
           (this.constructor as typeof LitElement)._nativeStyles!;
       return;
