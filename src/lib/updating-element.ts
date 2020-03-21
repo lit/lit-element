@@ -12,7 +12,12 @@
  * http://polymer.github.io/PATENTS.txt
  */
 
-/**
+/** 
+ * Use this module if you want to create your own base class extending [[UpdatingElement]].
+ * @packageDocumentation
+ */
+
+/*
  * When using Closure Compiler, JSCompiler_renameProperty(property, object) is
  * replaced at compile time by the munged name for object[property]. We cannot
  * alias this function, so we have to use a small shim that has the same
@@ -207,6 +212,7 @@ const finalized = 'finalized';
  * Base element class which manages element properties and attributes. When
  * properties change, the `update` method is asynchronously called. This method
  * should be supplied by subclassers to render updates as desired.
+ * @noInheritDoc
  */
 export abstract class UpdatingElement extends HTMLElement {
   /*
