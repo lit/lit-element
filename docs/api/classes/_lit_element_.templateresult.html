@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>PropertyDeclaration | lit-element</title>
+	<title>TemplateResult | lit-element</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -87,13 +87,13 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="../modules/_lib_updating_element_.html">&quot;lib/updating-element&quot;</a>
+					<a href="../modules/_lit_element_.html">&quot;lit-element&quot;</a>
 				</li>
 				<li>
-					<a href="_lib_updating_element_.propertydeclaration.html">PropertyDeclaration</a>
+					<a href="_lit_element_.templateresult.html">TemplateResult</a>
 				</li>
 			</ul>
-			<h1>Interface PropertyDeclaration&lt;Type, TypeHint&gt;</h1>
+			<h1>Class TemplateResult</h1>
 		</div>
 	</div>
 </header>
@@ -103,26 +103,21 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>Defines options for a property accessor.</p>
+						<p>The return type of <code>html</code>, which holds a Template and the values from
+						interpolated expressions.</p>
 					</div>
 				</div>
-			</section>
-			<section class="tsd-panel tsd-type-parameters">
-				<h3>Type parameters</h3>
-				<ul class="tsd-type-parameters">
-					<li>
-						<h4>Type</h4>
-					</li>
-					<li>
-						<h4>TypeHint</h4>
-					</li>
-				</ul>
 			</section>
 			<section class="tsd-panel tsd-hierarchy">
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">PropertyDeclaration</span>
+						<span class="target">TemplateResult</span>
+						<ul class="tsd-hierarchy">
+							<li>
+								<a href="_lit_element_.svgtemplateresult.html" class="tsd-signature-type">SVGTemplateResult</a>
+							</li>
+						</ul>
 					</li>
 				</ul>
 			</section>
@@ -131,158 +126,146 @@
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
 						<section class="tsd-index-section ">
+							<h3>Constructors</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="_lit_element_.templateresult.html#constructor" class="tsd-kind-icon">constructor</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_lib_updating_element_.propertydeclaration.html#attribute" class="tsd-kind-icon">attribute</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_lib_updating_element_.propertydeclaration.html#converter" class="tsd-kind-icon">converter</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_lib_updating_element_.propertydeclaration.html#noaccessor" class="tsd-kind-icon">no<wbr>Accessor</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_lib_updating_element_.propertydeclaration.html#reflect" class="tsd-kind-icon">reflect</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_lib_updating_element_.propertydeclaration.html#type" class="tsd-kind-icon">type</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_lit_element_.templateresult.html#processor" class="tsd-kind-icon">processor</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_lit_element_.templateresult.html#strings" class="tsd-kind-icon">strings</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_lit_element_.templateresult.html#type" class="tsd-kind-icon">type</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_lit_element_.templateresult.html#values" class="tsd-kind-icon">values</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="_lib_updating_element_.propertydeclaration.html#haschanged" class="tsd-kind-icon">has<wbr>Changed</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_lit_element_.templateresult.html#gethtml" class="tsd-kind-icon">getHTML</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_lit_element_.templateresult.html#gettemplateelement" class="tsd-kind-icon">get<wbr>Template<wbr>Element</a></li>
 							</ul>
 						</section>
 					</div>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="attribute" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> attribute</h3>
-					<div class="tsd-signature tsd-kind-icon">attribute<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/eec0321/src/lib/updating-element.ts#L73">src/lib/updating-element.ts:73</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Indicates how and whether the property becomes an observed attribute.
-								If the value is <code>false</code>, the property is not added to <code>observedAttributes</code>.
-								If true or absent, the lowercased property name is observed (e.g. <code>fooBar</code>
-								becomes <code>foobar</code>). If a string, the string value is observed (e.g
-							<code>attribute: &#39;foo-bar&#39;</code>).</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="converter" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> converter</h3>
-					<div class="tsd-signature tsd-kind-icon">converter<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">AttributeConverter</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Type</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">TypeHint</span><span class="tsd-signature-symbol">&gt;</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/eec0321/src/lib/updating-element.ts#L94">src/lib/updating-element.ts:94</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Indicates how to convert the attribute to/from a property. If this value
-								is a function, it is used to convert the attribute value a the property
-								value. If it&#39;s an object, it can have keys for <code>fromAttribute</code> and
-								<code>toAttribute</code>. If no <code>toAttribute</code> function is provided and
-								<code>reflect</code> is set to <code>true</code>, the property value is set directly to the
-								attribute. A default <code>converter</code> is used if none is provided; it supports
-								<code>Boolean</code>, <code>String</code>, <code>Number</code>, <code>Object</code>, and <code>Array</code>. Note,
-								when a property changes and the converter is used to update the attribute,
-								the property is never updated again as a result of the attribute changing,
-							and vice versa.</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="noaccessor" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> no<wbr>Accessor</h3>
-					<div class="tsd-signature tsd-kind-icon">no<wbr>Accessor<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">false</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">true</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/eec0321/src/lib/updating-element.ts#L120">src/lib/updating-element.ts:120</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Indicates whether an accessor will be created for this property. By
-								default, an accessor will be generated for this property that requests an
-								update when set. If this flag is <code>true</code>, no accessor will be created, and
-								it will be the user&#39;s responsibility to call
-								<code>this.requestUpdate(propertyName, oldValue)</code> to request an update when
-							the property changes.</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="reflect" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> reflect</h3>
-					<div class="tsd-signature tsd-kind-icon">reflect<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">false</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">true</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/eec0321/src/lib/updating-element.ts#L103">src/lib/updating-element.ts:103</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Indicates if the property should reflect to an attribute.
-								If <code>true</code>, when the property is set, the attribute is set using the
-								attribute name determined according to the rules for the <code>attribute</code>
-								property option and the value of the property converted using the rules
-							from the <code>converter</code> property option.</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="type" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> type</h3>
-					<div class="tsd-signature tsd-kind-icon">type<span class="tsd-signature-symbol">:</span> <a href="" class="tsd-signature-type">TypeHint</a></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/eec0321/src/lib/updating-element.ts#L80">src/lib/updating-element.ts:80</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Indicates the type of the property. This is used only as a hint for the
-								<code>converter</code> to determine how to convert the attribute
-							to/from a property.</p>
-						</div>
-					</div>
-				</section>
-			</section>
-			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Methods</h2>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
-					<a name="haschanged" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> has<wbr>Changed</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
-						<li class="tsd-signature tsd-kind-icon">has<wbr>Changed<span class="tsd-signature-symbol">(</span>value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Type</span>, oldValue<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Type</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+				<h2>Constructors</h2>
+				<section class="tsd-panel tsd-member tsd-kind-constructor tsd-parent-kind-class">
+					<a name="constructor" class="tsd-anchor"></a>
+					<h3>constructor</h3>
+					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Template<wbr>Result<span class="tsd-signature-symbol">(</span>strings<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">TemplateStringsArray</span>, values<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">keyof </span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">[]</span>, type<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, processor<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">TemplateProcessor</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_lit_element_.templateresult.html" class="tsd-signature-type">TemplateResult</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/eec0321/src/lib/updating-element.ts#L110">src/lib/updating-element.ts:110</a></li>
+									<li>Defined in node_modules/lit-html/lib/template-result.d.ts:23</li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>strings: <span class="tsd-signature-type">TemplateStringsArray</span></h5>
+								</li>
+								<li>
+									<h5>values: <span class="tsd-signature-symbol">keyof </span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">[]</span></h5>
+								</li>
+								<li>
+									<h5>type: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5>processor: <span class="tsd-signature-type">TemplateProcessor</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="_lit_element_.templateresult.html" class="tsd-signature-type">TemplateResult</a></h4>
+						</li>
+					</ul>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Properties</h2>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="processor" class="tsd-anchor"></a>
+					<h3>processor</h3>
+					<div class="tsd-signature tsd-kind-icon">processor<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">TemplateProcessor</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in node_modules/lit-html/lib/template-result.d.ts:23</li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="strings" class="tsd-anchor"></a>
+					<h3>strings</h3>
+					<div class="tsd-signature tsd-kind-icon">strings<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">TemplateStringsArray</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in node_modules/lit-html/lib/template-result.d.ts:20</li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="type" class="tsd-anchor"></a>
+					<h3>type</h3>
+					<div class="tsd-signature tsd-kind-icon">type<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in node_modules/lit-html/lib/template-result.d.ts:22</li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="values" class="tsd-anchor"></a>
+					<h3>values</h3>
+					<div class="tsd-signature tsd-kind-icon">values<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">keyof </span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">[]</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in node_modules/lit-html/lib/template-result.d.ts:21</li>
+						</ul>
+					</aside>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Methods</h2>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="gethtml" class="tsd-anchor"></a>
+					<h3>getHTML</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">getHTML<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in node_modules/lit-html/lib/template-result.d.ts:28</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>A function that indicates if a property should be considered changed when
-										it is set. The function should take the <code>newValue</code> and <code>oldValue</code> and
-									return <code>true</code> if an update should be requested.</p>
+									<p>Returns a string of HTML used to create a <code>&lt;template&gt;</code> element.</p>
 								</div>
 							</div>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>value: <span class="tsd-signature-type">Type</span></h5>
-								</li>
-								<li>
-									<h5>oldValue: <span class="tsd-signature-type">Type</span></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="gettemplateelement" class="tsd-anchor"></a>
+					<h3>get<wbr>Template<wbr>Element</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Template<wbr>Element<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">HTMLTemplateElement</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in node_modules/lit-html/lib/template-result.d.ts:29</li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">HTMLTemplateElement</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -294,10 +277,10 @@
 					<li class="globals  ">
 						<a href="../globals.html"><em>Globals</em></a>
 					</li>
-					<li class="current tsd-kind-module">
+					<li class=" tsd-kind-module">
 						<a href="../modules/_lib_updating_element_.html">&quot;lib/updating-<wbr>element&quot;</a>
 					</li>
-					<li class=" tsd-kind-module">
+					<li class="current tsd-kind-module">
 						<a href="../modules/_lit_element_.html">&quot;lit-<wbr>element&quot;</a>
 					</li>
 				</ul>
@@ -305,52 +288,115 @@
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
 					<li class=" tsd-kind-class tsd-parent-kind-module">
-						<a href="../classes/_lib_updating_element_.updatingelement.html" class="tsd-kind-icon">Updating<wbr>Element</a>
+						<a href="_lit_element_.cssresult.html" class="tsd-kind-icon">CSSResult</a>
 					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-module tsd-has-type-parameter">
-						<a href="_lib_updating_element_.complexattributeconverter.html" class="tsd-kind-icon">Complex<wbr>Attribute<wbr>Converter</a>
+					<li class=" tsd-kind-class tsd-parent-kind-module">
+						<a href="_lit_element_.litelement.html" class="tsd-kind-icon">Lit<wbr>Element</a>
 					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-module">
-						<a href="_lib_updating_element_.haschanged.html" class="tsd-kind-icon">Has<wbr>Changed</a>
+					<li class=" tsd-kind-class tsd-parent-kind-module">
+						<a href="_lit_element_.svgtemplateresult.html" class="tsd-kind-icon">SVGTemplate<wbr>Result</a>
 					</li>
 				</ul>
 				<ul class="current">
-					<li class="current tsd-kind-interface tsd-parent-kind-module tsd-has-type-parameter">
-						<a href="_lib_updating_element_.propertydeclaration.html" class="tsd-kind-icon">Property<wbr>Declaration</a>
+					<li class="current tsd-kind-class tsd-parent-kind-module">
+						<a href="_lit_element_.templateresult.html" class="tsd-kind-icon">Template<wbr>Result</a>
 						<ul>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_lib_updating_element_.propertydeclaration.html#attribute" class="tsd-kind-icon">attribute</a>
+							<li class=" tsd-kind-constructor tsd-parent-kind-class">
+								<a href="_lit_element_.templateresult.html#constructor" class="tsd-kind-icon">constructor</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_lib_updating_element_.propertydeclaration.html#converter" class="tsd-kind-icon">converter</a>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="_lit_element_.templateresult.html#processor" class="tsd-kind-icon">processor</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_lib_updating_element_.propertydeclaration.html#noaccessor" class="tsd-kind-icon">no<wbr>Accessor</a>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="_lit_element_.templateresult.html#strings" class="tsd-kind-icon">strings</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_lib_updating_element_.propertydeclaration.html#reflect" class="tsd-kind-icon">reflect</a>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="_lit_element_.templateresult.html#type" class="tsd-kind-icon">type</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_lib_updating_element_.propertydeclaration.html#type" class="tsd-kind-icon">type</a>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="_lit_element_.templateresult.html#values" class="tsd-kind-icon">values</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-interface">
-								<a href="_lib_updating_element_.propertydeclaration.html#haschanged" class="tsd-kind-icon">has<wbr>Changed</a>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_lit_element_.templateresult.html#gethtml" class="tsd-kind-icon">getHTML</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_lit_element_.templateresult.html#gettemplateelement" class="tsd-kind-icon">get<wbr>Template<wbr>Element</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
+					<li class=" tsd-kind-class tsd-parent-kind-module">
+						<a href="_lit_element_.updatingelement.html" class="tsd-kind-icon">Updating<wbr>Element</a>
+					</li>
 					<li class=" tsd-kind-interface tsd-parent-kind-module">
-						<a href="_lib_updating_element_.propertydeclarations.html" class="tsd-kind-icon">Property<wbr>Declarations</a>
+						<a href="../interfaces/_lit_element_.cssresultarray.html" class="tsd-kind-icon">CSSResult<wbr>Array</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module tsd-has-type-parameter">
+						<a href="../interfaces/_lit_element_.complexattributeconverter.html" class="tsd-kind-icon">Complex<wbr>Attribute<wbr>Converter</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="../interfaces/_lit_element_.haschanged.html" class="tsd-kind-icon">Has<wbr>Changed</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module tsd-has-type-parameter">
+						<a href="../interfaces/_lit_element_.internalpropertydeclaration.html" class="tsd-kind-icon">Internal<wbr>Property<wbr>Declaration</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module tsd-has-type-parameter">
+						<a href="../interfaces/_lit_element_.propertydeclaration.html" class="tsd-kind-icon">Property<wbr>Declaration</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="../interfaces/_lit_element_.propertydeclarations.html" class="tsd-kind-icon">Property<wbr>Declarations</a>
 					</li>
 					<li class=" tsd-kind-type-alias tsd-parent-kind-module tsd-has-type-parameter">
-						<a href="../modules/_lib_updating_element_.html#propertyvalues" class="tsd-kind-icon">Property<wbr>Values</a>
+						<a href="../modules/_lit_element_.html#constructor" class="tsd-kind-icon">Constructor</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-module tsd-has-type-parameter">
+						<a href="../modules/_lit_element_.html#propertyvalues" class="tsd-kind-icon">Property<wbr>Values</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-module">
+						<a href="../modules/_lit_element_.html#html" class="tsd-kind-icon">html</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-module">
+						<a href="../modules/_lit_element_.html#supportsadoptingstylesheets" class="tsd-kind-icon">supports<wbr>Adopting<wbr>Style<wbr>Sheets</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-module">
+						<a href="../modules/_lit_element_.html#svg" class="tsd-kind-icon">svg</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-module">
-						<a href="../modules/_lib_updating_element_.html#notequal" class="tsd-kind-icon">not<wbr>Equal</a>
+						<a href="../modules/_lit_element_.html#css" class="tsd-kind-icon">css</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="../modules/_lit_element_.html#customelement" class="tsd-kind-icon">custom<wbr>Element</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="../modules/_lit_element_.html#eventoptions" class="tsd-kind-icon">event<wbr>Options</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="../modules/_lit_element_.html#internalproperty" class="tsd-kind-icon">internal<wbr>Property</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="../modules/_lit_element_.html#notequal" class="tsd-kind-icon">not<wbr>Equal</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="../modules/_lit_element_.html#property" class="tsd-kind-icon">property</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="../modules/_lit_element_.html#query" class="tsd-kind-icon">query</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="../modules/_lit_element_.html#queryall" class="tsd-kind-icon">query<wbr>All</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="../modules/_lit_element_.html#queryassignednodes" class="tsd-kind-icon">query<wbr>Assigned<wbr>Nodes</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="../modules/_lit_element_.html#queryasync" class="tsd-kind-icon">query<wbr>Async</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="../modules/_lit_element_.html#unsafecss" class="tsd-kind-icon">unsafeCSS</a>
 					</li>
 					<li class=" tsd-kind-object-literal tsd-parent-kind-module">
-						<a href="../modules/_lib_updating_element_.html#defaultconverter" class="tsd-kind-icon">default<wbr>Converter</a>
+						<a href="../modules/_lit_element_.html#defaultconverter" class="tsd-kind-icon">default<wbr>Converter</a>
 					</li>
 				</ul>
 			</nav>
