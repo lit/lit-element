@@ -51,11 +51,11 @@ Easily Create Fast, Lightweight Web Components
 <div class="responsive-row">
 <div style="flex: 1">
 
-<h2 class="caption">Delightfully declarative</h2>
+<h2 class="caption">Seamlessly interoperable</h2>
 
-LitElement's simple, familiar development model makes it easier than ever to build Web Components.
+LitElement follows the [Web Components standards](https://developer.mozilla.org/en-US/docs/Web/Web_Components), so your components will work with any framework.
 
-Express your UI declaratively, as a function of state. No need to learn a custom templating language – you can use the full power of JavaScript in your templates. Elements update automatically when their properties change.
+LitElement uses Custom Elements for easy inclusion in web pages, and Shadow DOM for encapsulation. There’s no new abstraction on top of the web platform.
 
 </div>
 <div style="flex: 1">
@@ -69,11 +69,11 @@ LitElement uses [lit-html](https://github.com/Polymer/lit-html) to define and re
 </div>
 <div style="flex: 1">
 
-<h2 class="caption">Seamlessly interoperable</h2>
+<h2 class="caption">Delightfully declarative</h2>
 
-LitElement follows the [Web Components standards](https://developer.mozilla.org/en-US/docs/Web/Web_Components), so your components will work with any framework.
+LitElement's simple, familiar development model makes it easier than ever to build Web Components.
 
-LitElement uses Custom Elements for easy inclusion in web pages, and Shadow DOM for encapsulation. There’s no new abstraction on top of the web platform.
+Express your UI declaratively, as a function of state. No need to learn a custom templating language – you can use the full power of JavaScript in your templates. Elements update automatically when their properties change.
 
 </div>
 </div>
