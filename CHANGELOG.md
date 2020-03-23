@@ -33,6 +33,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 * Added `enableUpdating()` to `UpdatingElement` to enable customizing when updating is enabled [#860](https://github.com/Polymer/lit-element/pull/860).
 * Added `@queryAssignedNodes(slotName, flatten)` decorator to enable querying assignedNodes for a given slot [#860](https://github.com/Polymer/lit-element/pull/860).
 * Added `getStyles()` to `LitElement` to allow hooks into style gathering for component sets [#866](https://github.com/Polymer/lit-element/pull/866).
+* Added `@internalProperty(options)` decorator to define properties internal to an element. [#881](https://github.com/Polymer/lit-element/pull/881).
 
 ### Fixed
 * Ensure `UpdatingElement` allows updates when properties are set after calling `super.update()`.
