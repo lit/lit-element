@@ -44,10 +44,10 @@ const renderNotImplemented = {};
 /**
  * Base element class that manages element properties and attributes, and
  * renders a lit-html template.
- * 
+ *
  * To define a component, subclass `LitElement` and implement a
- * `render` method to provide the component's template. Define properties 
- * using the [[`properties`]] property or the [[`property`]] decorator. 
+ * `render` method to provide the component's template. Define properties
+ * using the [[`properties`]] property or the [[`property`]] decorator.
  */
 export class LitElement extends UpdatingElement {
   /**
@@ -62,14 +62,14 @@ export class LitElement extends UpdatingElement {
   /**
    * Reference to the underlying library method used to render the element's DOM.
    * By default, points to the `render` method from lit-html's shady-render module.
-   * 
+   *
    * *Most users will never need to touch this property.*
-   * 
-   * This  property should not be confused with the `render` instance method, 
+   *
+   * This  property should not be confused with the `render` instance method,
    * which should be overridden to define a template for the element.
-   *  
+   *
    * Advanced  creating a new base class based on LitElement can override this property
-   * to point to a custom render method with a signature that matches 
+   * to point to a custom render method with a signature that matches
    * [shady-render's `render` method](https://lit-html.polymer-project.org/api/modules/shady_render.html#render).
    *
    * @nocollapse

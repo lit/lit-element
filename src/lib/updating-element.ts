@@ -12,7 +12,7 @@
  * http://polymer.github.io/PATENTS.txt
  */
 
-/** 
+/**
  * Use this module if you want to create your own base class extending [[UpdatingElement]].
  * @packageDocumentation
  */
