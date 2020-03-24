@@ -366,9 +366,9 @@ You can compose LitElement templates from other LitElement templates. In the fol
 class MyPage extends LitElement {
   render() {
     return html`
-      ${this.headerTemplate}
-      ${this.articleTemplate}
-      ${this.footerTemplate}
+      ${this.headerTemplate()}
+      ${this.articleTemplate()}
+      ${this.footerTemplate()}
     `;
   }
   get headerTemplate() {
@@ -493,7 +493,7 @@ html`<button @click="${this.doStuff}"></button>`;
 
 render() {
   return html`
-    ${this.headerTemplate}
+    ${this.headerTemplate()}
     <article>article</article>
   `;
 }
