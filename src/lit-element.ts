@@ -31,11 +31,25 @@ declare global {
 // This line will be used in regexes to search for LitElement usage.
 // TODO(justinfagnani): inject version number at build time
 (window['litElementVersions'] || (window['litElementVersions'] = []))
-    .push('2.2.1');
+    .push('2.3.1');
 
 export type CSSResultArray = Array<CSSResult|CSSResultArray>;
 
-    export class LitElement extends UpdatingElement {
+/**
+ * Sentinal value used to avoid calling lit-html's render function when
+ * subclasses do not implement `render`
+ */
+const renderNotImplemented = {};
+
+/**
+ * Base element class that manages element properties and attributes, and
+ * renders a lit-html template.
+ *
+ * To define a component, subclass `LitElement` and implement a
+ * `render` method to provide the component's template. Define properties
+ * using the [[`properties`]] property or the [[`property`]] decorator.
+ */
+export class LitElement extends UpdatingElement {
   /**
    * Ensure this class is marked as `finalized` as an optimization ensuring
    * it will not needlessly try to `finalize`.
@@ -46,10 +60,20 @@ export type CSSResultArray = Array<CSSResult|CSSResultArray>;
   protected static['finalized'] = true;
 
   /**
-   * Render method used to render the value to the element's DOM.
-   * @param result The value to render.
-   * @param container Node into which to render.
-   * @param options Element name.
+   * Reference to the underlying library method used to render the element's
+   * DOM. By default, points to the `render` method from lit-html's shady-render
+   * module.
+   *
+   * **Most users will never need to touch this property.**
+   *
+   * This  property should not be confused with the `render` instance method,
+   * which should be overridden to define a template for the element.
+   *
+   * Advanced users creating a new base class based on LitElement can override
+   * this property to point to a custom render method with a signature that
+   * matches [shady-render's `render`
+   * method](https://lit-html.polymer-project.org/api/modules/shady_render.html#render).
+   *
    * @nocollapse
    */
   static render:
@@ -58,7 +82,7 @@ export type CSSResultArray = Array<CSSResult|CSSResultArray>;
 
   /**
    * Array of styles to apply to the element. The styles should be defined
-   * using the `css` tag function.
+   * using the [[`css`]] tag function.
    */
   static styles?: CSSResult|CSSResultArray;
 
@@ -123,9 +147,9 @@ export type CSSResultArray = Array<CSSResult|CSSResultArray>;
   readonly renderRoot!: Element|DocumentFragment;
 
   /**
-   * Performs element initialization. By default this calls `createRenderRoot`
-   * to create the element `renderRoot` node and captures any pre-set values for
-   * registered properties.
+   * Performs element initialization. By default this calls
+   * [[`createRenderRoot`]] to create the element [[`renderRoot`]] node and
+   * captures any pre-set values for registered properties.
    */
   protected initialize() {
     super.initialize();
@@ -152,7 +176,7 @@ export type CSSResultArray = Array<CSSResult|CSSResultArray>;
   }
 
   /**
-   * Applies styling to the element shadowRoot using the `static get styles`
+   * Applies styling to the element shadowRoot using the [[`styles`]]
    * property. Styling will apply using `shadowRoot.adoptedStyleSheets` where
    * available and will fallback otherwise. When Shadow DOM is polyfilled,
    * ShadyCSS scopes styles and adds them to the document. When Shadow DOM
@@ -204,11 +228,14 @@ export type CSSResultArray = Array<CSSResult|CSSResultArray>;
     // before that.
     const templateResult = this.render();
     super.update(changedProperties);
-    (this.constructor as typeof LitElement)
-        .render(
-            templateResult,
-            this.renderRoot,
-            {scopeName: this.localName, eventContext: this});
+    // If render is not implemented by the component, don't call lit-html render
+    if (templateResult !== renderNotImplemented) {
+      (this.constructor as typeof LitElement)
+          .render(
+              templateResult,
+              this.renderRoot,
+              {scopeName: this.localName, eventContext: this});
+    }
     // When native Shadow DOM is used but adoptedStyles are not supported,
     // insert styling after rendering to ensure adoptedStyles have highest
     // priority.
@@ -224,11 +251,11 @@ export type CSSResultArray = Array<CSSResult|CSSResultArray>;
 
   /**
    * Invoked on each update to perform rendering tasks. This method may return
-   * any value renderable by lit-html's NodePart - typically a TemplateResult.
-   * Setting properties inside this method will *not* trigger the element to
-   * update.
+   * any value renderable by lit-html's `NodePart` - typically a
+   * `TemplateResult`. Setting properties inside this method will *not* trigger
+   * the element to update.
    */
   protected render(): unknown {
-    return undefined;
+    return renderNotImplemented;
   }
 }

@@ -9,6 +9,9 @@ part of the polymer project is also subject to an additional IP rights grant
 found at http://polymer.github.io/PATENTS.txt
 */
 
+/**
+ * Whether the current browser supports `adoptedStyleSheets`.
+ */
 export const supportsAdoptingStyleSheets =
     ('adoptedStyleSheets' in Document.prototype) &&
     ('replace' in CSSStyleSheet.prototype);
@@ -50,7 +53,7 @@ export class CSSResult {
 }
 
 /**
- * Wrap a value for interpolation in a css tagged template literal.
+ * Wrap a value for interpolation in a [[`css`]] tagged template literal.
  *
  * This is unsafe because untrusted CSS text can be used to phone home
  * or exfiltrate data to an attacker controlled site. Take care to only use
@@ -74,10 +77,10 @@ const textFromCSSResult = (value: CSSResult|number) => {
 };
 
 /**
- * Template tag which which can be used with LitElement's `style` property to
- * set element styles. For security reasons, only literal string values may be
- * used. To incorporate non-literal values `unsafeCSS` may be used inside a
- * template string part.
+ * Template tag which which can be used with LitElement's [[LitElement.styles |
+ * `styles`]] property to set element styles. For security reasons, only literal
+ * string values may be used. To incorporate non-literal values [[`unsafeCSS`]]
+ * may be used inside a template string part.
  */
 export const css =
     (strings: TemplateStringsArray, ...values: (CSSResult|number)[]) => {

@@ -1,3 +1,4 @@
+/docs/
 /lib/
 /test/**/*.{d.ts,d.ts.map,js,js.map}
 /lit-element.{d.ts,d.ts.map,js,js.map}

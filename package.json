@@ -1,6 +1,6 @@
 {
   "name": "lit-element",
-  "version": "2.2.1",
+  "version": "2.3.1",
   "description": "A simple base class for creating fast, lightweight web components",
   "license": "BSD-3-Clause",
   "homepage": "https://lit-element.polymer-project.org/",
@@ -19,12 +19,13 @@
     "/lit-element.d.ts",
     "/lit-element.d.ts.map",
     "/lit-element.js",
-    "/lit-element.js.map"
+    "/lit-element.js.map",
+    "/ts3.4/"
   ],
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && downlevel-dts . ts3.4 && cp tsconfig.json ./ts3.4/",
     "build:babel-test": "babel src/test/lib/decorators_test.ts --out-file test/lib/decorators-babel_test.js",
-    "gen-docs": "typedoc --readme docs/_api/api-readme.md --tsconfig tsconfig_apidoc.json --mode modules --theme docs/_api/theme --excludeNotExported --excludePrivate --ignoreCompilerErrors --exclude '{**/*test*,**/node_modules/**,**/test/**}' --out ./docs/api --gaID UA-39334307-23 src/**/*.ts",
+    "gen-docs": "typedoc --readme docs/_api/api-readme.md --tsconfig tsconfig_apidoc.json --mode library --theme docs/_api/theme --excludeNotExported --excludePrivate --ignoreCompilerErrors --exclude '{**/*test*,**/node_modules/!(lit-html)/**,**/test/**}' --out ./docs/api --gaID UA-39334307-23 src/lit-element.ts src/lib/updating-element.ts",
     "test": "npm run build && npm run build:babel-test && wct",
     "checksize": "rollup -c ; rm lit-element.bundled.js",
     "format": "find src test | grep '\\.js$\\|\\.ts$' | xargs clang-format --style=file -i",
@@ -37,7 +38,7 @@
   },
   "author": "The Polymer Authors",
   "dependencies": {
-    "lit-html": "^1.0.0"
+    "lit-html": "^1.1.1"
   },
   "devDependencies": {
     "@babel/cli": "^7.2.3",
@@ -52,6 +53,7 @@
     "@webcomponents/webcomponentsjs": "^2.2.3",
     "chai": "^4.0.2",
     "clang-format": "^1.2.4",
+    "downlevel-dts": "^0.4.0",
     "eslint": "^6.8.0",
     "husky": "^4.2.0",
     "lint-staged": "^10.0.0",
@@ -63,8 +65,8 @@
     "rollup-plugin-node-resolve": "^5.2.0",
     "rollup-plugin-terser": "^5.1.0",
     "tachometer": "^0.4.16",
-    "typedoc": "^0.14.2",
-    "typescript": "^3.4.1",
+    "typedoc": "^0.17.0-3",
+    "typescript": "~3.8.2",
     "uglify-es": "^3.3.9",
     "wct-mocha": "^1.0.0",
     "web-component-tester": "^6.9.2"
@@ -78,6 +80,13 @@
     "**/*.{js,ts}": [
       "eslint --fix"
     ]
+  },
+  "typesVersions": {
+    "<3.8": {
+      "*": [
+        "ts3.4/*"
+      ]
+    }
   },
   "publishConfig": {
     "access": "public"
