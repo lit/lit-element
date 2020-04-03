@@ -25,6 +25,10 @@ declare global {
   interface Window {
     litElementVersions: string[];
   }
+
+  interface ShadowRoot {
+    adoptedStyleSheets: CSSStyleSheet[];
+  }
 }
 
 // IMPORTANT: do not change the property name or the assignment expression.
