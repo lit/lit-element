@@ -33,7 +33,7 @@ You can change this behavior so that Step 3 awaits a Promise before performing t
 
 For a more detailed explanation of the browser event loop, see [Jake Archibald's article](https://jakearchibald.com/2015/tasks-microtasks-queues-and-schedules/).
 
-#### Lifecycle callbacks
+#### Lifecycle callbacks {#lifecyclecallbacks}
 
 LitElement also inherits the default [lifecycle callbacks](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements#Using_the_lifecycle_callbacks) from the Web Component standard:
 * `connectedCallback`: Invoked when a component is added to the document's DOM.
@@ -87,7 +87,19 @@ let result = await myFunc('stuff');
 
 See the [Web Fundamentals primer on Promises](https://developers.google.com/web/fundamentals/primers/promises) for a more in-depth tutorial.
 
-## Methods and properties
+## Assorted use cases
+
+Common reasons to hook into the custom element lifecycle or the LitElement update lifecycle are initializations, managing derived data, and dealing with events that originate outside of your element's template. The following list provides some common use cases and approaches. In several cases there is more than one way to achieve a certain goal. Reading this list along with the detailed [technical reference](#reference) will provide you with a rather complete picture and enable you to decide what fits your component's needs best.
+
+- Use [property.hasChanged](#haschanged) for **checking** "Is this a change? Do I want to run the update lifecycle?".
+- Use the element [constructor](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes/constructor) for [initializing LitElement properties](./properties#initialize) with **default values**. (*Attribute values* from the DOM are *not available* when the constructor runs.)
+- Use [firstUpdated](#firstupdated) for **initializing private fields from DOM attributes** (as the constructor doesn't have access to them). Note that [render](#render) has already run at this point and your changes might trigger another update lifecycle. If it's imperative that you get access to attribute values *before* the first render happens, consider using [connectedCallback](#lifecyclecallbacks), but you'll need to do the extra logic for figuring out the "first" update yourself as [connectedCallback](#lifecyclecallbacks) can be called multiple times.
+- Use [updated](#updated) for keeping **derived data** up to date or **reacting to changes**. If you find, that you're causing re-renders, consider using [update](#update) instead.
+- Use custom [JS property getters](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/get) for **derived data** that is "cheap" to calculate and if its not likely to change often and your element doesn't re-[render](#render) often.
+- Use [requestUpdate](#requestupdate) to **trigger an update lifecycle** when LitElement cannot pick it up. (E.g. if you have an [observed property](./properties) that is an array, and you add an item to that array instead of replacing the entire array, LitElement won't "see" this change, because the *reference* to the array *didn't change*.)
+- Use [connectedCallback](#lifecyclecallbacks) to register **event handlers** for outside your element's template, but don't forget to remove them in [disconnectedCallback](#lifecyclecallbacks)!
+
+## Methods and properties reference {#reference}
 
 In call order, the methods and properties in the update lifecycle are:
 
@@ -194,7 +206,7 @@ Controls whether an update should proceed. Implement `shouldUpdate` to specify w
 | **Params** | `changedProperties`| `Map`. Keys are the names of changed properties; Values are the corresponding previous values. |
 | **Updates?** | No | Property changes inside this method do not trigger an element update. |
 
-Reflects property values to attributes and calls `render` to render DOM via lit-html. Provided here for reference. You don't need to override or call this method.
+Reflects property values to attributes and calls `render` to render DOM via lit-html. Provided here for reference. You don't need to override or call this method. But if you override it, make sure to call `super.update(changedProperties)` or [render](#render) will never be called.
 
 ### render {#render}
 
