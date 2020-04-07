@@ -107,6 +107,10 @@ export class LitElement extends UpdatingElement {
     }
     // Take care not to call `this.getStyles()` multiple times since this
     // generates new CSSResults each time.
+    // TODO(sorvell): Since we do not cache CSSResults by input, any
+    // shared styles will generate new stylesheet objects, which is wasteful.
+    // This should be addressed when a browser ships constructable
+    // stylesheets.
     const userStyles = this.getStyles();
 
     if (Array.isArray(userStyles)) {
@@ -171,7 +175,7 @@ export class LitElement extends UpdatingElement {
   }
 
   /**
-   * Applies styling to the element shadowRoot using the `static get styles`
+   * Applies styling to the element shadowRoot using the [[`styles`]]
    * property. Styling will apply using `shadowRoot.adoptedStyleSheets` where
    * available and will fallback otherwise. When Shadow DOM is polyfilled,
    * ShadyCSS scopes styles and adds them to the document. When Shadow DOM
