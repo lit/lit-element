@@ -9,8 +9,7 @@ part of the polymer project is also subject to an additional IP rights grant
 found at http://polymer.github.io/PATENTS.txt
 */
 
-export const supportsAdoptingStyleSheets =
-    (window.ShadowRoot) &&
+export const supportsAdoptingStyleSheets = (window.ShadowRoot) &&
     ('adoptedStyleSheets' in ShadowRoot.prototype) &&
     ('replace' in CSSStyleSheet.prototype);
 

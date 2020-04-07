@@ -35,7 +35,8 @@ declare global {
 
 export type CSSResultOrNative = CSSResult|CSSStyleSheet;
 
-export interface CSSResultArray extends Array<CSSResultOrNative|CSSResultArray> {}
+export interface CSSResultArray extends
+    Array<CSSResultOrNative|CSSResultArray> {}
 
 /**
  * Sentinal value used to avoid calling lit-html's render function when
@@ -70,13 +71,13 @@ export class LitElement extends UpdatingElement {
    */
   static styles?: CSSResultOrNative|CSSResultArray;
 
-  private static _styles: CSSResult[]|undefined;
+  private static _styles: Array<CSSResultOrNative|CSSResult>|undefined;
 
   /**
    * Native CSSStyleSheet to apply to the element. Used over `_styles` when
    * native support is available.
    */
-  private static _nativeStyles: CSSStyleSheet[]|undefined;
+  // private static _nativeStyles: CSSStyleSheet[]|undefined;
 
   /**
    * Return the array of styles to apply to the element.
@@ -91,16 +92,12 @@ export class LitElement extends UpdatingElement {
   /** @nocollapse */
   private static _getUniqueStyles() {
     // Only gather styles once per class
-    const property = supportsAdoptingStyleSheets ?
-        JSCompiler_renameProperty('_nativeStyles', this) :
-        JSCompiler_renameProperty('_styles', this);
-    if (this.hasOwnProperty(property)) {
+    if (this.hasOwnProperty(JSCompiler_renameProperty('_styles', this))) {
       return;
     }
     // Take care not to call `this.getStyles()` multiple times since this
     // generates new CSSResults each time.
     const userStyles = this.getStyles();
-    const work = [];
 
     if (Array.isArray(userStyles)) {
       // De-duplicate styles preserving the _last_ instance in the set.
@@ -109,39 +106,20 @@ export class LitElement extends UpdatingElement {
       // The last item is kept to try to preserve the cascade order with the
       // assumption that it's most important that last added styles override
       // previous styles.
-      const addStyles =
-          (styles: CSSResultArray, set: Set<CSSResultOrNative>): Set<CSSResultOrNative> =>
-              styles.reduceRight(
-                  (set: Set<CSSResultOrNative>, s) =>
-                      // Note: On IE set.add() does not return the set
-                  Array.isArray(s) ? addStyles(s, set) : (set.add(s), set),
-                  set);
+      const addStyles = (styles: CSSResultArray, set: Set<CSSResultOrNative>):
+          Set<CSSResultOrNative> => styles.reduceRight(
+              (set: Set<CSSResultOrNative>, s) =>
+                  // Note: On IE set.add() does not return the set
+              Array.isArray(s) ? addStyles(s, set) : (set.add(s), set),
+              set);
       // Array.from does not work on Set in IE, otherwise return
       // Array.from(addStyles(userStyles, new Set<CSSResult>())).reverse()
       const set = addStyles(userStyles, new Set<CSSResultOrNative>());
-      set.forEach((v) => work.unshift(v));
-    } else if (userStyles !== undefined) {
-      work.push(userStyles);
-    }
-
-    if (supportsAdoptingStyleSheets) {
-      // Convert all CSSResult instances to native CSSStyleSheet.
-      this._nativeStyles = work.map((resultOrNative) => {
-        if (resultOrNative instanceof CSSResult) {
-          return resultOrNative.styleSheet!;
-        }
-        return resultOrNative;
-      });
+      const styles: CSSResultOrNative[] = [];
+      set.forEach((v) => styles.unshift(v));
+      this._styles = styles;
     } else {
-      // This is only possible when a user passes a CSSStyleSheet that was
-      // obtained from a <style> or <link rel="stylesheet"> tag: these are not
-      // constructible stylesheets.
-      work.forEach((resultOrNative) => {
-        if (resultOrNative instanceof CSSStyleSheet) {
-          throw new Error('Can\'t adopt non-constructed stylesheets.');
-        }
-      });
-      this._styles = <CSSResult[]> work;
+      this._styles = userStyles === undefined ? [] : [userStyles];
     }
   }
 
@@ -192,12 +170,6 @@ export class LitElement extends UpdatingElement {
    * behavior](https://wicg.github.io/construct-stylesheets/#using-constructed-stylesheets).
    */
   protected adoptStyles() {
-    if (supportsAdoptingStyleSheets) {
-      (this.renderRoot as ShadowRoot).adoptedStyleSheets =
-          (this.constructor as typeof LitElement)._nativeStyles!;
-      return;
-    }
-
     const styles = (this.constructor as typeof LitElement)._styles!;
     if (styles.length === 0) {
       return;
@@ -210,6 +182,9 @@ export class LitElement extends UpdatingElement {
     if (window.ShadyCSS !== undefined && !window.ShadyCSS.nativeShadow) {
       window.ShadyCSS.ScopingShim!.prepareAdoptedCssText(
           styles.map((s) => s.cssText), this.localName);
+    } else if (supportsAdoptingStyleSheets) {
+      (this.renderRoot as ShadowRoot).adoptedStyleSheets =
+          styles.map((s) => s instanceof CSSStyleSheet ? s : s.styleSheet!);
     } else {
       // This must be done after rendering so the actual style insertion is done
       // in `update`.
