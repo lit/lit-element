@@ -77,15 +77,38 @@ const textFromCSSResult = (value: CSSResult|number) => {
 };
 
 /**
- * Template tag which which can be used with LitElement's [[LitElement.styles | `styles`]] property to
- * set element styles. For security reasons, only literal string values may be
- * used. To incorporate non-literal values [[`unsafeCSS`]] may be used inside a
- * template string part.
+ * This cache ensures that for a given css`` expression, we return the same
+ * CSSResult so that it will return the same CSSStyleSheet object from its
+ * styleSheet property. It may also (speculatively) help browsers withtout
+ * native constructible style sheets support de-duplicate <style> tags, since
+ * the strings creating the <style> tags are referentially identical.
+ *
+ * This could potentially be a memeory leak, but we should already be holding
+ * on to these strings via LitElement static _styles property.
+ */
+const cssResultCache = new Map<TemplateStringsArray|string, CSSResult>();
+
+/**
+ * Template tag which which can be used with LitElement's [[LitElement.styles |
+ * `styles`]] property to set element styles. For security reasons, only literal
+ * string values may be used. To incorporate non-literal values [[`unsafeCSS`]]
+ * may be used inside a template string part.
  */
 export const css =
     (strings: TemplateStringsArray, ...values: (CSSResult|number)[]) => {
-      const cssText = values.reduce(
-          (acc, v, idx) => acc + textFromCSSResult(v) + strings[idx + 1],
-          strings[0]);
-      return new CSSResult(cssText, constructionToken);
+      let key: TemplateStringsArray|string, cssText: string;
+      if (strings.length === 1) {
+        cssText = strings[0];
+        key = strings;
+      } else {
+        key = cssText = values.reduce(
+            (acc, v, idx) => acc + textFromCSSResult(v) + strings[idx + 1],
+            strings[0]);
+      }
+      let result = cssResultCache.get(key);
+      if (result === undefined) {
+        cssResultCache.set(
+            key, result = new CSSResult(cssText, constructionToken));
+      }
+      return result;
     };
