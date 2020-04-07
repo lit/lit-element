@@ -828,8 +828,7 @@ suite('Static get styles', () => {
         'el2 styled correctly');
     assert.equal(
         stylesCounter, 1, 'styles property should only be accessed once');
-    assert.equal(
-      getStylesCounter, 1, 'getStyles() should be called once');
+    assert.equal(getStylesCounter, 1, 'getStyles() should be called once');
   });
 
   test(
@@ -901,8 +900,7 @@ suite('Static get styles', () => {
 
   // Test this in Shadow DOM without `adoptedStyleSheets` only since it's easily
   // detectable in that case.
-  const testNativeAdoptedStyleSheets =
-      (typeof ShadowRoot === 'function') &&
+  const testNativeAdoptedStyleSheets = (typeof ShadowRoot === 'function') &&
       ('adoptedStyleSheets' in window.ShadowRoot.prototype);
   (testNativeAdoptedStyleSheets ? test : test.skip)(
       'Can return CSSStyleSheet where adoptedStyleSheets are natively supported',
@@ -924,9 +922,7 @@ suite('Static get styles', () => {
         await (el as LitElement).updateComplete;
         const div = el.shadowRoot!.querySelector('div')!;
         assert.equal(
-            getComputedStyle(div)
-                .getPropertyValue('border-top-width')
-                .trim(),
+            getComputedStyle(div).getPropertyValue('border-top-width').trim(),
             '4px');
       });
 });

@@ -12,8 +12,7 @@ found at http://polymer.github.io/PATENTS.txt
 /**
  * Whether the current browser supports `adoptedStyleSheets`.
  */
-export const supportsAdoptingStyleSheets =
-    (window.ShadowRoot) &&
+export const supportsAdoptingStyleSheets = (window.ShadowRoot) &&
     ('adoptedStyleSheets' in ShadowRoot.prototype) &&
     ('replace' in CSSStyleSheet.prototype);
 
