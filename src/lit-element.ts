@@ -90,12 +90,6 @@ export class LitElement extends UpdatingElement {
   private static _styles: Array<CSSResultOrNative|CSSResult>|undefined;
 
   /**
-   * Native CSSStyleSheet to apply to the element. Used over `_styles` when
-   * native support is available.
-   */
-  // private static _nativeStyles: CSSStyleSheet[]|undefined;
-
-  /**
    * Return the array of styles to apply to the element.
    * Override this method to integrate into a style management system.
    *
@@ -192,7 +186,7 @@ export class LitElement extends UpdatingElement {
     }
     // There are three separate cases here based on Shadow DOM support.
     // (1) shadowRoot polyfilled: use ShadyCSS
-    // (2) shadowRoot.adoptedStyleSheets available: use it (above)
+    // (2) shadowRoot.adoptedStyleSheets available: use it
     // (3) shadowRoot.adoptedStyleSheets polyfilled: append styles after
     // rendering
     if (window.ShadyCSS !== undefined && !window.ShadyCSS.nativeShadow) {
