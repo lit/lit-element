@@ -82,7 +82,7 @@ export class LitElement extends UpdatingElement {
 
   /**
    * Array of styles to apply to the element. The styles should be defined
-   * using the `css` tag function or via constructible stylesheets.
+   * using the [[`css`]] tag function or via constructible stylesheets.
    */
   static styles?: CSSResultOrNative|CSSResultArray;
 
