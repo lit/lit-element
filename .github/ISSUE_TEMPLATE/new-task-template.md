@@ -7,14 +7,12 @@ assignees: ''
 
 ---
 
-## Initiative / goal
-One to two sentences that describe:
--Who wants the functionality
--What it is they want
--Why they want it
+## Description
+- Who wants the functionality
+- What it is they want
+- Why they want it
+- Functional description of task/subtask
 
-### Scope
-Description of task/subtask
 
-## Acceptance criteria and must have scope
+## Acceptance criteria
 What the card must do in order to accept it as complete. Acceptance Criteria must be concrete or measurable.
