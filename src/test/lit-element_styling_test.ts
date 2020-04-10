@@ -925,7 +925,7 @@ suite('Static get styles', () => {
 
   // Test this in Shadow DOM without `adoptedStyleSheets` only since it's easily
   // detectable in that case. Look explicitly for no ShadyCSS.
-  const testNativeAdoptedStyleSheets = (window.ShadyCSS === undefined) &&
+  const testNativeAdoptedStyleSheets =(window.ShadyCSS === undefined) &&
       (typeof ShadowRoot === 'function') &&
       ('adoptedStyleSheets' in window.ShadowRoot.prototype);
   (testNativeAdoptedStyleSheets ? test : test.skip)(
@@ -951,17 +951,19 @@ suite('Static get styles', () => {
             getComputedStyle(div).getPropertyValue('border-top-width').trim(),
             '4px');
 
+        // The CSSStyleSheet isn't flattened, so changes can take effect.
         sheet.replaceSync('div { border: 2px solid red; }');
         assert.equal(
             getComputedStyle(div).getPropertyValue('border-top-width').trim(),
             '2px');
       });
 
-  // Test that when ShadyCSS is enabled _even with_ native support, we can return
-  // a CSSStyleSheet that will be flattened and play nice with others.
-  const testShadyCSSWithAdoptedStyleSheetSupport = (window.ShadyCSS !== undefined) &&
-      (typeof ShadowRoot === 'function') &&
-      ('adoptedStyleSheets' in window.ShadowRoot.prototype);
+  // Test that when ShadyCSS is enabled with native support for
+  // adoptedStyleSheets, we can return a CSSStyleSheet that will be flattened
+  // and play nice with others.
+  const testShadyCSSWithAdoptedStyleSheetSupport = (typeof ShadowRoot === 'function') &&
+      ('adoptedStyleSheets' in window.ShadowRoot.prototype) &&
+      (window.ShadyCSS !== undefined && !window.ShadyCSS.nativeShadow);
   (testShadyCSSWithAdoptedStyleSheetSupport ? test : test.skip)(
       'CSSStyleSheet is flattened where ShadyCSS is enabled yet adoptedStyleSheets are supported',
       async () => {
