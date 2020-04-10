@@ -143,7 +143,7 @@ export class LitElement extends UpdatingElement {
     // In both cases, the user might have expected to update their stylesheets
     // over time, but the alternative was a crash.
     this._styles = this._styles.map((s) => {
-      if (s instanceof CSSStyleSheet && 
+      if (s instanceof CSSStyleSheet &&
           (s.ownerNode || !supportsAdoptingStyleSheets)) {
         const cssText = Array.prototype.slice.call(s.cssRules)
             .map((rule) => rule.cssText)
