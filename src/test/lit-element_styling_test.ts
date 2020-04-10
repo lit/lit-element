@@ -898,32 +898,12 @@ suite('Static get styles', () => {
         document.body.removeChild(element);
       });
 
-  test(
-      'Non-adoptible stylesheet is disallowed',
-      async () => {
-        const s = document.createElement('style');
-        s.textContent = `@media (max-width: 768px) { #_adoptible_test { border: 4px solid red; } }`;
-        container.appendChild(s);
-        const sheetFromStyle = s.sheet;
-        container.removeChild(s);
-
-        const base = generateElementName();
-        customElements.define(base, class extends LitElement {
-          static styles = (sheetFromStyle as CSSStyleSheet);
-        });
-
-        assert.throws(() => {
-          const el = document.createElement(base);
-          container.appendChild(el);
-        });
-      });
-
   // Test this in Shadow DOM without `adoptedStyleSheets` only since it's easily
   // detectable in that case. Look explicitly for no ShadyCSS.
-  const testNativeAdoptedStyleSheets = (window.ShadyCSS === undefined) &&
+  const testAdoptedStyleSheets =
       (typeof ShadowRoot === 'function') &&
       ('adoptedStyleSheets' in window.ShadowRoot.prototype);
-  (testNativeAdoptedStyleSheets ? test : test.skip)(
+  (testAdoptedStyleSheets ? test : test.skip)(
       'Can return CSSStyleSheet where adoptedStyleSheets are natively supported',
       async () => {
         const sheet = new CSSStyleSheet();
@@ -946,11 +926,16 @@ suite('Static get styles', () => {
             getComputedStyle(div).getPropertyValue('border-top-width').trim(),
             '4px');
 
-        // The CSSStyleSheet isn't flattened, so changes can take effect.
+        // When the WC polyfills are included, calling .replaceSync is a noop to
+        // our styles as they're already flattened (so expect 4px). Otherwise,
+        // look for the updated value.
+        const flattenDueToPolyfill = (window.ShadyCSS !== undefined && !window.ShadyCSS.nativeShadow);
+        const expectedValue = flattenDueToPolyfill ? '4px' : '2px';
         sheet.replaceSync('div { border: 2px solid red; }');
+
         assert.equal(
             getComputedStyle(div).getPropertyValue('border-top-width').trim(),
-            '2px');
+            expectedValue);
       });
 
   // Test that when ShadyCSS is enabled with native support for
