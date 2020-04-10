@@ -25,7 +25,7 @@ import {PropertyDeclaration, UpdatingElement} from './updating-element.js';
 
 export type Constructor<T> = {
   // tslint:disable-next-line:no-any
-  new (...args: any[]): T
+  new (...args: any[]): T;
 };
 
 // From the TC39 Decorators proposal
@@ -410,8 +410,7 @@ export function eventOptions(options: AddEventListenerOptions) {
  * this property should be annotated as `NodeListOf<HTMLElement>`.
  * @category Decorator
  */
-export function queryAssignedNodes(
-    slotName: string = '', flatten: boolean = false) {
+export function queryAssignedNodes(slotName = '', flatten = false) {
   return (protoOrDescriptor: Object|ClassElement,
           // tslint:disable-next-line:no-any decorator
           name?: PropertyKey): any => {
