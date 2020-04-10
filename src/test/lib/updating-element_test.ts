@@ -12,11 +12,11 @@
  * http://polymer.github.io/PATENTS.txt
  */
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import {customElement, property} from '../../lib/decorators.js';
 import {ComplexAttributeConverter, defaultConverter, PropertyDeclaration, PropertyDeclarations, PropertyValues, UpdatingElement} from '../../lib/updating-element.js';
 import {generateElementName} from '../test-helpers.js';
-
-/* eslint-disable @typescript-eslint/no-explicit-any */
 
 const assert = chai.assert;
 

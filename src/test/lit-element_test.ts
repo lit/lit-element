@@ -12,13 +12,13 @@
  * http://polymer.github.io/PATENTS.txt
  */
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import {html, LitElement, property} from '../lit-element.js';
 
 import {generateElementName, stripExpressionDelimeters} from './test-helpers.js';
 
 const assert = chai.assert;
-
-/* eslint-disable @typescript-eslint/no-explicit-any */
 
 suite('LitElement', () => {
   let container: HTMLElement;
