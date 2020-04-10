@@ -152,7 +152,7 @@ export class LitElement extends UpdatingElement {
           // Flatten the cssText from the passed constructible stylesheet. The
           // user might have expected to update their stylesheets over time,
           // but the alternative was a crash.
-          const cssText = Array.prototype.slice.call(s.cssRules)
+          const cssText = Array.prototype.slice.call(s.cssRules).reduce((css, rule) => css + rule.cssText, '');
               .map((rule) => rule.cssText)
               .join('');
           return unsafeCSS(cssText);
