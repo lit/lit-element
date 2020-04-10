@@ -924,8 +924,9 @@ suite('Static get styles', () => {
       });
 
   // Test this in Shadow DOM without `adoptedStyleSheets` only since it's easily
-  // detectable in that case.
-  const testNativeAdoptedStyleSheets = (typeof ShadowRoot === 'function') &&
+  // detectable in that case. Look explicitly for no ShadyCSS.
+  const testNativeAdoptedStyleSheets = (window.ShadyCSS === undefined) &&
+      (typeof ShadowRoot === 'function') &&
       ('adoptedStyleSheets' in window.ShadowRoot.prototype);
   (testNativeAdoptedStyleSheets ? test : test.skip)(
       'Can return CSSStyleSheet where adoptedStyleSheets are natively supported',
@@ -959,7 +960,8 @@ suite('Static get styles', () => {
   // Test that when ShadyCSS is enabled _even with_ native support, we can return
   // a CSSStyleSheet that will be flattened and play nice with others.
   const testShadyCSSWithAdoptedStyleSheetSupport = (window.ShadyCSS !== undefined) &&
-        testNativeAdoptedStyleSheets;
+      (typeof ShadowRoot === 'function') &&
+      ('adoptedStyleSheets' in window.ShadowRoot.prototype);
   (testShadyCSSWithAdoptedStyleSheetSupport ? test : test.skip)(
       'CSSStyleSheet is flattened where ShadyCSS is enabled yet adoptedStyleSheets are supported',
       async () => {
