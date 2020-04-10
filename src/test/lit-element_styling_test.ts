@@ -925,7 +925,7 @@ suite('Static get styles', () => {
 
   // Test this in Shadow DOM without `adoptedStyleSheets` only since it's easily
   // detectable in that case. Look explicitly for no ShadyCSS.
-  const testNativeAdoptedStyleSheets =(window.ShadyCSS === undefined) &&
+  const testNativeAdoptedStyleSheets = (window.ShadyCSS === undefined) &&
       (typeof ShadowRoot === 'function') &&
       ('adoptedStyleSheets' in window.ShadowRoot.prototype);
   (testNativeAdoptedStyleSheets ? test : test.skip)(
