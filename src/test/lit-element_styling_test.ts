@@ -912,15 +912,10 @@ suite('Static get styles', () => {
           static styles = (sheetFromStyle as CSSStyleSheet);
         });
 
-        const el = document.createElement(base);
-        container.appendChild(el);
-
-        try {
-          await (el as LitElement).updateComplete;
-          assert.fail('update should fail as <style>.sheet is disallowed');
-        } catch (e) {
-          // ok
-        }
+        assert.throws(() => {
+          const el = document.createElement(base);
+          container.appendChild(el);
+        });
       });
 
   // Test this in Shadow DOM without `adoptedStyleSheets` only since it's easily
