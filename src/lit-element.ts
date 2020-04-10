@@ -37,7 +37,8 @@ declare global {
 (window['litElementVersions'] || (window['litElementVersions'] = []))
     .push('2.3.1');
 
-export type CSSResultArray = Array<CSSResult|CSSResultArray>;
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface CSSResultArray extends Array<CSSResult|CSSResultArray> {}
 
 /**
  * Sentinal value used to avoid calling lit-html's render function when
