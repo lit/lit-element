@@ -898,6 +898,33 @@ suite('Static get styles', () => {
         document.body.removeChild(element);
       });
 
+  test(
+      'Non-adoptible stylesheet is flattened to a CSSResult',
+      async () => {
+        const s = document.createElement('style');
+        s.textContent = `@media (max-width: 768px) { #_adoptible_test { color: red; } }`;
+        container.appendChild(s);
+        const sheetFromStyle = s.sheet;
+        container.removeChild(s);
+
+        const base = generateElementName();
+        customElements.define(base, class extends LitElement {
+          static styles = (sheetFromStyle as CSSStyleSheet);
+
+          render() {
+            return htmlWithStyles`<div id="_adoptible_test"></div>`;
+          }
+        });
+
+        const el = document.createElement(base);
+        container.appendChild(el);
+        await (el as LitElement).updateComplete;
+        const div = el.shadowRoot!.querySelector('div')!;
+        assert.equal(
+            getComputedStyle(div).getPropertyValue('color').trim(),
+            'red');
+      });
+
   // Test this in Shadow DOM without `adoptedStyleSheets` only since it's easily
   // detectable in that case.
   const testNativeAdoptedStyleSheets = (typeof ShadowRoot === 'function') &&

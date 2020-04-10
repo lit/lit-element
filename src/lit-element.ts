@@ -18,7 +18,7 @@ import {PropertyValues, UpdatingElement} from './lib/updating-element.js';
 export * from './lib/updating-element.js';
 export * from './lib/decorators.js';
 export {html, svg, TemplateResult, SVGTemplateResult} from 'lit-html/lit-html.js';
-import {supportsAdoptingStyleSheets, CSSResult} from './lib/css-tag.js';
+import {supportsAdoptingStyleSheets, CSSResult, unsafeCSS, css} from './lib/css-tag.js';
 export * from './lib/css-tag.js';
 
 declare global {
@@ -135,6 +135,23 @@ export class LitElement extends UpdatingElement {
     } else {
       this._styles = userStyles === undefined ? [] : [userStyles];
     }
+
+    // Map any invalid CSSStyleSheet instances to a flattened CSSResult. They
+    // are invalid in two conditions.
+    // (1) the sheet is non-constructible (`sheet` of a HTMLStyleElement)
+    // (2) the ShadyCSS polyfill is enabled (:. supportsAdoptingStyleSheets is false)
+    // In both cases, the user might have expected to update their stylesheets
+    // over time, but the alternative was a crash.
+    this._styles = this._styles.map((s) => {
+      if (s instanceof CSSStyleSheet && 
+          (s.ownerNode || !supportsAdoptingStyleSheets)) {
+        const cssText = Array.prototype.slice.call(s.cssRules)
+            .map((rule) => rule.cssText)
+            .join('');
+        return unsafeCSS(cssText);
+      }
+      return s;
+    });
   }
 
   private _needsShimAdoptedStyleSheets?: boolean;
