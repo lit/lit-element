@@ -968,7 +968,7 @@ suite('Static get styles', () => {
 
         const base = generateElementName();
         customElements.define(base, class extends LitElement {
-          static styles = [sheet, normal]
+          static styles = [sheet, normal];
 
           render() {
             return htmlWithStyles`<div></div><span></span>`;
@@ -979,19 +979,17 @@ suite('Static get styles', () => {
         container.appendChild(el);
         await (el as LitElement).updateComplete;
 
-        // CSSStyleSheet
         const div = el.shadowRoot!.querySelector('div')!;
         assert.equal(
             getComputedStyle(div).getPropertyValue('border-top-width').trim(),
             '4px');
 
-        // css-tag
         const span = el.shadowRoot!.querySelector('span')!;
         assert.equal(
             getComputedStyle(span).getPropertyValue('border-top-width').trim(),
             '4px');
 
-        // CSSStyleSheet update
+        // CSSStyleSheet update should fail, as the styles will be flattened.
         sheet.replaceSync('div { border: 2px solid red; }');
         assert.equal(
           getComputedStyle(div).getPropertyValue('border-top-width').trim(),
