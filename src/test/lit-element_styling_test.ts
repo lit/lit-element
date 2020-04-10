@@ -899,7 +899,7 @@ suite('Static get styles', () => {
       });
 
   test(
-      'Non-adoptible stylesheet is flattened to a CSSResult',
+      'Non-adoptible stylesheet is disallowed',
       async () => {
         const s = document.createElement('style');
         s.textContent = `@media (max-width: 768px) { #_adoptible_test { border: 4px solid red; } }`;
@@ -910,19 +910,17 @@ suite('Static get styles', () => {
         const base = generateElementName();
         customElements.define(base, class extends LitElement {
           static styles = (sheetFromStyle as CSSStyleSheet);
-
-          render() {
-            return htmlWithStyles`<div id="_adoptible_test"></div>`;
-          }
         });
 
         const el = document.createElement(base);
         container.appendChild(el);
-        await (el as LitElement).updateComplete;
-        const div = el.shadowRoot!.querySelector('div')!;
-        assert.equal(
-            getComputedStyle(div).getPropertyValue('border-top-width').trim(),
-            '4px');
+
+        try {
+          await (el as LitElement).updateComplete;
+          assert.fail('update should fail as <style>.sheet is disallowed');
+        } catch (e) {
+          // ok
+        }
       });
 
   // Test this in Shadow DOM without `adoptedStyleSheets` only since it's easily
@@ -951,6 +949,53 @@ suite('Static get styles', () => {
         assert.equal(
             getComputedStyle(div).getPropertyValue('border-top-width').trim(),
             '4px');
+
+        sheet.replaceSync('div { border: 2px solid red; }');
+        assert.equal(
+          getComputedStyle(div).getPropertyValue('border-top-width').trim(),
+          '2px');
+      });
+
+  // Test that when ShadyCSS is enabled _even with_ native support, we can return
+  // a CSSStyleSheet that will be flattened and play nice with others.
+  const testShadyCSSWithAdoptedStyleSheetSupport = (window.ShadyCSS !== undefined) &&
+        testNativeAdoptedStyleSheets;
+  (testShadyCSSWithAdoptedStyleSheetSupport ? test : test.skip)(
+      async () => {
+        const sheet = new CSSStyleSheet();
+        sheet.replaceSync('div { border: 4px solid red; }');
+        const normal = css`span { border: 4px solid blue; }`;
+
+        const base = generateElementName();
+        customElements.define(base, class extends LitElement {
+          static styles = [sheet, normal]
+
+          render() {
+            return htmlWithStyles`<div></div><span></span>`;
+          }
+        });
+
+        const el = document.createElement(base);
+        container.appendChild(el);
+        await (el as LitElement).updateComplete;
+
+        // CSSStyleSheet
+        const div = el.shadowRoot!.querySelector('div')!;
+        assert.equal(
+            getComputedStyle(div).getPropertyValue('border-top-width').trim(),
+            '4px');
+
+        // css-tag
+        const span = el.shadowRoot!.querySelector('span')!;
+        assert.equal(
+            getComputedStyle(span).getPropertyValue('border-top-width').trim(),
+            '4px');
+
+        // CSSStyleSheet update
+        sheet.replaceSync('div { border: 2px solid red; }');
+        assert.equal(
+          getComputedStyle(div).getPropertyValue('border-top-width').trim(),
+          '4px', 'CSS should not reflect CSSStyleSheet as it was flattened');
       });
 });
 

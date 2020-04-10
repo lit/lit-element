@@ -136,19 +136,27 @@ export class LitElement extends UpdatingElement {
       this._styles = userStyles === undefined ? [] : [userStyles];
     }
 
-    // Map any invalid CSSStyleSheet instances to a flattened CSSResult. They
-    // are invalid in two conditions.
-    // (1) the sheet is non-constructible (`sheet` of a HTMLStyleElement)
-    // (2) the ShadyCSS polyfill is enabled (:. supportsAdoptingStyleSheets is false)
-    // In both cases, the user might have expected to update their stylesheets
-    // over time, but the alternative was a crash.
+    // Ensure that there are no invalid CSSStyleSheet instances here. They are
+    // invalid in two conditions.
+    // (1) the sheet is non-constructible (`sheet` of a HTMLStyleElement), in
+    //     this case an Error is thrown
+    // (2) the ShadyCSS polyfill is enabled (:. supportsAdoptingStyleSheets is
+    //     false)
     this._styles = this._styles.map((s) => {
-      if (s instanceof CSSStyleSheet &&
-          (s.ownerNode || !supportsAdoptingStyleSheets)) {
-        const cssText = Array.prototype.slice.call(s.cssRules)
-            .map((rule) => rule.cssText)
-            .join('');
-        return unsafeCSS(cssText);
+      if (s instanceof CSSStyleSheet) {
+        if (s.ownerNode) {
+          throw new Error(`CSSStyleSheet instances used in 'styles' cannot ` +
+              `come from <style> tags.`);
+        }
+        if (!supportsAdoptingStyleSheets) {
+          // Flatten the cssText from the passed constructible stylesheet. The
+          // user might have expected to update their stylesheets over time,
+          // but the alternative was a crash.
+          const cssText = Array.prototype.slice.call(s.cssRules)
+              .map((rule) => rule.cssText)
+              .join('');
+          return unsafeCSS(cssText);
+        }
       }
       return s;
     });
