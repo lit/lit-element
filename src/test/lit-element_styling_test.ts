@@ -952,8 +952,8 @@ suite('Static get styles', () => {
 
         sheet.replaceSync('div { border: 2px solid red; }');
         assert.equal(
-          getComputedStyle(div).getPropertyValue('border-top-width').trim(),
-          '2px');
+            getComputedStyle(div).getPropertyValue('border-top-width').trim(),
+            '2px');
       });
 
   // Test that when ShadyCSS is enabled _even with_ native support, we can return
@@ -961,6 +961,7 @@ suite('Static get styles', () => {
   const testShadyCSSWithAdoptedStyleSheetSupport = (window.ShadyCSS !== undefined) &&
         testNativeAdoptedStyleSheets;
   (testShadyCSSWithAdoptedStyleSheetSupport ? test : test.skip)(
+      'CSSStyleSheet is flattened where ShadyCSS is enabled yet adoptedStyleSheets are supported',
       async () => {
         const sheet = new CSSStyleSheet();
         sheet.replaceSync('div { border: 4px solid red; }');
@@ -992,8 +993,8 @@ suite('Static get styles', () => {
         // CSSStyleSheet update should fail, as the styles will be flattened.
         sheet.replaceSync('div { border: 2px solid red; }');
         assert.equal(
-          getComputedStyle(div).getPropertyValue('border-top-width').trim(),
-          '4px', 'CSS should not reflect CSSStyleSheet as it was flattened');
+            getComputedStyle(div).getPropertyValue('border-top-width').trim(),
+            '4px', 'CSS should not reflect CSSStyleSheet as it was flattened');
       });
 });
 
