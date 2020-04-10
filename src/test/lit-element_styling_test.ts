@@ -902,7 +902,7 @@ suite('Static get styles', () => {
       'Non-adoptible stylesheet is flattened to a CSSResult',
       async () => {
         const s = document.createElement('style');
-        s.textContent = `@media (max-width: 768px) { #_adoptible_test { color: red; } }`;
+        s.textContent = `@media (max-width: 768px) { #_adoptible_test { border: 4px solid red; } }`;
         container.appendChild(s);
         const sheetFromStyle = s.sheet;
         container.removeChild(s);
@@ -921,8 +921,8 @@ suite('Static get styles', () => {
         await (el as LitElement).updateComplete;
         const div = el.shadowRoot!.querySelector('div')!;
         assert.equal(
-            getComputedStyle(div).getPropertyValue('color').trim(),
-            'red');
+            getComputedStyle(div).getPropertyValue('border-top-width').trim(),
+            '4px');
       });
 
   // Test this in Shadow DOM without `adoptedStyleSheets` only since it's easily
