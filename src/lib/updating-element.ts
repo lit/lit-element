@@ -13,7 +13,8 @@
  */
 
 /**
- * Use this module if you want to create your own base class extending [[UpdatingElement]].
+ * Use this module if you want to create your own base class extending
+ * [[UpdatingElement]].
  * @packageDocumentation
  */
 

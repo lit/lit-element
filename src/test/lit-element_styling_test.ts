@@ -899,8 +899,7 @@ suite('Static get styles', () => {
       });
 
   const testAdoptedStyleSheets =
-      (window.ShadowRoot) &&
-      ('replace' in CSSStyleSheet.prototype);
+      (window.ShadowRoot) && ('replace' in CSSStyleSheet.prototype);
   (testAdoptedStyleSheets ? test : test.skip)(
       'Can return CSSStyleSheet where adoptedStyleSheets are natively supported',
       async () => {
@@ -933,7 +932,8 @@ suite('Static get styles', () => {
         // When the WC polyfills are included, calling .replaceSync is a noop to
         // our styles as they're already flattened (so expect 4px). Otherwise,
         // look for the updated value.
-        const usesAdoptedStyleSheet = (window.ShadyCSS === undefined || window.ShadyCSS.nativeShadow);
+        const usesAdoptedStyleSheet =
+            (window.ShadyCSS === undefined || window.ShadyCSS.nativeShadow);
         const expectedValue = usesAdoptedStyleSheet ? '2px' : '4px';
         sheet.replaceSync('div { border: 2px solid red; }');
 
@@ -945,8 +945,7 @@ suite('Static get styles', () => {
   // Test that when ShadyCSS is enabled (while still having native support for
   // adoptedStyleSheets), we can return a CSSStyleSheet that will be flattened
   // and play nice with others.
-  const testShadyCSSWithAdoptedStyleSheetSupport =
-      (window.ShadowRoot) &&
+  const testShadyCSSWithAdoptedStyleSheetSupport = (window.ShadowRoot) &&
       ('replace' in CSSStyleSheet.prototype) &&
       (window.ShadyCSS !== undefined && !window.ShadyCSS.nativeShadow);
   (testShadyCSSWithAdoptedStyleSheetSupport ? test : test.skip)(
@@ -977,7 +976,8 @@ suite('Static get styles', () => {
         sheet.replaceSync('div { border: 2px solid red; }');
         assert.equal(
             getComputedStyle(div).getPropertyValue('border-top-width').trim(),
-            '4px', 'CSS should not reflect CSSStyleSheet as it was flattened');
+            '4px',
+            'CSS should not reflect CSSStyleSheet as it was flattened');
       });
 });
 
