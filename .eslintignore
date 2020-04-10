@@ -1,4 +1,6 @@
+/demo/
 /docs/
 /lib/
-/test/**/*.{d.ts,d.ts.map,js,js.map}
-/lit-element.{d.ts,d.ts.map,js,js.map}
+/test/
+/ts3.4/
+/lit-element.js
