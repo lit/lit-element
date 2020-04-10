@@ -13,7 +13,7 @@ found at http://polymer.github.io/PATENTS.txt
  * Whether the current browser supports `adoptedStyleSheets`.
  */
 export const supportsAdoptingStyleSheets = (window.ShadowRoot) &&
-    (window.ShadyCSS === undefined) &&
+    (window.ShadyCSS === undefined || window.ShadyCSS.nativeShadow) &&
     ('adoptedStyleSheets' in Document.prototype) &&
     ('replace' in CSSStyleSheet.prototype);
 
