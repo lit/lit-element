@@ -12,7 +12,8 @@ found at http://polymer.github.io/PATENTS.txt
 /**
  * Whether the current browser supports `adoptedStyleSheets`.
  */
-export const supportsAdoptingStyleSheets =
+export const supportsAdoptingStyleSheets = (window.ShadowRoot) &&
+    (window.ShadyCSS === undefined || window.ShadyCSS.nativeShadow) &&
     ('adoptedStyleSheets' in Document.prototype) &&
     ('replace' in CSSStyleSheet.prototype);
 
@@ -28,6 +29,7 @@ export class CSSResult {
       throw new Error(
           'CSSResult is not constructable. Use `unsafeCSS` or `css` instead.');
     }
+
     this.cssText = cssText;
   }
 
@@ -35,8 +37,8 @@ export class CSSResult {
   // stylesheets are not created until the first element instance is made.
   get styleSheet(): CSSStyleSheet|null {
     if (this._styleSheet === undefined) {
-      // Note, if `adoptedStyleSheets` is supported then we assume CSSStyleSheet
-      // is constructable.
+      // Note, if `supportsAdoptingStyleSheets` is true then we assume
+      // CSSStyleSheet is constructable.
       if (supportsAdoptingStyleSheets) {
         this._styleSheet = new CSSStyleSheet();
         this._styleSheet.replaceSync(this.cssText);
