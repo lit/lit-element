@@ -87,7 +87,7 @@
 					<a href="globals.html">Globals</a>
 				</li>
 			</ul>
-			<h1> lit-element</h1>
+			<h1>lit-element</h1>
 		</div>
 	</div>
 </header>
@@ -95,22 +95,33 @@
 	<div class="row">
 		<div class="col-8 col-content">
 			<div class="tsd-panel tsd-typography">
-				<h1 id="litelement-api-documentation">LitElement API Documentation</h1>
-				<h2 id="install-lit-element">Install lit-element</h2>
-				<pre><code>npm <span class="hljs-keyword">install</span> lit-<span class="hljs-keyword">element</span></code></pre><h2 id="modules">Modules</h2>
-				<h3 id="lit-element"><a href="/api/modules/_lit_element_.html">lit-element</a></h3>
+				<a href="#litelement-api-documentation" id="litelement-api-documentation" style="color: inherit; text-decoration: none;">
+					<h1>LitElement API Documentation</h1>
+				</a>
+				<a href="#install-lit-element" id="install-lit-element" style="color: inherit; text-decoration: none;">
+					<h2>Install lit-element</h2>
+				</a>
+				<pre><code>npm <span class="hljs-keyword">install</span> lit-<span class="hljs-keyword">element</span></code></pre>
+				<a href="#modules" id="modules" style="color: inherit; text-decoration: none;">
+					<h2>Modules</h2>
+				</a>
+				<a href="#a-hrefapimodules_lit_element_htmllit-elementa" id="a-hrefapimodules_lit_element_htmllit-elementa" style="color: inherit; text-decoration: none;">
+					<h3><a href="/api/modules/_lit_element_.html">lit-element</a></h3>
+				</a>
 				<p>Extends <a href="#lib-updating-element">UpdatingElement</a> to include lit-html templating. Users define a <code>render</code> method to provide an element template, which is called when required by <code>update</code>.</p>
 				<p>Import <code>LitElement</code> and <code>html</code> from this module to create a component:</p>
 				<pre><code class="language-js"><span class="hljs-keyword">import</span> { LitElement, html } <span class="hljs-keyword">from</span> <span class="hljs-string">'lit-element'</span>;
 
 <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyElement</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">LitElement</span> </span>{
   render() {
-      <span class="hljs-keyword">return</span> html<span class="hljs-string">`&lt;p&gt;your template here&lt;/p&gt;`</span>;
+      <span class="hljs-keyword">return</span> html`<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>your template here<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>`</span>;
   }
 }
 
 customElements.define(<span class="hljs-string">'my-element'</span>, MyElement);</code></pre>
-				<h3 id="lib-updating-element"><a href="/api/modules/_lib_updating_element_.html">lib/updating-element</a></h3>
+				<a href="#a-hrefapimodules_lib_updating_element_htmllibupdating-elementa" id="a-hrefapimodules_lib_updating_element_htmllibupdating-elementa" style="color: inherit; text-decoration: none;">
+					<h3><a href="/api/modules/_lib_updating_element_.html">lib/updating-element</a></h3>
+				</a>
 				<pre><code class="language-js"><span class="hljs-keyword">import</span> { UpdatingElement } <span class="hljs-keyword">from</span> <span class="hljs-string">'lit-element/lib/updating-element.js'</span>;</code></pre>
 				<p>Custom Element base class that supports declaring observable properties, reflecting attributes to properties, and the core update lifecycle methods.</p>
 			</div>
@@ -121,26 +132,11 @@ customElements.define(<span class="hljs-string">'my-element'</span>, MyElement);
 					<li class="globals  ">
 						<a href="globals.html"><em>Globals</em></a>
 					</li>
-					<li class="label tsd-is-external">
-						<span>Internals</span>
+					<li class=" tsd-kind-module">
+						<a href="modules/_lib_updating_element_.html">&quot;lib/updating-<wbr>element&quot;</a>
 					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_demo_ts_element_.html">"demo/ts-<wbr>element"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_lib_css_tag_.html">"lib/css-<wbr>tag"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_lib_decorators_.html">"lib/decorators"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_lib_updating_element_.html">"lib/updating-<wbr>element"</a>
-					</li>
-					<li class="label tsd-is-external">
-						<span>Externals</span>
-					</li>
-					<li class=" tsd-kind-external-module tsd-is-external">
-						<a href="modules/_lit_element_.html">"lit-<wbr>element"</a>
+					<li class=" tsd-kind-module">
+						<a href="modules/_lit_element_.html">&quot;lit-<wbr>element&quot;</a>
 					</li>
 				</ul>
 			</nav>
@@ -163,6 +159,7 @@ customElements.define(<span class="hljs-string">'my-element'</span>, MyElement);
 				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
 				<li class="tsd-kind-index-signature"><span class="tsd-kind-icon">Index signature</span></li>
 				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
+				<li class="tsd-kind-type-alias tsd-has-type-parameter"><span class="tsd-kind-icon">Type alias with type parameter</span></li>
 			</ul>
 			<ul class="tsd-legend">
 				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
@@ -211,7 +208,7 @@ customElements.define(<span class="hljs-string">'my-element'</span>, MyElement);
 	</div>
 </footer>
 <div class="container tsd-generator">
-	<p>Generated using <a href="http://typedoc.org/" target="_blank">TypeDoc</a></p>
+	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
 </div>
 <div class="overlay"></div>
 <script src="assets/js/main.js"></script>
@@ -238,7 +235,7 @@ customElements.define(<span class="hljs-string">'my-element'</span>, MyElement);
                 m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
         })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-        ga('create', 'UA-39334307-23', '');
+        ga('create', 'UA-39334307-23', 'auto');
         ga('send', 'pageview');
     </script>
 </body>
