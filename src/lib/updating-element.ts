@@ -680,7 +680,7 @@ export abstract class UpdatingElement extends HTMLElement {
         shouldRequestUpdate = false;
       }
     }
-    if (!this._hasRequestedUpdate && shouldRequestUpdate) {
+    if (!this.isUpdatePending && shouldRequestUpdate) {
       this._updatePromise = this._enqueueUpdate();
     }
   }
@@ -723,10 +723,10 @@ export abstract class UpdatingElement extends HTMLElement {
     if (result != null) {
       await result;
     }
-    return !this._hasRequestedUpdate;
+    return !this.isUpdatePending;
   }
 
-  private get _hasRequestedUpdate() {
+  protected get isUpdatePending() {
     return (this._updateState & STATE_UPDATE_REQUESTED);
   }
 
@@ -754,7 +754,7 @@ export abstract class UpdatingElement extends HTMLElement {
     // Abort any update if one is not pending when this is called.
     // This can happen if `performUpdate` as called early to "flush"
     // the update.
-    if (!this._hasRequestedUpdate) {
+    if (!this.isUpdatePending) {
       return;
     }
     // Mixin instance properties once, if they exist.

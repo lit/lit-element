@@ -1992,8 +1992,9 @@ suite('UpdatingElement', () => {
         const setter = defaultDescriptor.set;
         return Object.assign(defaultDescriptor, {
           set(this: E, value: unknown) {
+            const isUpdatePending = this.isUpdatePending;
             setter.call(this, value);
-            if (options.sync && this.hasUpdated) {
+            if (options.sync && this.hasUpdated && !isUpdatePending) {
               (this as unknown as E).performUpdate();
             }
           }
@@ -2002,12 +2003,20 @@ suite('UpdatingElement', () => {
 
       updateCount = 0;
 
+      update(changedProperties: PropertyValues) {
+        this.zug = this.foo + 1;
+        super.update(changedProperties);
+      }
+
       updated() {
         this.updateCount++;
       }
 
       @property({type: Number, sync: true, reflect: true} as PropertyDeclaration)
       foo = 5;
+
+      @property({type: Number, sync: true} as PropertyDeclaration)
+      zug = this.foo;
 
       @property({})
       bar = 'bar';
