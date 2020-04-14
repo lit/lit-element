@@ -1992,20 +1992,23 @@ suite('UpdatingElement', () => {
         const setter = defaultDescriptor.set;
         return Object.assign(defaultDescriptor, {
           set(this: E, value: unknown) {
-            const isUpdatePending = this.isUpdatePending;
             setter.call(this, value);
-            if (options.sync && this.hasUpdated && !isUpdatePending) {
+            if (options.sync && this.hasUpdated && !this.isUpdating) {
               (this as unknown as E).performUpdate();
             }
           }
         });
       }
 
+      isUpdating = false;
+
       updateCount = 0;
 
       update(changedProperties: PropertyValues) {
+        this.isUpdating = true;
         this.zug = this.foo + 1;
         super.update(changedProperties);
+        this.isUpdating = false;
       }
 
       updated() {
@@ -2038,6 +2041,10 @@ suite('UpdatingElement', () => {
     assert.equal(el.updateCount, 5);
     await el.updateComplete;
     assert.equal(el.updateCount, 6);
+    el.foo = 5;
+    assert.equal(el.updateCount, 7);
+    el.zug = 60;
+    assert.equal(el.updateCount, 8);
   });
 
   test('attribute-based property storage', async () => {
