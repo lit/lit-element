@@ -752,7 +752,7 @@ export abstract class UpdatingElement extends HTMLElement {
    */
   protected performUpdate(): void|Promise<unknown> {
     // Abort any update if one is not pending when this is called.
-    // This can happen if `performUpdate` as called early to "flush"
+    // This can happen if `performUpdate` is called early to "flush"
     // the update.
     if (!this._hasRequestedUpdate) {
       return;
