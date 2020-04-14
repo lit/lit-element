@@ -2004,11 +2004,17 @@ suite('UpdatingElement', () => {
 
       updateCount = 0;
 
-      update(changedProperties: PropertyValues) {
+      performUpdate() {
+        // While it's dubious to have a computed property that's
+        // also settable but this just demonstrates it's possible.
         this.isUpdating = true;
+        super.performUpdate();
+        this.isUpdating = false;
+      }
+
+      update(changedProperties: PropertyValues) {
         this.zug = this.foo + 1;
         super.update(changedProperties);
-        this.isUpdating = false;
       }
 
       updated() {
