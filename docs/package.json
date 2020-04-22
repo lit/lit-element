@@ -8,8 +8,6 @@
     "deploy-staging": "npm run build && gcloud app deploy _site/app.yaml --project polymer-lit-element-staging"
   },
   "dependencies": {
-    "@babel/runtime": "^7.9.2",
-    "@babel/runtime-corejs2": "^7.9.2",
     "@stackblitz/sdk": "^1.3.0",
     "@webcomponents/webcomponentsjs": "^2.1.3",
     "core-js": "^3.6.5",
@@ -18,7 +16,6 @@
   },
   "devDependencies": {
     "@babel/core": "^7.9.0",
-    "@babel/plugin-transform-runtime": "^7.9.0",
     "@babel/preset-env": "^7.9.5",
     "@rollup/plugin-node-resolve": "^7.1.3",
     "polymer-cli": "^1.9.11",
