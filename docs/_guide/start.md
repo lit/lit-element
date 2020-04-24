@@ -109,6 +109,7 @@ A couple of things to look for in the code:
 
     ```js
     export class MyElement extends LitElement { ... } 
+
     customElements.define('my-element', MyElement);
     ``` 
 
@@ -123,14 +124,17 @@ A couple of things to look for in the code:
 *   The component's `render` method defines a [template](templates) that will be rendered as a part of the component. In this case, it includes some text, some data bindings, and a button. For more information, see [Templates](templates).
 
     ```js
-    render() {
-      return html`
-        <h1>Hello, ${this.name}!</h1>
-        <button @click=${this._onClick} part="button">
-          Click Count: ${this.count}
-        </button>
-        <slot></slot>
-      `;
+    export class MyElement extends LitElement {
+      ...
+      render() {
+        return html`
+          <h1>Hello, ${this.name}!</h1>
+          <button @click=${this._onClick}>
+            Click Count: ${this.count}
+          </button>
+          <slot></slot>
+        `;
+      }
     }
     ```
 
@@ -139,23 +143,31 @@ A couple of things to look for in the code:
     _JavaScript_
 
     ```js
-    static get properties() {
-      return {
-        name: {type: String}
-      }
-    }
+    export class MyElement extends LitElement {
 
-    constructor() {
-      super();
-      this.name = 'World';
+      static get properties() {
+        return {
+          name: {type: String}
+        }
+      }
+
+      constructor() {
+        super();
+        this.name = 'World';
+      }
+      ...
     }
     ```
 
     _TypeScript_
 
     ```ts
-    @property({type: String})
-    name = 'World';
+    export class MyElement extends LitElement {
+      ...
+      @property({type: String})
+      name = 'World';
+      ...
+    }
     ```
 
 ### Rename your component
@@ -266,14 +278,14 @@ At this point, you should be able to build and run your project and see the "Hel
 
 <div class="alert alert-info">
 
-**Adjust for your build system.** How you import the component may vary slightly depending on your build system and project structure. 
+**Adjust for your build system.** How you import the component may vary slightly depending on your build system and project structure. If you're writing in TypeScript, you'll use TypeScript files and use LitElement's decorators. (You can find a sample TypeScript element in the [TypeScript starter project](https://github.com/PolymerLabs/lit-element-starter-ts/blob/master/src/my-element.ts)).
 
 </div>
 
 
 ### Optional: Use ES dev server
 
-If you already have a dev server that works with your build system, it should work with LitElement. [ES dev server](https://open-wc.org/developing/es-dev-server.html) is an alternative dev server that provides a simple, bundler-free workflow. It performing a small number of useful transforms, including transforming bare module specifiers, transpiling to ES5 when needed, and adding polyfills for older browsers.
+If you already have a dev server that works with your build system, it should work with LitElement. [ES dev server](https://open-wc.org/developing/es-dev-server.html) is an alternative dev server that provides a simple, bundler-free workflow. It performs a small number of useful transforms, including transforming bare module specifiers, transpiling to ES5 when needed, and adding polyfills for older browsers.
 
 1. Install es-dev-server
 
@@ -287,7 +299,7 @@ If you already have a dev server that works with your build system, it should wo
     ```json
     {
       "scripts": {
-        "start": "es-dev-server --app-index index.html --node-resolve --watch --open"
+        "serve": "es-dev-server --app-index index.html --node-resolve --watch --open"
       }
     }
     ```
@@ -295,21 +307,29 @@ If you already have a dev server that works with your build system, it should wo
 1. Start ES dev server:
 
     ```bash
-    npm run start
+    npm run serve
     ```
 
 ### Supporting older browsers
 
-To support older browsers that don't support ES6 and the web components specifications, you'll need to take a few extra steps:
+To support older browsers that don't support ES6 and the web components specifications, you'll need to take a few extra steps to produce code that will run on the older browsers. There are two basic approaches you can take:
 
-*   Compile to ES5. Your build will also need to transform JavaScript modules into a format compatible with older browsers, like AMD. 
-*   Include the [web components polyfills](https://github.com/webcomponents/polyfills/tree/master/packages/webcomponentsjs). In almost all cases, you'll also want to include [custom-elements-es5-adapter.js](https://github.com/webcomponents/polyfills/tree/master/packages/webcomponentsjs#custom-elements-es5-adapterjs) to ensure that your ES5 version can also run on newer browsers. 
+*   Build two versions of the project: a smaller, faster version for modern browsers and a transpiled version with extra polyfills for legacy browsers.
+*   Build a single version of the project for all browsers. This is simpler, but will be slower on modern browsers.
 
-If you need to support older browsers, there are two basic approaches you can take:
+At a high level, you need to do the following for your legacy build:
 
-*   Serve the ES5 version of the project to all browsers.
-*   Build both ES6 and ES5 versions of your project, and serve the ES6 version to modern browsers only. 
+*   Compile to ES5. [Babel](https://babeljs.io/) is the most commonly used tool for this. 
+    *   You need to compile the lit-html and LitElement modules (from the `node_modules` folder)
+        as well as your code.
+    *   You need to transform JavaScript modules into a format compatible with older browsers, such as SystemJS, or 
+        a plain JavaScript file that can be loaded in a `<script>` tag.
+    *   Don't bundle the Babel runtime polyfills in with your web component code. They should be bundled separately.
 
+*   Load the requisite polyfills before loading your web components.
+    *   Load the [Babel runtime polyfills](https://babeljs.io/docs/en/babel-polyfill) first.
+    *   Load the [web components polyfills](https://github.com/webcomponents/polyfills/tree/master/packages/webcomponentsjs). 
+    *   In almost all cases, you'll also want to load [custom-elements-es5-adapter.js](https://github.com/webcomponents/polyfills/tree/master/packages/webcomponentsjs#custom-elements-es5-adapterjs) to ensure that your ES5 version can also run on newer browsers. You can load this file either before or after the web components polyfills.
 
 ### Next steps
 
