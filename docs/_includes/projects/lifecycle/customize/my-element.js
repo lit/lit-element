@@ -1,7 +1,11 @@
-import { LitElement, html } from 'lit-element';
+import {LitElement, html} from 'lit-element';
 
 class MyElement extends LitElement {
-  static get properties() { return { prop1: { type: String } }; }
+  static get properties() {
+    return {
+      prop1: {type: String},
+    };
+  }
 
   constructor() {
     console.log('constructor');
@@ -23,4 +27,5 @@ class MyElement extends LitElement {
     console.log('firstUpdated');
   }
 }
+
 customElements.define('my-element', MyElement);

@@ -97,11 +97,18 @@ render() {
 }
 ```
 
-We can improve the template by capturing the load message as a property, and setting the property in response to the event:
+We can improve the template by declaring the message as a property, and binding the property into the template. Declaring a property tells your component to re-render its template when the property changes. 
+
 
 _update-properties.js_
 
 ```js
+static get properties() {
+  return {
+    message: {type: String}
+  }
+}
+
 constructor() {
   super();
   this.message = 'Loading';
@@ -117,6 +124,8 @@ render() {
 
 {% include project.html folder="docs/templates/design" openFile="update-properties.js" %}
 
+The following sections discuss different types of property bindings. See [Properties](properties) for information on declaring properties. 
+
 ### Use properties, loops, and conditionals in a template
 
 When defining your element's template, you can bind the element's properties to the 
@@ -128,7 +137,9 @@ To add a property value to a template, insert it with `${this.propName}`:
 
 ```js
 static get properties() {
-  return { myProp: String };
+  return { 
+    myProp: {type: String} 
+  };
 }
 ...
 render() {
