@@ -6,7 +6,7 @@ import { LitElement, html } from 'lit-element';
 class UpdateProperties extends LitElement {
   static get properties(){
     return {
-      message: String
+      message: {type: String}
     };
   }
   constructor() {
