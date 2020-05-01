@@ -4,8 +4,9 @@
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<title>LitElement | lit-element</title>
-	<meta name="description" content="">
+	<meta name="description" content="LitElement API documentation">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="shortcut icon" href="/images/favicon.png">
 	<link rel="stylesheet" href="../assets/css/main.css">
 	<link rel="stylesheet" href="../../css/main.css">
 	<link rel="stylesheet" href="../../css/pygments.css">
@@ -194,7 +195,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="_lit_element_.litelement.html">LitElement</a>.<a href="_lit_element_.litelement.html#constructor">constructor</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/db2f456/src/lib/updating-element.ts#L511">src/lib/updating-element.ts:511</a></li>
+									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lib/updating-element.ts#L511">src/lib/updating-element.ts:511</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <a href="_lit_element_.litelement.html" class="tsd-signature-type">LitElement</a></h4>
@@ -210,7 +211,7 @@
 					<div class="tsd-signature tsd-kind-icon">render<wbr>Root<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Element</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">DocumentFragment</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/db2f456/src/lit-element.ts#L145">src/lit-element.ts:145</a></li>
+							<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lit-element.ts#L222">src/lit-element.ts:222</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -227,7 +228,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="_lit_element_.litelement.html">LitElement</a>.<a href="_lit_element_.litelement.html#_finalized_">[finalized]</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/db2f456/src/lib/updating-element.ts#L234">src/lib/updating-element.ts:234</a></li>
+							<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lib/updating-element.ts#L234">src/lib/updating-element.ts:234</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -242,7 +243,7 @@
 					<div class="tsd-signature tsd-kind-icon">finalized<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> = true</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/db2f456/src/lit-element.ts#L60">src/lit-element.ts:60</a></li>
+							<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lit-element.ts#L113">src/lit-element.ts:113</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -261,7 +262,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="_lit_element_.litelement.html">LitElement</a>.<a href="_lit_element_.litelement.html#properties">properties</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/db2f456/src/lib/updating-element.ts#L246">src/lib/updating-element.ts:246</a></li>
+							<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lib/updating-element.ts#L246">src/lib/updating-element.ts:246</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -277,7 +278,7 @@
 					<div class="tsd-signature tsd-kind-icon">render<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">(</span>result<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">unknown</span>, container<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Element</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">DocumentFragment</span>, options<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ShadyRenderOptions</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol"> = render</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/db2f456/src/lit-element.ts#L77">src/lit-element.ts:77</a></li>
+							<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lit-element.ts#L130">src/lit-element.ts:130</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -285,10 +286,10 @@
 							<p>Reference to the underlying library method used to render the element&#39;s DOM.
 							By default, points to the <code>render</code> method from lit-html&#39;s shady-render module.</p>
 						</div>
-						<p><em>Most users will never need to touch this property.</em></p>
+						<p><strong>Most users will never need to touch this property.</strong></p>
 						<p>This  property should not be confused with the <code>render</code> instance method,
 						which should be overridden to define a template for the element.</p>
-						<p>Advanced  creating a new base class based on LitElement can override this property
+						<p>Advanced users creating a new base class based on LitElement can override this property
 							to point to a custom render method with a signature that matches
 						<a href="https://lit-html.polymer-project.org/api/modules/shady_render.html#render">shady-render&#39;s <code>render</code> method</a>.</p>
 						<dl class="tsd-comment-tags">
@@ -327,16 +328,16 @@
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
 					<a name="styles" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagStatic">Static</span> <span class="tsd-flag ts-flagOptional">Optional</span> styles</h3>
-					<div class="tsd-signature tsd-kind-icon">styles<span class="tsd-signature-symbol">:</span> <a href="_lit_element_.cssresult.html" class="tsd-signature-type">CSSResult</a><span class="tsd-signature-symbol"> | </span><a href="../interfaces/_lit_element_.cssresultarray.html" class="tsd-signature-type">CSSResultArray</a></div>
+					<div class="tsd-signature tsd-kind-icon">styles<span class="tsd-signature-symbol">:</span> <a href="../modules/_lit_element_.html#cssresultornative" class="tsd-signature-type">CSSResultOrNative</a><span class="tsd-signature-symbol"> | </span><a href="../interfaces/_lit_element_.cssresultarray.html" class="tsd-signature-type">CSSResultArray</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/db2f456/src/lit-element.ts#L85">src/lit-element.ts:85</a></li>
+							<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lit-element.ts#L140">src/lit-element.ts:140</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
 							<p>Array of styles to apply to the element. The styles should be defined
-							using the <a href="../modules/_lit_element_.html#css"><code>css</code></a> tag function.</p>
+							using the <a href="../modules/_lit_element_.html#css"><code>css</code></a> tag function or via constructible stylesheets.</p>
 						</div>
 					</div>
 				</section>
@@ -354,7 +355,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="_lit_element_.litelement.html">LitElement</a>.<a href="_lit_element_.litelement.html#hasupdated">hasUpdated</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/db2f456/src/lib/updating-element.ts#L733">src/lib/updating-element.ts:733</a></li>
+									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lib/updating-element.ts#L733">src/lib/updating-element.ts:733</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
@@ -372,7 +373,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="_lit_element_.litelement.html">LitElement</a>.<a href="_lit_element_.litelement.html#updatecomplete">updateComplete</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/db2f456/src/lib/updating-element.ts#L804">src/lib/updating-element.ts:804</a></li>
+									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lib/updating-element.ts#L810">src/lib/updating-element.ts:810</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -405,7 +406,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="_lit_element_.litelement.html">LitElement</a>.<a href="_lit_element_.litelement.html#observedattributes">observedAttributes</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/db2f456/src/lib/updating-element.ts#L252">src/lib/updating-element.ts:252</a></li>
+									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lib/updating-element.ts#L252">src/lib/updating-element.ts:252</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -435,7 +436,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="_lit_element_.litelement.html">LitElement</a>.<a href="_lit_element_.litelement.html#_getupdatecomplete">_getUpdateComplete</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/db2f456/src/lib/updating-element.ts#L824">src/lib/updating-element.ts:824</a></li>
+									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lib/updating-element.ts#L830">src/lib/updating-element.ts:830</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -468,7 +469,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/db2f456/src/lit-element.ts#L185">src/lit-element.ts:185</a></li>
+									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lit-element.ts#L263">src/lit-element.ts:263</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -497,7 +498,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="_lit_element_.litelement.html">LitElement</a>.<a href="_lit_element_.litelement.html#attributechangedcallback">attributeChangedCallback</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/db2f456/src/lib/updating-element.ts#L592">src/lib/updating-element.ts:592</a></li>
+									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lib/updating-element.ts#L592">src/lib/updating-element.ts:592</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -532,7 +533,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides <a href="_lit_element_.updatingelement.html">UpdatingElement</a>.<a href="_lit_element_.updatingelement.html#connectedcallback">connectedCallback</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/db2f456/src/lit-element.ts#L208">src/lit-element.ts:208</a></li>
+									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lit-element.ts#L289">src/lit-element.ts:289</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -549,7 +550,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/db2f456/src/lit-element.ts#L172">src/lit-element.ts:172</a></li>
+									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lit-element.ts#L250">src/lit-element.ts:250</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -576,7 +577,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="_lit_element_.litelement.html">LitElement</a>.<a href="_lit_element_.litelement.html#disconnectedcallback">disconnectedCallback</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/db2f456/src/lib/updating-element.ts#L586">src/lib/updating-element.ts:586</a></li>
+									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lib/updating-element.ts#L586">src/lib/updating-element.ts:586</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -601,7 +602,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="_lit_element_.litelement.html">LitElement</a>.<a href="_lit_element_.litelement.html#enableupdating">enableUpdating</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/db2f456/src/lib/updating-element.ts#L574">src/lib/updating-element.ts:574</a></li>
+									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lib/updating-element.ts#L574">src/lib/updating-element.ts:574</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -619,7 +620,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="_lit_element_.litelement.html">LitElement</a>.<a href="_lit_element_.litelement.html#firstupdated">firstUpdated</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/db2f456/src/lib/updating-element.ts#L880">src/lib/updating-element.ts:880</a></li>
+									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lib/updating-element.ts#L886">src/lib/updating-element.ts:886</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -654,7 +655,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides <a href="_lit_element_.updatingelement.html">UpdatingElement</a>.<a href="_lit_element_.updatingelement.html#initialize">initialize</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/db2f456/src/lit-element.ts#L152">src/lit-element.ts:152</a></li>
+									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lit-element.ts#L229">src/lit-element.ts:229</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -679,7 +680,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="_lit_element_.litelement.html">LitElement</a>.<a href="_lit_element_.litelement.html#performupdate">performUpdate</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/db2f456/src/lib/updating-element.ts#L753">src/lib/updating-element.ts:753</a></li>
+									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lib/updating-element.ts#L753">src/lib/updating-element.ts:753</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -709,7 +710,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/db2f456/src/lit-element.ts#L256">src/lit-element.ts:256</a></li>
+									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lit-element.ts#L337">src/lit-element.ts:337</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -735,7 +736,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="_lit_element_.litelement.html">LitElement</a>.<a href="_lit_element_.litelement.html#requestupdate">requestUpdate</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/db2f456/src/lib/updating-element.ts#L701">src/lib/updating-element.ts:701</a></li>
+									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lib/updating-element.ts#L701">src/lib/updating-element.ts:701</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -780,7 +781,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="_lit_element_.litelement.html">LitElement</a>.<a href="_lit_element_.litelement.html#shouldupdate">shouldUpdate</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/db2f456/src/lib/updating-element.ts#L835">src/lib/updating-element.ts:835</a></li>
+									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lib/updating-element.ts#L841">src/lib/updating-element.ts:841</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -814,7 +815,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides <a href="_lit_element_.updatingelement.html">UpdatingElement</a>.<a href="_lit_element_.updatingelement.html#update">update</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/db2f456/src/lit-element.ts#L223">src/lit-element.ts:223</a></li>
+									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lit-element.ts#L304">src/lit-element.ts:304</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -845,7 +846,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="_lit_element_.litelement.html">LitElement</a>.<a href="_lit_element_.litelement.html#updated">updated</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/db2f456/src/lib/updating-element.ts#L868">src/lib/updating-element.ts:868</a></li>
+									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lib/updating-element.ts#L874">src/lib/updating-element.ts:874</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -880,7 +881,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="_lit_element_.litelement.html">LitElement</a>.<a href="_lit_element_.litelement.html#createproperty">createProperty</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/db2f456/src/lib/updating-element.ts#L312">src/lib/updating-element.ts:312</a></li>
+									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lib/updating-element.ts#L312">src/lib/updating-element.ts:312</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -931,7 +932,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="_lit_element_.litelement.html">LitElement</a>.<a href="_lit_element_.litelement.html#finalize">finalize</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/db2f456/src/lib/updating-element.ts#L399">src/lib/updating-element.ts:399</a></li>
+									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lib/updating-element.ts#L399">src/lib/updating-element.ts:399</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -959,7 +960,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="_lit_element_.litelement.html">LitElement</a>.<a href="_lit_element_.litelement.html#getpropertydescriptor">getPropertyDescriptor</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/db2f456/src/lib/updating-element.ts#L359">src/lib/updating-element.ts:359</a></li>
+									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lib/updating-element.ts#L359">src/lib/updating-element.ts:359</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1018,7 +1019,7 @@
 										<li class="tsd-description">
 											<aside class="tsd-sources">
 												<ul>
-													<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/db2f456/src/lib/updating-element.ts#L363">src/lib/updating-element.ts:363</a></li>
+													<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lib/updating-element.ts#L363">src/lib/updating-element.ts:363</a></li>
 												</ul>
 											</aside>
 											<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
@@ -1034,7 +1035,7 @@
 										<li class="tsd-description">
 											<aside class="tsd-sources">
 												<ul>
-													<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/db2f456/src/lib/updating-element.ts#L366">src/lib/updating-element.ts:366</a></li>
+													<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lib/updating-element.ts#L366">src/lib/updating-element.ts:366</a></li>
 												</ul>
 											</aside>
 											<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1065,7 +1066,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="_lit_element_.litelement.html">LitElement</a>.<a href="_lit_element_.litelement.html#getpropertyoptions">getPropertyOptions</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/db2f456/src/lib/updating-element.ts#L389">src/lib/updating-element.ts:389</a></li>
+									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lib/updating-element.ts#L389">src/lib/updating-element.ts:389</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1098,13 +1099,13 @@
 					<a name="getstyles" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagStatic">Static</span> get<wbr>Styles</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>Styles<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_lit_element_.cssresult.html" class="tsd-signature-type">CSSResult</a><span class="tsd-signature-symbol"> | </span><a href="../interfaces/_lit_element_.cssresultarray.html" class="tsd-signature-type">CSSResultArray</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span></li>
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Styles<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../modules/_lit_element_.html#cssresultornative" class="tsd-signature-type">CSSResultOrNative</a><span class="tsd-signature-symbol"> | </span><a href="../interfaces/_lit_element_.cssresultarray.html" class="tsd-signature-type">CSSResultArray</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/db2f456/src/lit-element.ts#L95">src/lit-element.ts:95</a></li>
+									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lit-element.ts#L150">src/lit-element.ts:150</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1117,7 +1118,7 @@
 									<dd></dd>
 								</dl>
 							</div>
-							<h4 class="tsd-returns-title">Returns <a href="_lit_element_.cssresult.html" class="tsd-signature-type">CSSResult</a><span class="tsd-signature-symbol"> | </span><a href="../interfaces/_lit_element_.cssresultarray.html" class="tsd-signature-type">CSSResultArray</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span></h4>
+							<h4 class="tsd-returns-title">Returns <a href="../modules/_lit_element_.html#cssresultornative" class="tsd-signature-type">CSSResultOrNative</a><span class="tsd-signature-symbol"> | </span><a href="../interfaces/_lit_element_.cssresultarray.html" class="tsd-signature-type">CSSResultArray</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -1267,6 +1268,9 @@
 					</li>
 					<li class=" tsd-kind-interface tsd-parent-kind-module">
 						<a href="../interfaces/_lit_element_.propertydeclarations.html" class="tsd-kind-icon">Property<wbr>Declarations</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-module">
+						<a href="../modules/_lit_element_.html#cssresultornative" class="tsd-kind-icon">CSSResult<wbr>OrNative</a>
 					</li>
 					<li class=" tsd-kind-type-alias tsd-parent-kind-module tsd-has-type-parameter">
 						<a href="../modules/_lit_element_.html#constructor" class="tsd-kind-icon">Constructor</a>
