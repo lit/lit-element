@@ -460,6 +460,55 @@ suite('UpdatingElement', () => {
         assert.equal(el.getAttribute('obj'), '{"obj":3}');
       });
 
+
+  test('set an attribute that reflects to a property which has a setter that computes another reflecting property', async () => {
+    class E extends UpdatingElement {
+      static get properties() {
+        return {
+          a: {type: Boolean},
+          b: {type: Number, reflect: true}
+        };
+      }
+
+      _a: boolean;
+      b: number;
+
+      constructor() {
+        super();
+        this._a = false;
+        this.b = 0;
+      }
+
+      get a() {
+        return this._a;
+      }
+
+      set a(value: boolean) {
+        const oldValue = this.a;
+        this._a = value;
+        this.requestUpdate('a', oldValue);
+        this.b += 1;
+      }
+    }
+    const name = generateElementName();
+    customElements.define(name, E);
+    const el = new E();
+    container.appendChild(el);
+    await el.updateComplete;
+    assert.equal(el.getAttribute('b'), '0');
+    el.a = true;
+    await el.updateComplete;
+    assert.equal(el.getAttribute('b'), '1');
+    el.a = false;
+    el.a = true;
+    el.a = false;
+    await el.updateComplete;
+    assert.equal(el.getAttribute('b'), '4');
+    el.setAttribute('a', '');
+    await el.updateComplete;
+    assert.equal(el.getAttribute('b'), '5');
+  });
+
   test('property options via decorator', async () => {
     const hasChanged = (value: any, old: any) =>
         old === undefined || value > old;

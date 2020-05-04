@@ -657,6 +657,8 @@ export abstract class UpdatingElement extends HTMLElement {
     let shouldRequestUpdate = true;
     // If we have a property key, perform property update steps.
     if (name !== undefined) {
+      const isReflectingToProperty = this._updateState & STATE_IS_REFLECTING_TO_PROPERTY;
+      this._updateState = this._updateState & ~STATE_IS_REFLECTING_TO_PROPERTY;
       const ctor = this.constructor as typeof UpdatingElement;
       const options = ctor.getPropertyOptions(name);
       if (ctor._valueHasChanged(
@@ -668,8 +670,7 @@ export abstract class UpdatingElement extends HTMLElement {
         // Note, it's important that every change has a chance to add the
         // property to `_reflectingProperties`. This ensures setting
         // attribute + property reflects correctly.
-        if (options.reflect === true &&
-            !(this._updateState & STATE_IS_REFLECTING_TO_PROPERTY)) {
+        if (options.reflect === true && !isReflectingToProperty) {
           if (this._reflectingProperties === undefined) {
             this._reflectingProperties = new Map();
           }
