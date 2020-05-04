@@ -17,6 +17,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- ### Removed -->
 <!-- ### Fixed -->
 
+### Fixed
+* Within a custom property setter, it is now possible to set another property that reflects to an attribute as long as it is done after calling `requestUpdate` ([#965](https://github.com/Polymer/lit-element/issues/965)).
+
 ### Added
 * The protected `performUpdate()` method may now be called to syncronously "flush" a pending update, for example via a property setter. Note, performing a synchronous update only updates the element and not any potentially pending descendants in the element's local DOM ([#959](https://github.com/Polymer/lit-element/issues/959)).
 
