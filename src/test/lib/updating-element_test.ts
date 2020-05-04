@@ -466,17 +466,23 @@ suite('UpdatingElement', () => {
       static get properties() {
         return {
           a: {type: Boolean},
-          b: {type: Number, reflect: true}
+          b: {type: Number, reflect: true},
+          c: {type: String},
+          d: {type: Number, reflect: true}
         };
       }
 
       _a: boolean;
       b: number;
+      _c: string;
+      d: number;
 
       constructor() {
         super();
         this._a = false;
         this.b = 0;
+        this._c = '';
+        this.d = 0;
       }
 
       get a() {
@@ -488,6 +494,19 @@ suite('UpdatingElement', () => {
         this._a = value;
         this.requestUpdate('a', oldValue);
         this.b += 1;
+        // checks that state is ok for additional attribute sets
+        this.setAttribute('c', this.c + 'c');
+      }
+
+      get c() {
+        return this._c;
+      }
+
+      set c(value: string) {
+        const oldValue = this.c;
+        this._c = value;
+        this.requestUpdate('c', oldValue);
+        this.d += 1;
       }
     }
     const name = generateElementName();
@@ -496,17 +515,26 @@ suite('UpdatingElement', () => {
     container.appendChild(el);
     await el.updateComplete;
     assert.equal(el.getAttribute('b'), '0');
+    assert.equal(el.getAttribute('d'), '0');
     el.a = true;
     await el.updateComplete;
     assert.equal(el.getAttribute('b'), '1');
+    assert.equal(el.getAttribute('d'), '1');
     el.a = false;
     el.a = true;
     el.a = false;
     await el.updateComplete;
     assert.equal(el.getAttribute('b'), '4');
+    assert.equal(el.getAttribute('d'), '4');
     el.setAttribute('a', '');
     await el.updateComplete;
     assert.equal(el.getAttribute('b'), '5');
+    assert.equal(el.getAttribute('d'), '5');
+    el.removeAttribute('a');
+    el.setAttribute('c', '');
+    await el.updateComplete;
+    assert.equal(el.getAttribute('b'), '6');
+    assert.equal(el.getAttribute('d'), '7');
   });
 
   test('property options via decorator', async () => {
