@@ -657,6 +657,9 @@ export abstract class UpdatingElement extends HTMLElement {
     let shouldRequestUpdate = true;
     // If we have a property key, perform property update steps.
     if (name !== undefined) {
+      // Get the "reflecting to property" state and immediately reset it to
+      // false. This allows setting computed reflecting properties in custom
+      // setters after calling `requestUpdate`.
       const isReflectingToProperty = this._updateState & STATE_IS_REFLECTING_TO_PROPERTY;
       this._updateState = this._updateState & ~STATE_IS_REFLECTING_TO_PROPERTY;
       const ctor = this.constructor as typeof UpdatingElement;
