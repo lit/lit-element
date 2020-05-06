@@ -37,10 +37,10 @@ customElements.define('my-element', MyElement);
 
 `LitElement` extends [`UpdatingElement`](/api/classes/_lib_updating_element_.updatingelement.html) and adds lit-html templating.
 
-### [lib/updating-element](/api/modules/_lib_updating_element_.html)
+### [lit-element/lib/updating-element.js](/api/modules/_lib_updating_element_.html)
 
 ```js
-import { UpdatingElement } from 'lit-element/lib/updating-element.js';
+import {UpdatingElement} from 'lit-element/lib/updating-element.js';
 ```
 
 Custom Element base class that supports declaring observable properties, reflecting attributes to properties, and the core update lifecycle methods.
