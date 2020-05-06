@@ -60,8 +60,8 @@ import {PropertyValues, UpdatingElement} from './lib/updating-element.js';
 
 export * from './lib/updating-element.js';
 export * from './lib/decorators.js';
-export {html, svg, TemplateResult, SVGTemplateResult,} from 'lit-html/lit-html.js';
-import {supportsAdoptingStyleSheets, CSSResult, unsafeCSS,} from './lib/css-tag.js';
+export {html, svg, TemplateResult, SVGTemplateResult} from 'lit-html/lit-html.js';
+import {supportsAdoptingStyleSheets, CSSResult, unsafeCSS} from './lib/css-tag.js';
 export * from './lib/css-tag.js';
 
 declare global {
