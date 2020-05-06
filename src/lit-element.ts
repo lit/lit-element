@@ -11,6 +11,49 @@
  * subject to an additional IP rights grant found at
  * http://polymer.github.io/PATENTS.txt
  */
+
+/**
+ * The main LitElement module, which defines the [[`LitElement`]] base class and
+ * related APIs.
+ *
+ *  LitElement components can define a template and a set of observed
+ * properties. Changing an observed property triggers a re-render of the
+ * element.
+ *
+ *  Import [[`LitElement`]] and [[`html`]] from this module to create a
+ * component:
+ *
+ *  ```js
+ * import {LitElement, html} from 'lit-element';
+ *
+ * class MyElement extends LitElement {
+ *
+ *   // Declare observed properties
+ *   static get properties() {
+ *     return {
+ *       adjective: {}
+ *     }
+ *   }
+ *
+ *   constructor() {
+ *     this.adjective = 'awesome';
+ *   }
+ *
+ *   // Define the element's template
+ *   render() {
+ *     return html`<p>your ${adjective} template here</p>`;
+ *   }
+ * }
+ *
+ * customElements.define('my-element', MyElement);
+ * ```
+ *
+ * `LitElement` extends [[`UpdatingElement`]] and adds lit-html templating.
+ * The `UpdatingElement` class is provided for users that want to build
+ * their own custom element base classes that don't use lit-html.
+ *
+ * @packageDocumentation
+ */
 import {render, ShadyRenderOptions} from 'lit-html/lib/shady-render.js';
 
 import {PropertyValues, UpdatingElement} from './lib/updating-element.js';
@@ -63,17 +106,19 @@ export class LitElement extends UpdatingElement {
   protected static['finalized'] = true;
 
   /**
-   * Reference to the underlying library method used to render the element's DOM.
-   * By default, points to the `render` method from lit-html's shady-render module.
+   * Reference to the underlying library method used to render the element's
+   * DOM. By default, points to the `render` method from lit-html's shady-render
+   * module.
    *
    * **Most users will never need to touch this property.**
    *
    * This  property should not be confused with the `render` instance method,
    * which should be overridden to define a template for the element.
    *
-   * Advanced users creating a new base class based on LitElement can override this property
-   * to point to a custom render method with a signature that matches
-   * [shady-render's `render` method](https://lit-html.polymer-project.org/api/modules/shady_render.html#render).
+   * Advanced users creating a new base class based on LitElement can override
+   * this property to point to a custom render method with a signature that
+   * matches [shady-render's `render`
+   * method](https://lit-html.polymer-project.org/api/modules/shady_render.html#render).
    *
    * @nocollapse
    */
@@ -149,7 +194,7 @@ export class LitElement extends UpdatingElement {
         // expected to update their stylesheets over time, but the alternative
         // is a crash.
         const cssText = Array.prototype.slice.call(s.cssRules)
-            .reduce((css, rule) => css + rule.cssText, '');
+                            .reduce((css, rule) => css + rule.cssText, '');
         return unsafeCSS(cssText);
       }
       return s;
@@ -165,15 +210,16 @@ export class LitElement extends UpdatingElement {
   readonly renderRoot!: Element|DocumentFragment;
 
   /**
-   * Performs element initialization. By default this calls [[`createRenderRoot`]]
-   * to create the element [[`renderRoot`]] node and captures any pre-set values for
-   * registered properties.
+   * Performs element initialization. By default this calls
+   * [[`createRenderRoot`]] to create the element [[`renderRoot`]] node and
+   * captures any pre-set values for registered properties.
    */
   protected initialize() {
     super.initialize();
     (this.constructor as typeof LitElement)._getUniqueStyles();
-    (this as {renderRoot: Element | DocumentFragment}).renderRoot =
-        this.createRenderRoot();
+    (this as {
+      renderRoot: Element|DocumentFragment;
+    }).renderRoot = this.createRenderRoot();
     // Note, if renderRoot is not a shadowRoot, styles would/could apply to the
     // element's getRootNode(). While this could be done, we're choosing not to
     // support this now since it would require different logic around de-duping.
@@ -269,9 +315,9 @@ export class LitElement extends UpdatingElement {
 
   /**
    * Invoked on each update to perform rendering tasks. This method may return
-   * any value renderable by lit-html's `NodePart` - typically a `TemplateResult`.
-   * Setting properties inside this method will *not* trigger the element to
-   * update.
+   * any value renderable by lit-html's `NodePart` - typically a
+   * `TemplateResult`. Setting properties inside this method will *not* trigger
+   * the element to update.
    */
   protected render(): unknown {
     return renderNotImplemented;
