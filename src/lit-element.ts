@@ -13,12 +13,15 @@
  */
 
 /**
- * The main LitElement module, which defines the [[`LitElement`]] base class and related APIs.
+ * The main LitElement module, which defines the [[`LitElement`]] base class and
+ * related APIs.
  *
- *  LitElement components can define a template and a set of observed properties.
- *  Changing an observed property triggers a re-render of the element.
+ *  LitElement components can define a template and a set of observed
+ * properties. Changing an observed property triggers a re-render of the
+ * element.
  *
- *  Import [[`LitElement`]] and [[`html`]] from this module to create a component:
+ *  Import [[`LitElement`]] and [[`html`]] from this module to create a
+ * component:
  *
  *  ```js
  * import {LitElement, html} from 'lit-element';
@@ -57,17 +60,8 @@ import {PropertyValues, UpdatingElement} from './lib/updating-element.js';
 
 export * from './lib/updating-element.js';
 export * from './lib/decorators.js';
-export {
-  html,
-  svg,
-  TemplateResult,
-  SVGTemplateResult,
-} from 'lit-html/lit-html.js';
-import {
-  supportsAdoptingStyleSheets,
-  CSSResult,
-  unsafeCSS,
-} from './lib/css-tag.js';
+export {html, svg, TemplateResult, SVGTemplateResult,} from 'lit-html/lit-html.js';
+import {supportsAdoptingStyleSheets, CSSResult, unsafeCSS,} from './lib/css-tag.js';
 export * from './lib/css-tag.js';
 
 declare global {
@@ -79,14 +73,13 @@ declare global {
 // IMPORTANT: do not change the property name or the assignment expression.
 // This line will be used in regexes to search for LitElement usage.
 // TODO(justinfagnani): inject version number at build time
-(window['litElementVersions'] || (window['litElementVersions'] = [])).push(
-  '2.3.1'
-);
+(window['litElementVersions'] || (window['litElementVersions'] = []))
+    .push('2.3.1');
 
-export type CSSResultOrNative = CSSResult | CSSStyleSheet;
+export type CSSResultOrNative = CSSResult|CSSStyleSheet;
 
-export interface CSSResultArray
-  extends Array<CSSResultOrNative | CSSResultArray> {}
+export interface CSSResultArray extends
+    Array<CSSResultOrNative|CSSResultArray> {}
 
 /**
  * Sentinal value used to avoid calling lit-html's render function when
@@ -110,36 +103,36 @@ export class LitElement extends UpdatingElement {
    * Note this property name is a string to prevent breaking Closure JS Compiler
    * optimizations. See updating-element.ts for more information.
    */
-  protected static ['finalized'] = true;
+  protected static['finalized'] = true;
 
   /**
-   * Reference to the underlying library method used to render the element's DOM.
-   * By default, points to the `render` method from lit-html's shady-render module.
+   * Reference to the underlying library method used to render the element's
+   * DOM. By default, points to the `render` method from lit-html's shady-render
+   * module.
    *
    * **Most users will never need to touch this property.**
    *
    * This  property should not be confused with the `render` instance method,
    * which should be overridden to define a template for the element.
    *
-   * Advanced users creating a new base class based on LitElement can override this property
-   * to point to a custom render method with a signature that matches
-   * [shady-render's `render` method](https://lit-html.polymer-project.org/api/modules/shady_render.html#render).
+   * Advanced users creating a new base class based on LitElement can override
+   * this property to point to a custom render method with a signature that
+   * matches [shady-render's `render`
+   * method](https://lit-html.polymer-project.org/api/modules/shady_render.html#render).
    *
    * @nocollapse
    */
-  static render: (
-    result: unknown,
-    container: Element | DocumentFragment,
-    options: ShadyRenderOptions
-  ) => void = render;
+  static render:
+      (result: unknown, container: Element|DocumentFragment,
+       options: ShadyRenderOptions) => void = render;
 
   /**
    * Array of styles to apply to the element. The styles should be defined
    * using the [[`css`]] tag function or via constructible stylesheets.
    */
-  static styles?: CSSResultOrNative | CSSResultArray;
+  static styles?: CSSResultOrNative|CSSResultArray;
 
-  private static _styles: Array<CSSResultOrNative | CSSResult> | undefined;
+  private static _styles: Array<CSSResultOrNative|CSSResult>|undefined;
 
   /**
    * Return the array of styles to apply to the element.
@@ -147,7 +140,7 @@ export class LitElement extends UpdatingElement {
    *
    * @nocollapse
    */
-  static getStyles(): CSSResultOrNative | CSSResultArray | undefined {
+  static getStyles(): CSSResultOrNative|CSSResultArray|undefined {
     return this.styles;
   }
 
@@ -172,16 +165,12 @@ export class LitElement extends UpdatingElement {
       // The last item is kept to try to preserve the cascade order with the
       // assumption that it's most important that last added styles override
       // previous styles.
-      const addStyles = (
-        styles: CSSResultArray,
-        set: Set<CSSResultOrNative>
-      ): Set<CSSResultOrNative> =>
-        styles.reduceRight(
-          (set: Set<CSSResultOrNative>, s) =>
-            // Note: On IE set.add() does not return the set
-            Array.isArray(s) ? addStyles(s, set) : (set.add(s), set),
-          set
-        );
+      const addStyles = (styles: CSSResultArray, set: Set<CSSResultOrNative>):
+          Set<CSSResultOrNative> => styles.reduceRight(
+              (set: Set<CSSResultOrNative>, s) =>
+                  // Note: On IE set.add() does not return the set
+              Array.isArray(s) ? addStyles(s, set) : (set.add(s), set),
+              set);
       // Array.from does not work on Set in IE, otherwise return
       // Array.from(addStyles(userStyles, new Set<CSSResult>())).reverse()
       const set = addStyles(userStyles, new Set<CSSResultOrNative>());
@@ -204,9 +193,8 @@ export class LitElement extends UpdatingElement {
         // undetectable non-constructible stylesheet). The user might have
         // expected to update their stylesheets over time, but the alternative
         // is a crash.
-        const cssText = Array.prototype.slice
-          .call(s.cssRules)
-          .reduce((css, rule) => css + rule.cssText, '');
+        const cssText = Array.prototype.slice.call(s.cssRules)
+                            .reduce((css, rule) => css + rule.cssText, '');
         return unsafeCSS(cssText);
       }
       return s;
@@ -219,18 +207,18 @@ export class LitElement extends UpdatingElement {
    * Node or ShadowRoot into which element DOM should be rendered. Defaults
    * to an open shadowRoot.
    */
-  readonly renderRoot!: Element | DocumentFragment;
+  readonly renderRoot!: Element|DocumentFragment;
 
   /**
-   * Performs element initialization. By default this calls [[`createRenderRoot`]]
-   * to create the element [[`renderRoot`]] node and captures any pre-set values for
-   * registered properties.
+   * Performs element initialization. By default this calls
+   * [[`createRenderRoot`]] to create the element [[`renderRoot`]] node and
+   * captures any pre-set values for registered properties.
    */
   protected initialize() {
     super.initialize();
     (this.constructor as typeof LitElement)._getUniqueStyles();
     (this as {
-      renderRoot: Element | DocumentFragment;
+      renderRoot: Element|DocumentFragment;
     }).renderRoot = this.createRenderRoot();
     // Note, if renderRoot is not a shadowRoot, styles would/could apply to the
     // element's getRootNode(). While this could be done, we're choosing not to
@@ -247,7 +235,7 @@ export class LitElement extends UpdatingElement {
    * childNodes, return `this`.
    * @returns {Element|DocumentFragment} Returns a node into which to render.
    */
-  protected createRenderRoot(): Element | ShadowRoot {
+  protected createRenderRoot(): Element|ShadowRoot {
     return this.attachShadow({mode: 'open'});
   }
 
@@ -272,13 +260,10 @@ export class LitElement extends UpdatingElement {
     // rendering
     if (window.ShadyCSS !== undefined && !window.ShadyCSS.nativeShadow) {
       window.ShadyCSS.ScopingShim!.prepareAdoptedCssText(
-        styles.map((s) => s.cssText),
-        this.localName
-      );
+          styles.map((s) => s.cssText), this.localName);
     } else if (supportsAdoptingStyleSheets) {
-      (this.renderRoot as ShadowRoot).adoptedStyleSheets = styles.map((s) =>
-        s instanceof CSSStyleSheet ? s : s.styleSheet!
-      );
+      (this.renderRoot as ShadowRoot).adoptedStyleSheets =
+          styles.map((s) => s instanceof CSSStyleSheet ? s : s.styleSheet!);
     } else {
       // This must be done after rendering so the actual style insertion is done
       // in `update`.
@@ -309,11 +294,11 @@ export class LitElement extends UpdatingElement {
     super.update(changedProperties);
     // If render is not implemented by the component, don't call lit-html render
     if (templateResult !== renderNotImplemented) {
-      (this.constructor as typeof LitElement).render(
-        templateResult,
-        this.renderRoot,
-        {scopeName: this.localName, eventContext: this}
-      );
+      (this.constructor as typeof LitElement)
+          .render(
+              templateResult,
+              this.renderRoot,
+              {scopeName: this.localName, eventContext: this});
     }
     // When native Shadow DOM is used but adoptedStyles are not supported,
     // insert styling after rendering to ensure adoptedStyles have highest
@@ -330,9 +315,9 @@ export class LitElement extends UpdatingElement {
 
   /**
    * Invoked on each update to perform rendering tasks. This method may return
-   * any value renderable by lit-html's `NodePart` - typically a `TemplateResult`.
-   * Setting properties inside this method will *not* trigger the element to
-   * update.
+   * any value renderable by lit-html's `NodePart` - typically a
+   * `TemplateResult`. Setting properties inside this method will *not* trigger
+   * the element to update.
    */
   protected render(): unknown {
     return renderNotImplemented;
