@@ -2782,4 +2782,68 @@ suite('UpdatingElement', () => {
         assert.equal(a.foo, 20);
         assert.equal(a.updatedFoo, 20);
       });
+
+  test('event properties', async () => {
+    class A extends UpdatingElement {
+      static get eventProperties() {
+        return {
+          onFoo: {name: 'foo'}
+        }
+      }
+
+      onFoo?: null|((e: Event) => void);
+
+      fireFoo() {
+        const event = new Event('foo');
+        this.dispatchEvent(event);
+        return event;
+      }
+    }
+
+    customElements.define(generateElementName(), A);
+    const a = new A();
+    container.appendChild(a);
+    await a.updateComplete;
+    let heardEvent1: Event;
+    a.onFoo = (e: Event) => {heardEvent1 = e};
+    const firedEvent1 = a.fireFoo();
+    assert.equal(heardEvent1!, firedEvent1);
+    let heardEvent2: Event|null;
+    a.onFoo = (e: Event) => {heardEvent2 = e};
+    const firedEvent2 = a.fireFoo();
+    assert.equal(heardEvent1!, firedEvent1);
+    assert.equal(heardEvent2!, firedEvent2);
+    a.onFoo = null;
+    a.fireFoo();
+    assert.equal(heardEvent1!, firedEvent1);
+    assert.equal(heardEvent2!, firedEvent2);
+  });
+
+  test('event properties do not function without name', async () => {
+    class A extends UpdatingElement {
+      static get eventProperties() {
+        return {
+          onFoo: {} as any
+        }
+      }
+
+      onFoo?: null|((e: Event) => void);
+
+      fireFoo() {
+        const event = new Event('foo');
+        this.dispatchEvent(event);
+        return event;
+      }
+    }
+
+    customElements.define(generateElementName(), A);
+    const a = new A();
+    container.appendChild(a);
+    await a.updateComplete;
+    let heardEvent1: Event;
+    a.onFoo = (e: Event) => {heardEvent1 = e};
+    const firedEvent1 = a.fireFoo();
+    assert.notEqual(heardEvent1!, firedEvent1);
+  });
+
 });

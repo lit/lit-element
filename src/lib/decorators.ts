@@ -21,7 +21,7 @@
 
 import {LitElement} from '../lit-element.js';
 
-import {PropertyDeclaration, UpdatingElement} from './updating-element.js';
+import {PropertyDeclaration, EventPropertyDeclaration, UpdatingElement} from './updating-element.js';
 
 export type Constructor<T> = {
   // tslint:disable-next-line:no-any
@@ -92,7 +92,7 @@ export const customElement = (tagName: string) =>
     standardCustomElement(tagName, classOrDescriptor);
 
 const standardProperty =
-    (options: PropertyDeclaration, element: ClassElement) => {
+    (options: PropertyDeclaration|EventPropertyDeclaration, element: ClassElement) => {
       // When decorating an accessor, pass it through and add property metadata.
       // Note, the `hasOwnProperty` check in `createProperty` ensures we don't
       // stomp over the user's accessor.
@@ -101,7 +101,7 @@ const standardProperty =
         return {
           ...element,
           finisher(clazz: typeof UpdatingElement) {
-            clazz.createProperty(element.key, options);
+            installProperty(clazz, element.key, options);
           }
         };
       } else {
@@ -128,17 +128,25 @@ const standardProperty =
             }
           },
           finisher(clazz: typeof UpdatingElement) {
-            clazz.createProperty(element.key, options);
+            installProperty(clazz, element.key, options);
           }
         };
       }
     };
 
 const legacyProperty =
-    (options: PropertyDeclaration, proto: Object, name: PropertyKey) => {
-      (proto.constructor as typeof UpdatingElement)
-          .createProperty(name, options);
+    (options: PropertyDeclaration|EventPropertyDeclaration, proto: Object, name: PropertyKey) => {
+      installProperty((proto.constructor as typeof UpdatingElement), name, options);
     };
+
+const installProperty = (ctor: typeof UpdatingElement, name: PropertyKey, options: PropertyDeclaration|EventPropertyDeclaration) => {
+  // Note, an event property must have `name`.
+  if (options !== undefined && (options as EventPropertyDeclaration).name) {
+    ctor.createEventProperty(name, options as EventPropertyDeclaration);
+  } else {
+    ctor.createProperty(name, options as PropertyDeclaration);
+  }
+}
 
 /**
  * A property decorator which creates a LitElement property which reflects a
@@ -159,6 +167,34 @@ const legacyProperty =
  * @ExportDecoratedItems
  */
 export function property(options?: PropertyDeclaration) {
+  // tslint:disable-next-line:no-any decorator
+  return (protoOrDescriptor: Object|ClassElement, name?: PropertyKey): any =>
+             (name !== undefined) ?
+      legacyProperty(options!, protoOrDescriptor as Object, name) :
+      standardProperty(options!, protoOrDescriptor as ClassElement);
+}
+
+/**
+ * An event property decorator which creates a LitElement event property. An
+ * [[`EventPropertyDeclaration`]] must supply the `name` of the event.
+ *
+ * These properties are intended to work like the similar platform properties,
+ * for example, the `onclick` property. The property accessor allows users to
+ * add event listeners by assigning an event listener function to the
+ * property. Note, assigning a new function will cause any previously
+ * assigned listeners to be removed.
+ *
+ * @example
+ * ```ts
+ * class MyElement {
+ *   @eventProperty({ name: 'foo' })
+ *   onFoo: (event: Event) => void;
+ * }
+ * ```
+ * @category Decorator
+ * @ExportDecoratedItems
+ */
+export function eventProperty(options?: EventPropertyDeclaration) {
   // tslint:disable-next-line:no-any decorator
   return (protoOrDescriptor: Object|ClassElement, name?: PropertyKey): any =>
              (name !== undefined) ?

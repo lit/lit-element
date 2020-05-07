@@ -129,6 +129,22 @@ export interface PropertyDeclarations {
   readonly [key: string]: PropertyDeclaration;
 }
 
+/**
+ * Defines options for an event property accessor.
+ */
+export interface EventPropertyDeclaration {
+  name: string
+}
+
+/**
+ * Map of properties to EventDeclaration options. For each property an
+ * accessor is made, and the property is processed according to the
+ * PropertyDeclaration options.
+ */
+export interface EventPropertyDeclarations {
+  readonly [key: string]: EventPropertyDeclaration;
+}
+
 type PropertyDeclarationMap = Map<PropertyKey, PropertyDeclaration>;
 
 type AttributeMap = Map<string, PropertyKey>;
@@ -208,6 +224,21 @@ type UpdateState = typeof STATE_HAS_UPDATED|typeof STATE_UPDATE_REQUESTED|
  */
 const finalized = 'finalized';
 
+const getOwnProperties = (ctor: typeof UpdatingElement, name: string) => {
+  let properties, keys;
+  if (ctor.hasOwnProperty(name)) {
+    properties = (ctor as any)[name];
+    // support symbols in properties (IE11 does not support this)
+    keys = [
+      ...Object.getOwnPropertyNames(properties),
+      ...(typeof Object.getOwnPropertySymbols === 'function') ?
+          Object.getOwnPropertySymbols(properties) :
+          []
+    ];
+  }
+  return {properties, keys};
+}
+
 /**
  * Base element class which manages element properties and attributes. When
  * properties change, the `update` method is asynchronously called. This method
@@ -244,6 +275,14 @@ export abstract class UpdatingElement extends HTMLElement {
    * objects containing options for configuring the property.
    */
   static properties: PropertyDeclarations;
+
+  /**
+   * User-supplied object that maps event property names to
+   * `EventPropertyDeclaration` objects containing options for configuring
+   * the event property. Note, per DOM convention these properties should
+   * start with `on`.
+   */
+  static eventProperties: EventPropertyDeclarations;
 
   /**
    * Returns a list of attributes corresponding to the registered properties.
@@ -375,6 +414,45 @@ export abstract class UpdatingElement extends HTMLElement {
   }
 
   /**
+   * Creates an event property accessor on the element prototype if one does not
+   * exist. These are intended to work like the similar platform properties,
+   * for example, the `onclick` property. This property accessor allows users to
+   * add event listeners by assigning an event listener function to the
+   * property. Note, assigning a new function will cause any previously
+   * assigned listeners to be removed.
+   *
+   * @nocollapse
+   */
+  static createEventProperty(
+    name: PropertyKey,
+    options: EventPropertyDeclaration) {
+    if (this.prototype.hasOwnProperty(name)) {
+      return;
+    }
+    const key = `__${options.name}`;
+    const descriptor = {
+      get() {
+        return (this as {[key: string]: unknown})[key as string];
+      },
+      set(this: UpdatingElement, value: (e: Event) => void) {
+        const oldValue =
+            (this as {} as {[key: string]: unknown})[name as string];
+        if (oldValue) {
+          this.removeEventListener(
+            options.name as keyof HTMLElementEventMap,
+            oldValue as (e: Event) => void
+          );
+        }
+        (this as {} as {[key: string]: unknown})[key as string] = value;
+        if (value) {
+          this.addEventListener(options.name, value);
+        }
+      }
+    };
+    Object.defineProperty(this.prototype, name, descriptor);
+  }
+
+  /**
    * Returns the property options associated with the given property.
    * These options are defined with a PropertyDeclaration via the `properties`
    * object or the `@property` decorator and are registered in
@@ -410,21 +488,23 @@ export abstract class UpdatingElement extends HTMLElement {
     // Note, only process "own" properties since this element will inherit
     // any properties defined on the superClass, and finalization ensures
     // the entire prototype chain is finalized.
-    if (this.hasOwnProperty(JSCompiler_renameProperty('properties', this))) {
-      const props = this.properties;
-      // support symbols in properties (IE11 does not support this)
-      const propKeys = [
-        ...Object.getOwnPropertyNames(props),
-        ...(typeof Object.getOwnPropertySymbols === 'function') ?
-            Object.getOwnPropertySymbols(props) :
-            []
-      ];
-      // This for/of is ok because propKeys is an array
-      for (const p of propKeys) {
+    const {properties, keys} = getOwnProperties(this,
+      JSCompiler_renameProperty('properties', this));
+    if (properties) {
+      // This for/of is ok because keys is an array
+      for (const p of keys!) {
         // note, use of `any` is due to TypeSript lack of support for symbol in
         // index types
         // tslint:disable-next-line:no-any no symbol in index
-        this.createProperty(p, (props as any)[p]);
+        this.createProperty(p, (properties as any)[p]);
+      }
+    }
+    const {properties: eventProps, keys: eventKeys} = getOwnProperties(this,
+      JSCompiler_renameProperty('eventProperties', this));
+    if (eventProps) {
+      for (const p of eventKeys!) {
+        // tslint:disable-next-line:no-any no symbol in index
+        this.createEventProperty(p, (eventProps as any)[p]);
       }
     }
   }

@@ -13,7 +13,7 @@
  */
 
 import {eventOptions, property} from '../../lib/decorators.js';
-import {customElement, html, LitElement, PropertyValues, query, queryAll, queryAssignedNodes, queryAsync} from '../../lit-element.js';
+import {customElement, html, LitElement, PropertyValues, query, queryAll, queryAssignedNodes, queryAsync, eventProperty} from '../../lit-element.js';
 import {generateElementName} from '../test-helpers.js';
 
 const flush =
@@ -590,4 +590,41 @@ suite('decorators', () => {
       assert.isFalse(c.defaultPrevented);
     });
   });
+
+  suite('@eventProperty', () => {
+
+    test('event properties', async () => {
+      class A extends LitElement {
+
+        @eventProperty({name: 'foo'})
+        onFoo?: null|((e: Event) => void);
+
+        fireFoo() {
+          const event = new Event('foo');
+          this.dispatchEvent(event);
+          return event;
+        }
+      }
+
+      customElements.define(generateElementName(), A);
+      const a = new A();
+      container.appendChild(a);
+      await a.updateComplete;
+      let heardEvent1: Event;
+      a.onFoo = (e: Event) => {heardEvent1 = e};
+      const firedEvent1 = a.fireFoo();
+      assert.equal(heardEvent1!, firedEvent1);
+      let heardEvent2: Event|null;
+      a.onFoo = (e: Event) => {heardEvent2 = e};
+      const firedEvent2 = a.fireFoo();
+      assert.equal(heardEvent1!, firedEvent1);
+      assert.equal(heardEvent2!, firedEvent2);
+      a.onFoo = null;
+      a.fireFoo();
+      assert.equal(heardEvent1!, firedEvent1);
+      assert.equal(heardEvent2!, firedEvent2);
+    });
+
+  });
+
 });

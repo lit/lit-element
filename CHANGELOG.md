@@ -18,6 +18,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- ### Fixed -->
 
 ### Added
+* Adds `static get eventProperties` and `@eventProperty` which provides a way of defining properties that accept event listener functions similar to the platform's `.onclick` property. Element authors should supply an `EventPropertyDeclaration` which requires the `name` to be set to the name of the event. The user can then set `element.onEventProperty = (event) => //handler` and when the element fires a corresponding event, the handler is callled. Under the hood, this property simply calls `addEventListener` for the given event name. Only a single event listener can be added in this way. If the property is re-assigned, the previous listener is removed. This feature is useful to help document what events the element fires, and it also provides a seamless integration point with frameworks (like React) which rely on event properties for hooking up events.
+
 * The `requestUpdateInternal(name, oldValue, options)` method has been added. This method is sometimes useful to call in a custom property setter to optimize performance. It is slightly more efficient than `requestUpdate` since it does not return the `updateComplete` property which can be overridden to do work.
 
 * The protected `performUpdate()` method may now be called to syncronously "flush" a pending update, for example via a property setter. Note, performing a synchronous update only updates the element and not any potentially pending descendants in the element's local DOM ([#959](https://github.com/Polymer/lit-element/issues/959)).
