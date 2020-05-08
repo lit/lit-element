@@ -2,7 +2,7 @@ import { SuperElement } from './super-element.js';
 
 class SubElement extends SuperElement {  
   static get properties() { 
-    return { prop: { reflectToAttribute: true, noAccessor: true } };
+    return { prop: { reflect: true, noAccessor: true } };
   }
 }
 

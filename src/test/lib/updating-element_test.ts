@@ -1974,6 +1974,84 @@ suite('UpdatingElement', () => {
     assert.deepEqual(el._observedZot2, {value: 'zot', oldValue: ''});
   });
 
+  test('can customize properties to update synchronously', async () => {
+
+    interface MyPropertyDeclaration extends PropertyDeclaration {
+      sync: boolean;
+    }
+
+    @customElement(generateElementName())
+    class E extends UpdatingElement {
+
+      static getPropertyDescriptor(
+        name: PropertyKey,
+        key: string|symbol,
+        options: MyPropertyDeclaration) {
+        const defaultDescriptor = super.getPropertyDescriptor(name, key, options);
+        const setter = defaultDescriptor.set;
+        return Object.assign(defaultDescriptor, {
+          set(this: E, value: unknown) {
+            setter.call(this, value);
+            if (options.sync && this.hasUpdated && !this.isUpdating) {
+              (this as unknown as E).performUpdate();
+            }
+          }
+        });
+      }
+
+      isUpdating = false;
+
+      updateCount = 0;
+
+      performUpdate() {
+        // While it's dubious to have a computed property that's
+        // also settable but this just demonstrates it's possible.
+        this.isUpdating = true;
+        super.performUpdate();
+        this.isUpdating = false;
+      }
+
+      update(changedProperties: PropertyValues) {
+        this.zug = this.foo + 1;
+        super.update(changedProperties);
+      }
+
+      updated() {
+        this.updateCount++;
+      }
+
+      @property({type: Number, sync: true, reflect: true} as PropertyDeclaration)
+      foo = 5;
+
+      @property({type: Number, sync: true} as PropertyDeclaration)
+      zug = this.foo;
+
+      @property({})
+      bar = 'bar';
+
+    }
+
+    const el = new E();
+    container.appendChild(el);
+    await el.updateComplete;
+    el.foo = 10;
+    assert.equal(el.updateCount, 2);
+    el.foo = 1;
+    el.foo = 2;
+    assert.equal(el.updateCount, 4);
+    el.foo = 3;
+    await el.updateComplete;
+    assert.equal(el.updateCount, 5);
+    el.bar = 'bar2';
+    assert.equal(el.updateCount, 5);
+    await el.updateComplete;
+    assert.equal(el.updateCount, 6);
+    el.foo = 5;
+    assert.equal(el.updateCount, 7);
+    el.zug = 60;
+    assert.equal(el.updateCount, 8);
+  });
+
   test('attribute-based property storage', async () => {
     class E extends UpdatingElement {
       _updateCount = 0;

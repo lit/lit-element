@@ -4,8 +4,9 @@
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<title>lit-element</title>
-	<meta name="description" content="">
+	<meta name="description" content="LitElement API documentation">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="shortcut icon" href="/images/favicon.png">
 	<link rel="stylesheet" href="assets/css/main.css">
 	<link rel="stylesheet" href="../css/main.css">
 	<link rel="stylesheet" href="../css/pygments.css">
@@ -98,32 +99,44 @@
 				<a href="#litelement-api-documentation" id="litelement-api-documentation" style="color: inherit; text-decoration: none;">
 					<h1>LitElement API Documentation</h1>
 				</a>
-				<a href="#install-lit-element" id="install-lit-element" style="color: inherit; text-decoration: none;">
-					<h2>Install lit-element</h2>
-				</a>
-				<pre><code>npm <span class="hljs-keyword">install</span> lit-<span class="hljs-keyword">element</span></code></pre>
 				<a href="#modules" id="modules" style="color: inherit; text-decoration: none;">
 					<h2>Modules</h2>
 				</a>
-				<a href="#a-hrefapimodules_lit_element_htmllit-elementa" id="a-hrefapimodules_lit_element_htmllit-elementa" style="color: inherit; text-decoration: none;">
+				<a href="#lit-element" id="lit-element" style="color: inherit; text-decoration: none;">
 					<h3><a href="/api/modules/_lit_element_.html">lit-element</a></h3>
 				</a>
-				<p>Extends <a href="#lib-updating-element">UpdatingElement</a> to include lit-html templating. Users define a <code>render</code> method to provide an element template, which is called when required by <code>update</code>.</p>
+				<p>The main LitElement module, which defines the <code>LitElement</code> base class and related APIs.</p>
+				<p>LitElement components can define a template and a set of observed properties. Changing an observed property triggers a re-render of the element.</p>
 				<p>Import <code>LitElement</code> and <code>html</code> from this module to create a component:</p>
-				<pre><code class="language-js"><span class="hljs-keyword">import</span> { LitElement, html } <span class="hljs-keyword">from</span> <span class="hljs-string">'lit-element'</span>;
+				<pre><code class="language-js"><span class="hljs-keyword">import</span> {LitElement, html} <span class="hljs-keyword">from</span> <span class="hljs-string">'lit-element'</span>;
 
 <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyElement</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">LitElement</span> </span>{
+
+  <span class="hljs-comment">// Declare observed properties</span>
+  <span class="hljs-keyword">static</span> <span class="hljs-keyword">get</span> properties() {
+    <span class="hljs-keyword">return</span> {
+      <span class="hljs-attr">adjective</span>: {}
+    }
+  }
+
+  <span class="hljs-keyword">constructor</span>() {
+    <span class="hljs-keyword">this</span>.adjective = <span class="hljs-string">'awesome'</span>;
+  }
+
+  <span class="hljs-comment">// Define the element's template</span>
   render() {
-      <span class="hljs-keyword">return</span> html`<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>your template here<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>`</span>;
+    <span class="hljs-keyword">return</span> html`<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>your </span><span class="hljs-subst">${adjective}</span><span class="xml"> template here<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>`</span>;
   }
 }
 
 customElements.define(<span class="hljs-string">'my-element'</span>, MyElement);</code></pre>
-				<a href="#a-hrefapimodules_lib_updating_element_htmllibupdating-elementa" id="a-hrefapimodules_lib_updating_element_htmllibupdating-elementa" style="color: inherit; text-decoration: none;">
+				<p><code>LitElement</code> extends <a href="#lib-updating-element"><code>UpdatingElement</code></a> and adds lit-html templating.</p>
+				<a href="#libupdating-element" id="libupdating-element" style="color: inherit; text-decoration: none;">
 					<h3><a href="/api/modules/_lib_updating_element_.html">lib/updating-element</a></h3>
 				</a>
 				<pre><code class="language-js"><span class="hljs-keyword">import</span> { UpdatingElement } <span class="hljs-keyword">from</span> <span class="hljs-string">'lit-element/lib/updating-element.js'</span>;</code></pre>
 				<p>Custom Element base class that supports declaring observable properties, reflecting attributes to properties, and the core update lifecycle methods.</p>
+				<p>If you want to build a custom element base class that includes these features but <strong>not</strong> lit-html templating, extend <code>UpdatingElement</code>.</p>
 			</div>
 		</div>
 		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
