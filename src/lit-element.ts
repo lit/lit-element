@@ -54,12 +54,13 @@
  *
  * @packageDocumentation
  */
-import {render, ShadyRenderOptions} from 'lit-html/lib/shady-render.js';
+// import {render, ShadyRenderOptions} from 'lit-html/lib/shady-render.js';
 
 import {PropertyValues, UpdatingElement} from './lib/updating-element.js';
 
 export * from './lib/updating-element.js';
 export * from './lib/decorators.js';
+import {render, RenderOptions, templateFactory} from 'lit-html/lit-html.js';
 export {html, svg, TemplateResult, SVGTemplateResult} from 'lit-html/lit-html.js';
 import {supportsAdoptingStyleSheets, CSSResult, unsafeCSS} from './lib/css-tag.js';
 export * from './lib/css-tag.js';
@@ -124,7 +125,7 @@ export class LitElement extends UpdatingElement {
    */
   static render:
       (result: unknown, container: Element|DocumentFragment,
-       options: ShadyRenderOptions) => void = render;
+       options: RenderOptions) => void = render;
 
   /**
    * Array of styles to apply to the element. The styles should be defined
@@ -201,7 +202,7 @@ export class LitElement extends UpdatingElement {
     });
   }
 
-  private _needsShimAdoptedStyleSheets?: boolean;
+  //private _needsShimAdoptedStyleSheets?: boolean;
 
   /**
    * Node or ShadowRoot into which element DOM should be rendered. Defaults
@@ -258,19 +259,20 @@ export class LitElement extends UpdatingElement {
     // (2) shadowRoot.adoptedStyleSheets available: use it
     // (3) shadowRoot.adoptedStyleSheets polyfilled: append styles after
     // rendering
-    if (window.ShadyCSS !== undefined && !window.ShadyCSS.nativeShadow) {
+    /*if (window.ShadyCSS !== undefined && !window.ShadyCSS.nativeShadow) {
       window.ShadyCSS.ScopingShim!.prepareAdoptedCssText(
           styles.map((s) => s.cssText), this.localName);
-    } else if (supportsAdoptingStyleSheets) {
+    } else*/ if (supportsAdoptingStyleSheets) {
       (this.renderRoot as ShadowRoot).adoptedStyleSheets =
           styles.map((s) => s instanceof CSSStyleSheet ? s : s.styleSheet!);
-    } else {
+    } /*else {
       // This must be done after rendering so the actual style insertion is done
       // in `update`.
       this._needsShimAdoptedStyleSheets = true;
-    }
+    }*/
   }
 
+  /*
   connectedCallback() {
     super.connectedCallback();
     // Note, first update/render handles styleElement so we only call this if
@@ -279,6 +281,7 @@ export class LitElement extends UpdatingElement {
       window.ShadyCSS.styleElement(this);
     }
   }
+  */
 
   /**
    * Updates the element. This method reflects property values to attributes
@@ -298,8 +301,9 @@ export class LitElement extends UpdatingElement {
           .render(
               templateResult,
               this.renderRoot,
-              {scopeName: this.localName, eventContext: this});
+              {templateFactory, eventContext: this});
     }
+/*
     // When native Shadow DOM is used but adoptedStyles are not supported,
     // insert styling after rendering to ensure adoptedStyles have highest
     // priority.
@@ -311,6 +315,7 @@ export class LitElement extends UpdatingElement {
         this.renderRoot.appendChild(style);
       });
     }
+*/
   }
 
   /**
