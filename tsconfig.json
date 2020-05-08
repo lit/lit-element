@@ -22,7 +22,7 @@
   },
   "include": [
     "custom_typings/**/*.ts",
-    "src/**/*.ts"
+    "src/**/*.ts",
   ],
   "exclude": []
 }

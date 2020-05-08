@@ -1,0 +1,300 @@
+/**
+ * @license
+ * Copyright (c) 2017 The Polymer Project Authors. All rights reserved.
+ * This code may only be used under the BSD style license found at
+ * http://polymer.github.io/LICENSE.txt
+ * The complete set of authors may be found at
+ * http://polymer.github.io/AUTHORS.txt
+ * The complete set of contributors may be found at
+ * http://polymer.github.io/CONTRIBUTORS.txt
+ * Code distributed by Google as part of the polymer project is also
+ * subject to an additional IP rights grant found at
+ * http://polymer.github.io/PATENTS.txt
+ */
+
+/**
+ * The main LitElement module, which defines the [[`LitElement`]] base class and
+ * related APIs.
+ *
+ *  LitElement components can define a template and a set of observed
+ * properties. Changing an observed property triggers a re-render of the
+ * element.
+ *
+ *  Import [[`LitElement`]] and [[`html`]] from this module to create a
+ * component:
+ *
+ *  ```js
+ * import {LitElement, html} from 'lit-element';
+ *
+ * class MyElement extends LitElement {
+ *
+ *   // Declare observed properties
+ *   static get properties() {
+ *     return {
+ *       adjective: {}
+ *     }
+ *   }
+ *
+ *   constructor() {
+ *     this.adjective = 'awesome';
+ *   }
+ *
+ *   // Define the element's template
+ *   render() {
+ *     return html`<p>your ${adjective} template here</p>`;
+ *   }
+ * }
+ *
+ * customElements.define('my-element', MyElement);
+ * ```
+ *
+ * `LitElement` extends [[`UpdatingElement`]] and adds lit-html templating.
+ * The `UpdatingElement` class is provided for users that want to build
+ * their own custom element base classes that don't use lit-html.
+ *
+ * @packageDocumentation
+ */
+
+import {PropertyValues, UpdatingElement} from './lib/updating-element.js';
+
+export * from './lib/updating-element.js';
+// export * from './lib/decorators.js';
+export {customElement, property} from './lib/decorators.js';
+import {render, RenderOptions, templateFactory} from 'lit-html/lit-html.js';
+export {html, svg, TemplateResult, SVGTemplateResult} from 'lit-html/lit-html.js';
+import {supportsAdoptingStyleSheets, CSSResult, unsafeCSS} from './lib/css-tag.js';
+export * from './lib/css-tag.js';
+
+/*
+ * When using Closure Compiler, JSCompiler_renameProperty(property, object) is
+ * replaced at compile time by the munged name for object[property]. We cannot
+ * alias this function, so we have to use a small shim that has the same
+ * behavior when not compiling.
+ */
+window.JSCompiler_renameProperty =
+    <P extends PropertyKey>(prop: P, _obj: unknown): P => prop;
+
+declare global {
+  var JSCompiler_renameProperty: <P extends PropertyKey>(
+      prop: P, _obj: unknown) => P;
+
+  interface Window {
+    JSCompiler_renameProperty: typeof JSCompiler_renameProperty;
+  }
+}
+
+declare global {
+  interface Window {
+    litElementVersions: string[];
+  }
+}
+
+// IMPORTANT: do not change the property name or the assignment expression.
+// This line will be used in regexes to search for LitElement usage.
+// TODO(justinfagnani): inject version number at build time
+(window['litElementVersions'] || (window['litElementVersions'] = []))
+    .push('2.3.1');
+
+export type CSSResultOrNative = CSSResult|CSSStyleSheet;
+
+export interface CSSResultArray extends
+    Array<CSSResultOrNative|CSSResultArray> {}
+
+/**
+ * Sentinal value used to avoid calling lit-html's render function when
+ * subclasses do not implement `render`
+ */
+const renderNotImplemented = {};
+
+/**
+ * Base element class that manages element properties and attributes, and
+ * renders a lit-html template.
+ *
+ * To define a component, subclass `LitElement` and implement a
+ * `render` method to provide the component's template. Define properties
+ * using the [[`properties`]] property or the [[`property`]] decorator.
+ */
+export class LitElement extends UpdatingElement {
+
+  /**
+   * Reference to the underlying library method used to render the element's
+   * DOM. By default, points to the `render` method from lit-html's shady-render
+   * module.
+   *
+   * **Most users will never need to touch this property.**
+   *
+   * This  property should not be confused with the `render` instance method,
+   * which should be overridden to define a template for the element.
+   *
+   * Advanced users creating a new base class based on LitElement can override
+   * this property to point to a custom render method with a signature that
+   * matches [shady-render's `render`
+   * method](https://lit-html.polymer-project.org/api/modules/shady_render.html#render).
+   *
+   * @nocollapse
+   */
+  static render:
+      (result: unknown, container: Element|DocumentFragment,
+       options: RenderOptions) => void = render;
+
+  private static _styles: Array<CSSResultOrNative|CSSResult>|undefined;
+
+  /**
+   * Return the array of styles to apply to the element.
+   * Override this method to integrate into a style management system.
+   *
+   * The styles should be defined using the [[`css`]] tag function or via
+   * constructible stylesheets.
+   *
+   * @nocollapse
+   */
+  static getStyles(): CSSResultOrNative|CSSResultArray|undefined {
+    return [];
+  }
+
+  /** @nocollapse */
+  private static _getUniqueStyles() {
+    // Only gather styles once per class
+    if (this.hasOwnProperty(JSCompiler_renameProperty('_styles', this))) {
+      return this._styles;
+    }
+    // Take care not to call `this.getStyles()` multiple times since this
+    // generates new CSSResults each time.
+    // TODO(sorvell): Since we do not cache CSSResults by input, any
+    // shared styles will generate new stylesheet objects, which is wasteful.
+    // This should be addressed when a browser ships constructable
+    // stylesheets.
+    const userStyles = this.getStyles();
+
+    if (Array.isArray(userStyles)) {
+      // De-duplicate styles preserving the _last_ instance in the set.
+      // This is a performance optimization to avoid duplicated styles that can
+      // occur especially when composing via subclassing.
+      // The last item is kept to try to preserve the cascade order with the
+      // assumption that it's most important that last added styles override
+      // previous styles.
+      const addStyles = (styles: CSSResultArray, set: Set<CSSResultOrNative>):
+          Set<CSSResultOrNative> => styles.reduceRight(
+              (set: Set<CSSResultOrNative>, s) =>
+                  // Note: On IE set.add() does not return the set
+              Array.isArray(s) ? addStyles(s, set) : (set.add(s), set),
+              set);
+      // Array.from does not work on Set in IE, otherwise return
+      // Array.from(addStyles(userStyles, new Set<CSSResult>())).reverse()
+      const set = addStyles(userStyles, new Set<CSSResultOrNative>());
+      const styles: CSSResultOrNative[] = [];
+      set.forEach((v) => styles.unshift(v));
+      this._styles = styles;
+    } else {
+      this._styles = userStyles === undefined ? [] : [userStyles];
+    }
+
+    // Ensure that there are no invalid CSSStyleSheet instances here. They are
+    // invalid in two conditions.
+    // (1) the sheet is non-constructible (`sheet` of a HTMLStyleElement), but
+    //     this is impossible to check except via .replaceSync or use
+    // (2) the ShadyCSS polyfill is enabled (:. supportsAdoptingStyleSheets is
+    //     false)
+    this._styles = this._styles.map((s) => {
+      if (s instanceof CSSStyleSheet && !supportsAdoptingStyleSheets) {
+        // Flatten the cssText from the passed constructible stylesheet (or
+        // undetectable non-constructible stylesheet). The user might have
+        // expected to update their stylesheets over time, but the alternative
+        // is a crash.
+        const cssText = Array.prototype.slice.call(s.cssRules)
+                            .reduce((css, rule) => css + rule.cssText, '');
+        return unsafeCSS(cssText);
+      }
+      return s;
+    });
+    return this._styles;
+  }
+
+  //private _needsShimAdoptedStyleSheets?: boolean;
+
+  /**
+   * Node or ShadowRoot into which element DOM should be rendered. Defaults
+   * to an open shadowRoot.
+   */
+  readonly renderRoot!: Element|DocumentFragment;
+
+  /**
+   * Performs element initialization. By default this calls
+   * [[`createRenderRoot`]] to create the element [[`renderRoot`]] node and
+   * captures any pre-set values for registered properties.
+   */
+  protected initialize() {
+    super.initialize();
+    (this as {
+      renderRoot: Element|DocumentFragment;
+    }).renderRoot = this.createRenderRoot();
+    this.adoptStyles();
+  }
+
+  /**
+   * Returns the node into which the element should render and by default
+   * creates and returns an open shadowRoot. Implement to customize where the
+   * element's DOM is rendered. For example, to render into the element's
+   * childNodes, return `this`.
+   * @returns {Element|DocumentFragment} Returns a node into which to render.
+   */
+  protected createRenderRoot(): Element|ShadowRoot {
+    return this.attachShadow({mode: 'open'});
+  }
+
+  /**
+   * Applies styling to the element shadowRoot using the [[`styles`]]
+   * property. Styling will apply using `shadowRoot.adoptedStyleSheets` where
+   * available and will fallback otherwise. When Shadow DOM is polyfilled,
+   * ShadyCSS scopes styles and adds them to the document. When Shadow DOM
+   * is available but `adoptedStyleSheets` is not, styles are appended to the
+   * end of the `shadowRoot` to [mimic spec
+   * behavior](https://wicg.github.io/construct-stylesheets/#using-constructed-stylesheets).
+   */
+  protected adoptStyles() {
+    // Note, if renderRoot is not a shadowRoot, styles would/could apply to the
+    // element's getRootNode(). While this could be done, we're choosing not to
+    // support this now since it would require different logic around de-duping.
+    if (!window.ShadowRoot || !(this.renderRoot instanceof window.ShadowRoot) ||
+        !supportsAdoptingStyleSheets) {
+      return;
+    }
+    const styles = (this.constructor as typeof LitElement)._getUniqueStyles();
+    if (styles && styles.length > 0) {
+      (this.renderRoot as ShadowRoot).adoptedStyleSheets =
+        styles.map((s) => s instanceof CSSStyleSheet ? s : s.styleSheet!);
+    }
+  }
+
+  /**
+   * Updates the element. This method reflects property values to attributes
+   * and calls `render` to render DOM via lit-html. Setting properties inside
+   * this method will *not* trigger another update.
+   * @param _changedProperties Map of changed properties with old values
+   */
+  protected update(changedProperties: PropertyValues) {
+    // Setting properties in `render` should not trigger an update. Since
+    // updates are allowed after super.update, it's important to call `render`
+    // before that.
+    const templateResult = this.render();
+    super.update(changedProperties);
+    // If render is not implemented by the component, don't call lit-html render
+    if (templateResult !== renderNotImplemented) {
+      (this.constructor as typeof LitElement)
+          .render(
+              templateResult,
+              this.renderRoot,
+              {templateFactory, eventContext: this});
+    }
+  }
+
+  /**
+   * Invoked on each update to perform rendering tasks. This method may return
+   * any value renderable by lit-html's `NodePart` - typically a
+   * `TemplateResult`. Setting properties inside this method will *not* trigger
+   * the element to update.
+   */
+  protected render(): unknown {
+    return renderNotImplemented;
+  }
+}

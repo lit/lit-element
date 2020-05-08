@@ -19,6 +19,11 @@
 /demo/**/*.js
 /demo/**/*.js.map
 
+/slim/**/*.d.ts
+/slim/**/*.d.ts.map
+/slim/**/*.js
+/slim/**/*.js.map
+
 !custom_typings/
 
 #Docs
