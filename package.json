@@ -72,7 +72,7 @@
     }
   },
   "dependencies": {
-    "lit-html": "^1.2.0"
+    "lit-html": "Polymer/lit-html#hydration"
   },
   "publishConfig": {
     "access": "public"
