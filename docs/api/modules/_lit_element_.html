@@ -4,8 +4,9 @@
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<title>&quot;lit-element&quot; | lit-element</title>
-	<meta name="description" content="">
+	<meta name="description" content="LitElement API documentation">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="shortcut icon" href="/images/favicon.png">
 	<link rel="stylesheet" href="../assets/css/main.css">
 	<link rel="stylesheet" href="../../css/main.css">
 	<link rel="stylesheet" href="../../css/pygments.css">
@@ -90,30 +91,814 @@
 					<a href="_lit_element_.html">&quot;lit-element&quot;</a>
 				</li>
 			</ul>
-			<h1>External module &quot;lit-element&quot;</h1>
+			<h1>Module &quot;lit-element&quot;</h1>
 		</div>
 	</div>
 </header>
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-comment">
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>The main LitElement module, which defines the <a href="../classes/_lit_element_.litelement.html"><code>LitElement</code></a> base class and related APIs.</p>
+					</div>
+					<p> LitElement components can define a template and a set of observed properties.
+					Changing an observed property triggers a re-render of the element.</p>
+					<p> Import <code>LitElement</code> and <a href="_lit_element_.html#html"><code>html</code></a> from this module to create a component:</p>
+					<pre><code class="language-js"><span class="hljs-keyword">import</span> {LitElement, html} <span class="hljs-keyword">from</span> <span class="hljs-string">'lit-element'</span>;
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyElement</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">LitElement</span> </span>{
+
+  <span class="hljs-comment">// Declare observed properties</span>
+  <span class="hljs-keyword">static</span> <span class="hljs-keyword">get</span> properties() {
+    <span class="hljs-keyword">return</span> {
+      <span class="hljs-attr">adjective</span>: {}
+    }
+  }
+
+  <span class="hljs-keyword">constructor</span>() {
+    <span class="hljs-keyword">this</span>.adjective = <span class="hljs-string">'awesome'</span>;
+  }
+
+  <span class="hljs-comment">// Define the element's template</span>
+  render() {
+    <span class="hljs-keyword">return</span> html`<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>your </span><span class="hljs-subst">${adjective}</span><span class="xml"> template here<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>`</span>;
+  }
+}
+
+customElements.define(<span class="hljs-string">'my-element'</span>, MyElement);</code></pre>
+					<p><code>LitElement</code> extends <a href="../classes/_lit_element_.updatingelement.html"><code>UpdatingElement</code></a> and adds lit-html templating.
+						The <code>UpdatingElement</code> class is provided for users that want to build
+					their own custom element base classes that don&#39;t use lit-html.</p>
+				</div>
+			</section>
 			<section class="tsd-panel-group tsd-index-group">
 				<h2>Index</h2>
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
-						<section class="tsd-index-section tsd-is-external">
+						<section class="tsd-index-section ">
 							<h3>Classes</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-class tsd-parent-kind-external-module tsd-is-external"><a href="../classes/_lit_element_.litelement.html" class="tsd-kind-icon">Lit<wbr>Element</a></li>
+								<li class="tsd-kind-class tsd-parent-kind-module"><a href="../classes/_lit_element_.cssresult.html" class="tsd-kind-icon">CSSResult</a></li>
+								<li class="tsd-kind-class tsd-parent-kind-module"><a href="../classes/_lit_element_.litelement.html" class="tsd-kind-icon">Lit<wbr>Element</a></li>
+								<li class="tsd-kind-class tsd-parent-kind-module"><a href="../classes/_lit_element_.svgtemplateresult.html" class="tsd-kind-icon">SVGTemplate<wbr>Result</a></li>
+								<li class="tsd-kind-class tsd-parent-kind-module"><a href="../classes/_lit_element_.templateresult.html" class="tsd-kind-icon">Template<wbr>Result</a></li>
+								<li class="tsd-kind-class tsd-parent-kind-module"><a href="../classes/_lit_element_.updatingelement.html" class="tsd-kind-icon">Updating<wbr>Element</a></li>
 							</ul>
 						</section>
-						<section class="tsd-index-section tsd-is-external">
+						<section class="tsd-index-section ">
 							<h3>Interfaces</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-interface tsd-parent-kind-external-module tsd-is-external"><a href="../interfaces/_lit_element_.cssresultarray.html" class="tsd-kind-icon">CSSResult<wbr>Array</a></li>
+								<li class="tsd-kind-interface tsd-parent-kind-module"><a href="../interfaces/_lit_element_.cssresultarray.html" class="tsd-kind-icon">CSSResult<wbr>Array</a></li>
+								<li class="tsd-kind-interface tsd-parent-kind-module tsd-has-type-parameter"><a href="../interfaces/_lit_element_.complexattributeconverter.html" class="tsd-kind-icon">Complex<wbr>Attribute<wbr>Converter</a></li>
+								<li class="tsd-kind-interface tsd-parent-kind-module"><a href="../interfaces/_lit_element_.haschanged.html" class="tsd-kind-icon">Has<wbr>Changed</a></li>
+								<li class="tsd-kind-interface tsd-parent-kind-module tsd-has-type-parameter"><a href="../interfaces/_lit_element_.internalpropertydeclaration.html" class="tsd-kind-icon">Internal<wbr>Property<wbr>Declaration</a></li>
+								<li class="tsd-kind-interface tsd-parent-kind-module tsd-has-type-parameter"><a href="../interfaces/_lit_element_.propertydeclaration.html" class="tsd-kind-icon">Property<wbr>Declaration</a></li>
+								<li class="tsd-kind-interface tsd-parent-kind-module"><a href="../interfaces/_lit_element_.propertydeclarations.html" class="tsd-kind-icon">Property<wbr>Declarations</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Type aliases</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-type-alias tsd-parent-kind-module"><a href="_lit_element_.html#cssresultornative" class="tsd-kind-icon">CSSResult<wbr>OrNative</a></li>
+								<li class="tsd-kind-type-alias tsd-parent-kind-module tsd-has-type-parameter"><a href="_lit_element_.html#constructor" class="tsd-kind-icon">Constructor</a></li>
+								<li class="tsd-kind-type-alias tsd-parent-kind-module tsd-has-type-parameter"><a href="_lit_element_.html#propertyvalues" class="tsd-kind-icon">Property<wbr>Values</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Variables</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-variable tsd-parent-kind-module"><a href="_lit_element_.html#html" class="tsd-kind-icon">html</a></li>
+								<li class="tsd-kind-variable tsd-parent-kind-module"><a href="_lit_element_.html#supportsadoptingstylesheets" class="tsd-kind-icon">supports<wbr>Adopting<wbr>Style<wbr>Sheets</a></li>
+								<li class="tsd-kind-variable tsd-parent-kind-module"><a href="_lit_element_.html#svg" class="tsd-kind-icon">svg</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Decorator Functions</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_lit_element_.html#customelement" class="tsd-kind-icon">custom<wbr>Element</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_lit_element_.html#eventoptions" class="tsd-kind-icon">event<wbr>Options</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_lit_element_.html#internalproperty" class="tsd-kind-icon">internal<wbr>Property</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_lit_element_.html#property" class="tsd-kind-icon">property</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_lit_element_.html#query" class="tsd-kind-icon">query</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_lit_element_.html#queryall" class="tsd-kind-icon">query<wbr>All</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_lit_element_.html#queryassignednodes" class="tsd-kind-icon">query<wbr>Assigned<wbr>Nodes</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_lit_element_.html#queryasync" class="tsd-kind-icon">query<wbr>Async</a></li>
+							</ul>
+							<h3>Other Functions</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_lit_element_.html#css" class="tsd-kind-icon">css</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_lit_element_.html#notequal" class="tsd-kind-icon">not<wbr>Equal</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_lit_element_.html#unsafecss" class="tsd-kind-icon">unsafeCSS</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Object literals</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-object-literal tsd-parent-kind-module"><a href="_lit_element_.html#defaultconverter" class="tsd-kind-icon">default<wbr>Converter</a></li>
 							</ul>
 						</section>
 					</div>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Type aliases</h2>
+				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-parent-kind-module">
+					<a name="cssresultornative" class="tsd-anchor"></a>
+					<h3>CSSResult<wbr>OrNative</h3>
+					<div class="tsd-signature tsd-kind-icon">CSSResult<wbr>OrNative<span class="tsd-signature-symbol">:</span> <a href="../classes/_lit_element_.cssresult.html" class="tsd-signature-type">CSSResult</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">CSSStyleSheet</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lit-element.ts#L86">src/lit-element.ts:86</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-parent-kind-module tsd-has-type-parameter">
+					<a name="constructor" class="tsd-anchor"></a>
+					<h3>Constructor</h3>
+					<div class="tsd-signature tsd-kind-icon">Constructor&lt;T&gt;<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>constructor<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> }</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lib/decorators.ts#L26">src/lib/decorators.ts:26</a></li>
+						</ul>
+					</aside>
+					<h4 class="tsd-type-parameters-title">Type parameters</h4>
+					<ul class="tsd-type-parameters">
+						<li>
+							<h4>T</h4>
+						</li>
+					</ul>
+					<div class="tsd-type-declaration">
+						<h4>Type declaration</h4>
+						<ul class="tsd-parameters">
+							<li class="tsd-parameter">
+								<h5>constructor<span class="tsd-signature-symbol">: </span>function</h5>
+								<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-type-literal">
+									<li class="tsd-signature tsd-kind-icon">new __type<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">...</span>args<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">T</span></li>
+								</ul>
+								<ul class="tsd-descriptions">
+									<li class="tsd-description">
+										<aside class="tsd-sources">
+											<ul>
+												<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lib/decorators.ts#L26">src/lib/decorators.ts:26</a></li>
+											</ul>
+										</aside>
+										<h4 class="tsd-parameters-title">Parameters</h4>
+										<ul class="tsd-parameters">
+											<li>
+												<h5><span class="tsd-flag ts-flagRest">Rest</span> <span class="tsd-signature-symbol">...</span>args: <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></h5>
+											</li>
+										</ul>
+										<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">T</span></h4>
+									</li>
+								</ul>
+							</li>
+						</ul>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-parent-kind-module tsd-has-type-parameter">
+					<a name="propertyvalues" class="tsd-anchor"></a>
+					<h3>Property<wbr>Values</h3>
+					<div class="tsd-signature tsd-kind-icon">Property<wbr>Values&lt;T&gt;<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">keyof </span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol"> extends </span><span class="tsd-signature-type">PropertyKey</span><span class="tsd-signature-symbol"> ? </span><span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">keyof </span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> : </span><span class="tsd-signature-type">never</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lib/updating-element.ts#L141">src/lib/updating-element.ts:141</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Map of changed properties with old values. Takes an optional generic
+							interface corresponding to the declared element properties.</p>
+						</div>
+					</div>
+					<h4 class="tsd-type-parameters-title">Type parameters</h4>
+					<ul class="tsd-type-parameters">
+						<li>
+							<h4>T</h4>
+						</li>
+					</ul>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Variables</h2>
+				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-module">
+					<a name="html" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> html</h3>
+					<div class="tsd-signature tsd-kind-icon">html<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">(</span>strings<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">TemplateStringsArray</span>, <span class="tsd-signature-symbol">...</span>values<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><a href="../classes/_lit_element_.templateresult.html" class="tsd-signature-type">TemplateResult</a></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in node_modules/lit-html/lit-html.d.ts:36</li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Interprets a template literal as an HTML template that can efficiently
+							render to and update a container.</p>
+						</div>
+					</div>
+					<div class="tsd-type-declaration">
+						<h4>Type declaration</h4>
+						<ul class="tsd-parameters">
+							<li class="tsd-parameter-signature">
+								<ul class="tsd-signatures tsd-kind-type-literal tsd-parent-kind-variable">
+									<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>strings<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">TemplateStringsArray</span>, <span class="tsd-signature-symbol">...</span>values<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../classes/_lit_element_.templateresult.html" class="tsd-signature-type">TemplateResult</a></li>
+								</ul>
+								<ul class="tsd-descriptions">
+									<li class="tsd-description">
+										<h4 class="tsd-parameters-title">Parameters</h4>
+										<ul class="tsd-parameters">
+											<li>
+												<h5>strings: <span class="tsd-signature-type">TemplateStringsArray</span></h5>
+											</li>
+											<li>
+												<h5><span class="tsd-flag ts-flagRest">Rest</span> <span class="tsd-signature-symbol">...</span>values: <span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">[]</span></h5>
+											</li>
+										</ul>
+										<h4 class="tsd-returns-title">Returns <a href="../classes/_lit_element_.templateresult.html" class="tsd-signature-type">TemplateResult</a></h4>
+									</li>
+								</ul>
+							</li>
+						</ul>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-module">
+					<a name="supportsadoptingstylesheets" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> supports<wbr>Adopting<wbr>Style<wbr>Sheets</h3>
+					<div class="tsd-signature tsd-kind-icon">supports<wbr>Adopting<wbr>Style<wbr>Sheets<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> = (window.ShadowRoot) &amp;&amp;(window.ShadyCSS &#x3D;&#x3D;&#x3D; undefined || window.ShadyCSS.nativeShadow) &amp;&amp;(&#x27;adoptedStyleSheets&#x27; in Document.prototype) &amp;&amp;(&#x27;replace&#x27; in CSSStyleSheet.prototype)</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lib/css-tag.ts#L15">src/lib/css-tag.ts:15</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Whether the current browser supports <code>adoptedStyleSheets</code>.</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-module">
+					<a name="svg" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> svg</h3>
+					<div class="tsd-signature tsd-kind-icon">svg<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">(</span>strings<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">TemplateStringsArray</span>, <span class="tsd-signature-symbol">...</span>values<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><a href="../classes/_lit_element_.svgtemplateresult.html" class="tsd-signature-type">SVGTemplateResult</a></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in node_modules/lit-html/lit-html.d.ts:41</li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Interprets a template literal as an SVG template that can efficiently
+							render to and update a container.</p>
+						</div>
+					</div>
+					<div class="tsd-type-declaration">
+						<h4>Type declaration</h4>
+						<ul class="tsd-parameters">
+							<li class="tsd-parameter-signature">
+								<ul class="tsd-signatures tsd-kind-type-literal tsd-parent-kind-variable">
+									<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>strings<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">TemplateStringsArray</span>, <span class="tsd-signature-symbol">...</span>values<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../classes/_lit_element_.svgtemplateresult.html" class="tsd-signature-type">SVGTemplateResult</a></li>
+								</ul>
+								<ul class="tsd-descriptions">
+									<li class="tsd-description">
+										<h4 class="tsd-parameters-title">Parameters</h4>
+										<ul class="tsd-parameters">
+											<li>
+												<h5>strings: <span class="tsd-signature-type">TemplateStringsArray</span></h5>
+											</li>
+											<li>
+												<h5><span class="tsd-flag ts-flagRest">Rest</span> <span class="tsd-signature-symbol">...</span>values: <span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">[]</span></h5>
+											</li>
+										</ul>
+										<h4 class="tsd-returns-title">Returns <a href="../classes/_lit_element_.svgtemplateresult.html" class="tsd-signature-type">SVGTemplateResult</a></h4>
+									</li>
+								</ul>
+							</li>
+						</ul>
+					</div>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Decorator Functions</h2>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="customelement" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> custom<wbr>Element</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">custom<wbr>Element<span class="tsd-signature-symbol">(</span>tagName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">(Anonymous function)</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lib/decorators.ts#L88">src/lib/decorators.ts:88</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Class decorator factory that defines the decorated class as a custom element.</p>
+								</div>
+								<pre><code><span class="hljs-meta">@customElement(<span class="hljs-meta-string">'my-element'</span>)</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyElement</span> </span>{
+  render() {
+    <span class="hljs-keyword">return</span> html``;
+  }
+}</code></pre>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>tagName: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<div class="lead">
+											<p>The name of the custom element to define.</p>
+										</div>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">(Anonymous function)</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="eventoptions" class="tsd-anchor"></a>
+					<h3>event<wbr>Options</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">event<wbr>Options<span class="tsd-signature-symbol">(</span>options<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">AddEventListenerOptions</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lib/decorators.ts#L392">src/lib/decorators.ts:392</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Adds event listener options to a method used as an event listener in a
+									lit-html template.</p>
+								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre><code class="language-ts">class MyElement {
+  clicked = false;
+
+  render() {
+    return html`
+      &lt;div @click=${this._onClick}`&gt;
+        &lt;button&gt;&lt;/button&gt;
+      &lt;/div&gt;
+    `;
+  }
+
+  @eventOptions({capture: true})
+  _onClick(e) {
+    this.clicked = true;
+  }
+}</code></pre>
+									</dd>
+								</dl>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>options: <span class="tsd-signature-type">AddEventListenerOptions</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>An object that specifies event listener options as accepted by
+										<code>EventTarget#addEventListener</code> and <code>EventTarget#removeEventListener</code>.</p>
+										<p>Current browsers support the <code>capture</code>, <code>passive</code>, and <code>once</code> options. See:
+										<a href="https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener#Parameters">https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener#Parameters</a></p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="internalproperty" class="tsd-anchor"></a>
+					<h3>internal<wbr>Property</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">internal<wbr>Property<span class="tsd-signature-symbol">(</span>options<span class="tsd-signature-symbol">?: </span><a href="../interfaces/_lit_element_.internalpropertydeclaration.html" class="tsd-signature-type">InternalPropertyDeclaration</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">(Anonymous function)</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lib/decorators.ts#L187">src/lib/decorators.ts:187</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Declares a private or protected property that still triggers updates to the
+									element when it changes.</p>
+								</div>
+								<p>Properties declared this way must not be used from HTML or HTML templating
+									systems, they&#39;re solely for properties internal to the element. These
+								properties may be renamed by optimization tools like closure compiler.</p>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> options: <a href="../interfaces/_lit_element_.internalpropertydeclaration.html" class="tsd-signature-type">InternalPropertyDeclaration</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">(Anonymous function)</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="property" class="tsd-anchor"></a>
+					<h3>property</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">property<span class="tsd-signature-symbol">(</span>options<span class="tsd-signature-symbol">?: </span><a href="../interfaces/_lit_element_.propertydeclaration.html" class="tsd-signature-type">PropertyDeclaration</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">(Anonymous function)</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lib/decorators.ts#L161">src/lib/decorators.ts:161</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>A property decorator which creates a LitElement property which reflects a
+										corresponding attribute value. A <a href="../interfaces/_lit_element_.propertydeclaration.html"><code>PropertyDeclaration</code></a> may optionally be
+									supplied to configure property features.</p>
+								</div>
+								<p>This decorator should only be used for public fields. Private or protected
+								fields should use the <a href="_lit_element_.html#internalproperty"><code>internalProperty</code></a> decorator.</p>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre><code class="language-ts"><span class="hljs-keyword">class</span> MyElement {
+  <span class="hljs-meta">@property</span>({ <span class="hljs-keyword">type</span>: <span class="hljs-built_in">Boolean</span> })
+  clicked = <span class="hljs-literal">false</span>;
+}</code></pre>
+									</dd>
+									<dt>exportdecorateditems</dt>
+									<dd></dd>
+								</dl>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> options: <a href="../interfaces/_lit_element_.propertydeclaration.html" class="tsd-signature-type">PropertyDeclaration</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">(Anonymous function)</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="query" class="tsd-anchor"></a>
+					<h3>query</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">query<span class="tsd-signature-symbol">(</span>selector<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">(Anonymous function)</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lib/decorators.ts#L216">src/lib/decorators.ts:216</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>A property decorator that converts a class property into a getter that
+									executes a querySelector on the element&#39;s renderRoot.</p>
+								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre><code class="language-ts"><span class="hljs-keyword">class</span> MyElement {
+  <span class="hljs-meta">@query</span>(<span class="hljs-string">'#first'</span>)
+  first;
+
+  render() {
+    <span class="hljs-keyword">return</span> html`<span class="xml">
+      <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"first"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"second"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+    `</span>;
+  }
+}</code></pre>
+									</dd>
+								</dl>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>selector: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>A DOMString containing one or more selectors to match.</p>
+										<p>See: <a href="https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelector">https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelector</a></p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">(Anonymous function)</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="queryall" class="tsd-anchor"></a>
+					<h3>query<wbr>All</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">query<wbr>All<span class="tsd-signature-symbol">(</span>selector<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">(Anonymous function)</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lib/decorators.ts#L314">src/lib/decorators.ts:314</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>A property decorator that converts a class property into a getter
+									that executes a querySelectorAll on the element&#39;s renderRoot.</p>
+								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre><code class="language-ts"><span class="hljs-keyword">class</span> MyElement {
+  <span class="hljs-meta">@queryAll</span>(<span class="hljs-string">'div'</span>)
+  divs;
+
+  render() {
+    <span class="hljs-keyword">return</span> html`<span class="xml">
+      <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"first"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"second"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+    `</span>;
+  }
+}</code></pre>
+									</dd>
+								</dl>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>selector: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>A DOMString containing one or more selectors to match.</p>
+										<p>See:
+										<a href="https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelectorAll">https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelectorAll</a></p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">(Anonymous function)</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="queryassignednodes" class="tsd-anchor"></a>
+					<h3>query<wbr>Assigned<wbr>Nodes</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">query<wbr>Assigned<wbr>Nodes<span class="tsd-signature-symbol">(</span>slotName<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span>, flatten<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">(Anonymous function)</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lib/decorators.ts#L413">src/lib/decorators.ts:413</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>A property decorator that converts a class property into a getter that
+										returns the <code>assignedNodes</code> of the given named <code>slot</code>. Note, the type of
+									this property should be annotated as <code>NodeListOf&lt;HTMLElement&gt;</code>.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> slotName: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> = &quot;&quot;</span></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> flatten: <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> = false</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">(Anonymous function)</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="queryasync" class="tsd-anchor"></a>
+					<h3>query<wbr>Async</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">query<wbr>Async<span class="tsd-signature-symbol">(</span>selector<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">(Anonymous function)</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lib/decorators.ts#L271">src/lib/decorators.ts:271</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>A property decorator that converts a class property into a getter that
+										returns a promise that resolves to the result of a querySelector on the
+										element&#39;s renderRoot done after the element&#39;s <code>updateComplete</code> promise
+										resolves. When the queried property may change with element state, this
+										decorator can be used instead of requiring users to await the
+									<code>updateComplete</code> before accessing the property.</p>
+								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre><code class="language-ts"><span class="hljs-keyword">class</span> MyElement {
+  <span class="hljs-meta">@queryAsync</span>(<span class="hljs-string">'#first'</span>)
+  first;
+
+  render() {
+    <span class="hljs-keyword">return</span> html`<span class="xml">
+      <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"first"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"second"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+    `</span>;
+  }
+}
+
+<span class="hljs-comment">// external usage</span>
+<span class="hljs-keyword">async</span> doSomethingWithFirst() {
+ (<span class="hljs-keyword">await</span> aMyElement.first).doSomething();
+}</code></pre>
+									</dd>
+								</dl>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>selector: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>A DOMString containing one or more selectors to match.</p>
+										<p>See: <a href="https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelector">https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelector</a></p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">(Anonymous function)</span></h4>
+						</li>
+					</ul>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Other Functions</h2>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="css" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> css</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">css<span class="tsd-signature-symbol">(</span>strings<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">TemplateStringsArray</span>, <span class="tsd-signature-symbol">...</span>values<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><a href="../classes/_lit_element_.cssresult.html" class="tsd-signature-type">CSSResult</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../classes/_lit_element_.cssresult.html" class="tsd-signature-type">CSSResult</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lib/css-tag.ts#L87">src/lib/css-tag.ts:87</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Template tag which which can be used with LitElement&#39;s [[LitElement.styles | <code>styles</code>]] property to
+										set element styles. For security reasons, only literal string values may be
+										used. To incorporate non-literal values <a href="_lit_element_.html#unsafecss"><code>unsafeCSS</code></a> may be used inside a
+									template string part.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>strings: <span class="tsd-signature-type">TemplateStringsArray</span></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagRest">Rest</span> <span class="tsd-signature-symbol">...</span>values: <span class="tsd-signature-symbol">(</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><a href="../classes/_lit_element_.cssresult.html" class="tsd-signature-type">CSSResult</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">[]</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="../classes/_lit_element_.cssresult.html" class="tsd-signature-type">CSSResult</a></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="notequal" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> not<wbr>Equal</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">not<wbr>Equal<span class="tsd-signature-symbol">(</span>value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">unknown</span>, old<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lib/updating-element.ts#L182">src/lib/updating-element.ts:182</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Change function that returns true if <code>value</code> is different from <code>oldValue</code>.
+									This method is used as the default for a property&#39;s <code>hasChanged</code> function.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>value: <span class="tsd-signature-type">unknown</span></h5>
+								</li>
+								<li>
+									<h5>old: <span class="tsd-signature-type">unknown</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="unsafecss" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> unsafeCSS</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">unsafeCSS<span class="tsd-signature-symbol">(</span>value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../classes/_lit_element_.cssresult.html" class="tsd-signature-type">CSSResult</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lib/css-tag.ts#L64">src/lib/css-tag.ts:64</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Wrap a value for interpolation in a <a href="_lit_element_.html#css"><code>css</code></a> tagged template literal.</p>
+								</div>
+								<p>This is unsafe because untrusted CSS text can be used to phone home
+									or exfiltrate data to an attacker controlled site. Take care to only use
+								this with trusted input.</p>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>value: <span class="tsd-signature-type">unknown</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="../classes/_lit_element_.cssresult.html" class="tsd-signature-type">CSSResult</a></h4>
+						</li>
+					</ul>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Object literals</h2>
+				<section class="tsd-panel tsd-member tsd-kind-object-literal tsd-parent-kind-module">
+					<a name="defaultconverter" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> default<wbr>Converter</h3>
+					<div class="tsd-signature tsd-kind-icon">default<wbr>Converter<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lib/updating-element.ts#L144">src/lib/updating-element.ts:144</a></li>
+						</ul>
+					</aside>
+					<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-object-literal">
+						<a name="defaultconverter.fromattribute" class="tsd-anchor"></a>
+						<h3>from<wbr>Attribute</h3>
+						<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-object-literal">
+							<li class="tsd-signature tsd-kind-icon">from<wbr>Attribute<span class="tsd-signature-symbol">(</span>value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span>, type<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
+						</ul>
+						<ul class="tsd-descriptions">
+							<li class="tsd-description">
+								<aside class="tsd-sources">
+									<ul>
+										<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lib/updating-element.ts#L159">src/lib/updating-element.ts:159</a></li>
+									</ul>
+								</aside>
+								<h4 class="tsd-parameters-title">Parameters</h4>
+								<ul class="tsd-parameters">
+									<li>
+										<h5>value: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span></h5>
+									</li>
+									<li>
+										<h5><span class="tsd-flag ts-flagOptional">Optional</span> type: <span class="tsd-signature-type">unknown</span></h5>
+									</li>
+								</ul>
+								<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
+							</li>
+						</ul>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-object-literal">
+						<a name="defaultconverter.toattribute" class="tsd-anchor"></a>
+						<h3>to<wbr>Attribute</h3>
+						<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-object-literal">
+							<li class="tsd-signature tsd-kind-icon">to<wbr>Attribute<span class="tsd-signature-symbol">(</span>value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">unknown</span>, type<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">unknown</span></li>
+						</ul>
+						<ul class="tsd-descriptions">
+							<li class="tsd-description">
+								<aside class="tsd-sources">
+									<ul>
+										<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lib/updating-element.ts#L146">src/lib/updating-element.ts:146</a></li>
+									</ul>
+								</aside>
+								<h4 class="tsd-parameters-title">Parameters</h4>
+								<ul class="tsd-parameters">
+									<li>
+										<h5>value: <span class="tsd-signature-type">unknown</span></h5>
+									</li>
+									<li>
+										<h5><span class="tsd-flag ts-flagOptional">Optional</span> type: <span class="tsd-signature-type">unknown</span></h5>
+									</li>
+								</ul>
+								<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">unknown</span></h4>
+							</li>
+						</ul>
+					</section>
 				</section>
 			</section>
 		</div>
@@ -123,36 +908,102 @@
 					<li class="globals  ">
 						<a href="../globals.html"><em>Globals</em></a>
 					</li>
-					<li class="label tsd-is-external">
-						<span>Internals</span>
+					<li class=" tsd-kind-module">
+						<a href="_lib_updating_element_.html">&quot;lib/updating-<wbr>element&quot;</a>
 					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="_demo_ts_element_.html">"demo/ts-<wbr>element"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="_lib_css_tag_.html">"lib/css-<wbr>tag"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="_lib_decorators_.html">"lib/decorators"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="_lib_updating_element_.html">"lib/updating-<wbr>element"</a>
-					</li>
-					<li class="label tsd-is-external">
-						<span>Externals</span>
-					</li>
-					<li class="current tsd-kind-external-module tsd-is-external">
-						<a href="_lit_element_.html">"lit-<wbr>element"</a>
+					<li class="current tsd-kind-module">
+						<a href="_lit_element_.html">&quot;lit-<wbr>element&quot;</a>
 					</li>
 				</ul>
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
-					<li class=" tsd-kind-class tsd-parent-kind-external-module tsd-is-external">
+					<li class=" tsd-kind-class tsd-parent-kind-module">
+						<a href="../classes/_lit_element_.cssresult.html" class="tsd-kind-icon">CSSResult</a>
+					</li>
+					<li class=" tsd-kind-class tsd-parent-kind-module">
 						<a href="../classes/_lit_element_.litelement.html" class="tsd-kind-icon">Lit<wbr>Element</a>
 					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module tsd-is-external">
+					<li class=" tsd-kind-class tsd-parent-kind-module">
+						<a href="../classes/_lit_element_.svgtemplateresult.html" class="tsd-kind-icon">SVGTemplate<wbr>Result</a>
+					</li>
+					<li class=" tsd-kind-class tsd-parent-kind-module">
+						<a href="../classes/_lit_element_.templateresult.html" class="tsd-kind-icon">Template<wbr>Result</a>
+					</li>
+					<li class=" tsd-kind-class tsd-parent-kind-module">
+						<a href="../classes/_lit_element_.updatingelement.html" class="tsd-kind-icon">Updating<wbr>Element</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
 						<a href="../interfaces/_lit_element_.cssresultarray.html" class="tsd-kind-icon">CSSResult<wbr>Array</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module tsd-has-type-parameter">
+						<a href="../interfaces/_lit_element_.complexattributeconverter.html" class="tsd-kind-icon">Complex<wbr>Attribute<wbr>Converter</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="../interfaces/_lit_element_.haschanged.html" class="tsd-kind-icon">Has<wbr>Changed</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module tsd-has-type-parameter">
+						<a href="../interfaces/_lit_element_.internalpropertydeclaration.html" class="tsd-kind-icon">Internal<wbr>Property<wbr>Declaration</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module tsd-has-type-parameter">
+						<a href="../interfaces/_lit_element_.propertydeclaration.html" class="tsd-kind-icon">Property<wbr>Declaration</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="../interfaces/_lit_element_.propertydeclarations.html" class="tsd-kind-icon">Property<wbr>Declarations</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-module">
+						<a href="_lit_element_.html#cssresultornative" class="tsd-kind-icon">CSSResult<wbr>OrNative</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-module tsd-has-type-parameter">
+						<a href="_lit_element_.html#constructor" class="tsd-kind-icon">Constructor</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-module tsd-has-type-parameter">
+						<a href="_lit_element_.html#propertyvalues" class="tsd-kind-icon">Property<wbr>Values</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-module">
+						<a href="_lit_element_.html#html" class="tsd-kind-icon">html</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-module">
+						<a href="_lit_element_.html#supportsadoptingstylesheets" class="tsd-kind-icon">supports<wbr>Adopting<wbr>Style<wbr>Sheets</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-module">
+						<a href="_lit_element_.html#svg" class="tsd-kind-icon">svg</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="_lit_element_.html#css" class="tsd-kind-icon">css</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="_lit_element_.html#customelement" class="tsd-kind-icon">custom<wbr>Element</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="_lit_element_.html#eventoptions" class="tsd-kind-icon">event<wbr>Options</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="_lit_element_.html#internalproperty" class="tsd-kind-icon">internal<wbr>Property</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="_lit_element_.html#notequal" class="tsd-kind-icon">not<wbr>Equal</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="_lit_element_.html#property" class="tsd-kind-icon">property</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="_lit_element_.html#query" class="tsd-kind-icon">query</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="_lit_element_.html#queryall" class="tsd-kind-icon">query<wbr>All</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="_lit_element_.html#queryassignednodes" class="tsd-kind-icon">query<wbr>Assigned<wbr>Nodes</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="_lit_element_.html#queryasync" class="tsd-kind-icon">query<wbr>Async</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="_lit_element_.html#unsafecss" class="tsd-kind-icon">unsafeCSS</a>
+					</li>
+					<li class=" tsd-kind-object-literal tsd-parent-kind-module">
+						<a href="_lit_element_.html#defaultconverter" class="tsd-kind-icon">default<wbr>Converter</a>
 					</li>
 				</ul>
 			</nav>
@@ -171,6 +1022,7 @@
 				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
 				<li class="tsd-kind-index-signature"><span class="tsd-kind-icon">Index signature</span></li>
 				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
+				<li class="tsd-kind-type-alias tsd-has-type-parameter"><span class="tsd-kind-icon">Type alias with type parameter</span></li>
 			</ul>
 			<ul class="tsd-legend">
 				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
@@ -219,7 +1071,7 @@
 	</div>
 </footer>
 <div class="container tsd-generator">
-	<p>Generated using <a href="http://typedoc.org/" target="_blank">TypeDoc</a></p>
+	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
 </div>
 <div class="overlay"></div>
 <script src="../assets/js/main.js"></script>
@@ -246,7 +1098,7 @@
                 m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
         })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-        ga('create', 'UA-39334307-23', '');
+        ga('create', 'UA-39334307-23', 'auto');
         ga('send', 'pageview');
     </script>
 </body>

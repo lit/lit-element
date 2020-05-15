@@ -9,7 +9,11 @@ part of the polymer project is also subject to an additional IP rights grant
 found at http://polymer.github.io/PATENTS.txt
 */
 
-export const supportsAdoptingStyleSheets =
+/**
+ * Whether the current browser supports `adoptedStyleSheets`.
+ */
+export const supportsAdoptingStyleSheets = (window.ShadowRoot) &&
+    (window.ShadyCSS === undefined || window.ShadyCSS.nativeShadow) &&
     ('adoptedStyleSheets' in Document.prototype) &&
     ('replace' in CSSStyleSheet.prototype);
 
@@ -25,6 +29,7 @@ export class CSSResult {
       throw new Error(
           'CSSResult is not constructable. Use `unsafeCSS` or `css` instead.');
     }
+
     this.cssText = cssText;
   }
 
@@ -32,8 +37,8 @@ export class CSSResult {
   // stylesheets are not created until the first element instance is made.
   get styleSheet(): CSSStyleSheet|null {
     if (this._styleSheet === undefined) {
-      // Note, if `adoptedStyleSheets` is supported then we assume CSSStyleSheet
-      // is constructable.
+      // Note, if `supportsAdoptingStyleSheets` is true then we assume
+      // CSSStyleSheet is constructable.
       if (supportsAdoptingStyleSheets) {
         this._styleSheet = new CSSStyleSheet();
         this._styleSheet.replaceSync(this.cssText);
@@ -50,7 +55,7 @@ export class CSSResult {
 }
 
 /**
- * Wrap a value for interpolation in a css tagged template literal.
+ * Wrap a value for interpolation in a [[`css`]] tagged template literal.
  *
  * This is unsafe because untrusted CSS text can be used to phone home
  * or exfiltrate data to an attacker controlled site. Take care to only use
@@ -74,9 +79,9 @@ const textFromCSSResult = (value: CSSResult|number) => {
 };
 
 /**
- * Template tag which which can be used with LitElement's `style` property to
+ * Template tag which which can be used with LitElement's [[LitElement.styles | `styles`]] property to
  * set element styles. For security reasons, only literal string values may be
- * used. To incorporate non-literal values `unsafeCSS` may be used inside a
+ * used. To incorporate non-literal values [[`unsafeCSS`]] may be used inside a
  * template string part.
  */
 export const css =

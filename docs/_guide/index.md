@@ -14,8 +14,6 @@ LitElement is a simple base class for creating fast, lightweight web components 
 
 LitElement uses [lit-html](https://lit-html.polymer-project.org/) to render into shadow DOM, and adds API to manage properties and attributes. Properties are observed by default, and elements update asynchronously when their properties change.
 
-To build an app out of LitElement components, check out [PWA Starter Kit](https://pwa-starter-kit.polymer-project.org/).
-
 ## Next steps
 
 * [Getting Started](/guide/start): Set up LitElement and create a component.

@@ -13,6 +13,11 @@
  */
 
 /**
+ * Use this module if you want to create your own base class extending [[UpdatingElement]].
+ * @packageDocumentation
+ */
+
+/*
  * When using Closure Compiler, JSCompiler_renameProperty(property, object) is
  * replaced at compile time by the munged name for object[property]. We cannot
  * alias this function, so we have to use a small shim that has the same
@@ -207,6 +212,7 @@ const finalized = 'finalized';
  * Base element class which manages element properties and attributes. When
  * properties change, the `update` method is asynchronously called. This method
  * should be supplied by subclassers to render updates as desired.
+ * @noInheritDoc
  */
 export abstract class UpdatingElement extends HTMLElement {
   /*
@@ -351,7 +357,7 @@ export abstract class UpdatingElement extends HTMLElement {
    * @nocollapse
    */
   protected static getPropertyDescriptor(
-      name: PropertyKey, key: string|symbol, _options: PropertyDeclaration) {
+      name: PropertyKey, key: string|symbol, options: PropertyDeclaration) {
     return {
       // tslint:disable-next-line:no-any no symbol in index
       get(): any {
@@ -361,7 +367,7 @@ export abstract class UpdatingElement extends HTMLElement {
         const oldValue =
             (this as {} as {[key: string]: unknown})[name as string];
         (this as {} as {[key: string]: unknown})[key as string] = value;
-        (this as unknown as UpdatingElement)._requestUpdate(name, oldValue);
+        (this as unknown as UpdatingElement).requestUpdateInternal(name, oldValue, options);
       },
       configurable: true,
       enumerable: true
@@ -484,25 +490,23 @@ export abstract class UpdatingElement extends HTMLElement {
     return toAttribute!(value, type);
   }
 
-  private _updateState: UpdateState = 0;
-  private _instanceProperties: PropertyValues|undefined = undefined;
+  private _updateState!: UpdateState;
+  private _instanceProperties?: PropertyValues;
   // Initialize to an unresolved Promise so we can make sure the element has
   // connected before first update.
-  private _updatePromise =
-      new Promise((res) => this._enableUpdatingResolver = res);
+  private _updatePromise!: Promise<unknown>;
   private _enableUpdatingResolver: (() => void)|undefined;
 
   /**
    * Map with keys for any properties that have changed since the last
    * update cycle with previous values.
    */
-  private _changedProperties: PropertyValues = new Map();
+  private _changedProperties!: PropertyValues;
 
   /**
    * Map with keys of properties that should be reflected when updated.
    */
-  private _reflectingProperties: Map<PropertyKey, PropertyDeclaration>|
-      undefined = undefined;
+  private _reflectingProperties?: Map<PropertyKey, PropertyDeclaration>;
 
   constructor() {
     super();
@@ -514,10 +518,13 @@ export abstract class UpdatingElement extends HTMLElement {
    * registered properties.
    */
   protected initialize() {
+    this._updateState = 0;
+    this._updatePromise = new Promise((res) => this._enableUpdatingResolver = res);
+    this._changedProperties = new Map();
     this._saveInstanceProperties();
     // ensures first update will be caught by an early access of
     // `updateComplete`
-    this._requestUpdate();
+    this.requestUpdateInternal();
   }
 
   /**
@@ -643,16 +650,16 @@ export abstract class UpdatingElement extends HTMLElement {
   }
 
   /**
-   * This private version of `requestUpdate` does not access or return the
+   * This protected version of `requestUpdate` does not access or return the
    * `updateComplete` promise. This promise can be overridden and is therefore
    * not free to access.
    */
-  private _requestUpdate(name?: PropertyKey, oldValue?: unknown) {
+  protected requestUpdateInternal(name?: PropertyKey, oldValue?: unknown, options?: PropertyDeclaration) {
     let shouldRequestUpdate = true;
     // If we have a property key, perform property update steps.
     if (name !== undefined) {
       const ctor = this.constructor as typeof UpdatingElement;
-      const options = ctor.getPropertyOptions(name);
+      options = options || ctor.getPropertyOptions(name);
       if (ctor._valueHasChanged(
               this[name as keyof this], oldValue, options.hasChanged)) {
         if (!this._changedProperties.has(name)) {
@@ -693,7 +700,7 @@ export abstract class UpdatingElement extends HTMLElement {
    * @returns {Promise} A Promise that is resolved when the update completes.
    */
   requestUpdate(name?: PropertyKey, oldValue?: unknown) {
-    this._requestUpdate(name, oldValue);
+    this.requestUpdateInternal(name, oldValue);
     return this.updateComplete;
   }
 
@@ -745,6 +752,12 @@ export abstract class UpdatingElement extends HTMLElement {
    * ```
    */
   protected performUpdate(): void|Promise<unknown> {
+    // Abort any update if one is not pending when this is called.
+    // This can happen if `performUpdate` is called early to "flush"
+    // the update.
+    if (!this._hasRequestedUpdate) {
+      return;
+    }
     // Mixin instance properties once, if they exist.
     if (this._instanceProperties) {
       this._applyInstanceProperties();

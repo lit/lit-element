@@ -3,10 +3,10 @@ import { LitElement, html } from 'lit-element';
 class MyElement extends LitElement {
   static get properties() {
     return {
-      prop1: String,
-      prop2: String,
-      prop3: Boolean,
-      prop4: String
+      prop1: {type: String},
+      prop2: {type: String},
+      prop3: {type: Boolean},
+      prop4: {type: String}
     };
   }
   constructor() {

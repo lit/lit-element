@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>LitElement | lit-element</title>
+	<title>UpdatingElement | lit-element</title>
 	<meta name="description" content="LitElement API documentation">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="shortcut icon" href="/images/favicon.png">
@@ -91,10 +91,10 @@
 					<a href="../modules/_lit_element_.html">&quot;lit-element&quot;</a>
 				</li>
 				<li>
-					<a href="_lit_element_.litelement.html">LitElement</a>
+					<a href="_lit_element_.updatingelement.html">UpdatingElement</a>
 				</li>
 			</ul>
-			<h1>Class LitElement</h1>
+			<h1>Class UpdatingElement</h1>
 		</div>
 	</div>
 </header>
@@ -104,22 +104,29 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>Base element class that manages element properties and attributes, and
-						renders a lit-html template.</p>
+						<p>Base element class which manages element properties and attributes. When
+							properties change, the <code>update</code> method is asynchronously called. This method
+						should be supplied by subclassers to render updates as desired.</p>
 					</div>
-					<p>To define a component, subclass <code>LitElement</code> and implement a
-						<code>render</code> method to provide the component&#39;s template. Define properties
-					using the <a href="_lit_element_.litelement.html#properties"><code>properties</code></a> property or the <a href="../modules/_lit_element_.html#property"><code>property</code></a> decorator.</p>
+					<dl class="tsd-comment-tags">
+						<dt>noinheritdoc</dt>
+						<dd></dd>
+					</dl>
 				</div>
 			</section>
 			<section class="tsd-panel tsd-hierarchy">
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<a href="_lit_element_.updatingelement.html" class="tsd-signature-type">UpdatingElement</a>
+						<span class="tsd-signature-type">any</span>
 						<ul class="tsd-hierarchy">
 							<li>
-								<span class="target">LitElement</span>
+								<span class="target">UpdatingElement</span>
+								<ul class="tsd-hierarchy">
+									<li>
+										<a href="_lit_element_.litelement.html" class="tsd-signature-type">LitElement</a>
+									</li>
+								</ul>
 							</li>
 						</ul>
 					</li>
@@ -129,104 +136,78 @@
 				<h2>Index</h2>
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
-						<section class="tsd-index-section tsd-is-inherited">
+						<section class="tsd-index-section ">
 							<h3>Constructors</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited"><a href="_lit_element_.litelement.html#constructor" class="tsd-kind-icon">constructor</a></li>
+								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="_lit_element_.updatingelement.html#constructor" class="tsd-kind-icon">constructor</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_lit_element_.litelement.html#renderroot" class="tsd-kind-icon">render<wbr>Root</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-protected tsd-is-static"><a href="_lit_element_.litelement.html#_finalized_" class="tsd-kind-icon">[finalized]</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected tsd-is-static"><a href="_lit_element_.litelement.html#finalized" class="tsd-kind-icon">finalized</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-static"><a href="_lit_element_.litelement.html#properties" class="tsd-kind-icon">properties</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="_lit_element_.litelement.html#render" class="tsd-kind-icon">render</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="_lit_element_.litelement.html#styles" class="tsd-kind-icon">styles</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected tsd-is-static"><a href="_lit_element_.updatingelement.html#_finalized_" class="tsd-kind-icon">[finalized]</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="_lit_element_.updatingelement.html#properties" class="tsd-kind-icon">properties</a></li>
 							</ul>
 						</section>
-						<section class="tsd-index-section tsd-is-inherited">
+						<section class="tsd-index-section ">
 							<h3>Accessors</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-get-signature tsd-parent-kind-class tsd-is-inherited tsd-is-protected"><a href="_lit_element_.litelement.html#hasupdated" class="tsd-kind-icon">has<wbr>Updated</a></li>
-								<li class="tsd-kind-get-signature tsd-parent-kind-class tsd-is-inherited"><a href="_lit_element_.litelement.html#updatecomplete" class="tsd-kind-icon">update<wbr>Complete</a></li>
-								<li class="tsd-kind-get-signature tsd-parent-kind-class tsd-is-inherited tsd-is-static"><a href="_lit_element_.litelement.html#observedattributes" class="tsd-kind-icon">observed<wbr>Attributes</a></li>
+								<li class="tsd-kind-get-signature tsd-parent-kind-class tsd-is-protected"><a href="_lit_element_.updatingelement.html#hasupdated" class="tsd-kind-icon">has<wbr>Updated</a></li>
+								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="_lit_element_.updatingelement.html#updatecomplete" class="tsd-kind-icon">update<wbr>Complete</a></li>
+								<li class="tsd-kind-get-signature tsd-parent-kind-class tsd-is-static"><a href="_lit_element_.updatingelement.html#observedattributes" class="tsd-kind-icon">observed<wbr>Attributes</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected"><a href="_lit_element_.litelement.html#_getupdatecomplete" class="tsd-kind-icon">_get<wbr>Update<wbr>Complete</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><a href="_lit_element_.litelement.html#adoptstyles" class="tsd-kind-icon">adopt<wbr>Styles</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="_lit_element_.litelement.html#attributechangedcallback" class="tsd-kind-icon">attribute<wbr>Changed<wbr>Callback</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite"><a href="_lit_element_.litelement.html#connectedcallback" class="tsd-kind-icon">connected<wbr>Callback</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><a href="_lit_element_.litelement.html#createrenderroot" class="tsd-kind-icon">create<wbr>Render<wbr>Root</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="_lit_element_.litelement.html#disconnectedcallback" class="tsd-kind-icon">disconnected<wbr>Callback</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected"><a href="_lit_element_.litelement.html#enableupdating" class="tsd-kind-icon">enable<wbr>Updating</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected"><a href="_lit_element_.litelement.html#firstupdated" class="tsd-kind-icon">first<wbr>Updated</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-protected"><a href="_lit_element_.litelement.html#initialize" class="tsd-kind-icon">initialize</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected"><a href="_lit_element_.litelement.html#performupdate" class="tsd-kind-icon">perform<wbr>Update</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><a href="_lit_element_.litelement.html#render-1" class="tsd-kind-icon">render</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="_lit_element_.litelement.html#requestupdate" class="tsd-kind-icon">request<wbr>Update</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected"><a href="_lit_element_.litelement.html#shouldupdate" class="tsd-kind-icon">should<wbr>Update</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-protected"><a href="_lit_element_.litelement.html#update" class="tsd-kind-icon">update</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected"><a href="_lit_element_.litelement.html#updated" class="tsd-kind-icon">updated</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-static"><a href="_lit_element_.litelement.html#createproperty" class="tsd-kind-icon">create<wbr>Property</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected tsd-is-static"><a href="_lit_element_.litelement.html#finalize" class="tsd-kind-icon">finalize</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected tsd-is-static"><a href="_lit_element_.litelement.html#getpropertydescriptor" class="tsd-kind-icon">get<wbr>Property<wbr>Descriptor</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected tsd-is-static"><a href="_lit_element_.litelement.html#getpropertyoptions" class="tsd-kind-icon">get<wbr>Property<wbr>Options</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="_lit_element_.litelement.html#getstyles" class="tsd-kind-icon">get<wbr>Styles</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><a href="_lit_element_.updatingelement.html#_getupdatecomplete" class="tsd-kind-icon">_get<wbr>Update<wbr>Complete</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_lit_element_.updatingelement.html#attributechangedcallback" class="tsd-kind-icon">attribute<wbr>Changed<wbr>Callback</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_lit_element_.updatingelement.html#connectedcallback" class="tsd-kind-icon">connected<wbr>Callback</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_lit_element_.updatingelement.html#disconnectedcallback" class="tsd-kind-icon">disconnected<wbr>Callback</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><a href="_lit_element_.updatingelement.html#enableupdating" class="tsd-kind-icon">enable<wbr>Updating</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><a href="_lit_element_.updatingelement.html#firstupdated" class="tsd-kind-icon">first<wbr>Updated</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><a href="_lit_element_.updatingelement.html#initialize" class="tsd-kind-icon">initialize</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><a href="_lit_element_.updatingelement.html#performupdate" class="tsd-kind-icon">perform<wbr>Update</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_lit_element_.updatingelement.html#requestupdate" class="tsd-kind-icon">request<wbr>Update</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><a href="_lit_element_.updatingelement.html#shouldupdate" class="tsd-kind-icon">should<wbr>Update</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><a href="_lit_element_.updatingelement.html#update" class="tsd-kind-icon">update</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><a href="_lit_element_.updatingelement.html#updated" class="tsd-kind-icon">updated</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="_lit_element_.updatingelement.html#createproperty" class="tsd-kind-icon">create<wbr>Property</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected tsd-is-static"><a href="_lit_element_.updatingelement.html#finalize" class="tsd-kind-icon">finalize</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected tsd-is-static"><a href="_lit_element_.updatingelement.html#getpropertydescriptor" class="tsd-kind-icon">get<wbr>Property<wbr>Descriptor</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected tsd-is-static"><a href="_lit_element_.updatingelement.html#getpropertyoptions" class="tsd-kind-icon">get<wbr>Property<wbr>Options</a></li>
 							</ul>
 						</section>
 					</div>
 				</section>
 			</section>
-			<section class="tsd-panel-group tsd-member-group tsd-is-inherited">
+			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Constructors</h2>
-				<section class="tsd-panel tsd-member tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited">
+				<section class="tsd-panel tsd-member tsd-kind-constructor tsd-parent-kind-class">
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
-					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Lit<wbr>Element<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_lit_element_.litelement.html" class="tsd-signature-type">LitElement</a></li>
+					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Updating<wbr>Element<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_lit_element_.updatingelement.html" class="tsd-signature-type">UpdatingElement</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Inherited from <a href="_lit_element_.litelement.html">LitElement</a>.<a href="_lit_element_.litelement.html#constructor">constructor</a></p>
 								<ul>
 									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lib/updating-element.ts#L511">src/lib/updating-element.ts:511</a></li>
 								</ul>
 							</aside>
-							<h4 class="tsd-returns-title">Returns <a href="_lit_element_.litelement.html" class="tsd-signature-type">LitElement</a></h4>
+							<h4 class="tsd-returns-title">Returns <a href="_lit_element_.updatingelement.html" class="tsd-signature-type">UpdatingElement</a></h4>
 						</li>
 					</ul>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="renderroot" class="tsd-anchor"></a>
-					<h3>render<wbr>Root</h3>
-					<div class="tsd-signature tsd-kind-icon">render<wbr>Root<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Element</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">DocumentFragment</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lit-element.ts#L222">src/lit-element.ts:222</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Node or ShadowRoot into which element DOM should be rendered. Defaults
-							to an open shadowRoot.</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-protected tsd-is-static">
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-protected tsd-is-static">
 					<a name="_finalized_" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagStatic">Static</span> <span class="tsd-flag ts-flagProtected">Protected</span> [finalized]</h3>
 					<div class="tsd-signature tsd-kind-icon">[finalized]<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> = true</span></div>
 					<aside class="tsd-sources">
-						<p>Inherited from <a href="_lit_element_.litelement.html">LitElement</a>.<a href="_lit_element_.litelement.html#_finalized_">[finalized]</a></p>
 						<ul>
 							<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lib/updating-element.ts#L234">src/lib/updating-element.ts:234</a></li>
 						</ul>
@@ -237,30 +218,11 @@
 						</div>
 					</div>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-protected tsd-is-static">
-					<a name="finalized" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> <span class="tsd-flag ts-flagProtected">Protected</span> finalized</h3>
-					<div class="tsd-signature tsd-kind-icon">finalized<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> = true</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lit-element.ts#L113">src/lit-element.ts:113</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Ensure this class is marked as <code>finalized</code> as an optimization ensuring
-							it will not needlessly try to <code>finalize</code>.</p>
-						</div>
-						<p>Note this property name is a string to prevent breaking Closure JS Compiler
-						optimizations. See updating-element.ts for more information.</p>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-static">
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
 					<a name="properties" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagStatic">Static</span> properties</h3>
 					<div class="tsd-signature tsd-kind-icon">properties<span class="tsd-signature-symbol">:</span> <a href="../interfaces/_lit_element_.propertydeclarations.html" class="tsd-signature-type">PropertyDeclarations</a></div>
 					<aside class="tsd-sources">
-						<p>Inherited from <a href="_lit_element_.litelement.html">LitElement</a>.<a href="_lit_element_.litelement.html#properties">properties</a></p>
 						<ul>
 							<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lib/updating-element.ts#L246">src/lib/updating-element.ts:246</a></li>
 						</ul>
@@ -272,88 +234,18 @@
 						</div>
 					</div>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
-					<a name="render" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> render</h3>
-					<div class="tsd-signature tsd-kind-icon">render<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">(</span>result<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">unknown</span>, container<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Element</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">DocumentFragment</span>, options<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ShadyRenderOptions</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol"> = render</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lit-element.ts#L130">src/lit-element.ts:130</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Reference to the underlying library method used to render the element&#39;s DOM.
-							By default, points to the <code>render</code> method from lit-html&#39;s shady-render module.</p>
-						</div>
-						<p><strong>Most users will never need to touch this property.</strong></p>
-						<p>This  property should not be confused with the <code>render</code> instance method,
-						which should be overridden to define a template for the element.</p>
-						<p>Advanced users creating a new base class based on LitElement can override this property
-							to point to a custom render method with a signature that matches
-						<a href="https://lit-html.polymer-project.org/api/modules/shady_render.html#render">shady-render&#39;s <code>render</code> method</a>.</p>
-						<dl class="tsd-comment-tags">
-							<dt>nocollapse</dt>
-							<dd></dd>
-						</dl>
-					</div>
-					<div class="tsd-type-declaration">
-						<h4>Type declaration</h4>
-						<ul class="tsd-parameters">
-							<li class="tsd-parameter-signature">
-								<ul class="tsd-signatures tsd-kind-type-literal tsd-parent-kind-property">
-									<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>result<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">unknown</span>, container<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Element</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">DocumentFragment</span>, options<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ShadyRenderOptions</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-								</ul>
-								<ul class="tsd-descriptions">
-									<li class="tsd-description">
-										<h4 class="tsd-parameters-title">Parameters</h4>
-										<ul class="tsd-parameters">
-											<li>
-												<h5>result: <span class="tsd-signature-type">unknown</span></h5>
-											</li>
-											<li>
-												<h5>container: <span class="tsd-signature-type">Element</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">DocumentFragment</span></h5>
-											</li>
-											<li>
-												<h5>options: <span class="tsd-signature-type">ShadyRenderOptions</span></h5>
-											</li>
-										</ul>
-										<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
-									</li>
-								</ul>
-							</li>
-						</ul>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
-					<a name="styles" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> <span class="tsd-flag ts-flagOptional">Optional</span> styles</h3>
-					<div class="tsd-signature tsd-kind-icon">styles<span class="tsd-signature-symbol">:</span> <a href="../modules/_lit_element_.html#cssresultornative" class="tsd-signature-type">CSSResultOrNative</a><span class="tsd-signature-symbol"> | </span><a href="../interfaces/_lit_element_.cssresultarray.html" class="tsd-signature-type">CSSResultArray</a></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lit-element.ts#L140">src/lit-element.ts:140</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Array of styles to apply to the element. The styles should be defined
-							using the <a href="../modules/_lit_element_.html#css"><code>css</code></a> tag function or via constructible stylesheets.</p>
-						</div>
-					</div>
-				</section>
 			</section>
-			<section class="tsd-panel-group tsd-member-group tsd-is-inherited">
+			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Accessors</h2>
-				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
+				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class tsd-is-protected">
 					<a name="hasupdated" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagProtected">Protected</span> has<wbr>Updated</h3>
-					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
+					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class tsd-is-protected">
 						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> hasUpdated<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Inherited from <a href="_lit_element_.litelement.html">LitElement</a>.<a href="_lit_element_.litelement.html#hasupdated">hasUpdated</a></p>
 								<ul>
 									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lib/updating-element.ts#L733">src/lib/updating-element.ts:733</a></li>
 								</ul>
@@ -362,16 +254,15 @@
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class tsd-is-inherited">
+				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class">
 					<a name="updatecomplete" class="tsd-anchor"></a>
 					<h3>update<wbr>Complete</h3>
-					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class tsd-is-inherited">
+					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class">
 						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> updateComplete<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Inherited from <a href="_lit_element_.litelement.html">LitElement</a>.<a href="_lit_element_.litelement.html#updatecomplete">updateComplete</a></p>
 								<ul>
 									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lib/updating-element.ts#L810">src/lib/updating-element.ts:810</a></li>
 								</ul>
@@ -395,16 +286,15 @@
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class tsd-is-inherited tsd-is-static">
+				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class tsd-is-static">
 					<a name="observedattributes" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagStatic">Static</span> observed<wbr>Attributes</h3>
-					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class tsd-is-inherited tsd-is-static">
+					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class tsd-is-static">
 						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> observedAttributes<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Inherited from <a href="_lit_element_.litelement.html">LitElement</a>.<a href="_lit_element_.litelement.html#observedattributes">observedAttributes</a></p>
 								<ul>
 									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lib/updating-element.ts#L252">src/lib/updating-element.ts:252</a></li>
 								</ul>
@@ -425,16 +315,15 @@
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Methods</h2>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-protected">
 					<a name="_getupdatecomplete" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagProtected">Protected</span> _get<wbr>Update<wbr>Complete</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-protected">
 						<li class="tsd-signature tsd-kind-icon">_get<wbr>Update<wbr>Complete<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Inherited from <a href="_lit_element_.litelement.html">LitElement</a>.<a href="_lit_element_.litelement.html#_getupdatecomplete">_getUpdateComplete</a></p>
 								<ul>
 									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lib/updating-element.ts#L830">src/lib/updating-element.ts:830</a></li>
 								</ul>
@@ -459,44 +348,15 @@
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-protected">
-					<a name="adoptstyles" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagProtected">Protected</span> adopt<wbr>Styles</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-protected">
-						<li class="tsd-signature tsd-kind-icon">adopt<wbr>Styles<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lit-element.ts#L263">src/lit-element.ts:263</a></li>
-								</ul>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Applies styling to the element shadowRoot using the <a href="_lit_element_.litelement.html#styles"><code>styles</code></a>
-										property. Styling will apply using <code>shadowRoot.adoptedStyleSheets</code> where
-										available and will fallback otherwise. When Shadow DOM is polyfilled,
-										ShadyCSS scopes styles and adds them to the document. When Shadow DOM
-										is available but <code>adoptedStyleSheets</code> is not, styles are appended to the
-										end of the <code>shadowRoot</code> to <a href="https://wicg.github.io/construct-stylesheets/#using-constructed-stylesheets">mimic spec
-									behavior</a>.</p>
-								</div>
-							</div>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
 					<a name="attributechangedcallback" class="tsd-anchor"></a>
 					<h3>attribute<wbr>Changed<wbr>Callback</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
 						<li class="tsd-signature tsd-kind-icon">attribute<wbr>Changed<wbr>Callback<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, old<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span>, value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Inherited from <a href="_lit_element_.litelement.html">LitElement</a>.<a href="_lit_element_.litelement.html#attributechangedcallback">attributeChangedCallback</a></p>
 								<ul>
 									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lib/updating-element.ts#L592">src/lib/updating-element.ts:592</a></li>
 								</ul>
@@ -522,60 +382,32 @@
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
 					<a name="connectedcallback" class="tsd-anchor"></a>
 					<h3>connected<wbr>Callback</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
 						<li class="tsd-signature tsd-kind-icon">connected<wbr>Callback<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Overrides <a href="_lit_element_.updatingelement.html">UpdatingElement</a>.<a href="_lit_element_.updatingelement.html#connectedcallback">connectedCallback</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lit-element.ts#L289">src/lit-element.ts:289</a></li>
+									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lib/updating-element.ts#L568">src/lib/updating-element.ts:568</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-protected">
-					<a name="createrenderroot" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagProtected">Protected</span> create<wbr>Render<wbr>Root</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-protected">
-						<li class="tsd-signature tsd-kind-icon">create<wbr>Render<wbr>Root<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Element</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ShadowRoot</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lit-element.ts#L250">src/lit-element.ts:250</a></li>
-								</ul>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Returns the node into which the element should render and by default
-										creates and returns an open shadowRoot. Implement to customize where the
-										element&#39;s DOM is rendered. For example, to render into the element&#39;s
-									childNodes, return <code>this</code>.</p>
-								</div>
-							</div>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Element</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ShadowRoot</span></h4>
-							<p>Returns a node into which to render.</p>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
 					<a name="disconnectedcallback" class="tsd-anchor"></a>
 					<h3>disconnected<wbr>Callback</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
 						<li class="tsd-signature tsd-kind-icon">disconnected<wbr>Callback<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Inherited from <a href="_lit_element_.litelement.html">LitElement</a>.<a href="_lit_element_.litelement.html#disconnectedcallback">disconnectedCallback</a></p>
 								<ul>
 									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lib/updating-element.ts#L586">src/lib/updating-element.ts:586</a></li>
 								</ul>
@@ -591,16 +423,15 @@
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-protected">
 					<a name="enableupdating" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagProtected">Protected</span> enable<wbr>Updating</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-protected">
 						<li class="tsd-signature tsd-kind-icon">enable<wbr>Updating<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Inherited from <a href="_lit_element_.litelement.html">LitElement</a>.<a href="_lit_element_.litelement.html#enableupdating">enableUpdating</a></p>
 								<ul>
 									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lib/updating-element.ts#L574">src/lib/updating-element.ts:574</a></li>
 								</ul>
@@ -609,16 +440,15 @@
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-protected">
 					<a name="firstupdated" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagProtected">Protected</span> first<wbr>Updated</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-protected">
 						<li class="tsd-signature tsd-kind-icon">first<wbr>Updated<span class="tsd-signature-symbol">(</span>_changedProperties<span class="tsd-signature-symbol">: </span><a href="../modules/_lit_element_.html#propertyvalues" class="tsd-signature-type">PropertyValues</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Inherited from <a href="_lit_element_.litelement.html">LitElement</a>.<a href="_lit_element_.litelement.html#firstupdated">firstUpdated</a></p>
 								<ul>
 									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lib/updating-element.ts#L886">src/lib/updating-element.ts:886</a></li>
 								</ul>
@@ -644,24 +474,22 @@
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-protected">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-protected">
 					<a name="initialize" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagProtected">Protected</span> initialize</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-protected">
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-protected">
 						<li class="tsd-signature tsd-kind-icon">initialize<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Overrides <a href="_lit_element_.updatingelement.html">UpdatingElement</a>.<a href="_lit_element_.updatingelement.html#initialize">initialize</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lit-element.ts#L229">src/lit-element.ts:229</a></li>
+									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lib/updating-element.ts#L522">src/lib/updating-element.ts:522</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Performs element initialization. By default this calls <a href="_lit_element_.litelement.html#createrenderroot"><code>createRenderRoot</code></a>
-										to create the element <a href="_lit_element_.litelement.html#renderroot"><code>renderRoot</code></a> node and captures any pre-set values for
+									<p>Performs element initialization. By default captures any pre-set values for
 									registered properties.</p>
 								</div>
 							</div>
@@ -669,16 +497,15 @@
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-protected">
 					<a name="performupdate" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagProtected">Protected</span> perform<wbr>Update</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-protected">
 						<li class="tsd-signature tsd-kind-icon">perform<wbr>Update<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Inherited from <a href="_lit_element_.litelement.html">LitElement</a>.<a href="_lit_element_.litelement.html#performupdate">performUpdate</a></p>
 								<ul>
 									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lib/updating-element.ts#L753">src/lib/updating-element.ts:753</a></li>
 								</ul>
@@ -700,41 +527,15 @@
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-protected">
-					<a name="render-1" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagProtected">Protected</span> render</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-protected">
-						<li class="tsd-signature tsd-kind-icon">render<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">unknown</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lit-element.ts#L337">src/lit-element.ts:337</a></li>
-								</ul>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Invoked on each update to perform rendering tasks. This method may return
-										any value renderable by lit-html&#39;s <code>NodePart</code> - typically a <code>TemplateResult</code>.
-										Setting properties inside this method will <em>not</em> trigger the element to
-									update.</p>
-								</div>
-							</div>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">unknown</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
 					<a name="requestupdate" class="tsd-anchor"></a>
 					<h3>request<wbr>Update</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
 						<li class="tsd-signature tsd-kind-icon">request<wbr>Update<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">PropertyKey</span>, oldValue<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Inherited from <a href="_lit_element_.litelement.html">LitElement</a>.<a href="_lit_element_.litelement.html#requestupdate">requestUpdate</a></p>
 								<ul>
 									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lib/updating-element.ts#L701">src/lib/updating-element.ts:701</a></li>
 								</ul>
@@ -770,16 +571,15 @@
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-protected">
 					<a name="shouldupdate" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagProtected">Protected</span> should<wbr>Update</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-protected">
 						<li class="tsd-signature tsd-kind-icon">should<wbr>Update<span class="tsd-signature-symbol">(</span>_changedProperties<span class="tsd-signature-symbol">: </span><a href="../modules/_lit_element_.html#propertyvalues" class="tsd-signature-type">PropertyValues</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Inherited from <a href="_lit_element_.litelement.html">LitElement</a>.<a href="_lit_element_.litelement.html#shouldupdate">shouldUpdate</a></p>
 								<ul>
 									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lib/updating-element.ts#L841">src/lib/updating-element.ts:841</a></li>
 								</ul>
@@ -804,47 +604,49 @@
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-protected">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-protected">
 					<a name="update" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagProtected">Protected</span> update</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-protected">
-						<li class="tsd-signature tsd-kind-icon">update<span class="tsd-signature-symbol">(</span>changedProperties<span class="tsd-signature-symbol">: </span><a href="../modules/_lit_element_.html#propertyvalues" class="tsd-signature-type">PropertyValues</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-protected">
+						<li class="tsd-signature tsd-kind-icon">update<span class="tsd-signature-symbol">(</span>_changedProperties<span class="tsd-signature-symbol">: </span><a href="../modules/_lit_element_.html#propertyvalues" class="tsd-signature-type">PropertyValues</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Overrides <a href="_lit_element_.updatingelement.html">UpdatingElement</a>.<a href="_lit_element_.updatingelement.html#update">update</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lit-element.ts#L304">src/lit-element.ts:304</a></li>
+									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lib/updating-element.ts#L853">src/lib/updating-element.ts:853</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Updates the element. This method reflects property values to attributes
-										and calls <code>render</code> to render DOM via lit-html. Setting properties inside
-									this method will <em>not</em> trigger another update.</p>
+									<p>Updates the element. This method reflects property values to attributes.
+										It can be overridden to render and keep updated element DOM.
+										Setting properties inside this method will <em>not</em> trigger
+									another update.</p>
 								</div>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>changedProperties: <a href="../modules/_lit_element_.html#propertyvalues" class="tsd-signature-type">PropertyValues</a></h5>
+									<h5>_changedProperties: <a href="../modules/_lit_element_.html#propertyvalues" class="tsd-signature-type">PropertyValues</a></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Map of changed properties with old values</p>
+									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-protected">
 					<a name="updated" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagProtected">Protected</span> updated</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-protected">
 						<li class="tsd-signature tsd-kind-icon">updated<span class="tsd-signature-symbol">(</span>_changedProperties<span class="tsd-signature-symbol">: </span><a href="../modules/_lit_element_.html#propertyvalues" class="tsd-signature-type">PropertyValues</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Inherited from <a href="_lit_element_.litelement.html">LitElement</a>.<a href="_lit_element_.litelement.html#updated">updated</a></p>
 								<ul>
 									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lib/updating-element.ts#L874">src/lib/updating-element.ts:874</a></li>
 								</ul>
@@ -870,16 +672,15 @@
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-static">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
 					<a name="createproperty" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagStatic">Static</span> create<wbr>Property</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-static">
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
 						<li class="tsd-signature tsd-kind-icon">create<wbr>Property<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">PropertyKey</span>, options<span class="tsd-signature-symbol">?: </span><a href="../interfaces/_lit_element_.propertydeclaration.html" class="tsd-signature-type">PropertyDeclaration</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Inherited from <a href="_lit_element_.litelement.html">LitElement</a>.<a href="_lit_element_.litelement.html#createproperty">createProperty</a></p>
 								<ul>
 									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lib/updating-element.ts#L312">src/lib/updating-element.ts:312</a></li>
 								</ul>
@@ -921,16 +722,15 @@
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected tsd-is-static">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-protected tsd-is-static">
 					<a name="finalize" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagStatic">Static</span> <span class="tsd-flag ts-flagProtected">Protected</span> finalize</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected tsd-is-static">
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-protected tsd-is-static">
 						<li class="tsd-signature tsd-kind-icon">finalize<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Inherited from <a href="_lit_element_.litelement.html">LitElement</a>.<a href="_lit_element_.litelement.html#finalize">finalize</a></p>
 								<ul>
 									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lib/updating-element.ts#L399">src/lib/updating-element.ts:399</a></li>
 								</ul>
@@ -949,16 +749,15 @@
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected tsd-is-static">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-protected tsd-is-static">
 					<a name="getpropertydescriptor" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagStatic">Static</span> <span class="tsd-flag ts-flagProtected">Protected</span> get<wbr>Property<wbr>Descriptor</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected tsd-is-static">
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-protected tsd-is-static">
 						<li class="tsd-signature tsd-kind-icon">get<wbr>Property<wbr>Descriptor<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">PropertyKey</span>, key<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">symbol</span>, _options<span class="tsd-signature-symbol">: </span><a href="../interfaces/_lit_element_.propertydeclaration.html" class="tsd-signature-type">PropertyDeclaration</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>configurable<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span>enumerable<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span>get<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">; </span>set<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> }</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Inherited from <a href="_lit_element_.litelement.html">LitElement</a>.<a href="_lit_element_.litelement.html#getpropertydescriptor">getPropertyDescriptor</a></p>
 								<ul>
 									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lib/updating-element.ts#L359">src/lib/updating-element.ts:359</a></li>
 								</ul>
@@ -1055,16 +854,15 @@
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected tsd-is-static">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-protected tsd-is-static">
 					<a name="getpropertyoptions" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagStatic">Static</span> <span class="tsd-flag ts-flagProtected">Protected</span> get<wbr>Property<wbr>Options</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected tsd-is-static">
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-protected tsd-is-static">
 						<li class="tsd-signature tsd-kind-icon">get<wbr>Property<wbr>Options<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">PropertyKey</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/_lit_element_.propertydeclaration.html" class="tsd-signature-type">PropertyDeclaration</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Inherited from <a href="_lit_element_.litelement.html">LitElement</a>.<a href="_lit_element_.litelement.html#getpropertyoptions">getPropertyOptions</a></p>
 								<ul>
 									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lib/updating-element.ts#L389">src/lib/updating-element.ts:389</a></li>
 								</ul>
@@ -1095,33 +893,6 @@
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
-					<a name="getstyles" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> get<wbr>Styles</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>Styles<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../modules/_lit_element_.html#cssresultornative" class="tsd-signature-type">CSSResultOrNative</a><span class="tsd-signature-symbol"> | </span><a href="../interfaces/_lit_element_.cssresultarray.html" class="tsd-signature-type">CSSResultArray</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lit-element.ts#L150">src/lit-element.ts:150</a></li>
-								</ul>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Return the array of styles to apply to the element.
-									Override this method to integrate into a style management system.</p>
-								</div>
-								<dl class="tsd-comment-tags">
-									<dt>nocollapse</dt>
-									<dd></dd>
-								</dl>
-							</div>
-							<h4 class="tsd-returns-title">Returns <a href="../modules/_lit_element_.html#cssresultornative" class="tsd-signature-type">CSSResultOrNative</a><span class="tsd-signature-symbol"> | </span><a href="../interfaces/_lit_element_.cssresultarray.html" class="tsd-signature-type">CSSResultArray</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span></h4>
-						</li>
-					</ul>
-				</section>
 			</section>
 		</div>
 		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
@@ -1143,114 +914,90 @@
 					<li class=" tsd-kind-class tsd-parent-kind-module">
 						<a href="_lit_element_.cssresult.html" class="tsd-kind-icon">CSSResult</a>
 					</li>
-				</ul>
-				<ul class="current">
-					<li class="current tsd-kind-class tsd-parent-kind-module">
+					<li class=" tsd-kind-class tsd-parent-kind-module">
 						<a href="_lit_element_.litelement.html" class="tsd-kind-icon">Lit<wbr>Element</a>
-						<ul>
-							<li class=" tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited">
-								<a href="_lit_element_.litelement.html#constructor" class="tsd-kind-icon">constructor</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="_lit_element_.litelement.html#renderroot" class="tsd-kind-icon">render<wbr>Root</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-protected tsd-is-static">
-								<a href="_lit_element_.litelement.html#_finalized_" class="tsd-kind-icon">[finalized]</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-protected tsd-is-static">
-								<a href="_lit_element_.litelement.html#finalized" class="tsd-kind-icon">finalized</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-static">
-								<a href="_lit_element_.litelement.html#properties" class="tsd-kind-icon">properties</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
-								<a href="_lit_element_.litelement.html#render" class="tsd-kind-icon">render</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
-								<a href="_lit_element_.litelement.html#styles" class="tsd-kind-icon">styles</a>
-							</li>
-							<li class=" tsd-kind-get-signature tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
-								<a href="_lit_element_.litelement.html#hasupdated" class="tsd-kind-icon">has<wbr>Updated</a>
-							</li>
-							<li class=" tsd-kind-get-signature tsd-parent-kind-class tsd-is-inherited">
-								<a href="_lit_element_.litelement.html#updatecomplete" class="tsd-kind-icon">update<wbr>Complete</a>
-							</li>
-							<li class=" tsd-kind-get-signature tsd-parent-kind-class tsd-is-inherited tsd-is-static">
-								<a href="_lit_element_.litelement.html#observedattributes" class="tsd-kind-icon">observed<wbr>Attributes</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
-								<a href="_lit_element_.litelement.html#_getupdatecomplete" class="tsd-kind-icon">_get<wbr>Update<wbr>Complete</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-protected">
-								<a href="_lit_element_.litelement.html#adoptstyles" class="tsd-kind-icon">adopt<wbr>Styles</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-								<a href="_lit_element_.litelement.html#attributechangedcallback" class="tsd-kind-icon">attribute<wbr>Changed<wbr>Callback</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
-								<a href="_lit_element_.litelement.html#connectedcallback" class="tsd-kind-icon">connected<wbr>Callback</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-protected">
-								<a href="_lit_element_.litelement.html#createrenderroot" class="tsd-kind-icon">create<wbr>Render<wbr>Root</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-								<a href="_lit_element_.litelement.html#disconnectedcallback" class="tsd-kind-icon">disconnected<wbr>Callback</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
-								<a href="_lit_element_.litelement.html#enableupdating" class="tsd-kind-icon">enable<wbr>Updating</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
-								<a href="_lit_element_.litelement.html#firstupdated" class="tsd-kind-icon">first<wbr>Updated</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-protected">
-								<a href="_lit_element_.litelement.html#initialize" class="tsd-kind-icon">initialize</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
-								<a href="_lit_element_.litelement.html#performupdate" class="tsd-kind-icon">perform<wbr>Update</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-protected">
-								<a href="_lit_element_.litelement.html#render-1" class="tsd-kind-icon">render</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-								<a href="_lit_element_.litelement.html#requestupdate" class="tsd-kind-icon">request<wbr>Update</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
-								<a href="_lit_element_.litelement.html#shouldupdate" class="tsd-kind-icon">should<wbr>Update</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-protected">
-								<a href="_lit_element_.litelement.html#update" class="tsd-kind-icon">update</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
-								<a href="_lit_element_.litelement.html#updated" class="tsd-kind-icon">updated</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-static">
-								<a href="_lit_element_.litelement.html#createproperty" class="tsd-kind-icon">create<wbr>Property</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected tsd-is-static">
-								<a href="_lit_element_.litelement.html#finalize" class="tsd-kind-icon">finalize</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected tsd-is-static">
-								<a href="_lit_element_.litelement.html#getpropertydescriptor" class="tsd-kind-icon">get<wbr>Property<wbr>Descriptor</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected tsd-is-static">
-								<a href="_lit_element_.litelement.html#getpropertyoptions" class="tsd-kind-icon">get<wbr>Property<wbr>Options</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
-								<a href="_lit_element_.litelement.html#getstyles" class="tsd-kind-icon">get<wbr>Styles</a>
-							</li>
-						</ul>
 					</li>
-				</ul>
-				<ul class="after-current">
 					<li class=" tsd-kind-class tsd-parent-kind-module">
 						<a href="_lit_element_.svgtemplateresult.html" class="tsd-kind-icon">SVGTemplate<wbr>Result</a>
 					</li>
 					<li class=" tsd-kind-class tsd-parent-kind-module">
 						<a href="_lit_element_.templateresult.html" class="tsd-kind-icon">Template<wbr>Result</a>
 					</li>
-					<li class=" tsd-kind-class tsd-parent-kind-module">
+				</ul>
+				<ul class="current">
+					<li class="current tsd-kind-class tsd-parent-kind-module">
 						<a href="_lit_element_.updatingelement.html" class="tsd-kind-icon">Updating<wbr>Element</a>
+						<ul>
+							<li class=" tsd-kind-constructor tsd-parent-kind-class">
+								<a href="_lit_element_.updatingelement.html#constructor" class="tsd-kind-icon">constructor</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-protected tsd-is-static">
+								<a href="_lit_element_.updatingelement.html#_finalized_" class="tsd-kind-icon">[finalized]</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
+								<a href="_lit_element_.updatingelement.html#properties" class="tsd-kind-icon">properties</a>
+							</li>
+							<li class=" tsd-kind-get-signature tsd-parent-kind-class tsd-is-protected">
+								<a href="_lit_element_.updatingelement.html#hasupdated" class="tsd-kind-icon">has<wbr>Updated</a>
+							</li>
+							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
+								<a href="_lit_element_.updatingelement.html#updatecomplete" class="tsd-kind-icon">update<wbr>Complete</a>
+							</li>
+							<li class=" tsd-kind-get-signature tsd-parent-kind-class tsd-is-static">
+								<a href="_lit_element_.updatingelement.html#observedattributes" class="tsd-kind-icon">observed<wbr>Attributes</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-protected">
+								<a href="_lit_element_.updatingelement.html#_getupdatecomplete" class="tsd-kind-icon">_get<wbr>Update<wbr>Complete</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_lit_element_.updatingelement.html#attributechangedcallback" class="tsd-kind-icon">attribute<wbr>Changed<wbr>Callback</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_lit_element_.updatingelement.html#connectedcallback" class="tsd-kind-icon">connected<wbr>Callback</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_lit_element_.updatingelement.html#disconnectedcallback" class="tsd-kind-icon">disconnected<wbr>Callback</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-protected">
+								<a href="_lit_element_.updatingelement.html#enableupdating" class="tsd-kind-icon">enable<wbr>Updating</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-protected">
+								<a href="_lit_element_.updatingelement.html#firstupdated" class="tsd-kind-icon">first<wbr>Updated</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-protected">
+								<a href="_lit_element_.updatingelement.html#initialize" class="tsd-kind-icon">initialize</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-protected">
+								<a href="_lit_element_.updatingelement.html#performupdate" class="tsd-kind-icon">perform<wbr>Update</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_lit_element_.updatingelement.html#requestupdate" class="tsd-kind-icon">request<wbr>Update</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-protected">
+								<a href="_lit_element_.updatingelement.html#shouldupdate" class="tsd-kind-icon">should<wbr>Update</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-protected">
+								<a href="_lit_element_.updatingelement.html#update" class="tsd-kind-icon">update</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-protected">
+								<a href="_lit_element_.updatingelement.html#updated" class="tsd-kind-icon">updated</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
+								<a href="_lit_element_.updatingelement.html#createproperty" class="tsd-kind-icon">create<wbr>Property</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-protected tsd-is-static">
+								<a href="_lit_element_.updatingelement.html#finalize" class="tsd-kind-icon">finalize</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-protected tsd-is-static">
+								<a href="_lit_element_.updatingelement.html#getpropertydescriptor" class="tsd-kind-icon">get<wbr>Property<wbr>Descriptor</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-protected tsd-is-static">
+								<a href="_lit_element_.updatingelement.html#getpropertyoptions" class="tsd-kind-icon">get<wbr>Property<wbr>Options</a>
+							</li>
+						</ul>
 					</li>
+				</ul>
+				<ul class="after-current">
 					<li class=" tsd-kind-interface tsd-parent-kind-module">
 						<a href="../interfaces/_lit_element_.cssresultarray.html" class="tsd-kind-icon">CSSResult<wbr>Array</a>
 					</li>

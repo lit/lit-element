@@ -3,9 +3,10 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>&quot;demo/ts-element&quot; | lit-element</title>
-	<meta name="description" content="">
+	<title>InternalPropertyDeclaration | lit-element</title>
+	<meta name="description" content="LitElement API documentation">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="shortcut icon" href="/images/favicon.png">
 	<link rel="stylesheet" href="../assets/css/main.css">
 	<link rel="stylesheet" href="../../css/main.css">
 	<link rel="stylesheet" href="../../css/pygments.css">
@@ -87,16 +88,84 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="_demo_ts_element_.html">&quot;demo/ts-element&quot;</a>
+					<a href="../modules/_lit_element_.html">&quot;lit-element&quot;</a>
+				</li>
+				<li>
+					<a href="_lit_element_.internalpropertydeclaration.html">InternalPropertyDeclaration</a>
 				</li>
 			</ul>
-			<h1>External module &quot;demo/ts-element&quot;</h1>
+			<h1>Interface InternalPropertyDeclaration&lt;Type&gt;</h1>
 		</div>
 	</div>
 </header>
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-type-parameters">
+				<h3>Type parameters</h3>
+				<ul class="tsd-type-parameters">
+					<li>
+						<h4>Type</h4>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel tsd-hierarchy">
+				<h3>Hierarchy</h3>
+				<ul class="tsd-hierarchy">
+					<li>
+						<span class="target">InternalPropertyDeclaration</span>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel-group tsd-index-group">
+				<h2>Index</h2>
+				<section class="tsd-panel tsd-index-panel">
+					<div class="tsd-index-content">
+						<section class="tsd-index-section ">
+							<h3>Methods</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="_lit_element_.internalpropertydeclaration.html#haschanged" class="tsd-kind-icon">has<wbr>Changed</a></li>
+							</ul>
+						</section>
+					</div>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Methods</h2>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
+					<a name="haschanged" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> has<wbr>Changed</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
+						<li class="tsd-signature tsd-kind-icon">has<wbr>Changed<span class="tsd-signature-symbol">(</span>value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Type</span>, oldValue<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Type</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lib/decorators.ts#L175">src/lib/decorators.ts:175</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>A function that indicates if a property should be considered changed when
+										it is set. The function should take the <code>newValue</code> and <code>oldValue</code> and
+									return <code>true</code> if an update should be requested.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>value: <span class="tsd-signature-type">Type</span></h5>
+								</li>
+								<li>
+									<h5>oldValue: <span class="tsd-signature-type">Type</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
+						</li>
+					</ul>
+				</section>
+			</section>
 		</div>
 		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
 			<nav class="tsd-navigation primary">
@@ -104,31 +173,112 @@
 					<li class="globals  ">
 						<a href="../globals.html"><em>Globals</em></a>
 					</li>
-					<li class="label tsd-is-external">
-						<span>Internals</span>
+					<li class=" tsd-kind-module">
+						<a href="../modules/_lib_updating_element_.html">&quot;lib/updating-<wbr>element&quot;</a>
 					</li>
-					<li class="current tsd-kind-external-module">
-						<a href="_demo_ts_element_.html">"demo/ts-<wbr>element"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="_lib_css_tag_.html">"lib/css-<wbr>tag"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="_lib_decorators_.html">"lib/decorators"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="_lib_updating_element_.html">"lib/updating-<wbr>element"</a>
-					</li>
-					<li class="label tsd-is-external">
-						<span>Externals</span>
-					</li>
-					<li class=" tsd-kind-external-module tsd-is-external">
-						<a href="_lit_element_.html">"lit-<wbr>element"</a>
+					<li class="current tsd-kind-module">
+						<a href="../modules/_lit_element_.html">&quot;lit-<wbr>element&quot;</a>
 					</li>
 				</ul>
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
+					<li class=" tsd-kind-class tsd-parent-kind-module">
+						<a href="../classes/_lit_element_.cssresult.html" class="tsd-kind-icon">CSSResult</a>
+					</li>
+					<li class=" tsd-kind-class tsd-parent-kind-module">
+						<a href="../classes/_lit_element_.litelement.html" class="tsd-kind-icon">Lit<wbr>Element</a>
+					</li>
+					<li class=" tsd-kind-class tsd-parent-kind-module">
+						<a href="../classes/_lit_element_.svgtemplateresult.html" class="tsd-kind-icon">SVGTemplate<wbr>Result</a>
+					</li>
+					<li class=" tsd-kind-class tsd-parent-kind-module">
+						<a href="../classes/_lit_element_.templateresult.html" class="tsd-kind-icon">Template<wbr>Result</a>
+					</li>
+					<li class=" tsd-kind-class tsd-parent-kind-module">
+						<a href="../classes/_lit_element_.updatingelement.html" class="tsd-kind-icon">Updating<wbr>Element</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="_lit_element_.cssresultarray.html" class="tsd-kind-icon">CSSResult<wbr>Array</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module tsd-has-type-parameter">
+						<a href="_lit_element_.complexattributeconverter.html" class="tsd-kind-icon">Complex<wbr>Attribute<wbr>Converter</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="_lit_element_.haschanged.html" class="tsd-kind-icon">Has<wbr>Changed</a>
+					</li>
+				</ul>
+				<ul class="current">
+					<li class="current tsd-kind-interface tsd-parent-kind-module tsd-has-type-parameter">
+						<a href="_lit_element_.internalpropertydeclaration.html" class="tsd-kind-icon">Internal<wbr>Property<wbr>Declaration</a>
+						<ul>
+							<li class=" tsd-kind-method tsd-parent-kind-interface">
+								<a href="_lit_element_.internalpropertydeclaration.html#haschanged" class="tsd-kind-icon">has<wbr>Changed</a>
+							</li>
+						</ul>
+					</li>
+				</ul>
+				<ul class="after-current">
+					<li class=" tsd-kind-interface tsd-parent-kind-module tsd-has-type-parameter">
+						<a href="_lit_element_.propertydeclaration.html" class="tsd-kind-icon">Property<wbr>Declaration</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="_lit_element_.propertydeclarations.html" class="tsd-kind-icon">Property<wbr>Declarations</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-module">
+						<a href="../modules/_lit_element_.html#cssresultornative" class="tsd-kind-icon">CSSResult<wbr>OrNative</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-module tsd-has-type-parameter">
+						<a href="../modules/_lit_element_.html#constructor" class="tsd-kind-icon">Constructor</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-module tsd-has-type-parameter">
+						<a href="../modules/_lit_element_.html#propertyvalues" class="tsd-kind-icon">Property<wbr>Values</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-module">
+						<a href="../modules/_lit_element_.html#html" class="tsd-kind-icon">html</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-module">
+						<a href="../modules/_lit_element_.html#supportsadoptingstylesheets" class="tsd-kind-icon">supports<wbr>Adopting<wbr>Style<wbr>Sheets</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-module">
+						<a href="../modules/_lit_element_.html#svg" class="tsd-kind-icon">svg</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="../modules/_lit_element_.html#css" class="tsd-kind-icon">css</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="../modules/_lit_element_.html#customelement" class="tsd-kind-icon">custom<wbr>Element</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="../modules/_lit_element_.html#eventoptions" class="tsd-kind-icon">event<wbr>Options</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="../modules/_lit_element_.html#internalproperty" class="tsd-kind-icon">internal<wbr>Property</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="../modules/_lit_element_.html#notequal" class="tsd-kind-icon">not<wbr>Equal</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="../modules/_lit_element_.html#property" class="tsd-kind-icon">property</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="../modules/_lit_element_.html#query" class="tsd-kind-icon">query</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="../modules/_lit_element_.html#queryall" class="tsd-kind-icon">query<wbr>All</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="../modules/_lit_element_.html#queryassignednodes" class="tsd-kind-icon">query<wbr>Assigned<wbr>Nodes</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="../modules/_lit_element_.html#queryasync" class="tsd-kind-icon">query<wbr>Async</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="../modules/_lit_element_.html#unsafecss" class="tsd-kind-icon">unsafeCSS</a>
+					</li>
+					<li class=" tsd-kind-object-literal tsd-parent-kind-module">
+						<a href="../modules/_lit_element_.html#defaultconverter" class="tsd-kind-icon">default<wbr>Converter</a>
+					</li>
 				</ul>
 			</nav>
 		</div>
@@ -146,6 +296,7 @@
 				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
 				<li class="tsd-kind-index-signature"><span class="tsd-kind-icon">Index signature</span></li>
 				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
+				<li class="tsd-kind-type-alias tsd-has-type-parameter"><span class="tsd-kind-icon">Type alias with type parameter</span></li>
 			</ul>
 			<ul class="tsd-legend">
 				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
@@ -194,7 +345,7 @@
 	</div>
 </footer>
 <div class="container tsd-generator">
-	<p>Generated using <a href="http://typedoc.org/" target="_blank">TypeDoc</a></p>
+	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
 </div>
 <div class="overlay"></div>
 <script src="../assets/js/main.js"></script>
@@ -221,7 +372,7 @@
                 m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
         })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-        ga('create', 'UA-39334307-23', '');
+        ga('create', 'UA-39334307-23', 'auto');
         ga('send', 'pageview');
     </script>
 </body>
