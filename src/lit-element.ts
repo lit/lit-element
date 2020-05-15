@@ -55,6 +55,7 @@
  * @packageDocumentation
  */
 import {render, ShadyRenderOptions} from 'lit-html/lib/shady-render.js';
+import {hydrate} from 'lit-html/lib/hydrate.js';
 
 import {PropertyValues, UpdatingElement} from './lib/updating-element.js';
 
@@ -228,6 +229,8 @@ export class LitElement extends UpdatingElement {
     }
   }
 
+  private _needsHydration?: boolean;
+
   /**
    * Returns the node into which the element should render and by default
    * creates and returns an open shadowRoot. Implement to customize where the
@@ -236,7 +239,10 @@ export class LitElement extends UpdatingElement {
    * @returns {Element|DocumentFragment} Returns a node into which to render.
    */
   protected createRenderRoot(): Element|ShadowRoot {
-    return this.attachShadow({mode: 'open'});
+    if (this.shadowRoot) {
+      this._needsHydration = true;
+    }
+    return this.shadowRoot || this.attachShadow({mode: 'open'});
   }
 
   /**
@@ -292,18 +298,25 @@ export class LitElement extends UpdatingElement {
     // before that.
     const templateResult = this.render();
     super.update(changedProperties);
+    const needsHydration = this._needsHydration;
     // If render is not implemented by the component, don't call lit-html render
     if (templateResult !== renderNotImplemented) {
-      (this.constructor as typeof LitElement)
-          .render(
-              templateResult,
-              this.renderRoot,
-              {scopeName: this.localName, eventContext: this});
+      if (needsHydration) {
+        this._needsHydration = false;
+        //console.log('LitElement: hydrating!');
+        hydrate(templateResult, this.renderRoot);
+      } else {
+        (this.constructor as typeof LitElement)
+            .render(
+                templateResult,
+                this.renderRoot,
+                {scopeName: this.localName, eventContext: this});
+      }
     }
     // When native Shadow DOM is used but adoptedStyles are not supported,
     // insert styling after rendering to ensure adoptedStyles have highest
     // priority.
-    if (this._needsShimAdoptedStyleSheets) {
+    if (this._needsShimAdoptedStyleSheets && !needsHydration) {
       this._needsShimAdoptedStyleSheets = false;
       (this.constructor as typeof LitElement)._styles!.forEach((s) => {
         const style = document.createElement('style');
