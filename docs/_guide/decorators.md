@@ -20,7 +20,7 @@ class MyElement extends LitElement {
 
  // Define the element's template
  render() {
-   return html`<p>your ${adjective} template here</p>`;
+   return html`<p>your ${this.adjective} template here</p>`;
  }
 }
 ```
