@@ -55,7 +55,6 @@
  * @packageDocumentation
  */
 import {render, ShadyRenderOptions} from 'lit-html/lib/shady-render.js';
-import {hydrate} from 'lit-html/lib/hydrate.js';
 
 import {PropertyValues, UpdatingElement} from './lib/updating-element.js';
 
@@ -126,6 +125,17 @@ export class LitElement extends UpdatingElement {
   static render:
       (result: unknown, container: Element|DocumentFragment,
        options: ShadyRenderOptions) => void = render;
+
+  /**
+   * LitElement detects if it should try to `hydrate` based on whether or not
+   * the element has a `shadowRoot` when it is constructed.
+   * If so, we assume the `shadowRoot` contents have been server side rendered.
+   * In this case, the first update checks to see if the hydrate property is a
+   * function. If so, it is called to update the element. Otherwise, and in all
+   * subsequent updates, `render` is called to update the element.
+   */
+  static hydrate:
+      (result: unknown, container: Element|DocumentFragment) => void;
 
   /**
    * Array of styles to apply to the element. The styles should be defined
@@ -301,10 +311,12 @@ export class LitElement extends UpdatingElement {
     const needsHydration = this._needsHydration;
     // If render is not implemented by the component, don't call lit-html render
     if (templateResult !== renderNotImplemented) {
-      if (needsHydration) {
+      if (needsHydration &&
+          typeof (this.constructor as typeof LitElement).hydrate ===
+              'function') {
         this._needsHydration = false;
-        //console.log('LitElement: hydrating!');
-        hydrate(templateResult, this.renderRoot);
+        (this.constructor as typeof LitElement)
+            .hydrate(templateResult, this.renderRoot);
       } else {
         (this.constructor as typeof LitElement)
             .render(

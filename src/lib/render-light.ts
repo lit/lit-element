@@ -99,4 +99,4 @@ export const renderLight = directive(() => renderLightImpl);
  * call.
  */
 export const isRenderLightDirective = (value: unknown): boolean =>
-  value === renderLightImpl;
+    value === renderLightImpl;
