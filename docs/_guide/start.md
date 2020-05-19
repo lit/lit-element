@@ -55,7 +55,7 @@ The quickest way to try out a project locally is to download one of the starter 
 
     ```bash
     cd <project folder>
-    npm i
+    npm ci
     ```
 
 <div class="alert alert-info">
