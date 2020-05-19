@@ -13,7 +13,7 @@
  */
 
 export const stripExpressionDelimeters = (html: string) =>
-    html.replace(/<!---->/g, '');
+    html.replace(/<!--(\/?lit-part)?-->/g, '');
 
 let count = 0;
 export const generateElementName = () => `x-${count++}`;
