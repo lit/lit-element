@@ -2,6 +2,7 @@ import {directive, NodePart} from 'lit-html';
 
 // The implementation is not inlined so that we can write isRenderLightDirective
 export const renderLightImpl = (part: NodePart) => {
+  // tslint:disable-next-line:no-any
   const instance = part.startNode.parentNode as any;
   if (typeof instance.renderLight === 'function') {
     return instance.renderLight();
