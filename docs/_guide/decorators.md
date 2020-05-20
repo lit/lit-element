@@ -4,9 +4,9 @@ title: Using decorators
 slug: decorators
 ---
 
-Decorators are special declarations that you can use when defining classes, class methods, and class fields. LitElement supplies a set of decorators that reduce the amount of boilerplate code you need to write when defining a component. 
+Decorators are special expressions that can alter the behavior of class, class method, and class field declarations. LitElement supplies a set of decorators that reduce the amount of boilerplate code you need to write when defining a component.
 
-For example, the `customElement` and `property` decorators make a basic element definition more compact:
+For example, the `@customElement` and `@property` decorators make a basic element definition more compact:
 
 ```js
 import {LitElement, html, customElement, property} from 'lit-element';
@@ -31,7 +31,7 @@ To use decorators, you need to use a compiler such as Babel or the TypeScript co
 
 <div class="alert alert-info">
 
-**The decorators proposal**. Decorators are a stage 2 proposal for addition to the ECMAScript standard, which means they're not implemented in browsers yet. Compilers like Babel provide support for proposed features like decorators by compiling them into JavaScript a browser can run.
+**The decorators proposal**. Decorators are a [stage 2 proposal](https://github.com/tc39/proposal-decorators) for addition to the ECMAScript standard, which means they're neither finalized nor implemented in browsers yet. Compilers like Babel and TypeScript provide support for proposed features like decorators by compiling them into standard JavaScript a browser can run.
 
 </div>
 
@@ -45,9 +45,9 @@ To use decorators with TypeScript, enable the `experimentalDecorators` compiler 
 
 Enabling `emitDecoratorMetadata` is not required and not recommended.
 
-### To use decorators with JavaScript
+### To use decorators with Babel
 
-If you're  JavaScript with Babel, you can enable decorators by adding  the following plugins:
+If you're compiling JavaScript with Babel, you can enable decorators by adding  the following plugins:
 
 *   [`@babel/plugin-proposal-decorators`](https://babeljs.io/docs/en/babel-plugin-proposal-decorators). 
 *   [`@babel/plugin-proposal-class-properties`](https://babeljs.io/docs/en/babel-plugin-proposal-class-properties)
