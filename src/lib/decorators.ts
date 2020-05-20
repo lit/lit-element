@@ -417,7 +417,8 @@ export function queryAssignedNodes(
           name?: PropertyKey): any => {
     const descriptor = {
       get(this: LitElement) {
-        const selector = `slot${slotName ? `[name=${slotName}]` : ''}`;
+        const selector =
+            `slot${slotName ? `[name=${slotName}]` : ':not([name])'}`;
         const slot = this.renderRoot.querySelector(selector);
         return slot && (slot as HTMLSlotElement).assignedNodes({flatten});
       },

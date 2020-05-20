@@ -86,7 +86,7 @@ suite('decorators', () => {
   suite('@customElement', () => {
     test('defines an element', () => {
       const tagName = generateElementName();
-      @customElement(tagName as keyof HTMLElementTagNameMap)
+      @customElement(tagName)
       class C0 extends HTMLElement {
       }
       const DefinedC = customElements.get(tagName);
@@ -324,7 +324,7 @@ suite('decorators', () => {
   });
 
   suite('@query', () => {
-    @customElement(generateElementName() as keyof HTMLElementTagNameMap)
+    @customElement(generateElementName())
     class C extends LitElement {
       @query('#blah') blah?: HTMLDivElement;
 
@@ -357,7 +357,7 @@ suite('decorators', () => {
   });
 
   suite('@queryAll', () => {
-    @customElement(generateElementName() as keyof HTMLElementTagNameMap)
+    @customElement(generateElementName())
     class C extends LitElement {
       @queryAll('div') divs!: NodeList;
 
@@ -393,7 +393,7 @@ suite('decorators', () => {
   });
 
   suite('@queryAssignedNodes', () => {
-    @customElement('assigned-nodes-el' as keyof HTMLElementTagNameMap)
+    @customElement('assigned-nodes-el')
     class D extends LitElement {
       @queryAssignedNodes() defaultAssigned!: Node[];
 
@@ -408,16 +408,33 @@ suite('decorators', () => {
       }
     }
 
-    // Note, there are 2 elements here so that the `flatten` option of
-    // the decorator can be tested.
-    @customElement(generateElementName() as keyof HTMLElementTagNameMap)
-    class C extends LitElement {
-      @query('div') div!: HTMLDivElement;
-      @query('assigned-nodes-el') assignedNodesEl!: D;
+    @customElement('assigned-nodes-el-2')
+    class E extends LitElement {
+      @queryAssignedNodes() defaultAssigned!: Node[];
+
+      @queryAssignedNodes('header') headerAssigned!: Node[];
 
       render() {
         return html`
-          <assigned-nodes-el><div>A</div><slot slot="footer"></slot></assigned-nodes-el>
+          <slot name="header"></slot>
+          <slot></slot>
+        `;
+      }
+    }
+
+    // Note, there are 2 elements here so that the `flatten` option of
+    // the decorator can be tested.
+    @customElement(generateElementName())
+    class C extends LitElement {
+      @query('#div1') div!: HTMLDivElement;
+      @query('#div2') div2!: HTMLDivElement;
+      @query('assigned-nodes-el') assignedNodesEl!: D;
+      @query('assigned-nodes-el-2') assignedNodesEl2!: E;
+
+      render() {
+        return html`
+          <assigned-nodes-el><div id="div1">A</div><slot slot="footer"></slot></assigned-nodes-el>
+          <assigned-nodes-el-2><div id="div2">B</div></assigned-nodes-el-2>
         `;
       }
     }
@@ -438,6 +455,16 @@ suite('decorators', () => {
       flush();
       assert.deepEqual(c.assignedNodesEl.defaultAssigned, [c.div]);
     });
+
+    test(
+        'returns assignedNodes for unnamed slot that is not first slot',
+        async () => {
+          const c = new C();
+          container.appendChild(c);
+          await c.updateComplete;
+          await c.assignedNodesEl.updateComplete;
+          assert.deepEqual(c.assignedNodesEl2.defaultAssigned, [c.div2]);
+        });
 
     test('returns flattened assignedNodes for slot', async () => {
       const c = new C();
@@ -461,7 +488,7 @@ suite('decorators', () => {
   });
 
   suite('@queryAsync', () => {
-    @customElement(generateElementName() as keyof HTMLElementTagNameMap)
+    @customElement(generateElementName())
     class C extends LitElement {
       @queryAsync('#blah') blah!: Promise<HTMLDivElement>;
 
@@ -504,7 +531,7 @@ suite('decorators', () => {
       if (!supportsOptions) {
         this.skip();
       }
-      @customElement(generateElementName() as keyof HTMLElementTagNameMap)
+      @customElement(generateElementName())
       class C extends LitElement {
         eventPhase?: number;
 
@@ -532,7 +559,7 @@ suite('decorators', () => {
       if (!supportsOptions) {
         this.skip();
       }
-      @customElement(generateElementName() as keyof HTMLElementTagNameMap)
+      @customElement(generateElementName())
       class C extends LitElement {
         clicked = 0;
 
@@ -561,7 +588,7 @@ suite('decorators', () => {
       if (!supportsPassive) {
         this.skip();
       }
-      @customElement(generateElementName() as keyof HTMLElementTagNameMap)
+      @customElement(generateElementName())
       class C extends LitElement {
         defaultPrevented?: boolean;
 
