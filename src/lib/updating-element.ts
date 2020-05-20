@@ -13,7 +13,8 @@
  */
 
 /**
- * Use this module if you want to create your own base class extending [[UpdatingElement]].
+ * Use this module if you want to create your own base class extending
+ * [[UpdatingElement]].
  * @packageDocumentation
  */
 
@@ -367,7 +368,8 @@ export abstract class UpdatingElement extends HTMLElement {
         const oldValue =
             (this as {} as {[key: string]: unknown})[name as string];
         (this as {} as {[key: string]: unknown})[key as string] = value;
-        (this as unknown as UpdatingElement).requestUpdateInternal(name, oldValue, options);
+        (this as unknown as UpdatingElement)
+            .requestUpdateInternal(name, oldValue, options);
       },
       configurable: true,
       enumerable: true
@@ -519,7 +521,8 @@ export abstract class UpdatingElement extends HTMLElement {
    */
   protected initialize() {
     this._updateState = 0;
-    this._updatePromise = new Promise((res) => this._enableUpdatingResolver = res);
+    this._updatePromise =
+        new Promise((res) => this._enableUpdatingResolver = res);
     this._changedProperties = new Map();
     this._saveInstanceProperties();
     // ensures first update will be caught by an early access of
@@ -654,7 +657,8 @@ export abstract class UpdatingElement extends HTMLElement {
    * `updateComplete` promise. This promise can be overridden and is therefore
    * not free to access.
    */
-  protected requestUpdateInternal(name?: PropertyKey, oldValue?: unknown, options?: PropertyDeclaration) {
+  protected requestUpdateInternal(
+      name?: PropertyKey, oldValue?: unknown, options?: PropertyDeclaration) {
     let shouldRequestUpdate = true;
     // If we have a property key, perform property update steps.
     if (name !== undefined) {

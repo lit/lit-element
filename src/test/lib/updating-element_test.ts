@@ -1976,19 +1976,17 @@ suite('UpdatingElement', () => {
   });
 
   test('can customize properties to update synchronously', async () => {
-
     interface MyPropertyDeclaration extends PropertyDeclaration {
       sync: boolean;
     }
 
     @customElement(generateElementName())
     class E extends UpdatingElement {
-
       static getPropertyDescriptor(
-        name: PropertyKey,
-        key: string|symbol,
-        options: MyPropertyDeclaration) {
-        const defaultDescriptor = super.getPropertyDescriptor(name, key, options);
+          name: PropertyKey, key: string|symbol,
+          options: MyPropertyDeclaration) {
+        const defaultDescriptor =
+            super.getPropertyDescriptor(name, key, options);
         const setter = defaultDescriptor.set;
         return Object.assign(defaultDescriptor, {
           set(this: E, value: unknown) {
@@ -2021,15 +2019,14 @@ suite('UpdatingElement', () => {
         this.updateCount++;
       }
 
-      @property({type: Number, sync: true, reflect: true} as PropertyDeclaration)
+      @property(
+          {type: Number, sync: true, reflect: true} as PropertyDeclaration)
       foo = 5;
 
       @property({type: Number, sync: true} as PropertyDeclaration)
       zug = this.foo;
 
-      @property({})
-      bar = 'bar';
-
+      @property({}) bar = 'bar';
     }
 
     const el = new E();
