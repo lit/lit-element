@@ -79,10 +79,10 @@ const textFromCSSResult = (value: CSSResult|number) => {
 };
 
 /**
- * Template tag which which can be used with LitElement's [[LitElement.styles | `styles`]] property to
- * set element styles. For security reasons, only literal string values may be
- * used. To incorporate non-literal values [[`unsafeCSS`]] may be used inside a
- * template string part.
+ * Template tag which which can be used with LitElement's [[LitElement.styles |
+ * `styles`]] property to set element styles. For security reasons, only literal
+ * string values may be used. To incorporate non-literal values [[`unsafeCSS`]]
+ * may be used inside a template string part.
  */
 export const css =
     (strings: TemplateStringsArray, ...values: (CSSResult|number)[]) => {
