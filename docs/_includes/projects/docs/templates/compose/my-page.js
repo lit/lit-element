@@ -1,21 +1,36 @@
-import { LitElement, html } from 'lit-element';
+import {LitElement, html} from 'lit-element';
 
 class MyPage extends LitElement {
+  static get properties() {
+    return {
+      article: {
+        attribute: false,
+      },
+    };
+  }
+
+  constructor() {
+    super();
+    this.article = {
+      title: 'My Nifty Article',
+      text: 'Some witty text.',
+    };
+  }
+
   render() {
     return html`
-      ${this.headerTemplate}
-      ${this.articleTemplate}
-      ${this.footerTemplate}
+      ${this.headerTemplate(this.article.title)}
+      ${this.articleTemplate(this.article.text)} ${this.footerTemplate}
     `;
   }
-  get headerTemplate() {
-    return html`<header>header</header>`;
+  headerTemplate(title) {
+    return html`<header>${title}</header>`;
   }
-  get articleTemplate() {
-    return html`<article>article</article>`;
+  articleTemplate(text) {
+    return html`<article>${text}</article>`;
   }
   get footerTemplate() {
-    return html`<footer>footer</footer>`;
+    return html`<footer>Your footer here.</footer>`;
   }
 }
 customElements.define('my-page', MyPage);

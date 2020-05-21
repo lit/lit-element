@@ -157,6 +157,11 @@ html`<ul>
 </ul>`;
 ```
 
+<div class="alert alert-info">
+
+**repeat directive**. In most cases, `Array.map` is the most efficient way to create a repeating template. In some cases, you may want to consider lit-html's `repeat` directive. In particular, if the repeated elements are stateful, or very expensive to regenerate. For more information, see [Repeating templates with the repeat directive](https://lit-html.polymer-project.org/guide/writing-templates#repeating-templates-with-the-repeat-directive) in the lit-html docs.
+
+</div>
 #### Conditionals
 
 Render based on a Boolean condition:
@@ -375,21 +380,22 @@ You can compose LitElement templates from other LitElement templates. In the fol
 
 ```js
 class MyPage extends LitElement {
+  ...
   render() {
     return html`
-      ${this.headerTemplate}
-      ${this.articleTemplate}
+      ${this.headerTemplate(this.article.title)}
+      ${this.articleTemplate(this.article.text)}
       ${this.footerTemplate}
     `;
   }
-  get headerTemplate() {
-    return html`<header>header</header>`;
+  headerTemplate(title) {
+    return html`<header>${title}</header>`;
   }
-  get articleTemplate() {
-    return html`<article>article</article>`;
+  articleTemplate(text) {
+    return html`<article>${text}</article>`;
   }
   get footerTemplate() {
-    return html`<footer>footer</footer>`;
+    return html`<footer>Your footer here.</footer>`;
   }
 }
 ```
