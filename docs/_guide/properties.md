@@ -30,7 +30,7 @@ LitElement manages your declared properties and their corresponding attributes. 
 
 ## Declare properties {#declare}
 
-Declare your element's properties by implementing a static `properties` field, or by using decorators:
+Declare your element's properties using a static `properties` field, or using decorators:
 
 _Properties field_
 
@@ -119,7 +119,7 @@ Controls whether property value is reflected back to the associated attribute. D
 </dt>
 <dd>
 
-Specifies a type hint for converting between properties and attributes. If unspecified, behaves like `type: String`. See [Use LitElement's default attribute converter](#conversion-type). 
+Specifies a type hint for converting between properties and attributes. This hint is used by LitElement's default attribute converter, and is ignored if `converter` is set. If `type` is unspecified, behaves like `type: String`. See [Use LitElement's default attribute converter](#conversion-type). 
 
 </dd>
 
@@ -149,7 +149,7 @@ An empty option object is equivalent to specifying the default value for all opt
 
 <div class="alert alert-info">
 
-If you implement a static properties field, you typically [initialize your property values in the element constructor](#initialize-constructor).
+Declared properties are initialized like standard class fields—either in the constructor, or with a field initializer if you're using decorators.
 
 </div>
 
@@ -163,9 +163,7 @@ If you implement a static properties field, you typically [initialize your prope
 
 ### Declare properties with decorators {#declare-with-decorators}
 
-Use the `property` and `internalProperty` decorators to declare properties (instead of the static `properties` field).
-
-Use the `property` decorator to declare public properties:
+Use the `@property` decorator to declare properties (instead of the static `properties` field).
 
 ```js
 @property({type: String})
@@ -175,20 +173,24 @@ mode = 'auto';
 data = {};
 ```
 
-The argument to the @property decorator is an [options object](#property-options). Omitting the argument is equivalent to specifying the default value for all options.
+The argument to the `@property` decorator is an [options object](#property-options). Omitting the argument is equivalent to specifying the default value for all options.
 
-Use `internalProperty` for private or protected properties that should trigger an update cycle. Properties declared with `internalProperty` shouldn't be referenced from outside the component.
+<div class="alert alert-info">
+
+**Using decorators.** Decorators are a proposed JavaScript feature, so you'll need to use a transpiler like Babel or the TypeScript compiler to use decorators. See [Using decorators](decorators) for details.
+
+</div>
+
+There is also an `@internalProperty` decorator for private or protected properties that should trigger an update cycle. Properties declared with `@internalProperty` shouldn't be referenced from outside the component.
 
 ```ts
 @internalProperty()
 protected active = false;
 ```
 
-The `internalProperty` decorator automatically sets `attribute` to false; **the only option you can specify for an internal property is the `hasChanged` function.**
+The `@internalProperty` decorator automatically sets `attribute` to false; **the only option you can specify for an internal property is the `hasChanged` function.**
 
-The `internalProperty` decorator can serve as a hint to a code minifier that the property name can be changed during minification.
-
-Decorators are a proposed JavaScript feature, so you'll need to use a transpiler like Babel or the TypeScript compiler to use decorators. See [Using decorators](decorators) for details.
+The `@internalProperty` decorator can serve as a hint to a code minifier that the property name can be changed during minification.
 
 **Example: Declare properties with decorators** 
 
@@ -472,7 +474,7 @@ See [observed attributes](#observed-attributes) and [converting between properti
 
 ## Configure property accessors {#accessors}
 
-By default, LitElement generates a property accessor for all declared properties. The accessor is invoked whenever you set the property:
+By default, LitElement generates a pair of property accessors for all declared properties. The setter is invoked whenever you set the property:
 
 ```js
 // Declare a property
@@ -486,14 +488,14 @@ Generated accessors automatically call `requestUpdate`, initiating an update if 
 
 ### Create your own property accessors {#accessors-custom}
 
-To specify how getting and setting works for a property, you can define your own property accessors. For example:
+To specify how getting and setting works for a property, you can define your own pair of property accessors. For example:
 
 ```js
 static get properties() { return { myProp: { type: String } }; }
 
 set myProp(value) {
-  const oldValue = this.myProp;
   // Implement setter logic here... 
+  // retrieve the old property value and store the new one
   this.requestUpdate('myProp', oldValue);
 } 
 get myProp() { ... }
@@ -504,26 +506,29 @@ get myProp() { ... }
 this.myProp = 'hi'; // Invokes your accessor
 ```
 
-If your class defines its own accessors for a property, LitElement will not overwrite them with generated accessors. If your class does not define accessors for a property, LitElement will generate them, even if a superclass has defined the property or accessors.
+If your class defines its own accessors for a property, LitElement will not overwrite them with generated accessors. If your class does not define accessors for a property, LitElement will generate them, even if a superclass has defined the property or accessors. 
 
 The setters that LitElement generates automatically call `requestUpdate`. If you write your own setter you must call `requestUpdate` manually, supplying the property name and its old value.
 
-**Example** 
+**Example**
+
+A common pattern for accessors is to store the property value using a private property that's only accessed inside the component. This example uses an underscore prefix (`_prop`) to identify the private property—you could also use TypeScript's `private` or `protected` keywords.
 
 ```js
 {% include projects/properties/customsetter/my-element.js %}
 ```
 
 If you want to use your own property accessor with the `@property` decorator, you can achieve this by putting the decorator on the getter:
+
 ```ts
-   _myProp: string = '';
+   private _myProp: string = '';
 
   @property({ type: String })
-  public get myProp(): string {
+  get myProp(): string {
     return this._myProp;
   }
-  public set myProp(value: string) {
-    const oldValue = this.myProp;
+  set myProp(value: string) {
+    const oldValue = this._myProp;
     this._myProp = value;
     this.requestUpdate('myProp', oldValue);
   }

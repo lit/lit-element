@@ -2,13 +2,13 @@ import {LitElement, html, customElement, property} from 'lit-element';
 
 @customElement('my-element')
 export class MyElement extends LitElement {
-  @property({type: String})
+  @property()
   greeting = 'Hello';
 
   @property({attribute: false})
   data = {name: 'Cora'};
 
-  @property()
+  @property({type: Array})
   items = [1, 2, 3];
 
   render() {
