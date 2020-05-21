@@ -265,6 +265,12 @@ By default, if an element has a shadow tree, its children don't render at all.
 
 To render children, your template needs to include one or more [`<slot>` elements](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/slot), which act as placeholders for child nodes. 
 
+<div class="alert alert-info">
+
+**Finding slotted children.** If your component needs information about its slotted children, see [Accessing slotted children](#accessing-slotted-children).
+
+</div>
+
 #### Use the `slot` element
 
 To render an element's children, create a `<slot>` for them in the element's template. For example:
@@ -590,6 +596,11 @@ get closeButton() {
 
 LitElement supplies a set of decorators that provide a shorthand way of defining getters like this.
 
+More information:
+
+*   [Element.querySelector()](https://developer.mozilla.org/en-US/docs/Web/API/Element/querySelector) on MDN.
+*   [Element.querySelectorAll()](https://developer.mozilla.org/en-US/docs/Web/API/Element/querySelectorAll) on MDN.
+
 ### @query, @queryAll, and @queryAsync decorators
 
 The `@query`, `@queryAll`, and `@queryAsync` decorators all provide a convenient way to access nodes in the component's shadow root. 
@@ -659,11 +670,6 @@ The exclamation point (`!`) after `buttons` is TypeScript's [non-null assertion 
 Finally, `@queryAsync` works like `@query`, except that instead of returning a node directly, it returns a `Promise` that resolves to that node. External code can use this instead of waiting for the `updateComplete` promise. 
 
 This is useful, for example, if the node returned by `@queryAsync` can change as a result of another property change. 
-
-More information:
-
-*   [Element.querySelector()](https://developer.mozilla.org/en-US/docs/Web/API/Element/querySelector) on MDN.
-*   [Element.querySelectorAll()](https://developer.mozilla.org/en-US/docs/Web/API/Element/querySelectorAll) on MDN.
 
 ## Accessing slotted children
 
