@@ -76,7 +76,7 @@ Whether the property is associated with an attribute, or a custom name for the a
 </dt>
 <dd>
 
-Specifies a [custom converter](#conversion-converter) for converting between properties and attributes. If unspecified, use the [default attribute converter](#conversion-type).
+A [custom converter](#conversion-converter) for converting between properties and attributes. If unspecified, use the [default attribute converter](#conversion-type).
 
 </dd>
 <dt>
@@ -106,7 +106,7 @@ Set to true to avoid generating the default [property accessor](#accessors). Def
 </dt>
 <dd>
 
-Controls whether property value is reflected back to the associated attribute. Default: false. See  [Configure reflected attributes](#reflected-attributes).
+Whether property value is reflected back to the associated attribute. Default: false. See  [Configure reflected attributes](#reflected-attributes).
 
 </dd>
 <dt>
@@ -116,7 +116,7 @@ Controls whether property value is reflected back to the associated attribute. D
 </dt>
 <dd>
 
-Specifies a type hint for converting between properties and attributes. This hint is used by LitElement's default attribute converter, and is ignored if `converter` is set. If `type` is unspecified, behaves like `type: String`. See [Use LitElement's default attribute converter](#conversion-type). 
+A type hint for converting between properties and attributes. This hint is used by LitElement's default attribute converter, and is ignored if `converter` is set. If `type` is unspecified, behaves like `type: String`. See [Use LitElement's default attribute converter](#conversion-type). 
 
 </dd>
 
