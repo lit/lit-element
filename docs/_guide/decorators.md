@@ -64,7 +64,7 @@ To use decorators, you need to use a compiler such as Babel or the TypeScript co
 
 ### To use decorators with TypeScript
 
-To use decorators with [TypeScript](https://www.typescriptlang.org/docs/home.html), enable the `experimentalDecorators` compiler option.
+To use decorators with [TypeScript](https://www.typescriptlang.org/docs/handbook/decorators.html), enable the `experimentalDecorators` compiler option.
 
 ```json
 "experimentalDecorators": true,

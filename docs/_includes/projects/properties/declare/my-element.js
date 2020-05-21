@@ -5,7 +5,7 @@ class MyElement extends LitElement {
     return {
       greeting: {type: String},
       data: {attribute: false},
-      items: {},
+      items: {type: Array},
     };
   }
 

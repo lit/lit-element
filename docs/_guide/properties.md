@@ -449,7 +449,7 @@ When the property changes, LitElement uses the `toAttribute` function in the pro
 
 ### Set property values from attributes in markup {#initialize-markup}
 
-If a property is configured with `attribute: true`, users can set the property values from observed attributes in static markup:
+If a property is configured with `attribute: true` (the default), users can set the property values from observed attributes in static markup:
 
 _index.html_ 
 
@@ -472,7 +472,7 @@ See [observed attributes](#observed-attributes) and [converting between properti
 
 ## Configure property accessors {#accessors}
 
-By default, LitElement generates a pair of property accessors for all declared properties. The setter is invoked whenever you set the property:
+By default, LitElement generates a getter/setter pair for all declared properties. The setter is invoked whenever you set the property:
 
 ```js
 // Declare a property
@@ -486,7 +486,7 @@ Generated accessors automatically call `requestUpdate`, initiating an update if 
 
 ### Create your own property accessors {#accessors-custom}
 
-To specify how getting and setting works for a property, you can define your own pair of property accessors. For example:
+To specify how getting and setting works for a property, you can define your getter/setter pair. For example:
 
 ```js
 static get properties() { return { myProp: { type: String } }; }
@@ -501,7 +501,7 @@ get myProp() { ... }
 ...
 
 // Later, set the property
-this.myProp = 'hi'; // Invokes your accessor
+this.myProp = 'hi'; // Invokes your setter
 ```
 
 If your class defines its own accessors for a property, LitElement will not overwrite them with generated accessors. If your class does not define accessors for a property, LitElement will generate them, even if a superclass has defined the property or accessors. 
