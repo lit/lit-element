@@ -66,7 +66,7 @@ The options object can have the following properties:
 </dt>
 <dd>
 
-Configure whether the property is associated with an attribute. Default: true. See [Configure observed attributes](#observed-attributes). If `attribute` is false, the `converter`, `reflect` and `type` options are ignored. 
+Whether the property is associated with an attribute, or a custom name for the associated attribute. Default: true. See [Configure observed attributes](#observed-attributes). If `attribute` is false, the `converter`, `reflect` and `type` options are ignored. 
 
 </dd>
 <dt>
@@ -86,8 +86,7 @@ Specifies a [custom converter](#conversion-converter) for converting between pro
 </dt>
 <dd>
 
-Specify what constitutes a [property change](#haschanged). If unspecified, LitElement uses a 
-strict inequality check (`newValue !== oldValue`) to determine whether the property value has changed.
+A function that takes an `oldValue` and `newValue` and returns a boolean to indicate whether a [property has changed](#haschanged) when being set. If unspecified, LitElement uses a strict inequality check (`newValue !== oldValue`) to determine whether the property value has changed.
 
 </dd>
 <dt>
@@ -578,7 +577,7 @@ myProp: { hasChanged(newVal, oldVal) {
 
 <div class="alert alert-info">
 
-**hasChanged may not be called for every change.** If a property's `hasChanged` returns true once, it won't be called again until after the next update, even if the property is changed multiple times. If you want to be notified each time a property is set, you should create a custom getter for the property, as described in [Create your own property accessors](#accessors-custom).
+**hasChanged may not be called for every change.** If a property's `hasChanged` returns true once, it won't be called again until after the next update, even if the property is changed multiple times. If you want to be notified each time a property is set, you should create a custom setter for the property, as described in [Create your own property accessors](#accessors-custom).
 
 </div>
 
