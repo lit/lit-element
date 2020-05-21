@@ -271,7 +271,7 @@ To render children, your template needs to include one or more [`<slot>` element
 
 </div>
 
-#### Use the `slot` element
+#### Use the slot element
 
 To render an element's children, create a `<slot>` for them in the element's template. For example:
 
