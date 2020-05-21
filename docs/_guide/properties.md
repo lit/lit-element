@@ -26,8 +26,6 @@ LitElement manages your declared properties and their corresponding attributes. 
 
 </div>
 
-
-
 ## Declare properties {#declare}
 
 Declare your element's properties using a static `properties` field, or using decorators:
