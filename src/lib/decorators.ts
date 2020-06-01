@@ -160,7 +160,7 @@ const legacyProperty =
  */
 export function property(options?: PropertyDeclaration) {
   // tslint:disable-next-line:no-any decorator
-  return (protoOrDescriptor: Object|ClassElement, name?: PropertyKey): any =>
+  return <T extends Object|ClassElement>(protoOrDescriptor: T, name?: keyof T): any =>
              (name !== undefined) ?
       legacyProperty(options!, protoOrDescriptor as Object, name) :
       standardProperty(options!, protoOrDescriptor as ClassElement);
@@ -175,6 +175,9 @@ export interface InternalPropertyDeclaration<Type = unknown> {
   hasChanged?(value: Type, oldValue: Type): boolean;
 }
 
+// tslint:disable-next-line:no-any decorator
+type InternalPropertyReturnFn = (protoOrDescriptor: Object|ClassElement, name?: PropertyKey) => any;
+
 /**
  * Declares a private or protected property that still triggers updates to the
  * element when it changes.
@@ -185,7 +188,7 @@ export interface InternalPropertyDeclaration<Type = unknown> {
  * @category Decorator
  */
 export function internalProperty(options?: InternalPropertyDeclaration) {
-  return property({attribute: false, hasChanged: options?.hasChanged});
+  return property({attribute: false, hasChanged: options?.hasChanged}) as InternalPropertyReturnFn;
 }
 
 /**
