@@ -29,7 +29,7 @@ You can use lit-html `@event` bindings in your template to add event listeners t
 
 ```js
 render() {
-  return html`<button @click="${this.handleClick}">`;
+  return html`<button @click="${this._handleClick}">`;
 }
 ```
 
@@ -46,7 +46,7 @@ The component constructor is a good place to add event listeners on the host ele
 ```js
 constructor() {
   super();
-  this.addEventListener('focus', this.handleFocus);
+  this.addEventListener('focus', this._handleFocus);
 }
 ```
 
@@ -65,10 +65,10 @@ If your component adds an event listener to anything except itself or its childr
 ```js
 connectedCallback() {
   super.connectedCallback();
-  window.addEventListener('resize', this.handleResize);
+  window.addEventListener('resize', this._handleResize);
 }
 disconnectedCallback() {
-  window.removeEventListener('resize', this.handleResize);
+  window.removeEventListener('resize', this._handleResize);
   super.disconnectedCallback();
 }
 ```
@@ -116,14 +116,26 @@ this.boundResizeHandler = this.handleResize.bind(this);
 window.addEventListener('resize', this.boundResizeHandler);
 ```
 
+Or use an arrow function as a class field:
+
+```ts
+export class MyElement extends LitElement {
+  private _handleResize = () => { /* handle the event */ }
+
+  constructor() {
+    window.addEventListener('resize', this._handleResize);
+  }
+}
+```
+
 See the [documentation for `this` on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/this) for more information.
 
 ## Setting event listener options
 
-When you add an event listener imperatively, using `addEventListener`, you can specify various event listener options. For example, to use a capture phase event listener in plain JavaScript you'd do something like this:
+When you add an event listener imperatively, using `addEventListener`, you can specify various event listener options. For example, to use a passive event listener in plain JavaScript you'd do something like this:
 
 ```js
-someElement.addEventListener('click', this._handleClick, {capture: true});
+someElement.addEventListener('touchstart', this._handleTouchStart, {passive: true});
 ```
 
 The `eventOptions` decorator allows you to add event listener options to a listener that's added declaratively in your template.
@@ -132,19 +144,19 @@ The `eventOptions` decorator allows you to add event listener options to a liste
 import {LitElement, html, eventOptions} from 'lit-element';
 ...
 
-@eventOptions({capture: true})
-_handleClick_() { ... }
+@eventOptions({passive: true})
+private _handleTouchStart() { ... }
 
 render() { 
   return html`
-    <button @click=${this._handleClick}>Click me!</button>
+    <div @touchstart=${this._handleTouchStart}><div>
   `;
 }
 ```
 
 <div class="alert alert-info">
 
-**Using decorators.** Decorators are a proposed JavaScript feature, so you’ll need to use a compiler like Babel or the TypeScript compiler to use decorators. See Using decorators for details.
+**Using decorators.** Decorators are a proposed JavaScript feature, so you’ll need to use a compiler like Babel or TypeScript to use decorators. See [Using decorators](decorators) for details.
 
 </div>
 

@@ -382,26 +382,27 @@ _index.html_
 
 ## Compose a template from other templates
 
-You can compose LitElement templates from other LitElement templates. In the following example, we compose a template for an element called `<my-page>` from smaller templates for the standard HTML elements `<header>`, `<article>`, and `<footer>`:
+You can compose LitElement templates from other LitElement templates. In the following example, we compose a template for an element called `<my-page>` from smaller templates for the page's header, footer, and main content:
 
 ```js
+  function headerTemplate(title) {
+    return html`<header>${title}</header>`;
+  }
+  function articleTemplate(text) {
+    return html`<article>${text}</article>`;
+  }
+  function footerTemplate() {
+    return html`<footer>Your footer here.</footer>`;
+  }
+
 class MyPage extends LitElement {
   ...
   render() {
     return html`
-      ${this.headerTemplate(this.article.title)}
-      ${this.articleTemplate(this.article.text)}
-      ${this.footerTemplate}
+      ${headerTemplate(this.article.title)}
+      ${articleTemplate(this.article.text)}
+      ${footerTemplate()}
     `;
-  }
-  headerTemplate(title) {
-    return html`<header>${title}</header>`;
-  }
-  articleTemplate(text) {
-    return html`<article>${text}</article>`;
-  }
-  get footerTemplate() {
-    return html`<footer>Your footer here.</footer>`;
   }
 }
 ```
@@ -582,14 +583,13 @@ html`${until(content, html`<span>Loading...</span>`)}`
 For a list of directives supplied with lit-html, see [Built-in directives](https://lit-html.polymer-project.org/guide/template-reference#built-in-directives) in the Template syntax reference.
 
 ## Accessing nodes in the shadow DOM
-
-Templated DOM is usually rendered into shadow DOM, so the nodes are not direct children of the component. Use `this.shadowRoot.querySelector()` or `this.shadowRoot.querySelectorAll()` to find nodes in the 
+The `render()` method result is usually rendered into shadow DOM, so the nodes are not direct children of the component. Use `this.shadowRoot.querySelector()` or `this.shadowRoot.querySelectorAll()` to find nodes in the 
 shadow DOM.
 
 You can query the templated DOM after its initial render (for example, in `firstUpdated`), or use a getter pattern, like this:
 
 ```js
-get closeButton() {
+get _closeButton() {
   return this.shadowRoot.querySelector('#close-button');
 }
 ```
@@ -607,16 +607,19 @@ The `@query`, `@queryAll`, and `@queryAsync` decorators all provide a convenient
 
 <div class="alert alert-info">
 
-**Using decorators.** Decorators are a proposed JavaScript feature, so you’ll need to use a compiler like Babel or the TypeScript compiler to use decorators. See [Using decorators](decorators) for details.
+**Using decorators.** Decorators are a proposed JavaScript feature, so you’ll need to use a compiler like Babel or TypeScript to use decorators. See [Using decorators](decorators) for details.
 
 </div>
 
 The `@query` decorator modifies a class property, turning it into a getter that returns a node from the render root.
 
 ```js
-class MyElement {
+import {LitElement, html} from 'lit-element';
+import {query} from 'lit-element/lib/decorators.js';
+
+class MyElement extends LitElement {
   @query('#first')
-  first;
+  _first;
 
   render() {
     return html`
@@ -645,9 +648,12 @@ The `@queryAll` decorator is identical to `query` except that it returns all mat
 
 
 ```js
-class MyElement {
+import {LitElement, html} from 'lit-element';
+import {queryAll} from 'lit-element/lib/decorators.js';
+
+class MyElement extends LitElement {
   @queryAll('div')
-  divs;
+  _divs;
 
   render() {
     return html`
@@ -660,14 +666,14 @@ class MyElement {
 
 Here, `divs` would return both `<div>` elements in the template. For TypeScript, the typing of a `@queryAll` property is `NodeListOf<HTMLElement>`. If you know exactly what kind of nodes you'll retrieve, the typing can be more specific:
 
-```
+```js
 @queryAll('button')
-buttons!: NodeListOf<HTMLButtonElement>
+_buttons!: NodeListOf<HTMLButtonElement>
 ```
 
 The exclamation point (`!`) after `buttons` is TypeScript's [non-null assertion operator](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-0.html#non-null-assertion-operator). It tells the compiler to treat `buttons` as always being defined, never `null` or `undefined`.
 
-Finally, `@queryAsync` works like `@query`, except that instead of returning a node directly, it returns a `Promise` that resolves to that node. External code can use this instead of waiting for the `updateComplete` promise. 
+Finally, `@queryAsync` works like `@query`, except that instead of returning a node directly, it returns a `Promise` that resolves to that node. Code can use this instead of waiting for the `updateComplete` promise. 
 
 This is useful, for example, if the node returned by `@queryAsync` can change as a result of another property change. 
 
@@ -678,7 +684,7 @@ To access children assigned to slots in your shadow root, you can use the standa
 For example, you can create a getter to access assigned nodes for a particular slot:
 
 ```js
-get slottedChildren() {
+get _slottedChildren() {
   const slot = this.shadowRoot.querySelector('slot');
   const childNodes = slot.assignedNodes({flatten: true});
   return Array.prototype.filter.call(childNodes, (node) => node.nodeType == Node.ELEMENT_NODE);
@@ -712,7 +718,7 @@ The `@queryAssignedNodes` decorator converts a class property into a getter that
 
 <div class="alert alert-info">
 
-**Using decorators.** Decorators are a proposed JavaScript feature, so you’ll need to use a compiler like Babel or the TypeScript compiler to use decorators. See [Using decorators](decorators) for details.
+**Using decorators.** Decorators are a proposed JavaScript feature, so you’ll need to use a compiler like Babel or TypeScript to use decorators. See [Using decorators](decorators) for details.
 
 </div>
 
@@ -720,11 +726,11 @@ The `@queryAssignedNodes` decorator converts a class property into a getter that
 // First argument is the slot name
 // Second argument is `true` to flatten the assigned nodes.
 @queryAssignedNodes('header', true)
-headerNodes;
+_headerNodes;
 
 // If the first argument is absent or an empty string, list nodes for the default slot.
 @queryAssignedNodes()
-defaultSlotNodes;
+_defaultSlotNodes;
 ```
 
 The first example above is equivalent to the following code:
