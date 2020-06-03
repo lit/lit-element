@@ -202,6 +202,11 @@ main {
 }
 
 /* Landing page */
+.hero.blm {
+  background: #696969;
+  color: #fff;
+}
+
 .hero .main-nav {
   position: relative;
   background: none;
@@ -210,6 +215,25 @@ main {
 
 .hero .main-nav .nav-title {
   display: none;
+}
+
+.hero .blm-banner {
+  position: relative;
+  background: #000;
+  height: 60px;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  padding: 0 20px 0 20px;
+}
+
+.hero .blm-banner p {
+  margin: auto;
+  text-align: center;
+}
+
+.hero .blm-banner a {
+  color: #F07474;
 }
 
 .hero .wrapper {
