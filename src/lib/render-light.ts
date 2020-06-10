@@ -5,7 +5,7 @@ export const renderLightImpl = (part: NodePart) => {
   // tslint:disable-next-line:no-any
   const instance = part.startNode.parentNode as any;
   if (typeof instance.renderLight === 'function') {
-    return instance.renderLight();
+    part.setValue(instance.renderLight());
   }
 };
 
