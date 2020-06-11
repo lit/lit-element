@@ -157,6 +157,11 @@ html`<ul>
 </ul>`;
 ```
 
+<div class="alert alert-info">
+
+**repeat directive**. In most cases, `Array.map` is the most efficient way to create a repeating template. In some cases, you may want to consider lit-html's `repeat` directive. In particular, if the repeated elements are stateful, or very expensive to regenerate. For more information, see [Repeating templates with the repeat directive](https://lit-html.polymer-project.org/guide/writing-templates#repeating-templates-with-the-repeat-directive) in the lit-html docs.
+
+</div>
 #### Conditionals
 
 Render based on a Boolean condition:
@@ -260,7 +265,13 @@ By default, if an element has a shadow tree, its children don't render at all.
 
 To render children, your template needs to include one or more [`<slot>` elements](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/slot), which act as placeholders for child nodes. 
 
-#### Use the `slot` element
+<div class="alert alert-info">
+
+**Finding slotted children.** If your component needs information about its slotted children, see [Accessing slotted children](#accessing-slotted-children).
+
+</div>
+
+#### Use the slot element
 
 To render an element's children, create a `<slot>` for them in the element's template. For example:
 
@@ -371,25 +382,27 @@ _index.html_
 
 ## Compose a template from other templates
 
-You can compose LitElement templates from other LitElement templates. In the following example, we compose a template for an element called `<my-page>` from smaller templates for the standard HTML elements `<header>`, `<article>`, and `<footer>`:
+You can compose LitElement templates from other LitElement templates. In the following example, we compose a template for an element called `<my-page>` from smaller templates for the page's header, footer, and main content:
 
 ```js
+  function headerTemplate(title) {
+    return html`<header>${title}</header>`;
+  }
+  function articleTemplate(text) {
+    return html`<article>${text}</article>`;
+  }
+  function footerTemplate() {
+    return html`<footer>Your footer here.</footer>`;
+  }
+
 class MyPage extends LitElement {
+  ...
   render() {
     return html`
-      ${this.headerTemplate}
-      ${this.articleTemplate}
-      ${this.footerTemplate}
+      ${headerTemplate(this.article.title)}
+      ${articleTemplate(this.article.text)}
+      ${footerTemplate()}
     `;
-  }
-  get headerTemplate() {
-    return html`<header>header</header>`;
-  }
-  get articleTemplate() {
-    return html`<article>article</article>`;
-  }
-  get footerTemplate() {
-    return html`<footer>footer</footer>`;
   }
 }
 ```
@@ -569,6 +582,167 @@ html`${until(content, html`<span>Loading...</span>`)}`
 
 For a list of directives supplied with lit-html, see [Built-in directives](https://lit-html.polymer-project.org/guide/template-reference#built-in-directives) in the Template syntax reference.
 
+## Accessing nodes in the shadow DOM
+The `render()` method result is usually rendered into shadow DOM, so the nodes are not direct children of the component. Use `this.shadowRoot.querySelector()` or `this.shadowRoot.querySelectorAll()` to find nodes in the 
+shadow DOM.
+
+You can query the templated DOM after its initial render (for example, in `firstUpdated`), or use a getter pattern, like this:
+
+```js
+get _closeButton() {
+  return this.shadowRoot.querySelector('#close-button');
+}
+```
+
+LitElement supplies a set of decorators that provide a shorthand way of defining getters like this.
+
+More information:
+
+*   [Element.querySelector()](https://developer.mozilla.org/en-US/docs/Web/API/Element/querySelector) on MDN.
+*   [Element.querySelectorAll()](https://developer.mozilla.org/en-US/docs/Web/API/Element/querySelectorAll) on MDN.
+
+### @query, @queryAll, and @queryAsync decorators
+
+The `@query`, `@queryAll`, and `@queryAsync` decorators all provide a convenient way to access nodes in the component's shadow root. 
+
+<div class="alert alert-info">
+
+**Using decorators.** Decorators are a proposed JavaScript feature, so you’ll need to use a compiler like Babel or TypeScript to use decorators. See [Using decorators](decorators) for details.
+
+</div>
+
+The `@query` decorator modifies a class property, turning it into a getter that returns a node from the render root.
+
+```js
+import {LitElement, html} from 'lit-element';
+import {query} from 'lit-element/lib/decorators.js';
+
+class MyElement extends LitElement {
+  @query('#first')
+  _first;
+
+  render() {
+    return html`
+      <div id="first"></div>
+      <div id="second"></div>
+    `;
+  }
+}
+```
+
+This decorator is equivalent to:
+
+```js
+get first() {
+  return this.renderRoot.querySelector('#first');
+}
+```
+
+<div class="alert alert-info">
+
+**shadowRoot and renderRoot**. The [`renderRoot`](/api/classes/_lit_element_.litelement.html#renderroot) property identifies the container that the template is rendered into. By default, this is the component's `shadowRoot`. The decorators use `renderRoot`, so they should work correctly even if you override `createRenderRoot` as described in [Specify the render root](#renderroot)
+
+</div>
+
+The `@queryAll` decorator is identical to `query` except that it returns all matching nodes, instead of a single node. It's the equivalent of calling `querySelectorAll`.
+
+
+```js
+import {LitElement, html} from 'lit-element';
+import {queryAll} from 'lit-element/lib/decorators.js';
+
+class MyElement extends LitElement {
+  @queryAll('div')
+  _divs;
+
+  render() {
+    return html`
+      <div id="first"></div>
+      <div id="second"></div>
+    `;
+  }
+}
+```
+
+Here, `divs` would return both `<div>` elements in the template. For TypeScript, the typing of a `@queryAll` property is `NodeListOf<HTMLElement>`. If you know exactly what kind of nodes you'll retrieve, the typing can be more specific:
+
+```js
+@queryAll('button')
+_buttons!: NodeListOf<HTMLButtonElement>
+```
+
+The exclamation point (`!`) after `buttons` is TypeScript's [non-null assertion operator](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-0.html#non-null-assertion-operator). It tells the compiler to treat `buttons` as always being defined, never `null` or `undefined`.
+
+Finally, `@queryAsync` works like `@query`, except that instead of returning a node directly, it returns a `Promise` that resolves to that node. Code can use this instead of waiting for the `updateComplete` promise. 
+
+This is useful, for example, if the node returned by `@queryAsync` can change as a result of another property change. 
+
+## Accessing slotted children
+
+To access children assigned to slots in your shadow root, you can use the standard `slot.assignedNodes` method and the `slotchange` event.
+
+For example, you can create a getter to access assigned nodes for a particular slot:
+
+```js
+get _slottedChildren() {
+  const slot = this.shadowRoot.querySelector('slot');
+  const childNodes = slot.assignedNodes({flatten: true});
+  return Array.prototype.filter.call(childNodes, (node) => node.nodeType == Node.ELEMENT_NODE);
+}
+```
+
+You can also use the `slotchange` event to take action when the assigned nodes change. The following example extracts the text content of all of the slotted children.
+
+```js
+handleSlotchange(e) {
+  const childNodes = e.target.assignedNodes({flatten: true});
+  // ... do something with childNodes ...
+  this.allText = Array.prototype.map.call(childNodes, (node) => {
+    return node.textContent ? node.textContent : ''
+  }).join('');
+}
+
+render() {
+  return html`<slot @slotchange=${this.handleSlotchange}></slot>`;
+}
+```
+
+More information:
+
+*   [HTMLSlotElement](https://developer.mozilla.org/en-US/docs/Web/API/HTMLSlotElement) on MDN.
+
+
+### @queryAssignedNodes decorator
+
+The `@queryAssignedNodes` decorator converts a class property into a getter that returns all of the assigned nodes for a given slot in the component's shadow tree. 
+
+<div class="alert alert-info">
+
+**Using decorators.** Decorators are a proposed JavaScript feature, so you’ll need to use a compiler like Babel or TypeScript to use decorators. See [Using decorators](decorators) for details.
+
+</div>
+
+```js
+// First argument is the slot name
+// Second argument is `true` to flatten the assigned nodes.
+@queryAssignedNodes('header', true)
+_headerNodes;
+
+// If the first argument is absent or an empty string, list nodes for the default slot.
+@queryAssignedNodes()
+_defaultSlotNodes;
+```
+
+The first example above is equivalent to the following code:
+
+```js
+get headerNodes() {
+  const slot = this.shadowRoot.querySelector('slot[name=header]');
+  return slot.assignedNodes({flatten: true});
+}
+```
+
+For TypeScript, the typing of a `queryAssignedNodes` property is `NodeListOf<HTMLElement>`.
 
 ## Resources
 
