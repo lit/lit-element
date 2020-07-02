@@ -27,6 +27,9 @@ toc:
   lifecycle: 
     title: Lifecycle
     url: /guide/lifecycle
+  decorators: 
+    title: Using decorators
+    url: /guide/decorators
   tools: 
     title: Tools
     header: true
