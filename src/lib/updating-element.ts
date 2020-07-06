@@ -755,7 +755,7 @@ export abstract class UpdatingElement extends HTMLElement {
    * }
    * ```
    */
-  protected performUpdate(): void|Promise<unknown> {
+  performUpdate(noUpdatedCallbacks?: boolean): void|Promise<unknown> {
     // Abort any update if one is not pending when this is called.
     // This can happen if `performUpdate` is called early to "flush"
     // the update.
@@ -783,7 +783,7 @@ export abstract class UpdatingElement extends HTMLElement {
       this._markUpdated();
       throw e;
     }
-    if (shouldUpdate) {
+    if (shouldUpdate && !noUpdatedCallbacks) {
       if (!(this._updateState & STATE_HAS_UPDATED)) {
         this._updateState = this._updateState | STATE_HAS_UPDATED;
         this.firstUpdated(changedProperties);

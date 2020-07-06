@@ -126,6 +126,8 @@ export class LitElement extends UpdatingElement {
       (result: unknown, container: Element|DocumentFragment,
        options: ShadyRenderOptions) => void = render;
 
+  ssrRenderChildren: IterableIterator<string> | undefined;
+
   /**
    * LitElement detects if it should try to `hydrate` based on whether or not
    * the element has a `shadowRoot` when it is constructed.
@@ -136,6 +138,18 @@ export class LitElement extends UpdatingElement {
    */
   static hydrate:
       (result: unknown, container: Element|DocumentFragment) => void;
+
+  static get observedAttributes() {
+    return [...super.observedAttributes, 'defer-hydration'];
+  }
+
+  attributeChangedCallback(name: string, old: string | null, value: string | null) {
+    if (name === 'defer-hydration' && value === null && this._needsHydration) {
+      this.connectedCallback();
+    } else {
+      super.attributeChangedCallback(name, old, value);
+    }
+  }
 
   /**
    * Array of styles to apply to the element. The styles should be defined
@@ -288,11 +302,15 @@ export class LitElement extends UpdatingElement {
   }
 
   connectedCallback() {
-    super.connectedCallback();
-    // Note, first update/render handles styleElement so we only call this if
-    // connected after first update.
-    if (this.hasUpdated && window.ShadyCSS !== undefined) {
-      window.ShadyCSS.styleElement(this);
+    if (this.hasAttribute('defer-hydration') && this._needsHydration) {
+      // Wait until parent hydrates
+    } else {
+      super.connectedCallback();
+      // Note, first update/render handles styleElement so we only call this if
+      // connected after first update.
+      if (this.hasUpdated && window.ShadyCSS !== undefined) {
+        window.ShadyCSS.styleElement(this);
+      }
     }
   }
 
@@ -317,6 +335,10 @@ export class LitElement extends UpdatingElement {
         this._needsHydration = false;
         (this.constructor as typeof LitElement)
             .hydrate(templateResult, this.renderRoot);
+        // Hydrate any children waiting on parent hydration
+        this.renderRoot.querySelectorAll('[defer-hydration]').forEach(el => {
+          el.removeAttribute('defer-hydration');
+        });
       } else {
         (this.constructor as typeof LitElement)
             .render(
