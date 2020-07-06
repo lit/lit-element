@@ -126,7 +126,7 @@ export class LitElement extends UpdatingElement {
       (result: unknown, container: Element|DocumentFragment,
        options: ShadyRenderOptions) => void = render;
 
-  ssrRenderChildren: IterableIterator<string> | undefined;
+  ssrRenderChildren: IterableIterator<string>|undefined;
 
   /**
    * LitElement detects if it should try to `hydrate` based on whether or not
@@ -143,7 +143,7 @@ export class LitElement extends UpdatingElement {
     return [...super.observedAttributes, 'defer-hydration'];
   }
 
-  attributeChangedCallback(name: string, old: string | null, value: string | null) {
+  attributeChangedCallback(name: string, old: string|null, value: string|null) {
     if (name === 'defer-hydration' && value === null && this._needsHydration) {
       this.connectedCallback();
     } else {
