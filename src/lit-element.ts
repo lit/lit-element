@@ -336,7 +336,7 @@ export class LitElement extends UpdatingElement {
         (this.constructor as typeof LitElement)
             .hydrate(templateResult, this.renderRoot);
         // Hydrate any children waiting on parent hydration
-        this.renderRoot.querySelectorAll('[defer-hydration]').forEach(el => {
+        this.renderRoot.querySelectorAll('[defer-hydration]').forEach((el) => {
           el.removeAttribute('defer-hydration');
         });
       } else {
