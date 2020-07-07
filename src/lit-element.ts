@@ -126,8 +126,6 @@ export class LitElement extends UpdatingElement {
       (result: unknown, container: Element|DocumentFragment,
        options: ShadyRenderOptions) => void = render;
 
-  ssrRenderChildren: IterableIterator<string>|undefined;
-
   /**
    * LitElement detects if it should try to `hydrate` based on whether or not
    * the element has a `shadowRoot` when it is constructed.
@@ -143,9 +141,16 @@ export class LitElement extends UpdatingElement {
     return [...super.observedAttributes, 'defer-hydration'];
   }
 
+  /**
+   * Handle removal of the `defer-hydration` attribute by enabling the element,
+   * which will trigger hydration; for all others, let the default
+   * `attributeChangedCallback` in UpdatingElement handle the attribute change.
+   */
   attributeChangedCallback(name: string, old: string|null, value: string|null) {
-    if (name === 'defer-hydration' && value === null && this._needsHydration) {
-      this.connectedCallback();
+    if (name === 'defer-hydration') {
+      if (value === null && this._needsHydration){
+        this.enableUpdating();
+      }
     } else {
       super.attributeChangedCallback(name, old, value);
     }
@@ -305,12 +310,12 @@ export class LitElement extends UpdatingElement {
     if (this.hasAttribute('defer-hydration') && this._needsHydration) {
       // Wait until parent hydrates
     } else {
-      super.connectedCallback();
-      // Note, first update/render handles styleElement so we only call this if
-      // connected after first update.
-      if (this.hasUpdated && window.ShadyCSS !== undefined) {
-        window.ShadyCSS.styleElement(this);
-      }
+      this.enableUpdating();
+    }
+    // Note, first update/render handles styleElement so we only call this if
+    // connected after first update.
+    if (this.hasUpdated && window.ShadyCSS !== undefined) {
+      window.ShadyCSS.styleElement(this);
     }
   }
 
