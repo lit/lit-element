@@ -213,7 +213,7 @@ export function internalProperty(options?: InternalPropertyDeclaration) {
  * ```
  * @category Decorator
  */
-export function query(selector: string) {
+export function query(selector: string, cache?: boolean) {
   return (protoOrDescriptor: Object|ClassElement,
           // tslint:disable-next-line:no-any decorator
           name?: PropertyKey): any => {
@@ -224,6 +224,14 @@ export function query(selector: string) {
       enumerable: true,
       configurable: true,
     };
+    if (cache) {
+      const key = typeof name === 'symbol' ? Symbol() : `__${name}`;
+      descriptor.get = function(this: LitElement) {
+        return (this as unknown as {[key: string]: Element|null})[key as string] ||
+          ((this as unknown as {[key: string]: Element|null})[key as string] =
+          this.renderRoot.querySelector(selector));
+      };
+    }
     return (name !== undefined) ?
         legacyQuery(descriptor, protoOrDescriptor as Object, name) :
         standardQuery(descriptor, protoOrDescriptor as ClassElement);
@@ -411,16 +419,21 @@ export function eventOptions(options: AddEventListenerOptions) {
  * @category Decorator
  */
 export function queryAssignedNodes(
-    slotName: string = '', flatten: boolean = false) {
+    slotName = '', flatten = false, selector = '') {
   return (protoOrDescriptor: Object|ClassElement,
           // tslint:disable-next-line:no-any decorator
           name?: PropertyKey): any => {
     const descriptor = {
       get(this: LitElement) {
-        const selector =
+        const slotSelector =
             `slot${slotName ? `[name=${slotName}]` : ':not([name])'}`;
-        const slot = this.renderRoot.querySelector(selector);
-        return slot && (slot as HTMLSlotElement).assignedNodes({flatten});
+        const slot = this.renderRoot.querySelector(slotSelector);
+        let nodes = slot && (slot as HTMLSlotElement).assignedNodes({flatten});
+        if (nodes && selector) {
+          nodes = nodes.filter((node) => node instanceof Element &&
+              node.matches(selector));
+        }
+        return nodes;
       },
       enumerable: true,
       configurable: true,
