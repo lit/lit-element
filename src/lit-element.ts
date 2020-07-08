@@ -137,24 +137,11 @@ export class LitElement extends UpdatingElement {
   static hydrate:
       (result: unknown, container: Element|DocumentFragment) => void;
 
-  static get observedAttributes() {
-    return [...super.observedAttributes, 'defer-hydration'];
-  }
-
   /**
-   * Handle removal of the `defer-hydration` attribute by enabling the element,
-   * which will trigger hydration; for all others, let the default
-   * `attributeChangedCallback` in UpdatingElement handle the attribute change.
+   * List of children pending hydration; may be created prior to upgrade
+   * by first shadow root child to upgrade.
    */
-  attributeChangedCallback(name: string, old: string|null, value: string|null) {
-    if (name === 'defer-hydration') {
-      if (value === null && this._needsHydration){
-        this.enableUpdating();
-      }
-    } else {
-      super.attributeChangedCallback(name, old, value);
-    }
-  }
+  private _childrenPendingHydration?: LitElement[];
 
   /**
    * Array of styles to apply to the element. The styles should be defined
@@ -307,9 +294,26 @@ export class LitElement extends UpdatingElement {
   }
 
   connectedCallback() {
-    if (this.hasAttribute('defer-hydration') && this._needsHydration) {
-      // Wait until parent hydrates
-    } else {
+    let shouldEnable = true;
+    // If element is pending hydration, in a shadow root, and it's host has not
+    // yet updated, add self to host's `_childrenPendingHydration` list and wait
+    // for host to enable
+    if (this._needsHydration) {
+      const root = this.getRootNode();
+      if (root instanceof ShadowRoot) {
+        // This assumes hydration host is always another LitElement (or
+        // something) implementing the `_childrenPendingHydration` protocol
+        const host = root.host as LitElement;
+        if (!host.hasUpdated) {
+          shouldEnable = false;
+          if (!host._childrenPendingHydration) {
+            host._childrenPendingHydration = [];
+          }
+          host._childrenPendingHydration.push(this);
+        }
+      }
+    } 
+    if (shouldEnable) {
       this.enableUpdating();
     }
     // Note, first update/render handles styleElement so we only call this if
@@ -340,10 +344,10 @@ export class LitElement extends UpdatingElement {
         this._needsHydration = false;
         (this.constructor as typeof LitElement)
             .hydrate(templateResult, this.renderRoot);
-        // Hydrate any children waiting on parent hydration
-        this.renderRoot.querySelectorAll('[defer-hydration]').forEach((el) => {
-          el.removeAttribute('defer-hydration');
-        });
+        // Enable any children waiting on parent hydration
+        if (this._childrenPendingHydration) {
+          this._childrenPendingHydration.forEach(el => el.enableUpdating());
+        }
       } else {
         (this.constructor as typeof LitElement)
             .render(
