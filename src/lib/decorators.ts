@@ -193,6 +193,8 @@ export function internalProperty(options?: InternalPropertyDeclaration) {
  * executes a querySelector on the element's renderRoot.
  *
  * @param selector A DOMString containing one or more selectors to match.
+ * @param cache An optional boolean which when true performs the DOM query only
+ * once and caches the result.
  *
  * See: https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelector
  *
@@ -227,9 +229,11 @@ export function query(selector: string, cache?: boolean) {
     if (cache) {
       const key = typeof name === 'symbol' ? Symbol() : `__${name}`;
       descriptor.get = function(this: LitElement) {
-        return (this as unknown as {[key: string]: Element|null})[key as string] ||
+        if ((this as unknown as {[key: string]: Element|null})[key as string] === undefined) {
           ((this as unknown as {[key: string]: Element|null})[key as string] =
           this.renderRoot.querySelector(selector));
+        }
+        return (this as unknown as {[key: string]: Element|null})[key as string];
       };
     }
     return (name !== undefined) ?
@@ -416,6 +420,27 @@ export function eventOptions(options: AddEventListenerOptions) {
  * A property decorator that converts a class property into a getter that
  * returns the `assignedNodes` of the given named `slot`. Note, the type of
  * this property should be annotated as `NodeListOf<HTMLElement>`.
+ *
+ * @param slotName A string name of the slot.
+ * @param flatten A boolean which when true flattens the assigned nodes,
+ * meaning any assigned nodes that are slot elements are replaced with their
+ * assigned nodes.
+ * @param selector A string which filters the results to elements that match
+ * the given css selector.
+ *
+ * * @example
+ * ```ts
+ * class MyElement {
+ *   @queryAssignedNodes('list', true, '.item')
+ *   listItems;
+ *
+ *   render() {
+ *     return html`
+ *       <slot name="list"></slot>
+ *     `;
+ *   }
+ * }
+ * ```
  * @category Decorator
  */
 export function queryAssignedNodes(
@@ -430,8 +455,8 @@ export function queryAssignedNodes(
         const slot = this.renderRoot.querySelector(slotSelector);
         let nodes = slot && (slot as HTMLSlotElement).assignedNodes({flatten});
         if (nodes && selector) {
-          nodes = nodes.filter((node) => node instanceof Element &&
-              node.matches(selector));
+          nodes = nodes.filter((node) => node.nodeType === Node.ELEMENT_NODE &&
+              (node as Element).matches(selector));
         }
         return nodes;
       },
