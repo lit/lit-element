@@ -229,11 +229,13 @@ export function query(selector: string, cache?: boolean) {
     if (cache) {
       const key = typeof name === 'symbol' ? Symbol() : `__${name}`;
       descriptor.get = function(this: LitElement) {
-        if ((this as unknown as {[key: string]: Element|null})[key as string] === undefined) {
-          ((this as unknown as {[key: string]: Element|null})[key as string] =
-          this.renderRoot.querySelector(selector));
+        if ((this as unknown as
+             {[key: string]: Element | null})[key as string] === undefined) {
+          ((this as unknown as {[key: string]: Element | null})[key as string] =
+               this.renderRoot.querySelector(selector));
         }
-        return (this as unknown as {[key: string]: Element|null})[key as string];
+        return (
+            this as unknown as {[key: string]: Element | null})[key as string];
       };
     }
     return (name !== undefined) ?
@@ -419,8 +421,8 @@ export function eventOptions(options: AddEventListenerOptions) {
 // x-browser support for matches
 // tslint:disable-next-line:no-any
 const ElementProto = Element.prototype as any;
-const legacyMatches = ElementProto.msMatchesSelector ||
-    ElementProto.webkitMatchesSelector;
+const legacyMatches =
+    ElementProto.msMatchesSelector || ElementProto.webkitMatchesSelector;
 
 /**
  * A property decorator that converts a class property into a getter that
@@ -461,9 +463,11 @@ export function queryAssignedNodes(
         const slot = this.renderRoot.querySelector(slotSelector);
         let nodes = slot && (slot as HTMLSlotElement).assignedNodes({flatten});
         if (nodes && selector) {
-          nodes = nodes.filter((node) => node.nodeType === Node.ELEMENT_NODE &&
-              (node as Element).matches ? (node as Element).matches(selector) :
-              legacyMatches.call(node as Element, selector));
+          nodes = nodes.filter(
+              (node) => node.nodeType === Node.ELEMENT_NODE &&
+                      (node as Element).matches ?
+                  (node as Element).matches(selector) :
+                  legacyMatches.call(node as Element, selector));
         }
         return nodes;
       },
