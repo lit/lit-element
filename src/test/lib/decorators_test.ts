@@ -330,8 +330,7 @@ suite('decorators', () => {
 
       @query('span', true) span?: HTMLSpanElement;
 
-      @property()
-      condition = false;
+      @property() condition = false;
 
       render() {
         return html`
@@ -416,7 +415,8 @@ suite('decorators', () => {
       // The `true` on the decorator indicates that results should be flattened.
       @queryAssignedNodes('footer', true) footerAssigned!: Node[];
 
-      @queryAssignedNodes('footer', true, '.item') footerAssignedItems!: Element[];
+      @queryAssignedNodes('footer', true, '.item')
+      footerAssignedItems!: Element[];
 
       render() {
         return html`
