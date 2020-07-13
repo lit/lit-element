@@ -326,14 +326,18 @@ suite('decorators', () => {
   suite('@query', () => {
     @customElement(generateElementName())
     class C extends LitElement {
-      @query('#blah') blah?: HTMLDivElement;
+      @query('#blah') div?: HTMLDivElement;
 
-      @query('span') nope?: HTMLSpanElement;
+      @query('span', true) span?: HTMLSpanElement;
+
+      @property()
+      condition = false;
 
       render() {
         return html`
           <div>Not this one</div>
           <div id="blah">This one</div>
+          ${this.condition ? html`<span>Cached</span>` : ``}
         `;
       }
     }
@@ -342,7 +346,7 @@ suite('decorators', () => {
       const c = new C();
       container.appendChild(c);
       await c.updateComplete;
-      const div = c.blah;
+      const div = c.div;
       assert.instanceOf(div, HTMLDivElement);
       assert.equal(div!.innerText, 'This one');
     });
@@ -351,8 +355,20 @@ suite('decorators', () => {
       const c = new C();
       container.appendChild(c);
       await c.updateComplete;
-      const span = c.nope;
-      assert.isNull(span);
+      assert.isNull(c.span);
+    });
+
+    test('returns cached value', async () => {
+      const c = new C();
+      c.condition = true;
+      container.appendChild(c);
+      await c.updateComplete;
+      assert.equal(c.span, c.renderRoot.querySelector('span'));
+      assert.instanceOf(c.span, HTMLSpanElement);
+      c.condition = false;
+      await c.updateComplete;
+      assert.instanceOf(c.span, HTMLSpanElement);
+      assert.notEqual(c.span, c.renderRoot.querySelector('span'));
     });
   });
 
@@ -399,6 +415,8 @@ suite('decorators', () => {
 
       // The `true` on the decorator indicates that results should be flattened.
       @queryAssignedNodes('footer', true) footerAssigned!: Node[];
+
+      @queryAssignedNodes('footer', true, '.item') footerAssignedItems!: Element[];
 
       render() {
         return html`
@@ -484,6 +502,27 @@ suite('decorators', () => {
       c.removeChild(child2);
       flush();
       assert.deepEqual(c.assignedNodesEl.footerAssigned, [child1]);
+    });
+
+    test('returns assignedNodes for slot filtered by selector', async () => {
+      const c = new C();
+      container.appendChild(c);
+      await c.updateComplete;
+      await c.assignedNodesEl.updateComplete;
+      // Note, `defaultAssigned` does `flatten` so we test that the property
+      // reflects current state and state when nodes are added or removed to
+      // the light DOM of the element containing the element under test.
+      assert.deepEqual(c.assignedNodesEl.footerAssignedItems, []);
+      const child1 = document.createElement('div');
+      const child2 = document.createElement('div');
+      child2.classList.add('item');
+      c.appendChild(child1);
+      c.appendChild(child2);
+      flush();
+      assert.deepEqual(c.assignedNodesEl.footerAssignedItems, [child2]);
+      c.removeChild(child2);
+      flush();
+      assert.deepEqual(c.assignedNodesEl.footerAssignedItems, []);
     });
   });
 

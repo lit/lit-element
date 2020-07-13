@@ -102,12 +102,12 @@
 				<a href="#modules" id="modules" style="color: inherit; text-decoration: none;">
 					<h2>Modules</h2>
 				</a>
-				<a href="#lit-element" id="lit-element" style="color: inherit; text-decoration: none;">
+				<a href="#a-hrefapimodules_lit_element_htmllit-elementa" id="a-hrefapimodules_lit_element_htmllit-elementa" style="color: inherit; text-decoration: none;">
 					<h3><a href="/api/modules/_lit_element_.html">lit-element</a></h3>
 				</a>
-				<p>The main LitElement module, which defines the <code>LitElement</code> base class and related APIs.</p>
+				<p>The main LitElement module, which defines the <a href="/api/classes/_lit_element_.litelement.html"><code>LitElement</code></a> base class and related APIs.</p>
 				<p>LitElement components can define a template and a set of observed properties. Changing an observed property triggers a re-render of the element.</p>
-				<p>Import <code>LitElement</code> and <code>html</code> from this module to create a component:</p>
+				<p>Import <a href="/api/classes/_lit_element_.litelement.html"><code>LitElement</code></a> and <a href="https://lit-element.polymer-project.org/api/modules/_lit_element_.html#html"><code>html</code></a> from this module to create a component:</p>
 				<pre><code class="language-js"><span class="hljs-keyword">import</span> {LitElement, html} <span class="hljs-keyword">from</span> <span class="hljs-string">'lit-element'</span>;
 
 <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyElement</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">LitElement</span> </span>{
@@ -130,11 +130,11 @@
 }
 
 customElements.define(<span class="hljs-string">'my-element'</span>, MyElement);</code></pre>
-				<p><code>LitElement</code> extends <a href="#lib-updating-element"><code>UpdatingElement</code></a> and adds lit-html templating.</p>
-				<a href="#libupdating-element" id="libupdating-element" style="color: inherit; text-decoration: none;">
-					<h3><a href="/api/modules/_lib_updating_element_.html">lib/updating-element</a></h3>
+				<p><code>LitElement</code> extends <a href="/api/classes/_lib_updating_element_.updatingelement.html"><code>UpdatingElement</code></a> and adds lit-html templating.</p>
+				<a href="#a-hrefapimodules_lib_updating_element_htmllit-elementlibupdating-elementjsa" id="a-hrefapimodules_lib_updating_element_htmllit-elementlibupdating-elementjsa" style="color: inherit; text-decoration: none;">
+					<h3><a href="/api/modules/_lib_updating_element_.html">lit-element/lib/updating-element.js</a></h3>
 				</a>
-				<pre><code class="language-js"><span class="hljs-keyword">import</span> { UpdatingElement } <span class="hljs-keyword">from</span> <span class="hljs-string">'lit-element/lib/updating-element.js'</span>;</code></pre>
+				<pre><code class="language-js"><span class="hljs-keyword">import</span> {UpdatingElement} <span class="hljs-keyword">from</span> <span class="hljs-string">'lit-element/lib/updating-element.js'</span>;</code></pre>
 				<p>Custom Element base class that supports declaring observable properties, reflecting attributes to properties, and the core update lifecycle methods.</p>
 				<p>If you want to build a custom element base class that includes these features but <strong>not</strong> lit-html templating, extend <code>UpdatingElement</code>.</p>
 			</div>

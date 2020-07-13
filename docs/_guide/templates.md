@@ -8,19 +8,19 @@ slug: templates
 * ToC
 {:toc}
 
-Add a template to your component to define internal DOM to implement your component. 
+Add a template to your component to define internal DOM to implement your component.
 
 To encapsulate the templated DOM LitElement uses
-[shadow DOM](https://developers.google.com/web/fundamentals/web-components/shadowdom). 
+[shadow DOM](https://developers.google.com/web/fundamentals/web-components/shadowdom).
 Shadow DOM provides three benefits:
 
-* DOM scoping. DOM APIs like `document.querySelector` won't find elements in the 
+* DOM scoping. DOM APIs like `document.querySelector` won't find elements in the
   component's shadow DOM, so it's harder for global scripts to accidentally break your component.
-* Style scoping. You can write encapsulated styles for your shadow DOM that don't 
+* Style scoping. You can write encapsulated styles for your shadow DOM that don't
   affect the rest of the DOM tree.
 * Composition. The component's shadow DOM (managed by the component) is separate from the component's children. You can choose how children are rendered in your templated DOM. Component users can add and remove children using standard DOM APIs without accidentally breaking anything in your shadow DOM.
 
-Where native shadow DOM isn't available, LitElement 
+Where native shadow DOM isn't available, LitElement
 uses the [Shady CSS](https://github.com/webcomponents/polyfills/tree/master/packages/shadycss) polyfill.
 
 
@@ -38,14 +38,14 @@ class MyElement extends LitElement {
 }
 ```
 
-*   Write your template in HTML inside a JavaScript [template literal](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals) by enclosing the raw HTML in back-ticks 
-    (<code>``</code>). 
+*   Write your template in HTML inside a JavaScript [template literal](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals) by enclosing the raw HTML in back-ticks
+    (<code>``</code>).
 
 
-*   Tag your template literal with the [`html`](https://lit-html.polymer-project.org/api/modules/lit_html.html#html) 
-    tag function. 
+*   Tag your template literal with the [`html`](https://lit-html.polymer-project.org/api/modules/lit_html.html#html)
+    tag function.
 
-*   The component's `render` method can return anything that lit-html can render. Typically, it 
+*   The component's `render` method can return anything that lit-html can render. Typically, it
     returns a single `TemplateResult` object (the same type returned by the `html` tag function).
 
 Example
@@ -58,7 +58,7 @@ Example
 
 LitElement uses lit-html templates; this page summarizes the features of lit-html templates,
 for more details, see [Writing templates](https://lit-html.polymer-project.org/guide/writing-templates)
-and the [Template syntax reference](https://lit-html.polymer-project.org/guide/template-reference) 
+and the [Template syntax reference](https://lit-html.polymer-project.org/guide/template-reference)
 in the lit-html documentation.
 
 ### Design a performant template
@@ -97,7 +97,7 @@ render() {
 }
 ```
 
-We can improve the template by declaring the message as a property, and binding the property into the template. Declaring a property tells your component to re-render its template when the property changes. 
+We can improve the template by declaring the message as a property, and binding the property into the template. Declaring a property tells your component to re-render its template when the property changes.
 
 
 _update-properties.js_
@@ -124,11 +124,11 @@ render() {
 
 {% include project.html folder="docs/templates/design" openFile="update-properties.js" %}
 
-The following sections discuss different types of property bindings. See [Properties](properties) for information on declaring properties. 
+The following sections discuss different types of property bindings. See [Properties](properties) for information on declaring properties.
 
 ### Use properties, loops, and conditionals in a template
 
-When defining your element's template, you can bind the element's properties to the 
+When defining your element's template, you can bind the element's properties to the
 template; the template is re-rendered whenever the properties change.
 
 #### Properties
@@ -137,8 +137,8 @@ To add a property value to a template, insert it with `${this.propName}`:
 
 ```js
 static get properties() {
-  return { 
-    myProp: {type: String} 
+  return {
+    myProp: {type: String}
   };
 }
 ...
@@ -254,16 +254,16 @@ _my-element.js_
 
 ### Render children with the slot element {#slots}
 
-Your component may accept children (like a `<ul>` element can have `<li>` children). 
+Your component may accept children (like a `<ul>` element can have `<li>` children).
 
 ```html
 <my-element>
   <p>A child</p>
 </my-element>
 ```
-By default, if an element has a shadow tree, its children don't render at all. 
+By default, if an element has a shadow tree, its children don't render at all.
 
-To render children, your template needs to include one or more [`<slot>` elements](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/slot), which act as placeholders for child nodes. 
+To render children, your template needs to include one or more [`<slot>` elements](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/slot), which act as placeholders for child nodes.
 
 <div class="alert alert-info">
 
@@ -463,7 +463,7 @@ class LightDom extends LitElement {
   }
   createRenderRoot() {
   /**
-   * Render template without shadow DOM. Note that shadow DOM features like 
+   * Render template without shadow DOM. Note that shadow DOM features like
    * encapsulated CSS and slots are unavailable.
    */
     return this;
@@ -555,7 +555,7 @@ render() { return html`<slot name="thing"></slot>`; }
 ## Using other lit-html features
 
 Since LitElement uses the lit-html `html` tag function to define templates you can take advantage
-of the entire lit-html feature set for writing your templates. This includes lit-html _directives_, 
+of the entire lit-html feature set for writing your templates. This includes lit-html _directives_,
 special functions that customize the way lit-html renders a binding.
 
 To import features directly from lit-html, your project should add lit-html as a direct dependency.
@@ -583,7 +583,7 @@ html`${until(content, html`<span>Loading...</span>`)}`
 For a list of directives supplied with lit-html, see [Built-in directives](https://lit-html.polymer-project.org/guide/template-reference#built-in-directives) in the Template syntax reference.
 
 ## Accessing nodes in the shadow DOM
-The `render()` method result is usually rendered into shadow DOM, so the nodes are not direct children of the component. Use `this.shadowRoot.querySelector()` or `this.shadowRoot.querySelectorAll()` to find nodes in the 
+The `render()` method result is usually rendered into shadow DOM, so the nodes are not direct children of the component. Use `this.shadowRoot.querySelector()` or `this.shadowRoot.querySelectorAll()` to find nodes in the
 shadow DOM.
 
 You can query the templated DOM after its initial render (for example, in `firstUpdated`), or use a getter pattern, like this:
@@ -603,7 +603,7 @@ More information:
 
 ### @query, @queryAll, and @queryAsync decorators
 
-The `@query`, `@queryAll`, and `@queryAsync` decorators all provide a convenient way to access nodes in the component's shadow root. 
+The `@query`, `@queryAll`, and `@queryAsync` decorators all provide a convenient way to access nodes in the component's shadow root.
 
 <div class="alert alert-info">
 
@@ -611,7 +611,8 @@ The `@query`, `@queryAll`, and `@queryAsync` decorators all provide a convenient
 
 </div>
 
-The `@query` decorator modifies a class property, turning it into a getter that returns a node from the render root.
+The `@query` decorator modifies a class property, turning it into a getter that returns a node from the render root. The optional second argument is a cache flag which when true performs the DOM query only once and caches the result. This can be used as a performance optimization in cases when the node being queried is not expectd to change.
+
 
 ```js
 import {LitElement, html} from 'lit-element';
@@ -673,9 +674,9 @@ _buttons!: NodeListOf<HTMLButtonElement>
 
 The exclamation point (`!`) after `buttons` is TypeScript's [non-null assertion operator](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-0.html#non-null-assertion-operator). It tells the compiler to treat `buttons` as always being defined, never `null` or `undefined`.
 
-Finally, `@queryAsync` works like `@query`, except that instead of returning a node directly, it returns a `Promise` that resolves to that node. Code can use this instead of waiting for the `updateComplete` promise. 
+Finally, `@queryAsync` works like `@query`, except that instead of returning a node directly, it returns a `Promise` that resolves to that node. Code can use this instead of waiting for the `updateComplete` promise.
 
-This is useful, for example, if the node returned by `@queryAsync` can change as a result of another property change. 
+This is useful, for example, if the node returned by `@queryAsync` can change as a result of another property change.
 
 ## Accessing slotted children
 
@@ -714,7 +715,7 @@ More information:
 
 ### @queryAssignedNodes decorator
 
-The `@queryAssignedNodes` decorator converts a class property into a getter that returns all of the assigned nodes for a given slot in the component's shadow tree. 
+The `@queryAssignedNodes` decorator converts a class property into a getter that returns all of the assigned nodes for a given slot in the component's shadow tree. The optional second boolean argument when true flattens the assigned nodes, meaning any assigned nodes that are slot elements are replaced with their assigned nodes. The optional third argument is a css selector which filters the results to matching elements.
 
 <div class="alert alert-info">
 
