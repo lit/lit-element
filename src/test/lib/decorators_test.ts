@@ -358,12 +358,10 @@ suite('decorators', () => {
       assert.isNull(c.span);
     });
 
-    test('returns cached value after it matches once', async () => {
+    test('returns cached value', async () => {
       const c = new C();
-      container.appendChild(c);
-      await c.updateComplete;
-      assert.isNull(c.span);
       c.condition = true;
+      container.appendChild(c);
       await c.updateComplete;
       assert.equal(c.span, c.renderRoot.querySelector('span'));
       assert.instanceOf(c.span, HTMLSpanElement);
