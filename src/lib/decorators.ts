@@ -416,6 +416,12 @@ export function eventOptions(options: AddEventListenerOptions) {
              any;
 }
 
+// x-browser support for matches
+// tslint:disable-next-line:no-any
+const ElementProto = Element.prototype as any;
+const legacyMatches = ElementProto.msMatchesSelector ||
+    ElementProto.webkitMatchesSelector;
+
 /**
  * A property decorator that converts a class property into a getter that
  * returns the `assignedNodes` of the given named `slot`. Note, the type of
@@ -456,7 +462,8 @@ export function queryAssignedNodes(
         let nodes = slot && (slot as HTMLSlotElement).assignedNodes({flatten});
         if (nodes && selector) {
           nodes = nodes.filter((node) => node.nodeType === Node.ELEMENT_NODE &&
-              (node as Element).matches(selector));
+              (node as Element).matches ? (node as Element).matches(selector) :
+              legacyMatches.call(node as Element, selector));
         }
         return nodes;
       },
