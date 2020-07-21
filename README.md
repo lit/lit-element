@@ -7,6 +7,7 @@ A simple base class for creating fast, lightweight web components with [lit-html
 [![Published on webcomponents.org](https://img.shields.io/badge/webcomponents.org-published-blue.svg)](https://www.webcomponents.org/element/lit-element)
 [![Mentioned in Awesome lit-html](https://awesome.re/mentioned-badge.svg)](https://github.com/web-padawan/awesome-lit-html)
 [![BrowserStack Status](https://automate.browserstack.com/badge.svg?badge_key=TnM4R3dScWdhU1NRck1WejNtMmVoMzQrU2s5bnRtOVVGMmFkQWtEV25iST0tLTNiWEZVYldaV1VqY2oxTEVJV09XSFE9PQ==--e79a2e8601a562e5b200dfcd2d6a15416fd4ed5f)](https://automate.browserstack.com/public-build/TnM4R3dScWdhU1NRck1WejNtMmVoMzQrU2s5bnRtOVVGMmFkQWtEV25iST0tLTNiWEZVYldaV1VqY2oxTEVJV09XSFE9PQ==--e79a2e8601a562e5b200dfcd2d6a15416fd4ed5f)
+[![GitHub issues by-label](https://img.shields.io/github/issues-raw/Polymer/lit-element/Type:%20Bug)](https://github.com/Polymer/lit-element/issues?q=is%3Aissue+is%3Aopen+label%3A%22Type%3A+Bug%22)
 
 ## Documentation
 
