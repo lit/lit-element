@@ -67,7 +67,7 @@ instead of just downloading the zip file. You can use the [GitHub template repos
 
 ### Try out your project
 
-1.  If you're using the TypeScript version of the starter, build the JavaScript version of your project:
+1.  **If you're using the TypeScript version of the starter**, build the JavaScript version of your project:
 
     ```bash
     npm run build
@@ -79,7 +79,7 @@ instead of just downloading the zip file. You can use the [GitHub template repos
     npm run build:watch
     ```
 
-    No build step is required if you're using the JavaScript version of the starter project.
+    **No build step is required if you're using the JavaScript version of the starter project.**
 
 1.  Run the dev server:
 
@@ -212,7 +212,9 @@ For details on running tests and using other tools, see the starter project READ
 
 ## Add LitElement to an existing project {#existing-project}
 
-You don't need a lot of tooling for LitElement projects. Chances are if you have an existing set of tools, you can integrate LitElement into it with very limited changes. These instructions assume you're using npm for package management, and using a tool like Rollup or Webpack to bundle your code for production.
+You don't need a lot of tooling for LitElement projects. Chances are if you have an existing set of tools, you can integrate LitElement into it with very limited changes. These instructions assume you're using npm for package management, and using a tool like Rollup or webpack to bundle your code for production.
+
+For details on building projects, including some sample Rollup configurations, see [Build for production](build).
 
 <div class="alert alert-info">
 
@@ -276,12 +278,11 @@ index.html
 
 At this point, you should be able to build and run your project and see the "Hello from MyElement!" message.
 
-<div class="alert alert-info">
+### Adjust for your build system
 
-**Adjust for your build system.** How you import the component may vary slightly depending on your build system and project structure. If you're writing in TypeScript, you'll use TypeScript files and use LitElement's decorators. (You can find a sample TypeScript element in the [TypeScript starter project](https://github.com/PolymerLabs/lit-element-starter-ts/blob/master/src/my-element.ts)).
+How you import the component may vary slightly depending on your build system and project structure. If you're writing in TypeScript, you'll use TypeScript files and use LitElement's decorators. (You can find a sample TypeScript element in the [TypeScript starter project](https://github.com/PolymerLabs/lit-element-starter-ts/blob/master/src/my-element.ts)).
 
-</div>
-
+For more details and sample build configurations, see [Build for production](build).
 
 ### Optional: Use ES dev server
 
@@ -312,24 +313,9 @@ If you already have a dev server that works with your build system, it should wo
 
 ### Supporting older browsers
 
-To support older browsers that don't support ES6 and the web components specifications, you'll need to take a few extra steps to produce code that will run on the older browsers. There are two basic approaches you can take:
+To support older browsers that don't support ES6 and the web components specifications, you'll need to take a few extra steps to produce code that will run on the older browsers. 
 
-*   Build two versions of the project: a smaller, faster version for modern browsers and a transpiled version with extra polyfills for legacy browsers.
-*   Build a single version of the project for all browsers. This is simpler, but will be slower on modern browsers.
-
-At a high level, you need to do the following for your legacy build:
-
-*   Compile to ES5. [Babel](https://babeljs.io/) is the most commonly used tool for this. 
-    *   You need to compile the lit-html and LitElement modules (from the `node_modules` folder)
-        as well as your code.
-    *   You need to transform JavaScript modules into a format compatible with older browsers, such as SystemJS, or 
-        a plain JavaScript file that can be loaded in a `<script>` tag.
-    *   Don't bundle the Babel runtime polyfills in with your web component code. They should be bundled separately.
-
-*   Load the requisite polyfills before loading your web components.
-    *   Load the [Babel runtime polyfills](https://babeljs.io/docs/en/babel-polyfill) first.
-    *   Load the [web components polyfills](https://github.com/webcomponents/polyfills/tree/master/packages/webcomponentsjs). 
-    *   In almost all cases, you'll also want to load [custom-elements-es5-adapter.js](https://github.com/webcomponents/polyfills/tree/master/packages/webcomponentsjs#custom-elements-es5-adapterjs) to ensure that your ES5 version can also run on newer browsers. You can load this file either before or after the web components polyfills.
+See [Build for production](build) fpr more information.
 
 ### Next steps
 
