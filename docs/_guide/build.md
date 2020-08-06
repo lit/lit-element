@@ -277,7 +277,7 @@ The [prpl-server](https://github.com/Polymer/prpl-server) project is a Node.js w
 
 This section describes the requirements for building applications using LitElement. Use this section if you're creating your own build setup.
 
-LitElement is packaged as a set of ES modules, written in modern JavaScript (ES 2017). These are supported natively in modern browsers (Chrome, Safari, Firefox, and soon Edge, for example). LitElement also uses bare module specifiers, which are not supported by any browsers yet.
+LitElement is packaged as a set of ES modules, written in modern JavaScript (ES 2017). These are supported natively in modern browsers (Chrome, Safari, Firefox, and Edge, for example). LitElement also uses bare module specifiers, which are not supported by any browsers yet.
 
 When building an app using LitElement, your build system will need to handle the following:
 
@@ -298,7 +298,7 @@ LitElement uses bare module specifiers to import modules from the lit-html libra
 import {html} from 'lit-html';
 ```
 
-This syntax isn't supported by any browsers at present, so the build system needs to handle them: either by transforming the specifier to one that works for ES modules in the browser, or by producing a different type of module as output.
+Browsers currently only support loading modules from URLs or relative paths, not bare names referring to e.g. an npm package, so the build system needs to handle them: either by transforming the specifier to one that works for ES modules in the browser, or by producing a different type of module as output.
 
 Webpack automatically handles bare module specifiers; for Rollup, you'll need a plugin ([@rollup/plugin-node-resolve](https://github.com/rollup/plugins/tree/master/packages/node-resolve)).
 
