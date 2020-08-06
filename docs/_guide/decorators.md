@@ -84,7 +84,7 @@ To enable the plugins, you'd add code like this to your Babel configuration:
 ```js
 plugins = [
   '@babel/plugin-proposal-class-properties',
-  ['@babel/proposal-decorators', {decoratorsBeforeExport: true}],
+  ['@babel/plugin-proposal-decorators', {decoratorsBeforeExport: true}],
 ];
 ```
 
