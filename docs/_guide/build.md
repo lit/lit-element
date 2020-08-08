@@ -25,7 +25,7 @@ There are many ways to set up Rollup to bundle your project. This section descri
 
 If you only need to support evergreen browsers, you can use the modern build by itself. If you want to support the widest range of browsers with a single build, you can use the backwards-compatible build.
 
-The last part of this section discusses ways to use the two builds together to provide the faster, smaller modern build to browsers that support it while alsostill supporting older browsers.
+The last part of this section discusses ways to use the two builds together to provide the faster, smaller modern build to browsers that support it while also supporting older browsers.
 
 The example configurations here use the Shop demo app as an example. You can find all of the configurations described here in a branch of the Shop repo:
 
