@@ -17,6 +17,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- ### Removed -->
 <!-- ### Fixed -->
 
+### Fixed
+* Within a custom property setter, it is now possible to set another property that reflects to an attribute as long as it is done after calling `requestUpdate` ([#965](https://github.com/Polymer/lit-element/issues/965)).
+
 ### Added
 * Adds a `cache: boolean` argument to the `@query` decorator as a performance optimization for properties whose queried element is not expected to change. If cache is set to true, element DOM is queried when the property is first accessed, and the value is cached so it can be immediately returned on all subsequent property accesses. ([#1013](https://github.com/Polymer/lit-element/issues/1013))
 
