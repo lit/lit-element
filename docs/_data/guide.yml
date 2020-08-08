@@ -39,6 +39,9 @@ toc:
   use: 
     title: Use a component
     url: /guide/use
+  build: 
+    title: Build for production
+    url: /guide/build
   resources:
     title: Resources
     header: true
