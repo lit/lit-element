@@ -17,6 +17,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- ### Removed -->
 <!-- ### Fixed -->
 
+## [2.4.0] - 2020-08-12
+
 ### Added
 * Adds a `cache: boolean` argument to the `@query` decorator as a performance optimization for properties whose queried element is not expected to change. If cache is set to true, element DOM is queried when the property is first accessed, and the value is cached so it can be immediately returned on all subsequent property accesses. ([#1013](https://github.com/Polymer/lit-element/issues/1013))
 
@@ -27,6 +29,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 * The protected `performUpdate()` method may now be called to syncronously "flush" a pending update, for example via a property setter. Note, performing a synchronous update only updates the element and not any potentially pending descendants in the element's local DOM ([#959](https://github.com/Polymer/lit-element/issues/959)).
 
 * Constructible stylesheets may now be provided directly as styles, in addition to using the `css` tagged template function ([#853](https://github.com/Polymer/lit-element/issues/853)).
+
+### Fixed
+* queryAssignedNodes doesn't correctly locate default slot ([#1002](https://github.com/Polymer/lit-element/issues/1002))
 
 ## [2.3.1] - 2020-03-19
 
