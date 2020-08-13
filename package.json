@@ -22,7 +22,7 @@
     "/ts3.4/"
   ],
   "scripts": {
-    "build": "tsc && downlevel-dts . ts3.4 && cp tsconfig.json ./ts3.4/",
+    "build": "tsc && rm -rf ./ts3.4 && downlevel-dts . ts3.4 && cp tsconfig.json ./ts3.4/",
     "build:watch": "tsc --watch",
     "build:babel-test": "babel src/test/lib/decorators_test.ts --out-file test/lib/decorators-babel_test.js",
     "gen-docs": "typedoc src/lit-element.ts src/lib/updating-element.ts",
@@ -49,7 +49,7 @@
     "@webcomponents/webcomponentsjs": "^2.2.3",
     "chai": "^4.0.2",
     "clang-format": "^1.2.4",
-    "downlevel-dts": "^0.4.0",
+    "downlevel-dts": "^0.6.0",
     "lit-element-benchmarks": "^0.1.0",
     "mocha": "^6.2.2",
     "np": "^5.2.1",
