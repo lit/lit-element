@@ -17,7 +17,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- ### Removed -->
 <!-- ### Fixed -->
 
-## [2.4.0] - 2020-08-14
+## [2.4.0] - 2020-08-19
 
 ### Changed
 * Set type in package.json to "module" ([#974](https://github.com/Polymer/lit-element/pull/974))
