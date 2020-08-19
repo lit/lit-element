@@ -429,14 +429,20 @@ For a webpack build:
     },
     ```
 
-## Compilers {#compilers}
+## TypeScript {#typescript}
 
-Many people include compilers, such as Babel or TypeScript, in their build process. There are several reasons to use a compiler:
+The TypeScript language extends JavaScript by adding types and type checking. The TypeScript compiler, `tsc`, compiles TypeScript into standard JavaScript.
 
-*   To use new language features that haven't shipped in browsers, such as class fields.
-*   To support older browsers, such as Internet Explorer 11.
-*   To use TypeScript.
+While it's possible to run the TypeScript compiler as part of the bundling process, we recommend running it separately, to generate an intermediate JavaScript version of your project. Because of issues with the TypeScript compiler's output for older browsers. **We recommend configuring TypeScript to output modern JavaScript (ES2017 target and ES modules).** 
 
-You can run Babel as part of the bundling process, using [`@rollup/plugin-babel`](https://github.com/rollup/plugins/tree/master/packages/babel). See [Universal build](#universal-build) for an example using this plugin.
+For example, if you have a `tsconfig.json` file, you'd include the following options to output modern JavaScript:
 
-While it's possible to run the TypeScript compiler as part of the bundling process as well, we recommend running TypeScript separately, to generate an intermediate JavaScript version of your project, and have Rollup take the intermediate version as input. 
+```json
+{
+  "compilerOptions": {
+    "target": "es2017",
+    "module": "es2015",
+    ...
+```
+
+Use this intermediate version as input to your build tools. To support older browsers, use Babel to recompile the intermediate, modern JavaScript version into backward-compatible JavaScript, as described in [Transpiling to ES5](#transpiling-to-es5) and [Transforming modules](#transforming-modules).
