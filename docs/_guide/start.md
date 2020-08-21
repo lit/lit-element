@@ -174,7 +174,7 @@ A couple of things to look for in the code:
 
 You'll probably want to change the component name from "my-element" to something more appropriate. This is easiest to do using an IDE or other text editor that lets you do a global search and replace through an entire project.
 
-1.  If you're using the TypeScript version, remove generated files:
+1.  **If you're using the TypeScript version**, remove generated files:
 
     ```bash
     npm run clean
@@ -194,10 +194,15 @@ You'll probably want to change the component name from "my-element" to something
     * `src/my-element.ts`
     * `src/test/my-element_test.ts`
 
-1.  Test and make sure your component is still working:
+1.  **If you're using the TypeScript version**, rebuild the project:
 
     ```bash
     npm run build
+    ```
+
+1.  Test and make sure your component is still working:
+
+    ```bash
     npm run serve
     ```
 
@@ -315,7 +320,7 @@ If you already have a dev server that works with your build system, it should wo
 
 To support older browsers that don't support ES6 and the web components specifications, you'll need to take a few extra steps to produce code that will run on the older browsers. 
 
-See [Build for production](build) fpr more information.
+See [Build for production](build) for more information.
 
 ### Next steps
 
