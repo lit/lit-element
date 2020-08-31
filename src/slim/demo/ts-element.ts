@@ -1,6 +1,7 @@
 import {UpdatingElement, PropertyValues} from '../lib/updating-element.js';
 import {customElement} from '../lib/decorators/custom-element.js';
 import {property} from '../lib/decorators/property.js';
+import {properties} from '../lib/decorators/properties.js';
 
 import {LitElement, html} from '../lit-element.js';
 
@@ -37,4 +38,7 @@ export class TSLitElement extends LitElement {
     `;
   }
 }
-property({reflect: true})(TSLitElement.prototype, 'foo');
+
+properties(TSLitElement as unknown as UpdatingElement, {
+  foo: {reflect: true}
+});
