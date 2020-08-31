@@ -8,96 +8,168 @@ slug: events
 * ToC
 {:toc}
 
-## Overview
 
-### Where to add your event listeners
+## Where to add your event listeners
 
 You need to add event listeners in a method that is guaranteed to fire before the event occurs. However, for optimal loading performance, you should add your event listener as late as possible.  
 
-You can add event listeners:
+The most common ways to add an event listener:
 
-*   **Via your component's template.**
+* Declaratively, in  your component's template
+* In the component constructor, for listeners added on the component itself.
+* In the `connectedCallback`, for listeners that need to reference DOM outside the component (for example, `Window` or `Document`).
+* After first paint, if you're adding a lot of listeners and first paint performance is critical.
 
-    You can use lit-html `@event` bindings in your template inside the `render` function to add event listeners to your component. 
 
-    **Example**
+### Add declarative event listeners
 
-    ```js
-    render() {
-      return html`<button @click="${this.handleClick}">`;
-    }
-    ```
+You can use lit-html `@event` bindings in your template to add event listeners to your component. 
 
-*   **In the component constructor.**
+**Example**
 
-    If you need to listen for an event that might occur before your component has been added to DOM, you might need to add the event listener in your component's constructor. 
+```js
+render() {
+  return html`<button @click="${this._handleClick}">`;
+}
+```
 
-    **Example**
+Declarative event listeners are added when the template is rendered. This is usually the best way to add listeners to elements in your templated DOM.
 
-    ```js
-    constructor() {
-      super();
-      this.addEventListener('DOMContentLoaded', this.handleLoaded);
-    }
-    ```
+### Add event listeners in the constructor
 
-*   **In `firstUpdated`**.
+If you need to listen for an event that might occur before your component has been added to DOM, you might need to add the event listener in your component's constructor. 
 
-    `firstUpdated` is a LitElement lifecycle callback. `firstUpdated` fires after the first time your component has been updated and rendered. See [firstUpdated](/guide/lifecycle#firstupdated) in the Lifecycle documentation for more information.
+The component constructor is a good place to add event listeners on the host element itself.
 
-    If the event you're handling can't occur before your component has been updated and rendered for the first time, it's safe and efficient to add a listener for it in `firstUpdated`. 
+**Example**
 
-    **Example**
+```js
+constructor() {
+  super();
+  this.addEventListener('focus', this._handleFocus);
+}
+```
 
-    ```js
-    firstUpdated(changedProperties) {
-      this.addEventListener('click', this.handleClick);
-    }
-    ```
+### Add event listners in `connectedCallback`
 
-*   **In `connectedCallback`**. 
+`connectedCallback` is a lifecycle callback in the custom elements API. `connectedCallback` fires each time a custom element is appended into a document-connected element. See [the MDN documentation on using custom elements lifecycle callbacks](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements#Using_the_lifecycle_callbacks) for more information.
 
-    `connectedCallback` is a lifecycle callback in the custom elements API. `connectedCallback` fires each time a custom element is appended into a document-connected element. See [the MDN documentation on using custom elements lifecycle callbacks](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements#Using_the_lifecycle_callbacks) for more information.
+If your component adds an event listener to anything except itself or its children–for example, to `Window`, `Document`, or some element in the main DOM–you should add the listener in `connectedCallback` and remove it in `disconnectedCallback`.
 
-    If your component adds an event listener to anything except itself or its children–for example, to `Window`, `Document`, or some element in the main DOM–you should add the listener in `connectedCallback` and remove it in `disconnectedCallback`.
+*   Removing the event listener in `disconnectedCallback` ensures that any memory allocated by your component will be cleaned up when your component is destroyed or disconnected from the page. 
+
+*   Adding the event listener in `connectedCallback` (instead of, for example, the constructor or `firstUpdated`) ensures that your component will re-create its event listener if it is disconnected and subsequently reconnected to DOM.
+
+**Example**
+
+```js
+connectedCallback() {
+  super.connectedCallback();
+  window.addEventListener('resize', this._handleResize);
+}
+disconnectedCallback() {
+  window.removeEventListener('resize', this._handleResize);
+  super.disconnectedCallback();
+}
+```
+
+### Add event listeners after first paint
+
+Sometimes, you may want to defer adding an event listener until after first paint—for example, if you're adding a lot of listeners and first paint performance is critical.
+
+LitElement doesn't have a specific lifecycle callback called after first paint, but you can use this pattern with the `firstUpdated` lifecycle callback:
+
+```js
+async firstUpdated() {
+  // Give the browser a chance to paint
+  await new Promise((r) => setTimeout(r, 0));
+  this.addEventListener('click', this._handleClick);
+}
+```
+
+`firstUpdated` fires after the first time your component has been updated and called its `render` method, but **before the browser has had a chance to paint**. The `Promise`/`setTimeout` line yields to the browser
     
-    *   Removing the event listener in `disconnectedCallback` ensures that any memory allocated by your component will be cleaned up when your component is destroyed or disconnected from the page. 
+See [firstUpdated](/guide/lifecycle#firstupdated) in the Lifecycle documentation for more information.
 
-    *   Adding the event listener in `connectedCallback` (instead of, for example, the constructor or `firstRendered`) ensures that your component will re-create its event listener if it is disconnected and subsequently reconnected to DOM.
-    
-    **Example**
-    
-    ```js
-    connectedCallback() {
-      super.connectedCallback();
-      document.addEventListener('readystatechange', this.handleChange);
-    }
-    disconnectedCallback() {
-      document.removeEventListener('readystatechange', this.handleChange);
-      super.disconnectedCallback();
-    }
-    ```
 
-### Using `this` in event handlers
+## Using `this` in event listeners
 
-The default JavaScript context object (`this`) inside an event handler belonging to a LitElement-based component is the component itself. 
+Event listeners added using the declarative (`@event`) syntax in the template are automatically _bound_ to the component.
 
-Therefore, you can use `this` to refer to your element instance inside any event handler:
+Therefore, you can use `this` to refer to your component instance inside any declarative event handler:
 
 ```js
 class MyElement extends LitElement {
   render() {
-    return html`<button @click="${this.handleClick}">click</button>`;
+    return html`<button @click="${this._handleClick}">click</button>`;
   }
-  handleClick(e) {
+  _handleClick(e) {
     console.log(this.prop);
+  }
+}
+```
+
+When adding listeners imperatively with `addEventListener`, you'll need to bind the event listener yourself if you need a reference to the component instance. For example:
+
+```js
+this.boundResizeHandler = this.handleResize.bind(this);
+window.addEventListener('resize', this.boundResizeHandler);
+```
+
+Or use an arrow function as a class field:
+
+```ts
+export class MyElement extends LitElement {
+  private _handleResize = () => { /* handle the event */ }
+
+  constructor() {
+    window.addEventListener('resize', this._handleResize);
   }
 }
 ```
 
 See the [documentation for `this` on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/this) for more information.
 
-### Use cases
+## Setting event listener options
+
+When you add an event listener imperatively, using `addEventListener`, you can specify various event listener options. For example, to use a passive event listener in plain JavaScript you'd do something like this:
+
+```js
+someElement.addEventListener('touchstart', this._handleTouchStart, {passive: true});
+```
+
+The `eventOptions` decorator allows you to add event listener options to a listener that's added declaratively in your template.
+
+```js
+import {LitElement, html, eventOptions} from 'lit-element';
+...
+
+@eventOptions({passive: true})
+private _handleTouchStart() { ... }
+
+render() { 
+  return html`
+    <div @touchstart=${this._handleTouchStart}><div>
+  `;
+}
+```
+
+<div class="alert alert-info">
+
+**Using decorators.** Decorators are a proposed JavaScript feature, so you’ll need to use a compiler like Babel or TypeScript to use decorators. See [Using decorators](decorators) for details.
+
+</div>
+
+The object passed to `eventOptions` is used as the `options` parameter to `addEventListener`.
+
+
+
+More information:
+
+*   [EventTarget.addEventListener()](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener) on MDN for a description of the event listener options.
+
+
+## Use cases
 
 * [Fire a custom event from a LitElement-based component](#fire-custom-event).
 * [Handle a custom event fired by a LitElement-based component](#handle-custom-event).

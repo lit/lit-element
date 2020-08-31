@@ -101,11 +101,14 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>The main LitElement module, which defines the <a href="../classes/_lit_element_.litelement.html"><code>LitElement</code></a> base class and related APIs.</p>
+						<p>The main LitElement module, which defines the <a href="../classes/_lit_element_.litelement.html"><code>LitElement</code></a> base class and
+						related APIs.</p>
 					</div>
-					<p> LitElement components can define a template and a set of observed properties.
-					Changing an observed property triggers a re-render of the element.</p>
-					<p> Import <code>LitElement</code> and <a href="_lit_element_.html#html"><code>html</code></a> from this module to create a component:</p>
+					<p> LitElement components can define a template and a set of observed
+						properties. Changing an observed property triggers a re-render of the
+					element.</p>
+					<p> Import <a href="../classes/_lit_element_.litelement.html"><code>LitElement</code></a> and <a href="_lit_element_.html#html"><code>html</code></a> from this module to create a
+					component:</p>
 					<pre><code class="language-js"><span class="hljs-keyword">import</span> {LitElement, html} <span class="hljs-keyword">from</span> <span class="hljs-string">'lit-element'</span>;
 
 <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyElement</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">LitElement</span> </span>{
@@ -210,7 +213,7 @@ customElements.define(<span class="hljs-string">'my-element'</span>, MyElement);
 					<div class="tsd-signature tsd-kind-icon">CSSResult<wbr>OrNative<span class="tsd-signature-symbol">:</span> <a href="../classes/_lit_element_.cssresult.html" class="tsd-signature-type">CSSResult</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">CSSStyleSheet</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lit-element.ts#L86">src/lit-element.ts:86</a></li>
+							<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/a21abcb/src/lit-element.ts#L79">src/lit-element.ts:79</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -220,7 +223,7 @@ customElements.define(<span class="hljs-string">'my-element'</span>, MyElement);
 					<div class="tsd-signature tsd-kind-icon">Constructor&lt;T&gt;<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>constructor<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> }</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lib/decorators.ts#L26">src/lib/decorators.ts:26</a></li>
+							<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/a21abcb/src/lib/decorators.ts#L26">src/lib/decorators.ts:26</a></li>
 						</ul>
 					</aside>
 					<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -241,7 +244,7 @@ customElements.define(<span class="hljs-string">'my-element'</span>, MyElement);
 									<li class="tsd-description">
 										<aside class="tsd-sources">
 											<ul>
-												<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lib/decorators.ts#L26">src/lib/decorators.ts:26</a></li>
+												<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/a21abcb/src/lib/decorators.ts#L26">src/lib/decorators.ts:26</a></li>
 											</ul>
 										</aside>
 										<h4 class="tsd-parameters-title">Parameters</h4>
@@ -263,7 +266,7 @@ customElements.define(<span class="hljs-string">'my-element'</span>, MyElement);
 					<div class="tsd-signature tsd-kind-icon">Property<wbr>Values&lt;T&gt;<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">keyof </span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol"> extends </span><span class="tsd-signature-type">PropertyKey</span><span class="tsd-signature-symbol"> ? </span><span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">keyof </span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> : </span><span class="tsd-signature-type">never</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lib/updating-element.ts#L141">src/lib/updating-element.ts:141</a></li>
+							<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/a21abcb/src/lib/updating-element.ts#L142">src/lib/updating-element.ts:142</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -328,7 +331,7 @@ customElements.define(<span class="hljs-string">'my-element'</span>, MyElement);
 					<div class="tsd-signature tsd-kind-icon">supports<wbr>Adopting<wbr>Style<wbr>Sheets<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> = (window.ShadowRoot) &amp;&amp;(window.ShadyCSS &#x3D;&#x3D;&#x3D; undefined || window.ShadyCSS.nativeShadow) &amp;&amp;(&#x27;adoptedStyleSheets&#x27; in Document.prototype) &amp;&amp;(&#x27;replace&#x27; in CSSStyleSheet.prototype)</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lib/css-tag.ts#L15">src/lib/css-tag.ts:15</a></li>
+							<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/a21abcb/src/lib/css-tag.ts#L15">src/lib/css-tag.ts:15</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -390,7 +393,7 @@ customElements.define(<span class="hljs-string">'my-element'</span>, MyElement);
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lib/decorators.ts#L88">src/lib/decorators.ts:88</a></li>
+									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/a21abcb/src/lib/decorators.ts#L88">src/lib/decorators.ts:88</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -429,7 +432,7 @@ customElements.define(<span class="hljs-string">'my-element'</span>, MyElement);
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lib/decorators.ts#L392">src/lib/decorators.ts:392</a></li>
+									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/a21abcb/src/lib/decorators.ts#L406">src/lib/decorators.ts:406</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -484,7 +487,7 @@ customElements.define(<span class="hljs-string">'my-element'</span>, MyElement);
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lib/decorators.ts#L187">src/lib/decorators.ts:187</a></li>
+									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/a21abcb/src/lib/decorators.ts#L187">src/lib/decorators.ts:187</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -516,7 +519,7 @@ customElements.define(<span class="hljs-string">'my-element'</span>, MyElement);
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lib/decorators.ts#L161">src/lib/decorators.ts:161</a></li>
+									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/a21abcb/src/lib/decorators.ts#L161">src/lib/decorators.ts:161</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -552,13 +555,13 @@ customElements.define(<span class="hljs-string">'my-element'</span>, MyElement);
 					<a name="query" class="tsd-anchor"></a>
 					<h3>query</h3>
 					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
-						<li class="tsd-signature tsd-kind-icon">query<span class="tsd-signature-symbol">(</span>selector<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">(Anonymous function)</span></li>
+						<li class="tsd-signature tsd-kind-icon">query<span class="tsd-signature-symbol">(</span>selector<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, cache<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">false</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">true</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">(Anonymous function)</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lib/decorators.ts#L216">src/lib/decorators.ts:216</a></li>
+									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/a21abcb/src/lib/decorators.ts#L218">src/lib/decorators.ts:218</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -588,6 +591,13 @@ customElements.define(<span class="hljs-string">'my-element'</span>, MyElement);
 									<h5>selector: <span class="tsd-signature-type">string</span></h5>
 									<div class="tsd-comment tsd-typography">
 										<p>A DOMString containing one or more selectors to match.</p>
+									</div>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> cache: <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">false</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">true</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>An optional boolean which when true performs the DOM query only
+										once and caches the result.</p>
 										<p>See: <a href="https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelector">https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelector</a></p>
 									</div>
 								</li>
@@ -606,7 +616,7 @@ customElements.define(<span class="hljs-string">'my-element'</span>, MyElement);
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lib/decorators.ts#L314">src/lib/decorators.ts:314</a></li>
+									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/a21abcb/src/lib/decorators.ts#L328">src/lib/decorators.ts:328</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -649,13 +659,13 @@ customElements.define(<span class="hljs-string">'my-element'</span>, MyElement);
 					<a name="queryassignednodes" class="tsd-anchor"></a>
 					<h3>query<wbr>Assigned<wbr>Nodes</h3>
 					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
-						<li class="tsd-signature tsd-kind-icon">query<wbr>Assigned<wbr>Nodes<span class="tsd-signature-symbol">(</span>slotName<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span>, flatten<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">(Anonymous function)</span></li>
+						<li class="tsd-signature tsd-kind-icon">query<wbr>Assigned<wbr>Nodes<span class="tsd-signature-symbol">(</span>slotName<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span>, flatten<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span>, selector<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">(Anonymous function)</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lib/decorators.ts#L413">src/lib/decorators.ts:413</a></li>
+									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/a21abcb/src/lib/decorators.ts#L454">src/lib/decorators.ts:454</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -669,9 +679,38 @@ customElements.define(<span class="hljs-string">'my-element'</span>, MyElement);
 							<ul class="tsd-parameters">
 								<li>
 									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> slotName: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> = &quot;&quot;</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>A string name of the slot.</p>
+									</div>
 								</li>
 								<li>
 									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> flatten: <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> = false</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>A boolean which when true flattens the assigned nodes,
+											meaning any assigned nodes that are slot elements are replaced with their
+										assigned nodes.</p>
+									</div>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> selector: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> = &quot;&quot;</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>A string which filters the results to elements that match
+										the given css selector.</p>
+										<ul>
+											<li><p>@example</p>
+												<pre><code class="language-ts"><span class="hljs-keyword">class</span> MyElement {
+<span class="hljs-meta">@queryAssignedNodes</span>(<span class="hljs-string">'list'</span>, <span class="hljs-literal">true</span>, <span class="hljs-string">'.item'</span>)
+listItems;
+
+render() {
+  <span class="hljs-keyword">return</span> html`<span class="xml">
+    <span class="hljs-tag">&lt;<span class="hljs-name">slot</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"list"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">slot</span>&gt;</span>
+  `</span>;
+}
+}</code></pre>
+											</li>
+										</ul>
+									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">(Anonymous function)</span></h4>
@@ -688,7 +727,7 @@ customElements.define(<span class="hljs-string">'my-element'</span>, MyElement);
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lib/decorators.ts#L271">src/lib/decorators.ts:271</a></li>
+									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/a21abcb/src/lib/decorators.ts#L285">src/lib/decorators.ts:285</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -748,15 +787,15 @@ customElements.define(<span class="hljs-string">'my-element'</span>, MyElement);
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lib/css-tag.ts#L87">src/lib/css-tag.ts:87</a></li>
+									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/a21abcb/src/lib/css-tag.ts#L87">src/lib/css-tag.ts:87</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Template tag which which can be used with LitElement&#39;s [[LitElement.styles | <code>styles</code>]] property to
-										set element styles. For security reasons, only literal string values may be
-										used. To incorporate non-literal values <a href="_lit_element_.html#unsafecss"><code>unsafeCSS</code></a> may be used inside a
-									template string part.</p>
+									<p>Template tag which which can be used with LitElement&#39;s [[LitElement.styles |
+										<code>styles</code>]] property to set element styles. For security reasons, only literal
+										string values may be used. To incorporate non-literal values <a href="_lit_element_.html#unsafecss"><code>unsafeCSS</code></a>
+									may be used inside a template string part.</p>
 								</div>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -782,7 +821,7 @@ customElements.define(<span class="hljs-string">'my-element'</span>, MyElement);
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lib/updating-element.ts#L182">src/lib/updating-element.ts:182</a></li>
+									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/a21abcb/src/lib/updating-element.ts#L183">src/lib/updating-element.ts:183</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -814,7 +853,7 @@ customElements.define(<span class="hljs-string">'my-element'</span>, MyElement);
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lib/css-tag.ts#L64">src/lib/css-tag.ts:64</a></li>
+									<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/a21abcb/src/lib/css-tag.ts#L64">src/lib/css-tag.ts:64</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -844,7 +883,7 @@ customElements.define(<span class="hljs-string">'my-element'</span>, MyElement);
 					<div class="tsd-signature tsd-kind-icon">default<wbr>Converter<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lib/updating-element.ts#L144">src/lib/updating-element.ts:144</a></li>
+							<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/a21abcb/src/lib/updating-element.ts#L145">src/lib/updating-element.ts:145</a></li>
 						</ul>
 					</aside>
 					<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-object-literal">
@@ -857,7 +896,7 @@ customElements.define(<span class="hljs-string">'my-element'</span>, MyElement);
 							<li class="tsd-description">
 								<aside class="tsd-sources">
 									<ul>
-										<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lib/updating-element.ts#L159">src/lib/updating-element.ts:159</a></li>
+										<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/a21abcb/src/lib/updating-element.ts#L160">src/lib/updating-element.ts:160</a></li>
 									</ul>
 								</aside>
 								<h4 class="tsd-parameters-title">Parameters</h4>
@@ -883,7 +922,7 @@ customElements.define(<span class="hljs-string">'my-element'</span>, MyElement);
 							<li class="tsd-description">
 								<aside class="tsd-sources">
 									<ul>
-										<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/557de8c/src/lib/updating-element.ts#L146">src/lib/updating-element.ts:146</a></li>
+										<li>Defined in <a href="https://github.com/Polymer/lit-element/blob/a21abcb/src/lib/updating-element.ts#L147">src/lib/updating-element.ts:147</a></li>
 									</ul>
 								</aside>
 								<h4 class="tsd-parameters-title">Parameters</h4>

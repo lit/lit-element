@@ -8,19 +8,19 @@ slug: templates
 * ToC
 {:toc}
 
-Add a template to your component to define internal DOM to implement your component. 
+Add a template to your component to define internal DOM to implement your component.
 
 To encapsulate the templated DOM LitElement uses
-[shadow DOM](https://developers.google.com/web/fundamentals/web-components/shadowdom). 
+[shadow DOM](https://developers.google.com/web/fundamentals/web-components/shadowdom).
 Shadow DOM provides three benefits:
 
-* DOM scoping. DOM APIs like `document.querySelector` won't find elements in the 
+* DOM scoping. DOM APIs like `document.querySelector` won't find elements in the
   component's shadow DOM, so it's harder for global scripts to accidentally break your component.
-* Style scoping. You can write encapsulated styles for your shadow DOM that don't 
+* Style scoping. You can write encapsulated styles for your shadow DOM that don't
   affect the rest of the DOM tree.
 * Composition. The component's shadow DOM (managed by the component) is separate from the component's children. You can choose how children are rendered in your templated DOM. Component users can add and remove children using standard DOM APIs without accidentally breaking anything in your shadow DOM.
 
-Where native shadow DOM isn't available, LitElement 
+Where native shadow DOM isn't available, LitElement
 uses the [Shady CSS](https://github.com/webcomponents/polyfills/tree/master/packages/shadycss) polyfill.
 
 
@@ -38,14 +38,14 @@ class MyElement extends LitElement {
 }
 ```
 
-*   Write your template in HTML inside a JavaScript [template literal](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals) by enclosing the raw HTML in back-ticks 
-    (<code>``</code>). 
+*   Write your template in HTML inside a JavaScript [template literal](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals) by enclosing the raw HTML in back-ticks
+    (<code>``</code>).
 
 
-*   Tag your template literal with the [`html`](https://lit-html.polymer-project.org/api/modules/lit_html.html#html) 
-    tag function. 
+*   Tag your template literal with the [`html`](https://lit-html.polymer-project.org/api/modules/lit_html.html#html)
+    tag function.
 
-*   The component's `render` method can return anything that lit-html can render. Typically, it 
+*   The component's `render` method can return anything that lit-html can render. Typically, it
     returns a single `TemplateResult` object (the same type returned by the `html` tag function).
 
 Example
@@ -58,7 +58,7 @@ Example
 
 LitElement uses lit-html templates; this page summarizes the features of lit-html templates,
 for more details, see [Writing templates](https://lit-html.polymer-project.org/guide/writing-templates)
-and the [Template syntax reference](https://lit-html.polymer-project.org/guide/template-reference) 
+and the [Template syntax reference](https://lit-html.polymer-project.org/guide/template-reference)
 in the lit-html documentation.
 
 ### Design a performant template
@@ -97,7 +97,7 @@ render() {
 }
 ```
 
-We can improve the template by declaring the message as a property, and binding the property into the template. Declaring a property tells your component to re-render its template when the property changes. 
+We can improve the template by declaring the message as a property, and binding the property into the template. Declaring a property tells your component to re-render its template when the property changes.
 
 
 _update-properties.js_
@@ -124,11 +124,11 @@ render() {
 
 {% include project.html folder="docs/templates/design" openFile="update-properties.js" %}
 
-The following sections discuss different types of property bindings. See [Properties](properties) for information on declaring properties. 
+The following sections discuss different types of property bindings. See [Properties](properties) for information on declaring properties.
 
 ### Use properties, loops, and conditionals in a template
 
-When defining your element's template, you can bind the element's properties to the 
+When defining your element's template, you can bind the element's properties to the
 template; the template is re-rendered whenever the properties change.
 
 #### Properties
@@ -137,8 +137,8 @@ To add a property value to a template, insert it with `${this.propName}`:
 
 ```js
 static get properties() {
-  return { 
-    myProp: {type: String} 
+  return {
+    myProp: {type: String}
   };
 }
 ...
@@ -157,6 +157,11 @@ html`<ul>
 </ul>`;
 ```
 
+<div class="alert alert-info">
+
+**repeat directive**. In most cases, `Array.map` is the most efficient way to create a repeating template. In some cases, you may want to consider lit-html's `repeat` directive. In particular, if the repeated elements are stateful, or very expensive to regenerate. For more information, see [Repeating templates with the repeat directive](https://lit-html.polymer-project.org/guide/writing-templates#repeating-templates-with-the-repeat-directive) in the lit-html docs.
+
+</div>
 #### Conditionals
 
 Render based on a Boolean condition:
@@ -249,18 +254,24 @@ _my-element.js_
 
 ### Render children with the slot element {#slots}
 
-Your component may accept children (like a `<ul>` element can have `<li>` children). 
+Your component may accept children (like a `<ul>` element can have `<li>` children).
 
 ```html
 <my-element>
   <p>A child</p>
 </my-element>
 ```
-By default, if an element has a shadow tree, its children don't render at all. 
+By default, if an element has a shadow tree, its children don't render at all.
 
-To render children, your template needs to include one or more [`<slot>` elements](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/slot), which act as placeholders for child nodes. 
+To render children, your template needs to include one or more [`<slot>` elements](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/slot), which act as placeholders for child nodes.
 
-#### Use the `slot` element
+<div class="alert alert-info">
+
+**Finding slotted children.** If your component needs information about its slotted children, see [Accessing slotted children](#accessing-slotted-children).
+
+</div>
+
+#### Use the slot element
 
 To render an element's children, create a `<slot>` for them in the element's template. For example:
 
@@ -371,25 +382,27 @@ _index.html_
 
 ## Compose a template from other templates
 
-You can compose LitElement templates from other LitElement templates. In the following example, we compose a template for an element called `<my-page>` from smaller templates for the standard HTML elements `<header>`, `<article>`, and `<footer>`:
+You can compose LitElement templates from other LitElement templates. In the following example, we compose a template for an element called `<my-page>` from smaller templates for the page's header, footer, and main content:
 
 ```js
+  function headerTemplate(title) {
+    return html`<header>${title}</header>`;
+  }
+  function articleTemplate(text) {
+    return html`<article>${text}</article>`;
+  }
+  function footerTemplate() {
+    return html`<footer>Your footer here.</footer>`;
+  }
+
 class MyPage extends LitElement {
+  ...
   render() {
     return html`
-      ${this.headerTemplate}
-      ${this.articleTemplate}
-      ${this.footerTemplate}
+      ${headerTemplate(this.article.title)}
+      ${articleTemplate(this.article.text)}
+      ${footerTemplate()}
     `;
-  }
-  get headerTemplate() {
-    return html`<header>header</header>`;
-  }
-  get articleTemplate() {
-    return html`<article>article</article>`;
-  }
-  get footerTemplate() {
-    return html`<footer>footer</footer>`;
   }
 }
 ```
@@ -450,7 +463,7 @@ class LightDom extends LitElement {
   }
   createRenderRoot() {
   /**
-   * Render template without shadow DOM. Note that shadow DOM features like 
+   * Render template without shadow DOM. Note that shadow DOM features like
    * encapsulated CSS and slots are unavailable.
    */
     return this;
@@ -542,7 +555,7 @@ render() { return html`<slot name="thing"></slot>`; }
 ## Using other lit-html features
 
 Since LitElement uses the lit-html `html` tag function to define templates you can take advantage
-of the entire lit-html feature set for writing your templates. This includes lit-html _directives_, 
+of the entire lit-html feature set for writing your templates. This includes lit-html _directives_,
 special functions that customize the way lit-html renders a binding.
 
 To import features directly from lit-html, your project should add lit-html as a direct dependency.
@@ -569,6 +582,168 @@ html`${until(content, html`<span>Loading...</span>`)}`
 
 For a list of directives supplied with lit-html, see [Built-in directives](https://lit-html.polymer-project.org/guide/template-reference#built-in-directives) in the Template syntax reference.
 
+## Accessing nodes in the shadow DOM
+The `render()` method result is usually rendered into shadow DOM, so the nodes are not direct children of the component. Use `this.shadowRoot.querySelector()` or `this.shadowRoot.querySelectorAll()` to find nodes in the
+shadow DOM.
+
+You can query the templated DOM after its initial render (for example, in `firstUpdated`), or use a getter pattern, like this:
+
+```js
+get _closeButton() {
+  return this.shadowRoot.querySelector('#close-button');
+}
+```
+
+LitElement supplies a set of decorators that provide a shorthand way of defining getters like this.
+
+More information:
+
+*   [Element.querySelector()](https://developer.mozilla.org/en-US/docs/Web/API/Element/querySelector) on MDN.
+*   [Element.querySelectorAll()](https://developer.mozilla.org/en-US/docs/Web/API/Element/querySelectorAll) on MDN.
+
+### @query, @queryAll, and @queryAsync decorators
+
+The `@query`, `@queryAll`, and `@queryAsync` decorators all provide a convenient way to access nodes in the component's shadow root.
+
+<div class="alert alert-info">
+
+**Using decorators.** Decorators are a proposed JavaScript feature, so you’ll need to use a compiler like Babel or TypeScript to use decorators. See [Using decorators](decorators) for details.
+
+</div>
+
+The `@query` decorator modifies a class property, turning it into a getter that returns a node from the render root. The optional second argument is a cache flag which when true performs the DOM query only once and caches the result. This can be used as a performance optimization in cases when the node being queried is not expectd to change.
+
+
+```js
+import {LitElement, html} from 'lit-element';
+import {query} from 'lit-element/lib/decorators.js';
+
+class MyElement extends LitElement {
+  @query('#first')
+  _first;
+
+  render() {
+    return html`
+      <div id="first"></div>
+      <div id="second"></div>
+    `;
+  }
+}
+```
+
+This decorator is equivalent to:
+
+```js
+get first() {
+  return this.renderRoot.querySelector('#first');
+}
+```
+
+<div class="alert alert-info">
+
+**shadowRoot and renderRoot**. The [`renderRoot`](/api/classes/_lit_element_.litelement.html#renderroot) property identifies the container that the template is rendered into. By default, this is the component's `shadowRoot`. The decorators use `renderRoot`, so they should work correctly even if you override `createRenderRoot` as described in [Specify the render root](#renderroot)
+
+</div>
+
+The `@queryAll` decorator is identical to `query` except that it returns all matching nodes, instead of a single node. It's the equivalent of calling `querySelectorAll`.
+
+
+```js
+import {LitElement, html} from 'lit-element';
+import {queryAll} from 'lit-element/lib/decorators.js';
+
+class MyElement extends LitElement {
+  @queryAll('div')
+  _divs;
+
+  render() {
+    return html`
+      <div id="first"></div>
+      <div id="second"></div>
+    `;
+  }
+}
+```
+
+Here, `divs` would return both `<div>` elements in the template. For TypeScript, the typing of a `@queryAll` property is `NodeListOf<HTMLElement>`. If you know exactly what kind of nodes you'll retrieve, the typing can be more specific:
+
+```js
+@queryAll('button')
+_buttons!: NodeListOf<HTMLButtonElement>
+```
+
+The exclamation point (`!`) after `buttons` is TypeScript's [non-null assertion operator](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-0.html#non-null-assertion-operator). It tells the compiler to treat `buttons` as always being defined, never `null` or `undefined`.
+
+Finally, `@queryAsync` works like `@query`, except that instead of returning a node directly, it returns a `Promise` that resolves to that node. Code can use this instead of waiting for the `updateComplete` promise.
+
+This is useful, for example, if the node returned by `@queryAsync` can change as a result of another property change.
+
+## Accessing slotted children
+
+To access children assigned to slots in your shadow root, you can use the standard `slot.assignedNodes` method and the `slotchange` event.
+
+For example, you can create a getter to access assigned nodes for a particular slot:
+
+```js
+get _slottedChildren() {
+  const slot = this.shadowRoot.querySelector('slot');
+  const childNodes = slot.assignedNodes({flatten: true});
+  return Array.prototype.filter.call(childNodes, (node) => node.nodeType == Node.ELEMENT_NODE);
+}
+```
+
+You can also use the `slotchange` event to take action when the assigned nodes change. The following example extracts the text content of all of the slotted children.
+
+```js
+handleSlotchange(e) {
+  const childNodes = e.target.assignedNodes({flatten: true});
+  // ... do something with childNodes ...
+  this.allText = Array.prototype.map.call(childNodes, (node) => {
+    return node.textContent ? node.textContent : ''
+  }).join('');
+}
+
+render() {
+  return html`<slot @slotchange=${this.handleSlotchange}></slot>`;
+}
+```
+
+More information:
+
+*   [HTMLSlotElement](https://developer.mozilla.org/en-US/docs/Web/API/HTMLSlotElement) on MDN.
+
+
+### @queryAssignedNodes decorator
+
+The `@queryAssignedNodes` decorator converts a class property into a getter that returns all of the assigned nodes for a given slot in the component's shadow tree. The optional second boolean argument when true flattens the assigned nodes, meaning any assigned nodes that are slot elements are replaced with their assigned nodes. The optional third argument is a css selector which filters the results to matching elements.
+
+<div class="alert alert-info">
+
+**Using decorators.** Decorators are a proposed JavaScript feature, so you’ll need to use a compiler like Babel or TypeScript to use decorators. See [Using decorators](decorators) for details.
+
+</div>
+
+```js
+// First argument is the slot name
+// Second argument is `true` to flatten the assigned nodes.
+@queryAssignedNodes('header', true)
+_headerNodes;
+
+// If the first argument is absent or an empty string, list nodes for the default slot.
+@queryAssignedNodes()
+_defaultSlotNodes;
+```
+
+The first example above is equivalent to the following code:
+
+```js
+get headerNodes() {
+  const slot = this.shadowRoot.querySelector('slot[name=header]');
+  return slot.assignedNodes({flatten: true});
+}
+```
+
+For TypeScript, the typing of a `queryAssignedNodes` property is `NodeListOf<HTMLElement>`.
 
 ## Resources
 

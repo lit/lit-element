@@ -86,7 +86,7 @@ suite('decorators', () => {
   suite('@customElement', () => {
     test('defines an element', () => {
       const tagName = generateElementName();
-      @customElement(tagName as keyof HTMLElementTagNameMap)
+      @customElement(tagName)
       class C0 extends HTMLElement {
       }
       const DefinedC = customElements.get(tagName);
@@ -324,16 +324,19 @@ suite('decorators', () => {
   });
 
   suite('@query', () => {
-    @customElement(generateElementName() as keyof HTMLElementTagNameMap)
+    @customElement(generateElementName())
     class C extends LitElement {
-      @query('#blah') blah?: HTMLDivElement;
+      @query('#blah') div?: HTMLDivElement;
 
-      @query('span') nope?: HTMLSpanElement;
+      @query('span', true) span?: HTMLSpanElement;
+
+      @property() condition = false;
 
       render() {
         return html`
           <div>Not this one</div>
           <div id="blah">This one</div>
+          ${this.condition ? html`<span>Cached</span>` : ``}
         `;
       }
     }
@@ -342,7 +345,7 @@ suite('decorators', () => {
       const c = new C();
       container.appendChild(c);
       await c.updateComplete;
-      const div = c.blah;
+      const div = c.div;
       assert.instanceOf(div, HTMLDivElement);
       assert.equal(div!.innerText, 'This one');
     });
@@ -351,13 +354,25 @@ suite('decorators', () => {
       const c = new C();
       container.appendChild(c);
       await c.updateComplete;
-      const span = c.nope;
-      assert.isNull(span);
+      assert.isNull(c.span);
+    });
+
+    test('returns cached value', async () => {
+      const c = new C();
+      c.condition = true;
+      container.appendChild(c);
+      await c.updateComplete;
+      assert.equal(c.span, c.renderRoot.querySelector('span'));
+      assert.instanceOf(c.span, HTMLSpanElement);
+      c.condition = false;
+      await c.updateComplete;
+      assert.instanceOf(c.span, HTMLSpanElement);
+      assert.notEqual(c.span, c.renderRoot.querySelector('span'));
     });
   });
 
   suite('@queryAll', () => {
-    @customElement(generateElementName() as keyof HTMLElementTagNameMap)
+    @customElement(generateElementName())
     class C extends LitElement {
       @queryAll('div') divs!: NodeList;
 
@@ -393,12 +408,15 @@ suite('decorators', () => {
   });
 
   suite('@queryAssignedNodes', () => {
-    @customElement('assigned-nodes-el' as keyof HTMLElementTagNameMap)
+    @customElement('assigned-nodes-el')
     class D extends LitElement {
       @queryAssignedNodes() defaultAssigned!: Node[];
 
       // The `true` on the decorator indicates that results should be flattened.
       @queryAssignedNodes('footer', true) footerAssigned!: Node[];
+
+      @queryAssignedNodes('footer', true, '.item')
+      footerAssignedItems!: Element[];
 
       render() {
         return html`
@@ -408,16 +426,33 @@ suite('decorators', () => {
       }
     }
 
-    // Note, there are 2 elements here so that the `flatten` option of
-    // the decorator can be tested.
-    @customElement(generateElementName() as keyof HTMLElementTagNameMap)
-    class C extends LitElement {
-      @query('div') div!: HTMLDivElement;
-      @query('assigned-nodes-el') assignedNodesEl!: D;
+    @customElement('assigned-nodes-el-2')
+    class E extends LitElement {
+      @queryAssignedNodes() defaultAssigned!: Node[];
+
+      @queryAssignedNodes('header') headerAssigned!: Node[];
 
       render() {
         return html`
-          <assigned-nodes-el><div>A</div><slot slot="footer"></slot></assigned-nodes-el>
+          <slot name="header"></slot>
+          <slot></slot>
+        `;
+      }
+    }
+
+    // Note, there are 2 elements here so that the `flatten` option of
+    // the decorator can be tested.
+    @customElement(generateElementName())
+    class C extends LitElement {
+      @query('#div1') div!: HTMLDivElement;
+      @query('#div2') div2!: HTMLDivElement;
+      @query('assigned-nodes-el') assignedNodesEl!: D;
+      @query('assigned-nodes-el-2') assignedNodesEl2!: E;
+
+      render() {
+        return html`
+          <assigned-nodes-el><div id="div1">A</div><slot slot="footer"></slot></assigned-nodes-el>
+          <assigned-nodes-el-2><div id="div2">B</div></assigned-nodes-el-2>
         `;
       }
     }
@@ -439,6 +474,16 @@ suite('decorators', () => {
       assert.deepEqual(c.assignedNodesEl.defaultAssigned, [c.div]);
     });
 
+    test(
+        'returns assignedNodes for unnamed slot that is not first slot',
+        async () => {
+          const c = new C();
+          container.appendChild(c);
+          await c.updateComplete;
+          await c.assignedNodesEl.updateComplete;
+          assert.deepEqual(c.assignedNodesEl2.defaultAssigned, [c.div2]);
+        });
+
     test('returns flattened assignedNodes for slot', async () => {
       const c = new C();
       container.appendChild(c);
@@ -458,10 +503,31 @@ suite('decorators', () => {
       flush();
       assert.deepEqual(c.assignedNodesEl.footerAssigned, [child1]);
     });
+
+    test('returns assignedNodes for slot filtered by selector', async () => {
+      const c = new C();
+      container.appendChild(c);
+      await c.updateComplete;
+      await c.assignedNodesEl.updateComplete;
+      // Note, `defaultAssigned` does `flatten` so we test that the property
+      // reflects current state and state when nodes are added or removed to
+      // the light DOM of the element containing the element under test.
+      assert.deepEqual(c.assignedNodesEl.footerAssignedItems, []);
+      const child1 = document.createElement('div');
+      const child2 = document.createElement('div');
+      child2.classList.add('item');
+      c.appendChild(child1);
+      c.appendChild(child2);
+      flush();
+      assert.deepEqual(c.assignedNodesEl.footerAssignedItems, [child2]);
+      c.removeChild(child2);
+      flush();
+      assert.deepEqual(c.assignedNodesEl.footerAssignedItems, []);
+    });
   });
 
   suite('@queryAsync', () => {
-    @customElement(generateElementName() as keyof HTMLElementTagNameMap)
+    @customElement(generateElementName())
     class C extends LitElement {
       @queryAsync('#blah') blah!: Promise<HTMLDivElement>;
 
@@ -504,7 +570,7 @@ suite('decorators', () => {
       if (!supportsOptions) {
         this.skip();
       }
-      @customElement(generateElementName() as keyof HTMLElementTagNameMap)
+      @customElement(generateElementName())
       class C extends LitElement {
         eventPhase?: number;
 
@@ -532,7 +598,7 @@ suite('decorators', () => {
       if (!supportsOptions) {
         this.skip();
       }
-      @customElement(generateElementName() as keyof HTMLElementTagNameMap)
+      @customElement(generateElementName())
       class C extends LitElement {
         clicked = 0;
 
@@ -561,7 +627,7 @@ suite('decorators', () => {
       if (!supportsPassive) {
         this.skip();
       }
-      @customElement(generateElementName() as keyof HTMLElementTagNameMap)
+      @customElement(generateElementName())
       class C extends LitElement {
         defaultPrevented?: boolean;
 

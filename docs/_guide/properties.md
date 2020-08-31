@@ -26,77 +26,131 @@ LitElement manages your declared properties and their corresponding attributes. 
 
 </div>
 
-### Property options
-
-A property declaration is an object in the following format:
-
-```
-{ optionName1: optionValue1, optionName2: optionValue2, ... }
-```
-
-The following options are available:
-
-* `converter`: [Convert between properties and attributes](#conversion).
-* `type`: [Use LitElement's default attribute converter](#conversion-type).
-* `attribute`: [Configure observed attributes](#observed-attributes).
-* `reflect`: [Configure reflected attributes](#reflected-attributes).
-* `noAccessor`: Whether to set up a default [property accessor](#accessors).
-* `hasChanged`: Specify what constitutes a [property change](#haschanged).
-
-All property declaration options can be specified in a static properties getter, or with TypeScript decorators.
-
 ## Declare properties {#declare}
 
-Declare your element's properties by implementing a static `properties` getter, or by using decorators:
+Declare your element's properties using a static `properties` field, or using decorators:
 
-```js
-// properties getter
+_Properties field_
+
+<div class="language-js">
+<pre class="highlight">
 static get properties() {
   return { 
-    prop1: { type: String }
+    <var>propertyName</var>: <var>options</var>
   };
 }
-```
+</pre>
+</div>
 
-```js
-// Decorators (requires TypeScript or Babel)
+_Decorator (requires TypeScript or Babel)_
+
+<div class="language-ts">
+<pre class="highlight">
 export class MyElement extends LitElement {
-  @property( { type : String }  ) prop1 = '';
-```
+  @property(<var>options</var>) 
+  <var>propertyName</var>;
+</pre>
+</div>
 
-### Declare properties in a static properties getter
+In either case, you can pass an options object to configure features for the property. 
 
-To declare properties in a static `properties` getter:
+### Property options
+
+The options object can have the following properties:
+
+<dl>
+<dt>
+
+`attribute`
+
+</dt>
+<dd>
+
+Whether the property is associated with an attribute, or a custom name for the associated attribute. Default: true. See [Configure observed attributes](#observed-attributes). If `attribute` is false, the `converter`, `reflect` and `type` options are ignored. 
+
+</dd>
+<dt>
+
+`converter`
+
+</dt>
+<dd>
+
+A [custom converter](#conversion-converter) for converting between properties and attributes. If unspecified, use the [default attribute converter](#conversion-type).
+
+</dd>
+<dt>
+
+`hasChanged`
+
+</dt>
+<dd>
+
+A function that takes an `oldValue` and `newValue` and returns a boolean to indicate whether a [property has changed](#haschanged) when being set. If unspecified, LitElement uses a strict inequality check (`newValue !== oldValue`) to determine whether the property value has changed.
+
+</dd>
+<dt>
+
+`noAccessor`
+
+</dt>
+<dd>
+
+Set to true to avoid generating the default [property accessor](#accessors). Default: false.
+
+</dd>
+<dt>
+
+`reflect`
+
+</dt>
+<dd>
+
+Whether property value is reflected back to the associated attribute. Default: false. See  [Configure reflected attributes](#reflected-attributes).
+
+</dd>
+<dt>
+
+`type`
+
+</dt>
+<dd>
+
+A type hint for converting between properties and attributes. This hint is used by LitElement's default attribute converter, and is ignored if `converter` is set. If `type` is unspecified, behaves like `type: String`. See [Use LitElement's default attribute converter](#conversion-type). 
+
+</dd>
+
+An empty options object is equivalent to specifying the default value for all options.
+
+<div class="alert alert-info">
+
+**An options object by another name.** This guide uses the descriptive term "options object." In practice the options object is an instance of `PropertyDeclaration`, so you'll see that name if you're using an IDE, or looking at the API reference. By either name, it's an object that defines a set of options.
+
+</div>
+
+### Declare properties in a static properties field
+
+To declare properties in a static `properties` field:
 
 ```js
 static get properties() { 
   return { 
-    prop1: { type: String },
-    prop2: { type: Number },
-    prop3: { type: Boolean }
+    greeting: {type: String},
+    data: {attribute: false},
+    items: {}
   };
 }
 ```
 
-{:.alert .alert-warning}
-<div>
+An empty option object is equivalent to specifying the default value for all options.
 
-**If you implement a static properties getter, initialize your property values in the element constructor.**
+<div class="alert alert-info">
 
-```js
-constructor() {
-  // Always call super() first
-  super();
-  this.prop1 = 'Hello World';
-  ...
-}
-```
-
-Remember to call `super()` first in your constructor, or your element won't render at all.
+Declared properties are initialized like standard class fields—either in the constructor, or with a field initializer if you're using decorators.
 
 </div>
 
-**Example: Declare properties with a static `properties` getter** 
+**Example: Declare properties with a static `properties` field** 
 
 ```js
 {% include projects/properties/declare/my-element.js %}
@@ -106,17 +160,34 @@ Remember to call `super()` first in your constructor, or your element won't rend
 
 ### Declare properties with decorators {#declare-with-decorators}
 
-You can also declare properties with decorators:
+Use the `@property` decorator to declare properties (instead of the static `properties` field).
 
 ```js
-@property({type : String})  prop1 = 'Hello World';
+@property({type: String})
+mode = 'auto';
+
+@property()
+data = {};
 ```
 
-Decorators are a proposed JavaScript feature, so you'll need to use a transpiler like Babel or the TypeScript compiler to use decorators.
+The argument to the `@property` decorator is an [options object](#property-options). Omitting the argument is equivalent to specifying the default value for all options.
 
-If you're using Babel, you'll need to use the `@babel/plugin-proposal-decorators` plugin. 
+<div class="alert alert-info">
 
-If you're using TypeScript, you'll need to enable the `experimentalDecorators` compiler option (for example, by setting `"experimentalDecorators": true` in `tsconfig.json`). Enabling `emitDecoratorMetadata` is not required and not recommended.
+**Using decorators.** Decorators are a proposed JavaScript feature, so you'll need to use a transpiler like Babel or the TypeScript compiler to use decorators. See [Using decorators](decorators) for details.
+
+</div>
+
+There is also an `@internalProperty` decorator for private or protected properties that should trigger an update cycle. Properties declared with `@internalProperty` shouldn't be referenced from outside the component.
+
+```ts
+@internalProperty()
+protected active = false;
+```
+
+The `@internalProperty` decorator automatically sets `attribute` to false; **the only option you can specify for an internal property is the `hasChanged` function.**
+
+The `@internalProperty` decorator can serve as a hint to a code minifier that the property name can be changed during minification.
 
 **Example: Declare properties with decorators** 
 
@@ -126,11 +197,31 @@ If you're using TypeScript, you'll need to enable the `experimentalDecorators` c
 
 {% include project.html folder="properties/declaretypescript" openFile="my-element.ts" %}
 
+## What happens when properties change
+
+A property change can trigger an asynchronous update cycle, which causes the component to re-render its template.
+
+When a property changes, the following sequence occurs:
+
+1.  The property's setter is called.
+1.  The setter calls the property's `hasChanged` function. The `hasChanged` function takes the property's old and new values, and returns true if the change should trigger an update. (The default `hasChanged` uses a strict inequality test (`oldValue !=== newValue`) to determine if the property has changed.)
+1.  If `hasChanged` returns true, the setter calls `requestUpdate` to schedule an update. The update itself happens asynchronously, so if several properties are updated at once, they only trigger a single update.
+1.  The component's `update` method is called, reflecting changed properties to attributes and re-rendering the component's templates.
+
+There are many ways to hook into and modify the update lifecycle. For more information, see [Lifecycle](lifecycle).
+
+
 ## Initialize property values {#initialize}
 
-### Initialize property values in the element constructor 
+Typically, you initialize property values in the element constructor. 
 
-If you implement a static properties getter, initialize your property values in the element constructor:
+When using decorators, you can initialize the property value as part of the declaration (equivalent to setting the value in the constructor).
+
+You may want to defer initializing a property if the value is expensive to compute and is not not required for the initial render of your component. This is a fairly rare case.
+
+### Initialize property values in the element constructor {#initialize-constructor}
+
+If you implement a static properties field, initialize your property values in the element constructor:
 
 ```js
 static get properties() { return { /* Property declarations */ }; } 
@@ -140,7 +231,7 @@ constructor() {
   super();
 
   // Initialize properties 
-  this.prop1 = 'Hello World';
+  this.greeting = 'Hello';
 }
 ```
 
@@ -153,46 +244,22 @@ Remember to call `super()` first in your constructor, or your element won't rend
 
 **Example: Initialize property values in the element constructor** 
 
-```js
-{% include projects/properties/init/my-element.js %}
-```
+{% include project.html folder="properties/declare" openFile="my-element.js" %}
 
-{% include project.html folder="properties/init" openFile="my-element.js" %}
+### Initialize property values when using decorators
 
-### Initialize property values when using TypeScript decorators
-
-TypeScript users can initialize property values when they are declared with the `@property` decorator:
+When using the `@property` decorator, you can initialize a property as part of the declaration:
 
 ```ts
-@property({ type : String }) prop1 = 'Hello World';
+@property({type : String}) 
+greeting = 'Hello';
 ```
 
-**Example: Initialize property values when using TypeScript decorators** 
+**Example: Initialize property values when using decorators** 
 
-```js
-{% include projects/properties/inittypescript/my-element.ts %}
-```
+{% include project.html folder="properties/declaretypescript" openFile="my-element.ts" %}
 
-{% include project.html folder="properties/inittypescript" openFile="my-element.ts" %}
 
-### Initialize property values from attributes in markup 
-
-You can also initialize property values from observed attributes in markup:
-
-_index.html_ 
-
-```html
-<my-element 
-  mystring="hello world"
-  mynumber="5"
-  mybool
-  myobj='{"stuff":"hi"}'
-  myarray='[1,2,3,4]'></my-element>
-```
-
-{% include project.html folder="properties/initmarkup" openFile="index.html" %}
-
-See [observed attributes](#observed-attributes) and [converting between properties and attributes](#conversion) for more information on setting up initialization from attributes.
 
 ## Configure attributes {#attributes}
 
@@ -345,13 +412,15 @@ An observed attribute can be used to provide an initial value for a property via
 
 {% include project.html folder="properties/attributeobserve" openFile="my-element.js" %}
 
+
+
 ### Configure reflected attributes {#reflected-attributes}
 
 You can configure a property so that whenever it changes, its value is reflected to its [observed attribute](#observed-attributes). For example:
 
 ```js
 // Value of property "myProp" will reflect to attribute "myprop"
-myProp: { reflect: true }
+myProp: {reflect: true}
 ```
 
 When the property changes, LitElement uses the `toAttribute` function in the property's converter to set the attribute value from the new property value. 
@@ -360,7 +429,7 @@ When the property changes, LitElement uses the `toAttribute` function in the pro
 
 * If `toAttribute` returns `undefined`, the attribute is not changed.
 
-* If `toAttribute` itself is undefined, the property value is set to the attribute value without conversion.
+* If `toAttribute` itself is undefined, the attribute value is set to the property value without conversion.
 
 {:.alert .alert-info}
 <div>
@@ -377,9 +446,32 @@ When the property changes, LitElement uses the `toAttribute` function in the pro
 
 {% include project.html folder="properties/attributereflect" openFile="my-element.js" %}
 
+### Set property values from attributes in markup {#initialize-markup}
+
+If a property is configured with `attribute: true` (the default), users can set the property values from observed attributes in static markup:
+
+_index.html_ 
+
+```html
+<my-element 
+  mystring="hello world"
+  mynumber="5"
+  mybool
+  myobj='{"stuff":"hi"}'
+  myarray='[1,2,3,4]'></my-element>
+```
+
+See [observed attributes](#observed-attributes) and [converting between properties and attributes](#conversion) for more information on setting up initialization from attributes.
+
+<div class="alert alert-info">
+
+**Attributes versus property bindings.** Setting a static attribute value is not the same as binding to a property. See [Bind to a property](templates#bind-to-a-property).
+
+</div>
+
 ## Configure property accessors {#accessors}
 
-By default, LitElement generates a property accessor for all declared properties. The accessor is invoked whenever you set the property:
+By default, LitElement generates a getter/setter pair for all declared properties. The setter is invoked whenever you set the property:
 
 ```js
 // Declare a property
@@ -393,14 +485,14 @@ Generated accessors automatically call `requestUpdate`, initiating an update if 
 
 ### Create your own property accessors {#accessors-custom}
 
-To specify how getting and setting works for a property, you can define your own property accessors. For example:
+To specify how getting and setting works for a property, you can define your getter/setter pair. For example:
 
 ```js
 static get properties() { return { myProp: { type: String } }; }
 
 set myProp(value) {
-  const oldValue = this.myProp;
   // Implement setter logic here... 
+  // retrieve the old property value and store the new one
   this.requestUpdate('myProp', oldValue);
 } 
 get myProp() { ... }
@@ -408,29 +500,32 @@ get myProp() { ... }
 ...
 
 // Later, set the property
-this.myProp = 'hi'; // Invokes your accessor
+this.myProp = 'hi'; // Invokes your setter
 ```
 
-If your class defines its own accessors for a property, LitElement will not overwrite them with generated accessors. If your class does not define accessors for a property, LitElement will generate them, even if a superclass has defined the property or accessors.
+If your class defines its own accessors for a property, LitElement will not overwrite them with generated accessors. If your class does not define accessors for a property, LitElement will generate them, even if a superclass has defined the property or accessors. 
 
 The setters that LitElement generates automatically call `requestUpdate`. If you write your own setter you must call `requestUpdate` manually, supplying the property name and its old value.
 
-**Example** 
+**Example**
+
+A common pattern for accessors is to store the property value using a private property that's only accessed inside the component. This example uses an underscore prefix (`_prop`) to identify the private property—you could also use TypeScript's `private` or `protected` keywords.
 
 ```js
 {% include projects/properties/customsetter/my-element.js %}
 ```
 
 If you want to use your own property accessor with the `@property` decorator, you can achieve this by putting the decorator on the getter:
+
 ```ts
-   _myProp: string = '';
+   private _myProp: string = '';
 
   @property({ type: String })
-  public get myProp(): string {
+  get myProp(): string {
     return this._myProp;
   }
-  public set myProp(value: string) {
-    const oldValue = this.myProp;
+  set myProp(value: string) {
+    const oldValue = this._myProp;
     this._myProp = value;
     this.requestUpdate('myProp', oldValue);
   }
@@ -462,7 +557,7 @@ You don't need to set `noAccessor` when defining your own accessors.
 
 ## Configure property changes {#haschanged}
 
-All declared properties have a function, `hasChanged`, which is called whenever the property is set. 
+All declared properties have a function, `hasChanged`, which is called when the property is set. 
 
 `hasChanged` compares the property's old and new values, and evaluates whether or not the property has changed. If `hasChanged` returns true, LitElement starts an element update if one is not already scheduled. See the [Element update lifecycle documentation](lifecycle) for more information on how updates work.
 
@@ -479,6 +574,12 @@ myProp: { hasChanged(newVal, oldVal) {
   // return `true` if an update should proceed
 }}
 ```
+
+<div class="alert alert-info">
+
+**hasChanged may not be called for every change.** If a property's `hasChanged` returns true once, it won't be called again until after the next update, even if the property is changed multiple times. If you want to be notified each time a property is set, you should create a custom setter for the property, as described in [Create your own property accessors](#accessors-custom).
+
+</div>
 
 **Example: Configure property changes** 
 
