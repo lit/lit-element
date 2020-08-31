@@ -163,6 +163,8 @@ export function internalProperty(options?: InternalPropertyDeclaration) {
  * executes a querySelector on the element's renderRoot.
  *
  * @param selector A DOMString containing one or more selectors to match.
+ * @param cache An optional boolean which when true performs the DOM query only
+ * once and caches the result.
  *
  * See: https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelector
  *
@@ -183,8 +185,10 @@ export function internalProperty(options?: InternalPropertyDeclaration) {
  * ```
  * @category Decorator
  */
-export const query = (selector: string) =>
-  (element: ClassElement): any => {
+export function query(selector: string, cache?: boolean) {
+  return (element: ClassElement,
+          // tslint:disable-next-line:no-any decorator
+          name?: PropertyKey): any => {
     const descriptor = {
       get(this: LitElement) {
         return this.renderRoot.querySelector(selector);
@@ -192,8 +196,21 @@ export const query = (selector: string) =>
       enumerable: true,
       configurable: true,
     };
+    if (cache) {
+      const key = typeof name === 'symbol' ? Symbol() : `__${name}`;
+      descriptor.get = function(this: LitElement) {
+        if ((this as unknown as
+             {[key: string]: Element | null})[key as string] === undefined) {
+          ((this as unknown as {[key: string]: Element | null})[key as string] =
+               this.renderRoot.querySelector(selector));
+        }
+        return (
+            this as unknown as {[key: string]: Element | null})[key as string];
+      };
+    }
     return standardDesciptor(descriptor, element as ClassElement);
   };
+};
 
 // Note, in the future, we may extend this decorator to support the use case
 // where the queried element may need to do work to become ready to interact
@@ -287,22 +304,53 @@ export const queryAll = (selector: string) =>
  * A property decorator that converts a class property into a getter that
  * returns the `assignedNodes` of the given named `slot`. Note, the type of
  * this property should be annotated as `NodeListOf<HTMLElement>`.
+ *
+ * @param slotName A string name of the slot.
+ * @param flatten A boolean which when true flattens the assigned nodes,
+ * meaning any assigned nodes that are slot elements are replaced with their
+ * assigned nodes.
+ * @param selector A string which filters the results to elements that match
+ * the given css selector.
+ *
+ * * @example
+ * ```ts
+ * class MyElement {
+ *   @queryAssignedNodes('list', true, '.item')
+ *   listItems;
+ *
+ *   render() {
+ *     return html`
+ *       <slot name="list"></slot>
+ *     `;
+ *   }
+ * }
+ * ```
  * @category Decorator
  */
-export const queryAssignedNodes = (
-    slotName: string = '', flatten: boolean = false) =>
-  (element: ClassElement): any => {
+export function queryAssignedNodes(
+    slotName = '', flatten = false, selector = '') {
+  return (element: ClassElement): any => {
     const descriptor = {
       get(this: LitElement) {
-        const selector = `slot${slotName ? `[name=${slotName}]` : ''}`;
-        const slot = this.renderRoot.querySelector(selector);
-        return slot && (slot as HTMLSlotElement).assignedNodes({flatten});
+        const slotSelector =
+            `slot${slotName ? `[name=${slotName}]` : ':not([name])'}`;
+        const slot = this.renderRoot.querySelector(slotSelector);
+        let nodes = slot && (slot as HTMLSlotElement).assignedNodes({flatten});
+        if (nodes && selector) {
+          nodes = nodes.filter(
+              (node) => node.nodeType === Node.ELEMENT_NODE &&
+                      (node as Element).matches ?
+                  (node as Element).matches(selector) :
+                  legacyMatches.call(node as Element, selector));
+        }
+        return nodes;
       },
       enumerable: true,
       configurable: true,
     };
-    return standardDesciptor(descriptor, element as ClassElement)
+    return standardDesciptor(descriptor, element);
   };
+}
 
 const standardDesciptor = (descriptor: PropertyDescriptor, element: ClassElement) =>
   ({
@@ -357,3 +405,9 @@ export const eventOptions = (options: AddEventListenerOptions) =>
             clazz.prototype[element.key as keyof UpdatingElement], options);
       }
     });
+
+// x-browser support for matches
+// tslint:disable-next-line:no-any
+const ElementProto = Element.prototype as any;
+const legacyMatches =
+    ElementProto.msMatchesSelector || ElementProto.webkitMatchesSelector;
