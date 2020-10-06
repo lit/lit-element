@@ -315,7 +315,7 @@ If you already have a dev server that works with your build system, it should wo
 
 To support older browsers that don't support ES6 and the web components specifications, you'll need to take a few extra steps to produce code that will run on the older browsers. 
 
-See [Build for production](build) fpr more information.
+See [Build for production](build) for more information.
 
 ### Next steps
 
