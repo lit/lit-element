@@ -165,7 +165,8 @@ export const defaultConverter: ComplexAttributeConverter = {
         return value === null ? null : Number(value);
       case Object:
       case Array:
-        return JSON.parse(value!);
+        // Type assert to adhere to Bazel's "must type assert JSON parse" rule.
+        return JSON.parse(value!) as unknown;
     }
     return value;
   }
