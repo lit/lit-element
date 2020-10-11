@@ -217,7 +217,7 @@ Typically, you initialize property values in the element constructor.
 
 When using decorators, you can initialize the property value as part of the declaration (equivalent to setting the value in the constructor).
 
-You may want to defer initializing a property if the value is expensive to compute and is not not required for the initial render of your component. This is a fairly rare case.
+You may want to defer initializing a property if the value is expensive to compute and is not required for the initial render of your component. This is a fairly rare case.
 
 ### Initialize property values in the element constructor {#initialize-constructor}
 
