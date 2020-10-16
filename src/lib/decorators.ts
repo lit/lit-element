@@ -465,9 +465,9 @@ export function queryAssignedNodes(
         if (nodes && selector) {
           nodes = nodes.filter(
               (node) => node.nodeType === Node.ELEMENT_NODE &&
-                      (node as Element).matches ?
+                      ((node as any).matches ?
                   (node as Element).matches(selector) :
-                  legacyMatches.call(node as Element, selector));
+                  legacyMatches.call(node as Element, selector)));
         }
         return nodes;
       },

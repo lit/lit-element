@@ -524,6 +524,39 @@ suite('decorators', () => {
       flush();
       assert.deepEqual(c.assignedNodesEl.footerAssignedItems, []);
     });
+
+    test('returns assignedNodes for slot that contains text nodes filtered by selector when Element.matches does not exist', async () => {
+      const descriptor = Object.getOwnPropertyDescriptor(
+        Element.prototype,
+        'matches'
+      );
+      Object.defineProperty(Element.prototype, 'matches', {
+        value: undefined,
+        configurable: true,
+      });
+      const c = new C();
+      container.appendChild(c);
+      await c.updateComplete;
+      await c.assignedNodesEl.updateComplete;
+      assert.deepEqual(c.assignedNodesEl.footerAssignedItems, []);
+      const child1 = document.createElement('div');
+      const child2 = document.createElement('div');
+      const text1 = document.createTextNode('');
+      const text2 = document.createTextNode('');
+      child2.classList.add('item');
+      c.appendChild(child1);
+      c.appendChild(text1);
+      c.appendChild(child2);
+      c.appendChild(text2);
+      flush();
+      assert.deepEqual(c.assignedNodesEl.footerAssignedItems, [child2]);
+      c.removeChild(child2);
+      flush();
+      assert.deepEqual(c.assignedNodesEl.footerAssignedItems, []);
+      if (descriptor !== undefined) {
+        Object.defineProperty(Element.prototype, 'matches', descriptor);
+      }
+    });
   });
 
   suite('@queryAsync', () => {
