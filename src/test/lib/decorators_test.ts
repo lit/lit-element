@@ -559,7 +559,7 @@ suite('decorators', () => {
           flush();
           assert.deepEqual(c.assignedNodesEl.footerAssignedItems, []);
           if (definedMatches && descriptor !== undefined) {
-            Object.defineProperty(Element.prototype, 'matches', descriptor!);
+            Object.defineProperty(Element.prototype, 'matches', descriptor);
           }
         });
   });
