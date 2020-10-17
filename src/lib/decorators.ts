@@ -465,6 +465,7 @@ export function queryAssignedNodes(
         if (nodes && selector) {
           nodes = nodes.filter(
               (node) => node.nodeType === Node.ELEMENT_NODE &&
+                      // tslint:disable-next-line:no-any testing existence on older browsers
                       ((node as any).matches ?
                   (node as Element).matches(selector) :
                   legacyMatches.call(node as Element, selector)));
