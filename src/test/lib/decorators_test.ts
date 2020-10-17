@@ -558,7 +558,7 @@ suite('decorators', () => {
           c.removeChild(child2);
           flush();
           assert.deepEqual(c.assignedNodesEl.footerAssignedItems, []);
-          if (definedMatches) {
+          if (definedMatches && descriptor !== undefined) {
             Object.defineProperty(Element.prototype, 'matches', descriptor!);
           }
         });
