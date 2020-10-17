@@ -530,10 +530,15 @@ suite('decorators', () => {
         Element.prototype,
         'matches'
       );
-      Object.defineProperty(Element.prototype, 'matches', {
-        value: undefined,
-        configurable: true,
-      });
+      let definedMatches = true;
+      try {
+        Object.defineProperty(Element.prototype, 'matches', {
+          value: undefined,
+          configurable: true,
+        });
+      } catch(e) {
+        definedMatches = false;
+      }
       const c = new C();
       container.appendChild(c);
       await c.updateComplete;
@@ -553,8 +558,8 @@ suite('decorators', () => {
       c.removeChild(child2);
       flush();
       assert.deepEqual(c.assignedNodesEl.footerAssignedItems, []);
-      if (descriptor !== undefined) {
-        Object.defineProperty(Element.prototype, 'matches', descriptor);
+      if (definedMatches) {
+        Object.defineProperty(Element.prototype, 'matches', descriptor!);
       }
     });
   });
