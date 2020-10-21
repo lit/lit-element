@@ -227,15 +227,16 @@ export function query(selector: string, cache?: boolean) {
       configurable: true,
     };
     if (cache) {
-      const key = typeof name === 'symbol' ? Symbol() : `__${name}`;
+      const key = name || (protoOrDescriptor as ClassElement).key;
+      const cacheKey = typeof key === 'symbol' ? Symbol() : `__${key}`;
       descriptor.get = function(this: LitElement) {
         if ((this as unknown as
-             {[key: string]: Element | null})[key as string] === undefined) {
-          ((this as unknown as {[key: string]: Element | null})[key as string] =
+             {[key: string]: Element | null})[cacheKey as string] === undefined) {
+          ((this as unknown as {[key: string]: Element | null})[cacheKey as string] =
                this.renderRoot.querySelector(selector));
         }
         return (
-            this as unknown as {[key: string]: Element | null})[key as string];
+            this as unknown as {[key: string]: Element | null})[cacheKey as string];
       };
     }
     return (name !== undefined) ?
