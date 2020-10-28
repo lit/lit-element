@@ -50,7 +50,7 @@ constructor() {
 }
 ```
 
-### Add event listners in `connectedCallback`
+### Add event listeners in `connectedCallback`
 
 `connectedCallback` is a lifecycle callback in the custom elements API. `connectedCallback` fires each time a custom element is appended into a document-connected element. See [the MDN documentation on using custom elements lifecycle callbacks](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements#Using_the_lifecycle_callbacks) for more information.
 
