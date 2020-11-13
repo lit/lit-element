@@ -368,7 +368,7 @@ render() {
 }
 ```
 
-Expressions inside a `<style>` element won't update per instance in ShadyCSS, due to limitations of the ShadyCSS polyfill. See the [ShadyCSS readme](https://github.com/webcomponents/shadycss/blob/master/README.md#limitations) for more information.
+Expressions inside a `<style>` element won't update per instance in ShadyCSS, due to limitations of the ShadyCSS polyfill. See the [ShadyCSS readme](https://github.com/webcomponents/polyfills/tree/master/packages/shadycss#limitations) for more information.
 
 Additionally, evaluating an expression inside a `<style>` element is inefficient. When any text inside a `<style>` element changes, the browser must re-parse the whole `<style>` element, resulting in unnecessary work. 
 
