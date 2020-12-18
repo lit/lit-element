@@ -498,7 +498,7 @@ export abstract class UpdatingElement extends HTMLElement {
   // Initialize to an unresolved Promise so we can make sure the element has
   // connected before first update.
   private _updatePromise!: Promise<unknown>;
-  private _enableUpdatingResolver: (() => void)|undefined;
+  private _enableUpdatingResolver: ((r?: unknown) => void)|undefined;
 
   /**
    * Map with keys for any properties that have changed since the last
