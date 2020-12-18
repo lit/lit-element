@@ -50,7 +50,7 @@
     "@webcomponents/webcomponentsjs": "^2.2.3",
     "chai": "^4.0.2",
     "clang-format": "^1.2.4",
-    "downlevel-dts": "^0.6.0",
+    "downlevel-dts": "^0.7.0",
     "lit-element-benchmarks": "^0.1.0",
     "mocha": "^6.2.2",
     "np": "^5.2.1",
