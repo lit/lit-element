@@ -2406,7 +2406,7 @@ suite('UpdatingElement', () => {
 
       async performUpdate() {
         this.performUpdateCalled = true;
-        await new Promise((r) => resolve = r);
+        await new Promise<void>((r) => resolve = r);
         await super.performUpdate();
       }
 
@@ -2747,7 +2747,7 @@ suite('UpdatingElement', () => {
           }
 
           performUpdate() {
-            return new Promise((resolve, reject) => {
+            return new Promise<void>((resolve, reject) => {
               super.performUpdate();
               if (shouldThrow) {
                 reject();

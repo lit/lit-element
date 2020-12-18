@@ -260,7 +260,7 @@ export class LitElement extends UpdatingElement {
     // rendering
     if (window.ShadyCSS !== undefined && !window.ShadyCSS.nativeShadow) {
       window.ShadyCSS.ScopingShim!.prepareAdoptedCssText(
-          styles.map((s) => s.cssText), this.localName);
+          styles.map((s) => (s as CSSResult).cssText), this.localName);
     } else if (supportsAdoptingStyleSheets) {
       (this.renderRoot as ShadowRoot).adoptedStyleSheets =
           styles.map((s) => s instanceof CSSStyleSheet ? s : s.styleSheet!);
@@ -307,7 +307,7 @@ export class LitElement extends UpdatingElement {
       this._needsShimAdoptedStyleSheets = false;
       (this.constructor as typeof LitElement)._styles!.forEach((s) => {
         const style = document.createElement('style');
-        style.textContent = s.cssText;
+        style.textContent = (s as CSSResult).cssText;
         this.renderRoot.appendChild(style);
       });
     }
