@@ -627,7 +627,7 @@ suite('decorators', () => {
       const c = new C();
       wrap(container).appendChild(c);
       await c.updateComplete;
-      const button = c.shadowRoot!.querySelector('button')!;
+      const button = (wrap(c) as Element).shadowRoot!.querySelector('button')!;
       button.click();
       assert.equal(c.eventPhase, Event.CAPTURING_PHASE);
     });
@@ -655,7 +655,7 @@ suite('decorators', () => {
       const c = new C();
       wrap(container).appendChild(c);
       await c.updateComplete;
-      const button = c.shadowRoot!.querySelector('button')!;
+      const button = (wrap(c) as Element).shadowRoot!.querySelector('button')!;
       button.click();
       button.click();
       assert.equal(c.clicked, 1);
@@ -689,7 +689,7 @@ suite('decorators', () => {
       const c = new C();
       wrap(container).appendChild(c);
       await c.updateComplete;
-      const button = c.shadowRoot!.querySelector('button')!;
+      const button = (wrap(c) as Element).shadowRoot!.querySelector('button')!;
       button.click();
       assert.isFalse(c.defaultPrevented);
     });
