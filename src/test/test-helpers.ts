@@ -24,3 +24,6 @@ export const nextFrame = () =>
 export const getComputedStyleValue = (element: Element, property: string) =>
     window.ShadyCSS ? window.ShadyCSS.getComputedStyleValue(element, property) :
                       getComputedStyle(element).getPropertyValue(property);
+
+export const wrap = (node: Element) =>
+    window.ShadyDOM ? window.ShadyDOM.wrap(node) : node;

@@ -19,7 +19,7 @@
  * not an arrow function.
  */
 
-import {LitElement} from '../lit-element.js';
+import {LitElement, wrap} from '../lit-element.js';
 
 import {PropertyDeclaration, UpdatingElement} from './updating-element.js';
 
@@ -221,7 +221,7 @@ export function query(selector: string, cache?: boolean) {
           name?: PropertyKey): any => {
     const descriptor = {
       get(this: LitElement) {
-        return this.renderRoot.querySelector(selector);
+        return wrap(this.renderRoot).querySelector(selector);
       },
       enumerable: true,
       configurable: true,
@@ -232,7 +232,7 @@ export function query(selector: string, cache?: boolean) {
         if ((this as unknown as
              {[key: string]: Element | null})[key as string] === undefined) {
           ((this as unknown as {[key: string]: Element | null})[key as string] =
-               this.renderRoot.querySelector(selector));
+               wrap(this.renderRoot).querySelector(selector));
         }
         return (
             this as unknown as {[key: string]: Element | null})[key as string];
@@ -289,7 +289,7 @@ export function queryAsync(selector: string) {
     const descriptor = {
       async get(this: LitElement) {
         await this.updateComplete;
-        return this.renderRoot.querySelector(selector);
+        return wrap(this.renderRoot).querySelector(selector);
       },
       enumerable: true,
       configurable: true,
@@ -331,7 +331,7 @@ export function queryAll(selector: string) {
           name?: PropertyKey): any => {
     const descriptor = {
       get(this: LitElement) {
-        return this.renderRoot.querySelectorAll(selector);
+        return wrap(this.renderRoot).querySelectorAll(selector);
       },
       enumerable: true,
       configurable: true,
@@ -460,8 +460,8 @@ export function queryAssignedNodes(
       get(this: LitElement) {
         const slotSelector =
             `slot${slotName ? `[name=${slotName}]` : ':not([name])'}`;
-        const slot = this.renderRoot.querySelector(slotSelector);
-        let nodes = slot && (slot as HTMLSlotElement).assignedNodes({flatten});
+        const slot = wrap(this.renderRoot).querySelector(slotSelector);
+        let nodes = slot && (wrap(slot) as HTMLSlotElement).assignedNodes({flatten});
         if (nodes && selector) {
           nodes = nodes.filter(
               (node) => node.nodeType === Node.ELEMENT_NODE &&

@@ -87,6 +87,14 @@ export interface CSSResultArray extends
  */
 const renderNotImplemented = {};
 
+const needsWrap =
+  window.ShadyDOM &&
+  window.ShadyDOM!.inUse &&
+  window.ShadyDOM!.noPatch === true;
+export const wrap = (element: Element | DocumentFragment) => {
+  return needsWrap ? window.ShadyDOM!.wrap(element) : element;
+};
+
 /**
  * Base element class that manages element properties and attributes, and
  * renders a lit-html template.
@@ -236,7 +244,7 @@ export class LitElement extends UpdatingElement {
    * @returns {Element|DocumentFragment} Returns a node into which to render.
    */
   protected createRenderRoot(): Element|ShadowRoot {
-    return this.attachShadow({mode: 'open'});
+    return (wrap(this) as Element).attachShadow({mode: 'open'});
   }
 
   /**

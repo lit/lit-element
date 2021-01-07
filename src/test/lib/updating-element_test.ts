@@ -14,7 +14,7 @@
 
 import {customElement, property} from '../../lib/decorators.js';
 import {ComplexAttributeConverter, defaultConverter, PropertyDeclaration, PropertyDeclarations, PropertyValues, UpdatingElement} from '../../lib/updating-element.js';
-import {generateElementName} from '../test-helpers.js';
+import {generateElementName, wrap} from '../test-helpers.js';
 
 // tslint:disable:no-any ok in tests
 
@@ -2352,9 +2352,9 @@ suite('UpdatingElement', () => {
       inner: E|null = null;
 
       firstUpdated() {
-        this.attachShadow({mode: 'open'});
+        (wrap(this) as Element).attachShadow({mode: 'open'});
         this.inner = document.createElement('x-1224') as E;
-        this.shadowRoot!.appendChild(this.inner);
+        (wrap(this) as Element).shadowRoot!.appendChild(this.inner);
       }
 
       get updateComplete() {

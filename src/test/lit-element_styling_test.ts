@@ -14,7 +14,7 @@
 
 import '@webcomponents/shadycss/apply-shim.min.js';
 
-import {css, CSSResult, html as htmlWithStyles, LitElement, unsafeCSS} from '../lit-element.js';
+import {css, CSSResult, html as htmlWithStyles, LitElement, unsafeCSS, wrap} from '../lit-element.js';
 
 import {generateElementName, getComputedStyleValue, nextFrame} from './test-helpers.js';
 
@@ -25,12 +25,12 @@ suite('Styling', () => {
 
   setup(() => {
     container = document.createElement('div');
-    document.body.appendChild(container);
+    wrap(document.body).appendChild(container);
   });
 
   teardown(() => {
-    if (container && container.parentNode) {
-      container.parentNode.removeChild(container);
+    if (container && wrap(container).parentNode) {
+      wrap(wrap(container).parentNode as Element).removeChild(container);
     }
   });
 
@@ -48,9 +48,9 @@ suite('Styling', () => {
       }
     });
     const el = document.createElement(name);
-    container.appendChild(el);
+    wrap(container).appendChild(el);
     await (el as LitElement).updateComplete;
-    const div = el.shadowRoot!.querySelector('div');
+    const div = (wrap(el) as Element).shadowRoot!.querySelector('div');
     assert.equal(getComputedStyleValue(div!, 'border-top-width').trim(), '2px');
   });
 
@@ -74,9 +74,9 @@ suite('Styling', () => {
       }
     });
     const el = document.createElement(name);
-    container.appendChild(el);
+    wrap(container).appendChild(el);
     await (el as LitElement).updateComplete;
-    const div = el.shadowRoot!.querySelector('div');
+    const div = (wrap(el) as Element).shadowRoot!.querySelector('div');
     assert.equal(getComputedStyleValue(div!, 'border-top-width').trim(), '4px');
   });
 
@@ -97,9 +97,9 @@ suite('Styling', () => {
       }
     });
     const el = document.createElement(name);
-    container.appendChild(el);
+    wrap(container).appendChild(el);
     await (el as LitElement).updateComplete;
-    const div = el.shadowRoot!.querySelector('div');
+    const div = (wrap(el) as Element).shadowRoot!.querySelector('div');
     assert.equal(getComputedStyleValue(div!, 'border-top-width').trim(), '8px');
   });
 
@@ -130,18 +130,18 @@ suite('Styling', () => {
       }
 
       firstUpdated() {
-        this.inner = this.shadowRoot!.querySelector('x-inner')! as LitElement;
+        this.inner = (wrap(this) as Element).shadowRoot!.querySelector('x-inner')! as LitElement;
       }
     }
     customElements.define(name, E);
     const el = document.createElement(name) as E;
-    container.appendChild(el);
+    wrap(container).appendChild(el);
 
     // Workaround for Safari 9 Promise timing bugs.
     await el.updateComplete && await el.inner!.updateComplete;
 
     await nextFrame();
-    const div = el.inner!.shadowRoot!.querySelector('div');
+    const div = (wrap(el.inner!) as Element).shadowRoot!.querySelector('div');
     assert.equal(getComputedStyleValue(div!, 'border-top-width').trim(), '8px');
   });
 
@@ -173,7 +173,7 @@ suite('Styling', () => {
           }
 
           firstUpdated() {
-            this.inner = this.shadowRoot!.querySelector('x-inner1');
+            this.inner = (wrap(this) as Element).shadowRoot!.querySelector('x-inner1');
           }
         });
         const name2 = generateElementName();
@@ -189,19 +189,19 @@ suite('Styling', () => {
         });
         const el = document.createElement(name1) as LitElement;
         const el2 = document.createElement(name2);
-        container.appendChild(el);
-        container.appendChild(el2);
+        wrap(container).appendChild(el);
+        wrap(container).appendChild(el2);
         let div: Element|null;
 
         // Workaround for Safari 9 Promise timing bugs.
         await el.updateComplete;
 
         await nextFrame();
-        const inner = el.shadowRoot!.querySelector('x-inner1');
-        div = inner!.shadowRoot!.querySelector('div');
+        const inner = (wrap(el) as Element).shadowRoot!.querySelector('x-inner1');
+        div = (wrap(inner!) as Element).shadowRoot!.querySelector('div');
         assert.equal(
             getComputedStyleValue(div!, 'border-top-width').trim(), '2px');
-        el2.shadowRoot!.appendChild(inner!);
+        (wrap(el2) as Element).shadowRoot!.appendChild(inner!);
 
         // Workaround for Safari 9 Promise timing bugs.
         await el.updateComplete;
@@ -239,19 +239,19 @@ suite('Styling', () => {
       }
 
       firstUpdated() {
-        this.inner = this.shadowRoot!.querySelector('x-inner2') as LitElement;
+        this.inner = (wrap(this) as Element).shadowRoot!.querySelector('x-inner2') as LitElement;
       }
     }
     customElements.define(name, E);
     const el = document.createElement(name) as E;
-    container.appendChild(el);
+    wrap(container).appendChild(el);
 
     // Workaround for Safari 9 Promise timing bugs.
     await el.updateComplete && await el.inner!.updateComplete;
 
     await nextFrame();
-    const div = el.shadowRoot!.querySelector(
-                                  'x-inner2')!.shadowRoot!.querySelector('div');
+    const div = (wrap((wrap(el) as Element).shadowRoot!.querySelector(
+        'x-inner2')!) as Element).shadowRoot!.querySelector('div');
     assert.equal(
         getComputedStyleValue(div!, 'border-top-width').trim(), '10px');
   });
@@ -295,15 +295,15 @@ suite('Styling', () => {
 
           firstUpdated() {
             this.applied =
-                this.shadowRoot!.querySelector('x-applied') as LitElement;
+                (wrap(this) as Element).shadowRoot!.querySelector('x-applied') as LitElement;
           }
         }
         customElements.define(name, E);
 
         const firstApplied = document.createElement('x-applied') as I;
-        container.appendChild(firstApplied);
+        wrap(container).appendChild(firstApplied);
         const el = document.createElement(name) as E;
-        container.appendChild(el);
+        wrap(container).appendChild(el);
 
         // Workaround for Safari 9 Promise timing bugs.
         await firstApplied.updateComplete && el.updateComplete &&
@@ -328,12 +328,12 @@ suite('Static get styles', () => {
 
   setup(() => {
     container = document.createElement('div');
-    document.body.appendChild(container);
+    wrap(document.body).appendChild(container);
   });
 
   teardown(() => {
-    if (container && container.parentNode) {
-      container.parentNode.removeChild(container);
+    if (container && wrap(container).parentNode) {
+      wrap(wrap(container).parentNode as Element).removeChild(container);
     }
   });
 
@@ -359,11 +359,11 @@ suite('Static get styles', () => {
       }
     });
     const el = document.createElement(name);
-    container.appendChild(el);
+    wrap(container).appendChild(el);
     await (el as LitElement).updateComplete;
-    const div = el.shadowRoot!.querySelector('div');
+    const div = (wrap(el) as Element).shadowRoot!.querySelector('div');
     assert.equal(getComputedStyleValue(div!, 'border-top-width').trim(), '2px');
-    const span = el.shadowRoot!.querySelector('span');
+    const span = (wrap(el) as Element).shadowRoot!.querySelector('span');
     assert.equal(
         getComputedStyleValue(span!, 'border-top-width').trim(), '3px');
   });
@@ -397,9 +397,9 @@ suite('Static get styles', () => {
           }
         });
         const el = document.createElement(name);
-        container.appendChild(el);
+        wrap(container).appendChild(el);
         await (el as LitElement).updateComplete;
-        assert.equal(el.shadowRoot!.querySelectorAll('style').length, 2);
+        assert.equal((wrap(el) as Element).shadowRoot!.querySelectorAll('style').length, 2);
       });
 
   test('static get styles can be a single CSSResult', async () => {
@@ -417,9 +417,9 @@ suite('Static get styles', () => {
       }
     });
     const el = document.createElement(name);
-    container.appendChild(el);
+    wrap(container).appendChild(el);
     await (el as LitElement).updateComplete;
-    const div = el.shadowRoot!.querySelector('div');
+    const div = (wrap(el) as Element).shadowRoot!.querySelector('div');
     assert.equal(getComputedStyleValue(div!, 'border-top-width').trim(), '2px');
   });
 
@@ -445,11 +445,11 @@ suite('Static get styles', () => {
       }
     });
     const el = document.createElement(name);
-    container.appendChild(el);
+    wrap(container).appendChild(el);
     await (el as LitElement).updateComplete;
-    const div = el.shadowRoot!.querySelector('div');
+    const div = (wrap(el) as Element).shadowRoot!.querySelector('div');
     assert.equal(getComputedStyleValue(div!, 'border-top-width').trim(), '2px');
-    const span = el.shadowRoot!.querySelector('span');
+    const span = (wrap(el) as Element).shadowRoot!.querySelector('span');
     assert.equal(
         getComputedStyleValue(span!, 'border-top-width').trim(), '3px');
   });
@@ -493,9 +493,9 @@ suite('Static get styles', () => {
           }
         });
         const el = document.createElement(name);
-        container.appendChild(el);
+        wrap(container).appendChild(el);
         await (el as LitElement).updateComplete;
-        const div = el.shadowRoot!.querySelector('div');
+        const div = (wrap(el) as Element).shadowRoot!.querySelector('div');
         assert.equal(
             getComputedStyleValue(div!, 'border-top-width').trim(), '2px');
       });
@@ -531,12 +531,12 @@ suite('Static get styles', () => {
       }
     });
     const el = document.createElement(name);
-    container.appendChild(el);
+    wrap(container).appendChild(el);
     await (el as LitElement).updateComplete;
-    const div = el.shadowRoot!.querySelector('div');
+    const div = (wrap(el) as Element).shadowRoot!.querySelector('div');
     assert.equal(getComputedStyleValue(div!, 'border-top-width').trim(), '2px');
     assert.equal(getComputedStyleValue(div!, 'padding-top').trim(), '4px');
-    const span = el.shadowRoot!.querySelector('span');
+    const span = (wrap(el) as Element).shadowRoot!.querySelector('span');
     assert.equal(
         getComputedStyleValue(span!, 'border-top-width').trim(), '3px');
   });
@@ -560,9 +560,9 @@ suite('Static get styles', () => {
       }
     });
     const el = document.createElement(name);
-    container.appendChild(el);
+    wrap(container).appendChild(el);
     await (el as LitElement).updateComplete;
-    const div = el.shadowRoot!.querySelector('div');
+    const div = (wrap(el) as Element).shadowRoot!.querySelector('div');
     assert.equal(getComputedStyleValue(div!, 'border-top-width').trim(), '2px');
   });
 
@@ -602,12 +602,12 @@ suite('Static get styles', () => {
       }
     });
     const el = document.createElement(name);
-    container.appendChild(el);
+    wrap(container).appendChild(el);
     await (el as LitElement).updateComplete;
-    const level1 = el.shadowRoot!.querySelector('.level1');
-    const level2 = el.shadowRoot!.querySelector('.level2');
-    const level3 = el.shadowRoot!.querySelector('.level3');
-    const level4 = el.shadowRoot!.querySelector('.level4');
+    const level1 = (wrap(el) as Element).shadowRoot!.querySelector('.level1');
+    const level2 = (wrap(el) as Element).shadowRoot!.querySelector('.level2');
+    const level3 = (wrap(el) as Element).shadowRoot!.querySelector('.level3');
+    const level4 = (wrap(el) as Element).shadowRoot!.querySelector('.level4');
     assert.equal(
         getComputedStyleValue(level1!, 'border-top-width').trim(), '1px');
     assert.equal(
@@ -638,11 +638,11 @@ suite('Static get styles', () => {
       }
     });
     const el = document.createElement(name);
-    container.appendChild(el);
+    wrap(container).appendChild(el);
     await (el as LitElement).updateComplete;
-    const div = el.shadowRoot!.querySelector('div');
+    const div = (wrap(el) as Element).shadowRoot!.querySelector('div');
     assert.equal(getComputedStyleValue(div!, 'border-top-width').trim(), '2px');
-    const span = el.shadowRoot!.querySelector('span');
+    const span = (wrap(el) as Element).shadowRoot!.querySelector('span');
     assert.equal(
         getComputedStyleValue(span!, 'border-top-width').trim(), '3px');
   });
@@ -700,20 +700,20 @@ suite('Static get styles', () => {
       }
     });
     let el = document.createElement(base);
-    container.appendChild(el);
+    wrap(container).appendChild(el);
     await (el as LitElement).updateComplete;
-    const div = el.shadowRoot!.querySelector('div');
+    const div = (wrap(el) as Element).shadowRoot!.querySelector('div');
     assert.equal(getComputedStyleValue(div!, 'border-top-width').trim(), '2px');
     el = document.createElement(sub);
-    container.appendChild(el);
+    wrap(container).appendChild(el);
     await (el as LitElement).updateComplete;
-    const span = el.shadowRoot!.querySelector('span');
+    const span = (wrap(el) as Element).shadowRoot!.querySelector('span');
     assert.equal(
         getComputedStyleValue(span!, 'border-top-width').trim(), '3px');
     el = document.createElement(subsub);
-    container.appendChild(el);
+    wrap(container).appendChild(el);
     await (el as LitElement).updateComplete;
-    const p = el.shadowRoot!.querySelector('p');
+    const p = (wrap(el) as Element).shadowRoot!.querySelector('p');
     assert.equal(getComputedStyleValue(p!, 'border-top-width').trim(), '4px');
   });
 
@@ -751,19 +751,19 @@ suite('Static get styles', () => {
       }
     });
     let el = document.createElement(base);
-    container.appendChild(el);
+    wrap(container).appendChild(el);
     await (el as LitElement).updateComplete;
-    let div = el.shadowRoot!.querySelector('div');
+    let div = (wrap(el) as Element).shadowRoot!.querySelector('div');
     assert.equal(getComputedStyleValue(div!, 'border-top-width').trim(), '2px');
     el = document.createElement(sub);
-    container.appendChild(el);
+    wrap(container).appendChild(el);
     await (el as LitElement).updateComplete;
-    div = el.shadowRoot!.querySelector('div');
+    div = (wrap(el) as Element).shadowRoot!.querySelector('div');
     assert.equal(getComputedStyleValue(div!, 'border-top-width').trim(), '3px');
     el = document.createElement(subsub);
-    container.appendChild(el);
+    wrap(container).appendChild(el);
     await (el as LitElement).updateComplete;
-    div = el.shadowRoot!.querySelector('div');
+    div = (wrap(el) as Element).shadowRoot!.querySelector('div');
     assert.equal(getComputedStyleValue(div!, 'border-top-width').trim(), '4px');
   });
 
@@ -782,9 +782,9 @@ suite('Static get styles', () => {
     });
 
     const el = document.createElement(sub);
-    container.appendChild(el);
+    wrap(container).appendChild(el);
     await (el as LitElement).updateComplete;
-    const div = el.shadowRoot!.querySelector('div');
+    const div = (wrap(el) as Element).shadowRoot!.querySelector('div');
     assert.equal(
         getComputedStyle(div!).getPropertyValue('border-top-width').trim(),
         '4px');
@@ -812,8 +812,8 @@ suite('Static get styles', () => {
     });
     const el1 = document.createElement(base);
     const el2 = document.createElement(base);
-    container.appendChild(el1);
-    container.appendChild(el2);
+    wrap(container).appendChild(el1);
+    wrap(container).appendChild(el2);
     await Promise.all([
       (el1 as LitElement).updateComplete,
       (el2 as LitElement).updateComplete
@@ -917,14 +917,14 @@ suite('Static get styles', () => {
         });
 
         const el = document.createElement(base);
-        container.appendChild(el);
+        wrap(container).appendChild(el);
         await (el as LitElement).updateComplete;
-        const div = el.shadowRoot!.querySelector('div')!;
+        const div = (wrap(el) as Element).shadowRoot!.querySelector('div')!;
         assert.equal(
             getComputedStyle(div).getPropertyValue('border-top-width').trim(),
             '4px');
 
-        const span = el.shadowRoot!.querySelector('span')!;
+        const span = (wrap(el) as Element).shadowRoot!.querySelector('span')!;
         assert.equal(
             getComputedStyle(span).getPropertyValue('border-top-width').trim(),
             '4px');
@@ -964,10 +964,10 @@ suite('Static get styles', () => {
         });
 
         const el = document.createElement(base);
-        container.appendChild(el);
+        wrap(container).appendChild(el);
         await (el as LitElement).updateComplete;
 
-        const div = el.shadowRoot!.querySelector('div')!;
+        const div = (wrap(el) as Element).shadowRoot!.querySelector('div')!;
         assert.equal(
             getComputedStyle(div).getPropertyValue('border-top-width').trim(),
             '4px');
@@ -1016,9 +1016,9 @@ suite('ShadyDOM', () => {
           }
         });
         const el = document.createElement(name) as LitElement;
-        container.appendChild(el);
+        wrap(container).appendChild(el);
         await el.updateComplete;
-        const div = el.shadowRoot!.querySelector('div');
+        const div = (wrap(el) as Element).shadowRoot!.querySelector('div');
         assert.equal(
             getComputedStyleValue(div!, 'border-top-width').trim(), '6px');
         border = `4px solid orange`;

@@ -1,15 +1,19 @@
 interface ShadyCSS {
-  styleElement(host: Element, overrideProps?: {[key: string]: string}): void;
+  styleElement(host: Element, overrideProps?: { [key: string]: string }): void;
   getComputedStyleValue(element: Element, property: string): string;
-  ScopingShim: undefined|{
-    prepareAdoptedCssText(cssText: string[], name: string): void;
-  };
+  ScopingShim:
+    | undefined
+    | {
+        prepareAdoptedCssText(cssText: string[], name: string): void;
+      };
   nativeShadow: boolean;
 }
 
 interface ShadyDOM {
   inUse: boolean;
   flush: () => void;
+  noPatch: boolean | string;
+  wrap: (node: Element | DocumentFragment) => Element | DocumentFragment;
 }
 
 interface Window {
@@ -23,7 +27,7 @@ interface ShadowRoot {
   adoptedStyleSheets: CSSStyleSheet[];
 }
 
-declare var ShadowRoot: {prototype: ShadowRoot; new (): ShadowRoot;}
+declare var ShadowRoot: { prototype: ShadowRoot; new (): ShadowRoot };
 
 interface CSSStyleSheet {
   replaceSync(cssText: string): void;

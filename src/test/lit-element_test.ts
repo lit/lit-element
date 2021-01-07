@@ -12,7 +12,7 @@
  * http://polymer.github.io/PATENTS.txt
  */
 
-import {html, LitElement, property} from '../lit-element.js';
+import {html, LitElement, property, wrap} from '../lit-element.js';
 
 import {generateElementName, stripExpressionDelimeters} from './test-helpers.js';
 
@@ -25,12 +25,12 @@ suite('LitElement', () => {
 
   setup(() => {
     container = document.createElement('div');
-    document.body.appendChild(container);
+    wrap(document.body).appendChild(container);
   });
 
   teardown(() => {
-    if (container && container.parentNode) {
-      container.parentNode.removeChild(container);
+    if (container && wrap(container).parentNode) {
+      wrap(wrap(container).parentNode as Element).removeChild(container);
     }
   });
 
@@ -43,12 +43,12 @@ suite('LitElement', () => {
       }
     });
     const el = document.createElement(name);
-    container.appendChild(el);
+    wrap(container).appendChild(el);
     await new Promise<void>((resolve) => {
       setTimeout(() => {
-        assert.ok(el.shadowRoot);
+        assert.ok((wrap(el) as Element).shadowRoot);
         assert.equal(
-            stripExpressionDelimeters(el.shadowRoot!.innerHTML), rendered);
+            stripExpressionDelimeters((wrap(el) as Element).shadowRoot!.innerHTML), rendered);
         resolve();
       });
     });
@@ -67,9 +67,9 @@ suite('LitElement', () => {
       }
     });
     const el = document.createElement(name);
-    container.appendChild(el);
+    wrap(container).appendChild(el);
     await (el as LitElement).updateComplete;
-    assert.notOk(el.shadowRoot);
+    assert.notOk((wrap(el) as Element).shadowRoot);
     assert.equal(stripExpressionDelimeters(el.innerHTML), rendered);
   });
 
@@ -82,10 +82,10 @@ suite('LitElement', () => {
     }
     customElements.define(generateElementName(), E);
     const el = new E();
-    container.appendChild(el);
+    wrap(container).appendChild(el);
     await el.updateComplete;
-    assert.ok(el.shadowRoot);
-    assert.equal(stripExpressionDelimeters(el.shadowRoot!.innerHTML), rendered);
+    assert.ok((wrap(el) as Element).shadowRoot);
+    assert.equal(stripExpressionDelimeters((wrap(el) as Element).shadowRoot!.innerHTML), rendered);
   });
 
   test(
@@ -106,9 +106,9 @@ suite('LitElement', () => {
         }
         customElements.define(generateElementName(), E);
         const el = new E();
-        container.appendChild(el);
+        wrap(container).appendChild(el);
         await el.updateComplete;
-        const d = el.shadowRoot!.querySelector('div')!;
+        const d = (wrap(el) as Element).shadowRoot!.querySelector('div')!;
         assert.equal(d.getAttribute('attr'), 'attr');
         assert.equal((d as any).prop, 'prop');
         const e = new Event('zug');
@@ -130,9 +130,9 @@ suite('LitElement', () => {
     }
     customElements.define(generateElementName(), E);
     const el = new E();
-    container.appendChild(el);
+    wrap(container).appendChild(el);
     await el.updateComplete;
-    const div = el.shadowRoot!.querySelector('div')!;
+    const div = (wrap(el) as Element).shadowRoot!.querySelector('div')!;
     const event = new Event('test');
     div.dispatchEvent(event);
     assert.equal(el.event, event);
@@ -167,7 +167,7 @@ suite('LitElement', () => {
       }
 
       firstUpdated() {
-        this.inner = this.shadowRoot!.querySelector('x-2448');
+        this.inner = (wrap(this) as Element).shadowRoot!.querySelector('x-2448');
       }
 
       get updateComplete() {
@@ -176,16 +176,16 @@ suite('LitElement', () => {
     }
     customElements.define(generateElementName(), F);
     const el = new F();
-    container.appendChild(el);
+    wrap(container).appendChild(el);
     await el.updateComplete;
-    assert.equal(el.inner!.shadowRoot!.textContent, 'outer');
+    assert.equal((wrap(el.inner!) as Element).shadowRoot!.textContent, 'outer');
     assert.equal((el.inner! as any).attr, 'outer');
     assert.equal(el.inner!.getAttribute('attr'), 'outer');
     assert.equal(el.inner!.bool, false);
     el.bar = 'test';
     el.bool = true;
     await el.updateComplete;
-    assert.equal(el.inner!.shadowRoot!.textContent, 'test');
+    assert.equal((wrap(el.inner!) as Element).shadowRoot!.textContent, 'test');
     assert.equal((el.inner! as any).attr, 'test');
     assert.equal(el.inner!.getAttribute('attr'), 'test');
     assert.equal(el.inner!.bool, true);
@@ -226,10 +226,10 @@ suite('LitElement', () => {
 
         customElements.define(generateElementName(), F);
         const el = new F();
-        container.appendChild(el);
+        wrap(container).appendChild(el);
         while (!(await el.updateComplete)) {
         }
-        assert.equal(el.shadowRoot!.textContent, 'foo');
+        assert.equal((wrap(el) as Element).shadowRoot!.textContent, 'foo');
       });
 
   test(
@@ -249,9 +249,9 @@ suite('LitElement', () => {
         }
         customElements.define(generateElementName(), A);
         const a = new A();
-        container.appendChild(a);
+        wrap(container).appendChild(a);
         await a.updateComplete;
-        assert.equal(a.shadowRoot!.textContent, '5');
+        assert.equal((wrap(a) as Element).shadowRoot!.textContent, '5');
         shouldThrow = true;
         a.foo = 10;
         let threw = false;
@@ -262,12 +262,12 @@ suite('LitElement', () => {
         }
         assert.isTrue(threw);
         assert.equal(a.foo, 10);
-        assert.equal(a.shadowRoot!.textContent, '5');
+        assert.equal((wrap(a) as Element).shadowRoot!.textContent, '5');
         shouldThrow = false;
         a.foo = 20;
         await a.updateComplete;
         assert.equal(a.foo, 20);
-        assert.equal(a.shadowRoot!.textContent, '20');
+        assert.equal((wrap(a) as Element).shadowRoot!.textContent, '20');
       });
 
   test(
@@ -282,7 +282,7 @@ suite('LitElement', () => {
         const a = new A();
         const testDom = document.createElement('div');
         a.appendChild(testDom);
-        container.appendChild(a);
+        wrap(container).appendChild(a);
         await a.updateComplete;
         assert.equal(
             testDom.parentNode,

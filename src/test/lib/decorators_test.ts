@@ -13,7 +13,7 @@
  */
 
 import {eventOptions, property} from '../../lib/decorators.js';
-import {customElement, html, LitElement, PropertyValues, query, queryAll, queryAssignedNodes, queryAsync} from '../../lit-element.js';
+import {customElement, html, LitElement, PropertyValues, query, queryAll, queryAssignedNodes, queryAsync, wrap} from '../../lit-element.js';
 import {generateElementName} from '../test-helpers.js';
 
 const flush =
@@ -73,12 +73,12 @@ suite('decorators', () => {
   setup(() => {
     container = document.createElement('div');
     container.id = 'test-container';
-    document.body.appendChild(container);
+    wrap(document.body).appendChild(container);
   });
 
   teardown(() => {
     if (container !== undefined) {
-      container.parentElement!.removeChild(container);
+      wrap(container.parentElement!).removeChild(container);
       (container as any) = undefined;
     }
   });
@@ -129,7 +129,7 @@ suite('decorators', () => {
       }
       customElements.define(generateElementName(), E);
       const el = new E();
-      container.appendChild(el);
+      wrap(container).appendChild(el);
       await el.updateComplete;
       assert.equal(el.updateCount, 1);
       assert.equal(el.noAttr, 'noAttr');
@@ -206,7 +206,7 @@ suite('decorators', () => {
       }
       customElements.define(generateElementName(), E);
       const el = new E();
-      container.appendChild(el);
+      wrap(container).appendChild(el);
       await el.updateComplete;
       assert.equal(el._foo, undefined);
       assert.equal(el.updatedContent, undefined);
@@ -267,7 +267,7 @@ suite('decorators', () => {
       }
       customElements.define(generateElementName(), E);
       const el = new E();
-      container.appendChild(el);
+      wrap(container).appendChild(el);
       await el.updateComplete;
       assert.equal(el.updateCount, 1);
       assert.equal(el.noAttr, 'noAttr');
@@ -343,7 +343,7 @@ suite('decorators', () => {
 
     test('returns an element when it exists', async () => {
       const c = new C();
-      container.appendChild(c);
+      wrap(container).appendChild(c);
       await c.updateComplete;
       const div = c.div;
       assert.instanceOf(div, HTMLDivElement);
@@ -352,7 +352,7 @@ suite('decorators', () => {
 
     test('returns null when no match', async () => {
       const c = new C();
-      container.appendChild(c);
+      wrap(container).appendChild(c);
       await c.updateComplete;
       assert.isNull(c.span);
     });
@@ -360,7 +360,7 @@ suite('decorators', () => {
     test('returns cached value', async () => {
       const c = new C();
       c.condition = true;
-      container.appendChild(c);
+      wrap(container).appendChild(c);
       await c.updateComplete;
       assert.equal(c.span, c.renderRoot.querySelector('span'));
       assert.instanceOf(c.span, HTMLSpanElement);
@@ -388,7 +388,7 @@ suite('decorators', () => {
 
     test('returns elements when they exists', async () => {
       const c = new C();
-      container.appendChild(c);
+      wrap(container).appendChild(c);
       await c.updateComplete;
       const divs = c.divs;
       // This is not true in ShadyDOM:
@@ -398,7 +398,7 @@ suite('decorators', () => {
 
     test('returns empty NodeList when no match', async () => {
       const c = new C();
-      container.appendChild(c);
+      wrap(container).appendChild(c);
       await c.updateComplete;
       const spans = c.spans;
       // This is not true in ShadyDOM:
@@ -459,17 +459,17 @@ suite('decorators', () => {
 
     test('returns assignedNodes for slot', async () => {
       const c = new C();
-      container.appendChild(c);
+      wrap(container).appendChild(c);
       await c.updateComplete;
       await c.assignedNodesEl.updateComplete;
       // Note, `defaultAssigned` does not `flatten` so we test that the property
       // reflects current state and state when nodes are added or removed.
       assert.deepEqual(c.assignedNodesEl.defaultAssigned, [c.div]);
       const child = document.createElement('div');
-      c.assignedNodesEl.appendChild(child);
+      wrap(c.assignedNodesEl).appendChild(child);
       flush();
       assert.deepEqual(c.assignedNodesEl.defaultAssigned, [c.div, child]);
-      c.assignedNodesEl.removeChild(child);
+      wrap(c.assignedNodesEl).removeChild(child);
       flush();
       assert.deepEqual(c.assignedNodesEl.defaultAssigned, [c.div]);
     });
@@ -478,7 +478,7 @@ suite('decorators', () => {
         'returns assignedNodes for unnamed slot that is not first slot',
         async () => {
           const c = new C();
-          container.appendChild(c);
+          wrap(container).appendChild(c);
           await c.updateComplete;
           await c.assignedNodesEl.updateComplete;
           assert.deepEqual(c.assignedNodesEl2.defaultAssigned, [c.div2]);
@@ -486,7 +486,7 @@ suite('decorators', () => {
 
     test('returns flattened assignedNodes for slot', async () => {
       const c = new C();
-      container.appendChild(c);
+      wrap(container).appendChild(c);
       await c.updateComplete;
       await c.assignedNodesEl.updateComplete;
       // Note, `defaultAssigned` does `flatten` so we test that the property
@@ -495,18 +495,18 @@ suite('decorators', () => {
       assert.deepEqual(c.assignedNodesEl.footerAssigned, []);
       const child1 = document.createElement('div');
       const child2 = document.createElement('div');
-      c.appendChild(child1);
-      c.appendChild(child2);
+      wrap(c).appendChild(child1);
+      wrap(c).appendChild(child2);
       flush();
       assert.deepEqual(c.assignedNodesEl.footerAssigned, [child1, child2]);
-      c.removeChild(child2);
+      wrap(c).removeChild(child2);
       flush();
       assert.deepEqual(c.assignedNodesEl.footerAssigned, [child1]);
     });
 
     test('returns assignedNodes for slot filtered by selector', async () => {
       const c = new C();
-      container.appendChild(c);
+      wrap(container).appendChild(c);
       await c.updateComplete;
       await c.assignedNodesEl.updateComplete;
       // Note, `defaultAssigned` does `flatten` so we test that the property
@@ -516,11 +516,11 @@ suite('decorators', () => {
       const child1 = document.createElement('div');
       const child2 = document.createElement('div');
       child2.classList.add('item');
-      c.appendChild(child1);
-      c.appendChild(child2);
+      wrap(c).appendChild(child1);
+      wrap(c).appendChild(child2);
       flush();
       assert.deepEqual(c.assignedNodesEl.footerAssignedItems, [child2]);
-      c.removeChild(child2);
+      wrap(c).removeChild(child2);
       flush();
       assert.deepEqual(c.assignedNodesEl.footerAssignedItems, []);
     });
@@ -540,7 +540,7 @@ suite('decorators', () => {
             definedMatches = false;
           }
           const c = new C();
-          container.appendChild(c);
+          wrap(container).appendChild(c);
           await c.updateComplete;
           await c.assignedNodesEl.updateComplete;
           assert.deepEqual(c.assignedNodesEl.footerAssignedItems, []);
@@ -549,13 +549,13 @@ suite('decorators', () => {
           const text1 = document.createTextNode('');
           const text2 = document.createTextNode('');
           child2.classList.add('item');
-          c.appendChild(child1);
-          c.appendChild(text1);
-          c.appendChild(child2);
-          c.appendChild(text2);
+          wrap(c).appendChild(child1);
+          wrap(c).appendChild(text1);
+          wrap(c).appendChild(child2);
+          wrap(c).appendChild(text2);
           flush();
           assert.deepEqual(c.assignedNodesEl.footerAssignedItems, [child2]);
-          c.removeChild(child2);
+          wrap(c).removeChild(child2);
           flush();
           assert.deepEqual(c.assignedNodesEl.footerAssignedItems, []);
           if (definedMatches && descriptor !== undefined) {
@@ -585,7 +585,7 @@ suite('decorators', () => {
 
     test('returns an element when it exists after update', async () => {
       const c = new C();
-      container.appendChild(c);
+      wrap(container).appendChild(c);
       let div = await c.blah;
       assert.instanceOf(div, HTMLDivElement);
       assert.isFalse(div.hasAttribute('foo'));
@@ -597,7 +597,7 @@ suite('decorators', () => {
 
     test('returns null when no match', async () => {
       const c = new C();
-      container.appendChild(c);
+      wrap(container).appendChild(c);
       const span = await c.nope;
       assert.isNull(span);
     });
@@ -625,7 +625,7 @@ suite('decorators', () => {
       }
 
       const c = new C();
-      container.appendChild(c);
+      wrap(container).appendChild(c);
       await c.updateComplete;
       const button = c.shadowRoot!.querySelector('button')!;
       button.click();
@@ -653,7 +653,7 @@ suite('decorators', () => {
       }
 
       const c = new C();
-      container.appendChild(c);
+      wrap(container).appendChild(c);
       await c.updateComplete;
       const button = c.shadowRoot!.querySelector('button')!;
       button.click();
@@ -687,7 +687,7 @@ suite('decorators', () => {
       }
 
       const c = new C();
-      container.appendChild(c);
+      wrap(container).appendChild(c);
       await c.updateComplete;
       const button = c.shadowRoot!.querySelector('button')!;
       button.click();
