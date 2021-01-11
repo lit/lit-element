@@ -36,7 +36,7 @@ None of these tools is _required_ to work with LitElement. They represent one po
 
 <div class="alert alert-info">
 
-**Alternative starting point.** As an alternative to the official LitElement starter projects, the open-wc project has a [project generator](https://open-wc.org/init/) for both web components using LitElement. The open-wc script asks a series of questions and scaffolds out a project for you. 
+**Alternative starting point.** As an alternative to the official LitElement starter projects, the open-wc project has a [project generator](https://open-wc.org/docs/development/generator/) for web components using LitElement. The open-wc script asks a series of questions and scaffolds out a project for you. 
 
 </div>
 
@@ -327,4 +327,3 @@ See [Build for production](build) for more information.
 Ready to add features to your project? Head over to [Templates](templates) for details on writing templates for your LitElement component.
 
 For more on building applications that use web components, see the open-wc recommendations on [Building](https://open-wc.org/building/).
-
