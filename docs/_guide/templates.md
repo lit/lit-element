@@ -611,7 +611,7 @@ The `@query`, `@queryAll`, and `@queryAsync` decorators all provide a convenient
 
 </div>
 
-The `@query` decorator modifies a class property, turning it into a getter that returns a node from the render root. The optional second argument is a cache flag which when true performs the DOM query only once and caches the result. This can be used as a performance optimization in cases when the node being queried is not expectd to change.
+The `@query` decorator modifies a class property, turning it into a getter that returns a node from the render root. The optional second argument is a cache flag which when true performs the DOM query only once and caches the result. This can be used as a performance optimization in cases when the node being queried is not expected to change.
 
 
 ```js
