@@ -48,7 +48,7 @@ static get properties() {
 }
 
 constructor() {
-  this.adjective = awesome;
+  this.adjective = 'awesome';
 }
 ```
 
