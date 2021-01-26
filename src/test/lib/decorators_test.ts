@@ -328,6 +328,8 @@ suite('decorators', () => {
     class C extends LitElement {
       @query('#blah') div?: HTMLDivElement;
 
+      @query('#blah', true) divCached?: HTMLDivElement;
+
       @query('span', true) span?: HTMLSpanElement;
 
       @property() condition = false;
@@ -362,6 +364,8 @@ suite('decorators', () => {
       c.condition = true;
       container.appendChild(c);
       await c.updateComplete;
+      // trigger caching, so we can verify that multiple elements can be cached
+      c.divCached;
       assert.equal(c.span, c.renderRoot.querySelector('span'));
       assert.instanceOf(c.span, HTMLSpanElement);
       c.condition = false;
