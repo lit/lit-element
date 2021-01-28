@@ -227,7 +227,9 @@ export function query(selector: string, cache?: boolean) {
       configurable: true,
     };
     if (cache) {
-      const key = typeof name === 'symbol' ? Symbol() : `__${name}`;
+      const prop =
+          name !== undefined ? name : (protoOrDescriptor as ClassElement).key;
+      const key = typeof prop === 'symbol' ? Symbol() : `__${prop}`;
       descriptor.get = function(this: LitElement) {
         if ((this as unknown as
              {[key: string]: Element | null})[key as string] === undefined) {
