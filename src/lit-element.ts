@@ -132,6 +132,8 @@ export class LitElement extends UpdatingElement {
    */
   static styles?: CSSResultOrNative|CSSResultArray;
 
+  static shadowRootOptions: ShadowRootInit = { mode: "open" };
+
   private static _styles: Array<CSSResultOrNative|CSSResult>|undefined;
 
   /**
@@ -236,7 +238,8 @@ export class LitElement extends UpdatingElement {
    * @returns {Element|DocumentFragment} Returns a node into which to render.
    */
   protected createRenderRoot(): Element|ShadowRoot {
-    return this.attachShadow({mode: 'open'});
+    return this.attachShadow(
+      (this.constructor as typeof LitElement).shadowRootOptions);
   }
 
   /**
