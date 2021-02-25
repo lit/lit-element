@@ -204,7 +204,7 @@ A property change can trigger an asynchronous update cycle, which causes the com
 When a property changes, the following sequence occurs:
 
 1.  The property's setter is called.
-1.  The setter calls the property's `hasChanged` function. The `hasChanged` function takes the property's old and new values, and returns true if the change should trigger an update. (The default `hasChanged` uses a strict inequality test (`oldValue !=== newValue`) to determine if the property has changed.)
+1.  The setter calls the property's `hasChanged` function. The `hasChanged` function takes the property's old and new values, and returns true if the change should trigger an update. (The default `hasChanged` uses a strict inequality test (`oldValue !== newValue`) to determine if the property has changed.)
 1.  If `hasChanged` returns true, the setter calls `requestUpdate` to schedule an update. The update itself happens asynchronously, so if several properties are updated at once, they only trigger a single update.
 1.  The component's `update` method is called, reflecting changed properties to attributes and re-rendering the component's templates.
 
