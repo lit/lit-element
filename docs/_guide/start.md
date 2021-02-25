@@ -223,7 +223,7 @@ For details on building projects, including some sample Rollup configurations, s
 
 <div class="alert alert-info">
 
-**If you're starting from scratch**, the open-wc project has a [project generator](https://open-wc.org/init/) that can scaffold out an application project using LitElement.
+**If you're starting from scratch**, the open-wc project has a [project generator](https://open-wc.org/guides/developing-components/getting-started/) that can scaffold out an application project using LitElement.
 
 </div>
 
