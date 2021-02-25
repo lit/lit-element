@@ -482,3 +482,9 @@ export function queryAssignedNodes(
         standardQuery(descriptor, protoOrDescriptor as ClassElement);
   };
 }
+
+
+/**
+ * The future-compatible name for the internalProperty decorator.
+ */
+export const state = internalProperty;
