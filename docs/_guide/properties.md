@@ -293,10 +293,9 @@ The information below shows how the default converter handles conversion for eac
 * For **Strings**, when the attribute is defined, set the property to the attribute value.
 * For **Numbers**, when the attribute is defined, set the property to `Number(attributeValue)`.
 * For **Booleans**, when the attribute is:
-  * non-`null`, set the property to `true`.
-  * `null` or `undefined`, set the property to `false`.
-* For **Objects and Arrays**, when the attribute is:
-  * Defined, set the property value to `JSON.parse(attributeValue)`.
+  * Defined, set the property to `true`.
+  * Not defined, set the property to `false`.
+* For **Objects and Arrays**, when the attribute is defined, set the property value to `JSON.parse(attributeValue)`.
 
 **Convert from property to attribute** 
 
