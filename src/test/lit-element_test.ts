@@ -291,16 +291,14 @@ suite('LitElement', () => {
       });
 
   (window.ShadyDOM && window.ShadyDOM.inUse ? test.skip : test)(
-      'can customize shadowRootOptions',
-      async () => {
+      'can customize shadowRootOptions', async () => {
         class A extends LitElement {
-          static shadowRootOptions: ShadowRootInit = { mode: 'closed' };
+          static shadowRootOptions: ShadowRootInit = {mode: 'closed'};
         }
         customElements.define(generateElementName(), A);
         const a = new A();
         container.appendChild(a);
         await a.updateComplete;
         assert.equal(a.shadowRoot, undefined);
-      }
-    );
+      });
 });
