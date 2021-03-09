@@ -133,7 +133,7 @@ export class LitElement extends UpdatingElement {
   static styles?: CSSResultOrNative|CSSResultArray;
 
   /** @nocollapse */
-  static shadowRootOptions: ShadowRootInit = { mode: "open" };
+  static shadowRootOptions: ShadowRootInit = { mode: 'open' };
 
   private static _styles: Array<CSSResultOrNative|CSSResult>|undefined;
 

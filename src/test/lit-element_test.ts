@@ -291,10 +291,10 @@ suite('LitElement', () => {
       });
 
   (window.ShadyDOM && window.ShadyDOM.inUse ? test.skip : test)(
-      "can customize shadowRootOptions",
+      'can customize shadowRootOptions',
       async () => {
         class A extends LitElement {
-          static shadowRootOptions: ShadowRootInit = { mode: "closed" };
+          static shadowRootOptions: ShadowRootInit = { mode: 'closed' };
         }
         customElements.define(generateElementName(), A);
         const a = new A();
