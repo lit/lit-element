@@ -19,6 +19,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
+### Changed
+
+* Added the `@state()` decorator as an alias for `@internalProperty()`, and deprecated `@internalProperty()` which will be renamed to `@state` in lit-element 3.0. [#1162](https://github.com/Polymer/lit-element/issues/1162).
+
 ### Added
 * Adds a `static shadowRootOptions` property for specifying shadow root options. This is a slightly simpler alternative to implementing a custom `createRenderRoot` method [#1147](https://github.com/Polymer/lit-element/issues/1147).
 
