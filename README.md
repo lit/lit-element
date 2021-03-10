@@ -81,6 +81,18 @@ Chrome, Safari, Opera, Firefox, Edge. In addition, Internet Explorer 11 is also 
 
 Edge and Internet Explorer 11 require the web components polyfills.
 
+## Forward Compatibility With LitElement 3.0
+
+LitElement 3.0 has a few breaking changes and deprecations that have been back-ported to LitElement 2.5 in order to ease upgrading.
+
+To prepare for LitElement 3.0, update these APIs:
+
+| 2.4                    | 2.5 / 3.0             |
+|------------------------|-----------------------|
+| `import {customElement} from 'lit-element';` | `import {customElement} from 'lit-element/decorators.js';`
+| `@internalProperty() foo;`  | `@state() foo;`            |
+| Override `_getUpdateComplete()` | Override `getUpdateComplete()` |
+
 ## Contributing
 
 Please see [CONTRIBUTING.md](./CONTRIBUTING.md).
