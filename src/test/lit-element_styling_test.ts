@@ -130,7 +130,7 @@ suite('Styling', () => {
       }
 
       firstUpdated() {
-        this.inner = this.shadowRoot!.querySelector('x-inner')!;
+        this.inner = this.shadowRoot!.querySelector('x-inner') as LitElement;
       }
     }
     customElements.define(name, E);
