@@ -183,10 +183,23 @@ export interface InternalPropertyDeclaration<Type = unknown> {
  * systems, they're solely for properties internal to the element. These
  * properties may be renamed by optimization tools like closure compiler.
  * @category Decorator
+ * @deprecated `internalProperty` will be renamed to `state` in lit-element 3.0.
+ *     Please update to `state` now to be compatible with 3.0.
  */
 export function internalProperty(options?: InternalPropertyDeclaration) {
   return property({attribute: false, hasChanged: options?.hasChanged});
 }
+
+/**
+ * Declares a private or protected property that still triggers updates to the
+ * element when it changes.
+ *
+ * Properties declared this way must not be used from HTML or HTML templating
+ * systems, they're solely for properties internal to the element. These
+ * properties may be renamed by optimization tools like closure compiler.
+ * @category Decorator
+ */
+export const state = internalProperty;
 
 /**
  * A property decorator that converts a class property into a getter that
@@ -482,9 +495,3 @@ export function queryAssignedNodes(
         standardQuery(descriptor, protoOrDescriptor as ClassElement);
   };
 }
-
-
-/**
- * The future-compatible name for the internalProperty decorator.
- */
-export const state = internalProperty;
