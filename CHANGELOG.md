@@ -26,7 +26,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Added
 * Adds a `static shadowRootOptions` property for specifying shadow root options. This is a slightly simpler alternative to implementing a custom `createRenderRoot` method [#1147](https://github.com/Polymer/lit-element/issues/1147).
-* Adds an export of `UpdatingElement` as `ReactiveElement` for forward-compatibility with with lit-element 3.0 [#1177](https://github.com/Polymer/lit-element/issues/1177).
+* Adds an export of `UpdatingElement` as `ReactiveElement` for forward-compatibility with lit-element 3.0 [#1177](https://github.com/Polymer/lit-element/issues/1177).
 
 ### Fixed
 * Fixes an issue with `queryAssignedNodes` when applying a selector on a slot that included text nodes on older browsers not supporting Element.matches [#1088](https://github.com/Polymer/lit-element/issues/1088).
