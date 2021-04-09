@@ -82,6 +82,8 @@ export type CSSResultOrNative = CSSResult|CSSStyleSheet;
 export interface CSSResultArray extends
     Array<CSSResultOrNative|CSSResultArray> {}
 
+export type CSSResultGroup = CSSResultOrNative | CSSResultArray;
+
 /**
  * Sentinal value used to avoid calling lit-html's render function when
  * subclasses do not implement `render`
