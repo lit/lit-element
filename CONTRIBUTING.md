@@ -9,7 +9,7 @@ There are many ways to contribute to the Polymer project! We welcome and truly a
 Beyond GitHub, we try to have a variety of different lines of communication open:
 
 * [Blog](https://blog.polymer-project.org/)
-* [Twitter](https://twitter.com/polymer)
+* [Twitter](https://twitter.com/buildWithLit)
 * [Mailing list](https://groups.google.com/forum/#!forum/polymer-dev)
 * [Slack channel](https://bit.ly/polymerslack)
 
