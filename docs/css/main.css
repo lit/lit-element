@@ -218,16 +218,34 @@ main {
 }
 
 .hero .blm-banner {
-  position: relative;
   background: #000;
   height: 60px;
+}
+
+.hero .lit-banner {
+  background-color: #fff;
+  color: #000;
+}
+
+.hero .lit-banner a {
+  font-weight: bold;
+}
+
+.hero #lit-logo {
+  height: 2em;
+  padding-top: 1.5em;
+  padding-right: 1.5em;
+}
+
+.hero .banner {
+  position: relative;
   display: flex;
   justify-content: center;
   align-content: center;
   padding: 0 20px 0 20px;
 }
 
-.hero .blm-banner p {
+.hero .banner p,{
   margin: auto;
   text-align: center;
 }
@@ -237,8 +255,8 @@ main {
 }
 
 .hero .wrapper {
-  padding-top: 21vh;
-  padding-bottom: 24vh;
+  padding-top: 20vh;
+  padding-bottom: 22vh;
 }
 
 .hero-title {
@@ -454,6 +472,22 @@ article ol li {
   margin: 4px 0;
 }
 
+.version-banner {
+  padding: 0px 20px;
+  border: 1px solid #000;
+  max-width: 640px;
+  display: flex;
+  align-items: center;
+}
+
+.version-banner a {
+  font-weight: bold;
+}
+
+.version-banner img {
+  height: 36px;
+  margin-right: 16px;
+}
 
 .alert {
   position: relative;
