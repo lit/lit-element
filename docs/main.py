@@ -7,6 +7,9 @@ JINJA_ENVIRONMENT = jinja2.Environment(
   extensions=['jinja2.ext.autoescape'],
   autoescape=True)
 
+# Skip old landing page, go direct to guides.
+HOME_PAGE = '/guide'
+
 # Match HTML pages from path; similar to behavior of Jekyll on GitHub Pages.
 def find_template(path):
   if path.endswith('/'):
@@ -25,6 +28,9 @@ def find_template(path):
 
 class MainPage(webapp2.RequestHandler):
   def get(self):
+    if (self.request.path == '/'):
+      self.redirect(HOME_PAGE, permanent=True)
+      return
     try:
       template = find_template(self.request.path)
       self.response.headers['Cache-Control'] = 'public, max-age=60'
