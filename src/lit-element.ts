@@ -82,6 +82,8 @@ export type CSSResultOrNative = CSSResult|CSSStyleSheet;
 export interface CSSResultArray extends
     Array<CSSResultOrNative|CSSResultArray> {}
 
+export type CSSResultGroup = CSSResultOrNative|CSSResultArray;
+
 /**
  * Sentinal value used to avoid calling lit-html's render function when
  * subclasses do not implement `render`
@@ -131,7 +133,7 @@ export class LitElement extends UpdatingElement {
    * Array of styles to apply to the element. The styles should be defined
    * using the [[`css`]] tag function or via constructible stylesheets.
    */
-  static styles?: CSSResultOrNative|CSSResultArray;
+  static styles?: CSSResultGroup;
 
   /** @nocollapse */
   static shadowRootOptions: ShadowRootInit = {mode: 'open'};
@@ -144,7 +146,7 @@ export class LitElement extends UpdatingElement {
    *
    * @nocollapse
    */
-  static getStyles(): CSSResultOrNative|CSSResultArray|undefined {
+  static getStyles(): CSSResultGroup|undefined {
     return this.styles;
   }
 
