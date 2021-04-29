@@ -41,6 +41,8 @@
   "author": "Google LLC",
   "devDependencies": {
     "@babel/cli": "^7.13.10",
+    "@babel/helper-define-map": "^7.13.12",
+    "@babel/helper-regex": "^7.10.5",
     "@babel/plugin-proposal-class-properties": "^7.13.0",
     "@babel/plugin-proposal-decorators": "^7.13.5",
     "@babel/plugin-transform-typescript": "^7.13.0",
