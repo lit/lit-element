@@ -98,10 +98,11 @@ To prepare for Lit 2, update these APIs:
 
 | LitElement 2.4         | LitElement 2.5/Lit 2  |
 |------------------------|-----------------------|
-| `import {customElement} from 'lit-element';` | `import {customElement} from 'lit-element/decorators.js';`
+| Decorator imports:<br>`import {customElement} from 'lit-element';` | `import {customElement} from 'lit-element/decorators.js';`
 | `@internalProperty() foo;`  | `@state() foo;`            |
 | Override `_getUpdateComplete()` | Override `getUpdateComplete()` |
-
+| Shadow root options:</br> Override `createRenderRoot()`. | Add `static shadowRootOptions`.
+| `import {UpdatingElement} from 'lit-element';` |  `import {ReactiveElement} from 'lit-element';`  |
 ## Contributing
 
 Please see [CONTRIBUTING.md](./CONTRIBUTING.md).
