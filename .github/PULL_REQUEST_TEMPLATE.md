@@ -1,3 +1,3 @@
-<!-- Instructions: https://github.com/Polymer/lit-element/blob/master/CONTRIBUTING.md#contributing-pull-requests -->
+<!-- Instructions: https://github.com/lit/lit-element/blob/master/CONTRIBUTING.md#contributing-pull-requests -->
 ### Reference Issue
 <!-- Example: Fixes #1234 -->
