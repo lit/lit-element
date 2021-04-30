@@ -1,10 +1,9 @@
 <!--
 If you are asking a question rather than filing a bug, try one of these instead:
-- StackOverflow (https://stackoverflow.com/questions/tagged/polymer)
-- Polymer Slack Channel (https://bit.ly/polymerslack)
-- Mailing List (https://groups.google.com/forum/#!forum/polymer-dev)
+- StackOverflow (https://stackoverflow.com/questions/tagged/lit-element)
+- Lit and Friends Slack Channel (https://lit.dev/slack-invite/)
 -->
-<!-- Instructions For Filing a Bug: https://github.com/Polymer/lit-element/blob/master/CONTRIBUTING.md#filing-bugs -->
+<!-- Instructions For Filing a Bug: https://github.com/lit/lit-element/blob/master/CONTRIBUTING.md#filing-bugs -->
 ### Description
 <!-- Example: Error thrown when calling `appendChild` on Lit element -->
 
@@ -45,5 +44,5 @@ Example:
 <!--
 `npm ls` will show the version of webcomponents.js and lit-element
 -->
-- lit-element: vX.X.X
+- lit-element: v2.X.X
 - webcomponents: vX.X.X

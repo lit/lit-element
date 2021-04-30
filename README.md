@@ -2,15 +2,14 @@
 
 LitElement is simple base class for creating fast, lightweight web components with [lit-html](https://lit-html.polymer-project.org/).
 
-[![Build Status](https://travis-ci.org/Polymer/lit-element.svg?branch=master)](https://travis-ci.org/Polymer/lit-element)
+[![Build Status](https://travis-ci.org/lit/lit-element.svg?branch=master)](https://travis-ci.org/lit/lit-element)
 [![Published on npm](https://img.shields.io/npm/v/lit-element.svg)](https://www.npmjs.com/package/lit-element)
 [![Join our Slack](https://img.shields.io/badge/slack-join%20chat-4a154b.svg)](https://lit.dev/slack-invite/)
-[![Mentioned in Awesome lit-html](https://awesome.re/mentioned-badge.svg)](https://github.com/web-padawan/awesome-lit-html)
+[![Mentioned in Awesome lit-html](https://awesome.re/mentioned-badge.svg)](https://github.com/web-padawan/awesome-lit)
 
 ## Looking for Lit?
 
-LitElement is now part of the [Lit library monorepo](https://github.com/lit/lit). 
-Lit 2 includes lit-html 2.x and LitElement 3.x. 
+LitElement is now part of the [Lit library monorepo](https://github.com/lit/lit). Lit 2 includes lit-html 2.x and LitElement 3.x. 
 
 This repo contains the code for LitElement 2.x.
 
@@ -98,10 +97,11 @@ To prepare for Lit 2, update these APIs:
 
 | LitElement 2.4         | LitElement 2.5/Lit 2  |
 |------------------------|-----------------------|
-| `import {customElement} from 'lit-element';` | `import {customElement} from 'lit-element/decorators.js';`
+| Decorator imports:<br>`import {customElement} from 'lit-element';` | `import {customElement} from 'lit-element/decorators.js';`
 | `@internalProperty() foo;`  | `@state() foo;`            |
 | Override `_getUpdateComplete()` | Override `getUpdateComplete()` |
-
+| Shadow root options:</br> Override `createRenderRoot()`. | Add `static shadowRootOptions`.
+| `import {UpdatingElement} from 'lit-element';` |  `import {ReactiveElement} from 'lit-element';`  |
 ## Contributing
 
 Please see [CONTRIBUTING.md](./CONTRIBUTING.md).
