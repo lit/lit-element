@@ -13,7 +13,7 @@
  */
 
 /*
- * IMPORTANT: For compatibility with tsickle and the Closure JS compiler, all
+ * IMPORTANT: For compatibility with tsickle and the Closure Compiler, all
  * property decorators (but not class decorators) in this file that have
  * an @ExportDecoratedItems annotation must be defined as a regular function,
  * not an arrow function.
@@ -181,10 +181,10 @@ export interface InternalPropertyDeclaration<Type = unknown> {
  *
  * Properties declared this way must not be used from HTML or HTML templating
  * systems, they're solely for properties internal to the element. These
- * properties may be renamed by optimization tools like closure compiler.
+ * properties may be renamed by optimization tools like the Closure Compiler.
  * @category Decorator
- * @deprecated `internalProperty` will be renamed to `state` in lit-element 3.0.
- *     Please update to `state` now to be compatible with 3.0.
+ * @deprecated `internalProperty` has been renamed to `state` in lit-element
+ *     3.0. Please update to `state` now to be compatible with 3.0.
  */
 export function internalProperty(options?: InternalPropertyDeclaration) {
   return property({attribute: false, hasChanged: options?.hasChanged});
@@ -196,10 +196,11 @@ export function internalProperty(options?: InternalPropertyDeclaration) {
  *
  * Properties declared this way must not be used from HTML or HTML templating
  * systems, they're solely for properties internal to the element. These
- * properties may be renamed by optimization tools like closure compiler.
+ * properties may be renamed by optimization tools like the Closure Compiler.
  * @category Decorator
  */
-export const state = internalProperty;
+export const state = (options?: InternalPropertyDeclaration) =>
+    internalProperty(options);
 
 /**
  * A property decorator that converts a class property into a getter that
