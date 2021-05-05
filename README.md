@@ -28,32 +28,32 @@ and renders declaratively using `lit-html`. See the [lit-html guide](https://lit
 for additional information on how to create templates for lit-element.
 
 ```ts
-    import {LitElement, html, css, customElement, property} from 'lit-element';
+import {LitElement, html, css, customElement, property} from 'lit-element';
 
-    // This decorator defines the element.
-    @customElement('my-element')
-    export class MyElement extends LitElement {
+// This decorator defines the element.
+@customElement('my-element')
+export class MyElement extends LitElement {
 
-      // This decorator creates a property accessor that triggers rendering and
-      // an observed attribute.
-      @property()
-      mood = 'great';
+  // This decorator creates a property accessor that triggers rendering and
+  // an observed attribute.
+  @property()
+  mood = 'great';
 
-      static styles = css`
-        span {
-          color: green;
-        }`;
+  static styles = css`
+    span {
+      color: green;
+    }`;
 
-      // Render element DOM by returning a `lit-html` template.
-      render() {
-        return html`Web Components are <span>${this.mood}</span>!`;
-      }
+  // Render element DOM by returning a `lit-html` template.
+  render() {
+    return html`Web Components are <span>${this.mood}</span>!`;
+  }
 
-    }
+}
 ```
 
 ```html
-    <my-element mood="awesome"></my-element>
+<my-element mood="awesome"></my-element>
 ```
 
 Note, this example uses decorators to create properties. Decorators are a proposed
