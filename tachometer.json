@@ -1,0 +1,60 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Polymer/tachometer/master/config.schema.json",
+  "sampleSize": 50,
+  "timeout": 3,
+  "horizons": ["0%", "1%", "10%"],
+  "benchmarks": [
+    {
+      "url": "./node_modules/lit-element-benchmarks/shack/",
+      "browser": {
+        "name": "chrome",
+        "headless": true
+      },
+      "expand": [
+        {
+          "name": "this-change",
+          "packageVersions": {
+            "label": "this-change",
+            "dependencies": {
+              "lit-element": {
+                "kind": "git",
+                "repo": ".",
+                "ref": "HEAD",
+                "setupCommands": [
+                  "npm ci",
+                  "npm run build"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "name": "master",
+          "packageVersions": {
+            "label": "master",
+            "dependencies": {
+              "lit-element": {
+                "kind": "git",
+                "repo": "https://github.com/Polymer/lit-element.git",
+                "ref": "master",
+                "setupCommands": [
+                  "npm ci",
+                  "npm run build"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "name": "previous-1.x-release",
+          "packageVersions": {
+            "label": "previous-1.x-release",
+            "dependencies": {
+              "lit-element": "^1"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
