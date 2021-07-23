@@ -6,7 +6,7 @@
   "benchmarks": [
     {
       "name": "shack",
-      "url": "./node_modules/lit-element-benchmarks/shack/",
+      "url": "./shack/",
       "browser": {
         "name": "chrome",
         "headless": true
@@ -18,7 +18,7 @@
             "dependencies": {
               "lit-element": {
                 "kind": "git",
-                "repo": ".",
+                "repo": "..",
                 "ref": "HEAD",
                 "setupCommands": [
                   "npm ci",

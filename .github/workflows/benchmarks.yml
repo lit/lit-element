@@ -13,34 +13,31 @@ jobs:
 
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-
       - uses: actions/setup-node@v2
         with:
           node-version: 14
 
-      - name: Restore node_modules
-        id: cache
-        uses: actions/cache@v2
+      - uses: actions/checkout@v2
         with:
-          path: node_modules
-          # Bump the number after `lit-element-1.x-node-modules` to force a
-          # cache update. Note there are multiple cache actions in `tests.yml`
-          # that should all keep keys in sync.
-          key: lit-element-1.x-node-modules-0-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+          path: lit-element
 
-      - name: NPM install
-        if: steps.cache.outputs.cache-hit != 'true'
-        run: npm ci
+      - uses: actions/checkout@v2
+        with:
+          path: benchmarks
+          repository: Polymer/benchmarks
+          ref: master
 
-      - name: Build
-        run: npm run build
+      - name: Copy tachometer config
+        working-directory: ./benchmarks
+        run: cp ../lit-element/tachometer.json .
 
       - name: Benchmark
+        working-directory: ./benchmarks
         run: npx tach --config tachometer.json --json-file results.json
 
       - name: Report
         uses: andrewiggins/tachometer-reporter-action@v2
+        working-directory: ./benchmarks
         with:
           path: results.json
           pr-bench-name: this-change
