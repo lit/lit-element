@@ -28,20 +28,20 @@ jobs:
           ref: master
 
       - name: Install tachometer
-        working-directory: ./benchmarks
+        working-directory: ./benchmarks/lit-element
         run: npm install --save-dev tachometer@^0.5.9
 
       - name: Copy tachometer config
-        working-directory: ./benchmarks
-        run: cp ../lit-element/tachometer.json .
+        working-directory: ./benchmarks/lit-element
+        run: cp ../../lit-element/tachometer.json .
 
       - name: Benchmark
-        working-directory: ./benchmarks
+        working-directory: ./benchmarks/lit-element
         run: npx tach --config tachometer.json --json-file results.json
 
       - name: Report
         uses: andrewiggins/tachometer-reporter-action@v2
         with:
-          path: ./benchmarks/results.json
+          path: ./benchmarks/lit-element/results.json
           pr-bench-name: this-change
           base-bench-name: master

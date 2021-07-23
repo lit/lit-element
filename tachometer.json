@@ -18,7 +18,7 @@
             "dependencies": {
               "lit-element": {
                 "kind": "git",
-                "repo": "..",
+                "repo": "../../lit-element",
                 "ref": "HEAD",
                 "setupCommands": [
                   "npm ci",
