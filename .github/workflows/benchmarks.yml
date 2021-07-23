@@ -31,6 +31,10 @@ jobs:
         working-directory: ./benchmarks/lit-element
         run: npm install --save-dev tachometer@^0.5.9
 
+      - name: Install chromedriver
+        working-directory: ./benchmarks/lit-element
+        run: npm install --save-dev chromedriver@^91.0.0
+
       - name: Copy tachometer config
         working-directory: ./benchmarks/lit-element
         run: cp ../../lit-element/tachometer.json .
