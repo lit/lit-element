@@ -41,8 +41,7 @@ jobs:
 
       - name: Report
         uses: andrewiggins/tachometer-reporter-action@v2
-        working-directory: ./benchmarks
         with:
-          path: results.json
+          path: ./benchmarks/results.json
           pr-bench-name: this-change
           base-bench-name: master
