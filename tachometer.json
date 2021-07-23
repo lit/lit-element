@@ -5,6 +5,7 @@
   "horizons": ["0%", "1%", "10%"],
   "benchmarks": [
     {
+      "name": "shack",
       "url": "./node_modules/lit-element-benchmarks/shack/",
       "browser": {
         "name": "chrome",
@@ -12,7 +13,6 @@
       },
       "expand": [
         {
-          "name": "this-change",
           "packageVersions": {
             "label": "this-change",
             "dependencies": {
@@ -29,7 +29,6 @@
           }
         },
         {
-          "name": "master",
           "packageVersions": {
             "label": "master",
             "dependencies": {
@@ -46,7 +45,6 @@
           }
         },
         {
-          "name": "previous-1.x-release",
           "packageVersions": {
             "label": "previous-1.x-release",
             "dependencies": {
