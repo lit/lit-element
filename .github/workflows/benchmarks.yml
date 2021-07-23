@@ -29,7 +29,7 @@ jobs:
 
       - name: Install tachometer
         working-directory: ./benchmarks
-        run: npm install --save-dev tachometer
+        run: npm install --save-dev tachometer@^0.5.9
 
       - name: Copy tachometer config
         working-directory: ./benchmarks
