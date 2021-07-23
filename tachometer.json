@@ -46,9 +46,9 @@
         },
         {
           "packageVersions": {
-            "label": "previous-1.x-release",
+            "label": "previous-2.x-release",
             "dependencies": {
-              "lit-element": "^1"
+              "lit-element": "^2"
             }
           }
         }
