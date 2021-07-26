@@ -1,18 +1,19 @@
 {
   "name": "lit-element-benchmarks",
   "version": "0.1.0",
+  "private": true,
   "description": "Benchmarks for lit-element",
-  "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/PolymerLabs/benchmarks.git"
+    "url": "https://github.com/lit/lit-element.git",
+    "directory": "benchmarks"
   },
   "author": "The Polymer Project Authors",
   "license": "BSD-3-Clause",
   "bugs": {
-    "url": "https://github.com/PolymerLabs/benchmarks/issues"
+    "url": "https://github.com/lit/lit-element/issues"
   },
-  "homepage": "https://github.com/PolymerLabs/benchmarks#readme",
+  "homepage": "https://github.com/lit/lit-element#readme",
   "dependencies": {
     "lit-element": "^2.2.1"
   }
