@@ -33,10 +33,10 @@ jobs:
         uses: actions/cache@v2
         with:
           path: node_modules
-          # Bump the number after `lit-element-1.x-node-modules` to force a
+          # Bump the number after `lit-element-2.x-node-modules` to force a
           # cache update. Note there are cache actions in other jobs in this
           # file that should all keep keys in sync.
-          key: lit-element-1.x-node-modules-0-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+          key: lit-element-2.x-node-modules-0-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
 
       - name: NPM install
         if: steps.cache.outputs.cache-hit != 'true'
@@ -70,10 +70,10 @@ jobs:
         uses: actions/cache@v2
         with:
           path: node_modules
-          # Bump the number after `lit-element-1.x-node-modules` to force a
+          # Bump the number after `lit-element-2.x-node-modules` to force a
           # cache update. Note there are cache actions in other jobs in this
           # file that should all keep keys in sync.
-          key: lit-element-1.x-node-modules-0-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+          key: lit-element-2.x-node-modules-0-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
 
       - name: NPM install
         if: steps.cache.outputs.cache-hit != 'true'
