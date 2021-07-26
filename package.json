@@ -49,7 +49,7 @@
     "@types/chai": "^4.2.15",
     "@types/mocha": "^5.2.4",
     "@webcomponents/shadycss": "^1.10.2",
-    "@webcomponents/webcomponentsjs": "^2.5.0",
+    "@webcomponents/webcomponentsjs": "./webcomponents-webcomponentsjs-2.5.0.tgz",
     "chai": "^4.3.3",
     "clang-format": "^1.5.0",
     "downlevel-dts": "^0.7.0",
