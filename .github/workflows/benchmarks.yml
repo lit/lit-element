@@ -19,6 +19,12 @@ jobs:
 
       - uses: actions/checkout@v2
 
+      # By default, the actions/checkout@v2 only retrieves the one commit
+      # associated with the pull request. The benchmarks test against the
+      # `master` branch also, so we explicitly retrieve it here.
+      - name: Fetch additional refs
+        run: git fetch --no-tags --depth=1 origin master
+
       - name: Restore benchmarks/node_modules
         id: cache
         uses: actions/cache@v2

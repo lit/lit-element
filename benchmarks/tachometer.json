@@ -34,7 +34,7 @@
             "dependencies": {
               "lit-element": {
                 "kind": "git",
-                "repo": "https://github.com/Polymer/lit-element.git",
+                "repo": "..",
                 "ref": "master",
                 "setupCommands": [
                   "npm ci",
