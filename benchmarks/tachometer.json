@@ -1,0 +1,58 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Polymer/tachometer/master/config.schema.json",
+  "sampleSize": 50,
+  "timeout": 3,
+  "horizons": ["0%", "1%", "10%"],
+  "benchmarks": [
+    {
+      "name": "shack",
+      "url": "./shack/",
+      "browser": {
+        "name": "chrome",
+        "headless": true
+      },
+      "expand": [
+        {
+          "packageVersions": {
+            "label": "this-change",
+            "dependencies": {
+              "lit-element": {
+                "kind": "git",
+                "repo": "..",
+                "ref": "HEAD",
+                "setupCommands": [
+                  "npm ci",
+                  "npm run build"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "packageVersions": {
+            "label": "master",
+            "dependencies": {
+              "lit-element": {
+                "kind": "git",
+                "repo": "..",
+                "ref": "master",
+                "setupCommands": [
+                  "npm ci",
+                  "npm run build"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "packageVersions": {
+            "label": "previous-2.x-release",
+            "dependencies": {
+              "lit-element": "^2"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

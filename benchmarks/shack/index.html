@@ -1,0 +1,25 @@
+<!doctype html>
+<html>
+  <head>
+    <title>lit-element shack benchmark</title>
+
+    <script type="module">
+      // IMPORTANT: The order of these imports must be maintained. Our script
+      // is de-composed into two ES modules to ensure the ordering:
+      //
+      // 1) ES module graph is downloaded and parsed
+      // 2) Start benchmark measurement (index-1.js)
+      // 3) Render application and stop benchmark measurement (index-2.js)
+      import './index-1.js';
+      import './index-2.js';
+    </script>
+
+    <style>
+      body {
+        margin: 0;
+      }
+    </style>
+  </head>
+  <body>
+  </body>
+</html>

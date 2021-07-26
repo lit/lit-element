@@ -1,0 +1,52 @@
+name: Benchmarks
+
+on: [pull_request]
+
+jobs:
+  benchmarks:
+    name: benchmarks
+
+    # We can't currently run benchmarks on PRs from forked repos, because the
+    # tachometer action reports results by posting a comment, and we can't post
+    # comments without a github token.
+    if: github.event.pull_request == null || github.event.pull_request.head.repo.full_name == github.repository
+
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 14
+
+      - uses: actions/checkout@v2
+
+      # By default, the actions/checkout@v2 only retrieves the one commit
+      # associated with the pull request. The benchmarks test against the
+      # `master` branch also, so we explicitly retrieve it here.
+      - name: Fetch additional refs
+        run: git fetch --no-tags --depth=1 origin master
+
+      - name: Restore benchmarks/node_modules
+        id: cache
+        uses: actions/cache@v2
+        with:
+          path: benchmarks/node_modules
+          # Bump the number after `lit-element-2.x-benchmarks-node-modules` to
+          # force a cache update. Note there are cache actions in other jobs in
+          # this file that should all keep keys in sync.
+          key: lit-element-2.x-benchmarks-node-modules-0-${{ runner.os }}-${{ hashFiles('benchmarks/package-lock.json') }}
+
+      - name: NPM install
+        if: steps.cache.outputs.cache-hit != 'true'
+        working-directory: ./benchmarks
+        run: npm ci
+
+      - name: Benchmark
+        working-directory: ./benchmarks
+        run: npx tach --config tachometer.json --json-file results.json
+
+      - name: Report
+        uses: andrewiggins/tachometer-reporter-action@v2
+        with:
+          path: ./benchmarks/results.json
+          pr-bench-name: this-change
+          base-bench-name: master

@@ -2,7 +2,7 @@
 
 LitElement is simple base class for creating fast, lightweight web components with [lit-html](https://lit-html.polymer-project.org/).
 
-[![Build Status](https://travis-ci.org/lit/lit-element.svg?branch=master)](https://travis-ci.org/lit/lit-element)
+[![Build Status](https://github.com/lit/lit-element/actions/workflows/tests.yml/badge.svg?branch=master)](https://github.com/lit/lit-element/actions/workflows/tests.yml?query=branch%3Amaster)
 [![Published on npm](https://img.shields.io/npm/v/lit-element.svg)](https://www.npmjs.com/package/lit-element)
 [![Join our Slack](https://img.shields.io/badge/slack-join%20chat-4a154b.svg)](https://lit.dev/slack-invite/)
 [![Mentioned in Awesome lit-html](https://awesome.re/mentioned-badge.svg)](https://github.com/web-padawan/awesome-lit)
