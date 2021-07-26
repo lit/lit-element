@@ -19,6 +19,21 @@ jobs:
 
       - uses: actions/checkout@v2
 
+      - name: Restore benchmarks/node_modules
+        id: cache
+        uses: actions/cache@v2
+        with:
+          path: benchmarks/node_modules
+          # Bump the number after `lit-element-2.x-benchmarks-node-modules` to
+          # force a cache update. Note there are cache actions in other jobs in
+          # this file that should all keep keys in sync.
+          key: lit-element-2.x-benchmarks-node-modules-0-${{ runner.os }}-${{ hashFiles('benchmarks/package-lock.json') }}
+
+      - name: NPM install
+        if: steps.cache.outputs.cache-hit != 'true'
+        working-directory: ./benchmarks
+        run: npm ci
+
       - name: Benchmark
         working-directory: ./benchmarks
         run: npx tach --config tachometer.json --json-file results.json
