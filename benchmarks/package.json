@@ -16,5 +16,9 @@
   "homepage": "https://github.com/lit/lit-element#readme",
   "dependencies": {
     "lit-element": "^2.2.1"
+  },
+  "devDependencies": {
+    "chromedriver": "^91.0.1",
+    "tachometer": "^0.5.9"
   }
 }
