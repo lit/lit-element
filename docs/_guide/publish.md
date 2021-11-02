@@ -2,6 +2,7 @@
 layout: guide
 title: Publish an element
 slug: publish
+lit_dev_path: /docs/tools/publishing/
 ---
 
 {::options toc_levels="1..3" /}

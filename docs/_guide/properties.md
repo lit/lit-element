@@ -2,6 +2,7 @@
 layout: guide
 title: Properties
 slug: properties
+lit_dev_path: /docs/components/properties/
 ---
 
 {::options toc_levels="1..3" /}

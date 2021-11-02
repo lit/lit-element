@@ -2,6 +2,7 @@
 layout: guide
 title: Community
 slug: community
+lit_dev_path: /docs/tools/publishing/
 ---
 
 {::options toc_levels="1..3" /}

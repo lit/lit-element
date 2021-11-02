@@ -2,6 +2,7 @@
 layout: guide
 title: Introduction
 permalink: /guide
+lit_dev_path: /docs/
 ---
 
 {::options toc_levels="1..3" /}

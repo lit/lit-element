@@ -2,6 +2,7 @@
 layout: guide
 title: Build for production
 slug: build
+lit_dev_path: /docs/tools/production/
 ---
 
 {::options toc_levels="1..3" /}
