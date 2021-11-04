@@ -2,6 +2,7 @@
 layout: guide
 title: Templates
 slug: templates
+lit_dev_path: /docs/components/rendering/
 ---
 
 {::options toc_levels="1..3" /}

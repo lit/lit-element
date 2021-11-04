@@ -2,6 +2,7 @@
 layout: guide
 title: Use a component
 slug: use
+lit_dev_path: /docs/
 ---
 
 {::options toc_levels="1..3" /}

@@ -2,6 +2,7 @@
 layout: guide
 title: Events
 slug: events
+lit_dev_path: /docs/components/events/
 ---
 
 {::options toc_levels="1..3" /}

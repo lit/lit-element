@@ -2,6 +2,7 @@
 layout: guide
 title: Lifecycle
 slug: lifecycle
+lit_dev_path: /docs/components/lifecycle/
 ---
 
 {::options toc_levels="1..3" /}

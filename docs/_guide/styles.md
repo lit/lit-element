@@ -2,6 +2,7 @@
 layout: guide
 title: Styles
 slug: styles
+lit_dev_path: /docs/components/styles/
 ---
 
 {::options toc_levels="1..3" /}

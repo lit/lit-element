@@ -2,6 +2,7 @@
 layout: guide
 title: Getting Started
 slug: start
+lit_dev_path: /docs/getting-started/
 ---
 
 {::options toc_levels="1..3" /}
