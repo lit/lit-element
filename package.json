@@ -79,5 +79,11 @@
   },
   "publishConfig": {
     "access": "public"
+  },
+  "exports": {
+    ".": "./lit-element.js",
+    "./lib/*": "./lib/*.js",
+    "./src/*": "./src/*.js",
+    "./ts3.4/*": "./ts3.4/*.ts"
   }
 }
