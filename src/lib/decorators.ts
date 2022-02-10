@@ -360,7 +360,7 @@ export function queryAll(selector: string) {
 
 const legacyQuery =
     (descriptor: PropertyDescriptor, proto: Object, name: PropertyKey) => {
-      Object.defineProperty(proto, name, descriptor);
+      return Object.defineProperty(proto, name, descriptor);
     };
 
 const standardQuery = (descriptor: PropertyDescriptor, element: ClassElement) =>
