@@ -53,7 +53,7 @@
     "chai": "^4.3.3",
     "clang-format": "^1.5.0",
     "downlevel-dts": "^0.7.0",
-    "mocha": "^6.2.2",
+    "mocha": "^10.2.0",
     "np": "^7.4.0",
     "rollup": "^1.26.0",
     "rollup-plugin-filesize": "^6.2.0",
