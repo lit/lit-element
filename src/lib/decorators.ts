@@ -48,6 +48,10 @@ interface ClassElement {
 
 const legacyCustomElement =
     (tagName: string, clazz: Constructor<HTMLElement>) => {
+      // Do not define if already registered
+      const isDefined = Boolean(window.customElements.get(tagName));
+      // tslint:disable-next-line:no-any
+      if (isDefined) return clazz as any;
       window.customElements.define(tagName, clazz);
       // Cast as any because TS doesn't recognize the return type as being a
       // subtype of the decorated class when clazz is typed as
