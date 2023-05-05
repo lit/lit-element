@@ -12,6 +12,9 @@
  * http://polymer.github.io/PATENTS.txt
  */
 
+ const NODE_MODE = false;
+ const global = NODE_MODE ? globalThis : window;
+
 /**
  * The main LitElement module, which defines the [[`LitElement`]] base class and
  * related APIs.
@@ -314,6 +317,10 @@ export class LitElement extends UpdatingElement {
       this._needsShimAdoptedStyleSheets = false;
       (this.constructor as typeof LitElement)._styles!.forEach((s) => {
         const style = document.createElement('style');
+        const nonce = (global as any)['litNonce'];
+        if (nonce !== undefined) {
+          style.setAttribute('nonce', nonce);
+        }
         style.textContent = (s as CSSResult).cssText;
         this.renderRoot.appendChild(style);
       });
