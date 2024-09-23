@@ -55,7 +55,7 @@
     "downlevel-dts": "^0.7.0",
     "mocha": "^6.2.2",
     "np": "^7.4.0",
-    "rollup": "^1.26.0",
+    "rollup": "^3.29.5",
     "rollup-plugin-filesize": "^6.2.0",
     "rollup-plugin-node-resolve": "^5.2.0",
     "rollup-plugin-terser": "^5.3.1",
