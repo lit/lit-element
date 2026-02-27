@@ -20,7 +20,7 @@
     "@rollup/plugin-node-resolve": "^7.1.3",
     "polymer-cli": "^1.9.11",
     "rimraf": "^3.0.2",
-    "rollup": "^2.6.1",
+    "rollup": "^2.80.0",
     "rollup-plugin-babel": "^4.4.0",
     "rollup-plugin-commonjs": "^10.1.0",
     "rollup-plugin-copy": "^3.3.0",
