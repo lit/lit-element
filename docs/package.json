@@ -15,7 +15,7 @@
     "regenerator-runtime": "^0.13.5"
   },
   "devDependencies": {
-    "@babel/core": "^7.9.0",
+    "@babel/core": "^7.29.6",
     "@babel/preset-env": "^7.9.5",
     "@rollup/plugin-node-resolve": "^7.1.3",
     "polymer-cli": "^1.9.11",
